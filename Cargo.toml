@@ -13,42 +13,24 @@ categories = ["finance", "cryptography::cryptocurrencies"]
 [dependencies]
 anyhow = { version = "1", features = ["backtrace"] }
 arcstr = { version = "1", features = ["serde"] }
-arc-swap = "1"
-async-stream = "0.3"
-async-trait = "0.1.71"
 base64 = "0.21"
 bytes = "1"
 chrono = { version = "^0.4.24", features = ["serde"] }
-clap = { version = "4", features = ["cargo", "derive"] }
 compact_str = { version = "0.7.0", features = ["serde"] }
 derive = { package = "demon_derive", version = "6.6.6", path = "../derive" }
-env_logger = "0.10"
 futures = "0.3"
 futures-util = "0.3"
-hex = "0.4"
 hmac = "0.12"
 log = "0.4.20"
 netidx = { version = "0.26.0" }
-netidx-archive = { version = "0.26.0" }
 netidx-core = { version = "0.26.0" }
 netidx-derive = { version = "0.22.0" }
-netidx-protocols = { version = "0.26.0" }
-netidx-tools-core = { version = "0.26.0" }
-netidx-wsproxy = { version = "0.26.0" }
-nonzero_ext = "0.3.0"
 once_cell = "1"
-reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }
 rust_decimal = { version = "1", features = ["maths", "serde"] }
-rust_decimal_macros = "1"
 serde = { version = "1", features = ["derive"] }
 serde_derive = "1"
 serde_json = "1"
-serde_repr = "0.1.12"
-serde_urlencoded = "0.7"
 sha2 = "0.10"
 time = { version = "0.3.20", features = ["serde"] }
 tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "io-std", "io-util"] }
-tokio-tungstenite = { version = "0.18", features = ["rustls-tls-webpki-roots"] }
-url = { version = "2", features = ["serde"] }
 uuid = { version = "1", features = ["v4", "v5", "serde"] }
-paste = "1.0.14"

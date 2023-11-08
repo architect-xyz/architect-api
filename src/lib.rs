@@ -4,6 +4,12 @@ use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use std::str::FromStr;
 
+pub mod cpty;
+pub mod utils;
+
+pub use utils::component_id::ComponentId;
+pub use utils::envelope::Envelope;
+
 // common, basic types which should cover a lot of use cases
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Pack)]
@@ -68,5 +74,3 @@ pub struct Ack {
 pub struct Out {
     pub id: u64,
 }
-
-pub mod cpty;
