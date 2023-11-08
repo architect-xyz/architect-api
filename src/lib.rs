@@ -5,6 +5,7 @@ use rust_decimal::Decimal;
 use std::str::FromStr;
 
 pub mod cpty;
+pub mod symbology;
 pub mod utils;
 
 pub use utils::component_id::ComponentId;
