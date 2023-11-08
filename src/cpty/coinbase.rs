@@ -1,4 +1,5 @@
-use crate::{packed_value, Ack, Dir, Fill, Order, OrderflowMessage, Out, Reject};
+use crate::{Ack, Dir, Fill, Order, OrderflowMessage, Out, Reject};
+use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 
@@ -10,7 +11,7 @@ use rust_decimal::Decimal;
 //
 // another loose end: choice between restating the cases vs embeding the type,
 // programmer should choose former. exercise why left for reader
-#[derive(Debug, Clone, Pack)]
+#[derive(Debug, Clone, Pack, FromValue)]
 pub enum CoinbaseMessage {
     CoinbaseOrder(CoinbaseOrder),
     Order(Order),
@@ -20,8 +21,6 @@ pub enum CoinbaseMessage {
     Out(Out),
     ExchangeOrderUpdate(u64),
 }
-
-packed_value!(CoinbaseMessage);
 
 impl TryFrom<OrderflowMessage> for CoinbaseMessage {
     type Error = ();

@@ -21,6 +21,7 @@ bytes = "1"
 chrono = { version = "^0.4.24", features = ["serde"] }
 clap = { version = "4", features = ["cargo", "derive"] }
 compact_str = { version = "0.7.0", features = ["serde"] }
+derive = { package = "demon_derive", version = "6.6.6", path = "../derive" }
 env_logger = "0.10"
 futures = "0.3"
 futures-util = "0.3"

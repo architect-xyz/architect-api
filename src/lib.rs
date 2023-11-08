@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use std::str::FromStr;
@@ -26,7 +27,7 @@ impl FromStr for Dir {
 // common orderflow types suitable for generic oms/risk engine work
 // maybe move this to orderflow.rs
 
-#[derive(Debug, Clone, Pack)]
+#[derive(Debug, Clone, Pack, FromValue)]
 pub enum OrderflowMessage {
     Order(Order),
     Reject(Reject),
@@ -34,8 +35,6 @@ pub enum OrderflowMessage {
     Fill(Fill),
     Out(Out),
 }
-
-packed_value!(OrderflowMessage);
 
 // TODO: cleaner if new() fns are impled, as well as choice accessors like id()
 #[derive(Debug, Clone, Pack)]
@@ -71,4 +70,3 @@ pub struct Out {
 }
 
 pub mod cpty;
-mod utils;
