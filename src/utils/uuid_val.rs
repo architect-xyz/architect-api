@@ -1,7 +1,7 @@
 /// Implement a named wrapper type around a UUID
 #[macro_export]
 macro_rules! uuid_val {
-    ($name:ident) => {
+    ($name:ident, $ns:ident) => {
         #[derive(
             Debug,
             Clone,
@@ -11,10 +11,10 @@ macro_rules! uuid_val {
             Eq,
             PartialOrd,
             Ord,
-            Serialize,
-            Deserialize,
-            Pack,
-            FromValue,
+            serde::Serialize,
+            serde::Deserialize,
+            netidx_derive::Pack,
+            derive::FromValue,
         )]
         pub struct $name(pub uuid::Uuid);
 
@@ -32,7 +32,14 @@ macro_rules! uuid_val {
             }
         }
 
-        impl Deref for $name {
+        /// Implement From<AsRef<str>> for a UUIDv5, using a given namespace
+        impl<S: AsRef<str>> From<S> for $name {
+            fn from(s: S) -> Self {
+                Self(Uuid::new_v5(&$ns, s.as_ref().as_bytes()))
+            }
+        }
+
+        impl std::ops::Deref for $name {
             type Target = uuid::Uuid;
 
             fn deref(&self) -> &Self::Target {
@@ -40,31 +47,21 @@ macro_rules! uuid_val {
             }
         }
 
-        impl Borrow<uuid::Uuid> for $name {
+        impl std::borrow::Borrow<uuid::Uuid> for $name {
             fn borrow(&self) -> &uuid::Uuid {
                 &self.0
             }
         }
 
-        impl JsonSchema for $name {
+        impl schemars::JsonSchema for $name {
             fn schema_name() -> String {
-                format!("{}Id", stringify!($name)).to_string()
+                format!("{}", stringify!($name)).to_string()
             }
 
-            fn json_schema(gen: &mut SchemaGenerator) -> Schema {
+            fn json_schema(
+                gen: &mut schemars::gen::SchemaGenerator,
+            ) -> schemars::schema::Schema {
                 uuid::Uuid::json_schema(gen)
-            }
-        }
-    };
-}
-
-/// Implement From<AsRef<str>> for a UUIDv5, using a given namespace
-#[macro_export]
-macro_rules! uuid_from_str {
-    ($t:ident, $ns:ident) => {
-        impl<S: AsRef<str>> From<S> for $t {
-            fn from(s: S) -> Self {
-                Self(Uuid::new_v5(&$ns, s.as_ref().as_bytes()))
             }
         }
     };

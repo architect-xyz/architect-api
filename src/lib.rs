@@ -10,6 +10,7 @@ pub mod utils;
 
 pub use utils::component_id::ComponentId;
 pub use utils::envelope::Envelope;
+pub use utils::hcstr::Str;
 
 // common, basic types which should cover a lot of use cases
 

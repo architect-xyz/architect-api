@@ -2,6 +2,21 @@ use crate::{Ack, Dir, Fill, Order, OrderflowMessage, Out, Reject};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+pub struct CoinbaseMarketInfo {
+    min_market_funds: Decimal,
+    status_message: Option<String>,
+    base_increment: Decimal,
+    quote_increment: Decimal,
+    trading_disabled: bool,
+    cancel_only: bool,
+    post_only: bool,
+    limit_only: bool,
+    fx_stablecoin: bool,
+    auction_mode: bool,
+}
 
 // maybe we should also handle generic Order/Ack/Fill types
 // but you could opt into the more specific one to use the more
