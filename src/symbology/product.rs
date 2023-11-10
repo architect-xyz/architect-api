@@ -1,7 +1,7 @@
 //! Product are specific assets, liabilities, tokens, etc. things that can be owned,
 //! traded, or exchanged.
 
-use super::VenueId;
+use super::{Symbolic, VenueId};
 use crate::{uuid_val, Str};
 use bytes::Bytes;
 use netidx_derive::Pack;
@@ -18,6 +18,18 @@ pub struct Product {
     pub id: ProductId,
     pub name: Str,
     pub kind: ProductKind,
+}
+
+impl Symbolic for Product {
+    type Id = ProductId;
+
+    fn id(&self) -> Self::Id {
+        self.id
+    }
+
+    fn name(&self) -> Str {
+        self.name
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]

@@ -5,6 +5,8 @@
 //! the symbology server and clients, and from the loaders to the
 //! symbology server.
 
+use crate::Str;
+use anyhow::Result;
 use bytes::Bytes;
 use netidx_derive::Pack;
 use serde_derive::{Deserialize, Serialize};
@@ -22,7 +24,17 @@ pub use venue::{Venue, VenueId};
 
 /// All named symbology identifiers implement the trait Symbolic, which specifies
 /// some common minimum functionality.
-pub trait Symbolic {}
+pub trait Symbolic: Clone + 'static {
+    type Id: Copy + Ord + Eq + From<Str>;
+
+    fn id(&self) -> Self::Id;
+    fn name(&self) -> Str;
+
+    // TODO: think harder about how and whether we want the old validation back
+    fn validate_name(_name: &str) -> Result<()> {
+        Ok(())
+    }
+}
 
 /// Symbology server/client wire type
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]

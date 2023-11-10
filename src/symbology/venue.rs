@@ -1,6 +1,7 @@
 //! Venues represent where products can be traded or custodied, e.g. an exchange, an ATS,
 //! custodian, blockchain, or DeFi app.
 
+use super::Symbolic;
 use crate::{uuid_val, Str};
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
@@ -13,4 +14,16 @@ uuid_val!(VenueId, VENUE_NS);
 pub struct Venue {
     pub id: VenueId,
     pub name: Str,
+}
+
+impl Symbolic for Venue {
+    type Id = VenueId;
+
+    fn id(&self) -> Self::Id {
+        self.id
+    }
+
+    fn name(&self) -> Str {
+        self.name
+    }
 }

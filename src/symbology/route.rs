@@ -3,6 +3,7 @@
 //! or third-party connections, e.g. NASDAQ via JPM, this would be represented by
 //! the route "JPM".
 
+use super::Symbolic;
 use crate::{uuid_val, Str};
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
@@ -15,4 +16,16 @@ uuid_val!(RouteId, ROUTE_NS);
 pub struct Route {
     pub id: RouteId,
     pub name: Str,
+}
+
+impl Symbolic for Route {
+    type Id = RouteId;
+
+    fn id(&self) -> Self::Id {
+        self.id
+    }
+
+    fn name(&self) -> Str {
+        self.name
+    }
 }
