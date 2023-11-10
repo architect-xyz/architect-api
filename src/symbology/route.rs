@@ -5,6 +5,7 @@
 
 use super::Symbolic;
 use crate::{uuid_val, Str};
+use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use uuid::{uuid, Uuid};
@@ -12,7 +13,7 @@ use uuid::{uuid, Uuid};
 static ROUTE_NS: Uuid = uuid!("0cadbcc5-98bc-4888-94ba-fbbcb6f39132");
 uuid_val!(RouteId, ROUTE_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
 pub struct Route {
     pub id: RouteId,
     pub name: Str,

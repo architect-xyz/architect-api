@@ -4,6 +4,7 @@
 
 use super::{ProductId, RouteId, Symbolic, VenueId};
 use crate::{cpty, uuid_val, Str};
+use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
@@ -12,7 +13,7 @@ use uuid::{uuid, Uuid};
 static MARKET_NS: Uuid = uuid!("0bfe858c-a749-43a9-a99e-6d1f31a760ad");
 uuid_val!(MarketId, MARKET_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
 pub struct Market {
     pub id: MarketId,
     pub name: Str,

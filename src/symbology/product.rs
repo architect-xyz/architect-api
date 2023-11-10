@@ -4,6 +4,7 @@
 use super::{Symbolic, VenueId};
 use crate::{uuid_val, Str};
 use bytes::Bytes;
+use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -13,7 +14,7 @@ use uuid::{uuid, Uuid};
 static PRODUCT_NS: Uuid = uuid!("bb25a7a7-a61c-485a-ac29-1de369a6a043");
 uuid_val!(ProductId, PRODUCT_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
 pub struct Product {
     pub id: ProductId,
     pub name: Str,

@@ -3,6 +3,7 @@
 
 use super::Symbolic;
 use crate::{uuid_val, Str};
+use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use uuid::{uuid, Uuid};
@@ -10,10 +11,11 @@ use uuid::{uuid, Uuid};
 static VENUE_NS: Uuid = uuid!("dd85a6c5-b45f-46d1-bf50-793dacb1e51a");
 uuid_val!(VenueId, VENUE_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
 pub struct Venue {
     pub id: VenueId,
     pub name: Str,
+    // TODO: maybe VenueInfo
 }
 
 impl Symbolic for Venue {

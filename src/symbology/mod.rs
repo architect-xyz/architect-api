@@ -44,7 +44,7 @@ pub struct SymbologyUpdate {
 }
 
 // TODO: id and name are hash-equivalent, but it also feels wasteful to make the protocol send both
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
 pub enum SymbologyUpdateKind {
     AddRoute(Route),
     RemoveRoute(RouteId),
