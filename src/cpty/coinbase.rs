@@ -6,16 +6,16 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct CoinbaseMarketInfo {
-    min_market_funds: Decimal,
-    status_message: Option<String>,
-    base_increment: Decimal,
-    quote_increment: Decimal,
-    trading_disabled: bool,
-    cancel_only: bool,
-    post_only: bool,
-    limit_only: bool,
-    fx_stablecoin: bool,
-    auction_mode: bool,
+    pub min_market_funds: Decimal,
+    pub status_message: Option<String>,
+    pub base_increment: Decimal,
+    pub quote_increment: Decimal,
+    pub trading_disabled: bool,
+    pub cancel_only: bool,
+    pub post_only: bool,
+    pub limit_only: bool,
+    pub fx_stablecoin: bool,
+    pub auction_mode: bool,
 }
 
 // maybe we should also handle generic Order/Ack/Fill types

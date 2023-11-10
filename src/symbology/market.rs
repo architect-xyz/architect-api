@@ -2,8 +2,9 @@
 //! For example, the market "BTC Crypto/USD*COINBASE/DIRECT" represents the direct
 //! market connection to Coinbase's BTC/USD market.
 
-use super::{ProductId, RouteId, Symbolic, VenueId};
+use super::{ProductId, Route, RouteId, Symbolic, Venue, VenueId};
 use crate::{cpty, uuid_val, Str};
+use anyhow::Result;
 use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
@@ -22,6 +23,27 @@ pub struct Market {
     pub route: RouteId,
     pub exchange_symbol: Str,
     pub extra_info: MarketInfo,
+}
+
+impl Market {
+    pub fn new(
+        name: &str,
+        kind: MarketKind,
+        venue: &Venue,
+        route: &Route,
+        exchange_symbol: &str,
+        extra_info: MarketInfo,
+    ) -> Result<Self> {
+        Ok(Self {
+            id: MarketId::from(name),
+            name: Str::try_from(name)?,
+            kind,
+            venue: venue.id,
+            route: route.id,
+            exchange_symbol: Str::try_from(exchange_symbol)?,
+            extra_info,
+        })
+    }
 }
 
 impl Symbolic for Market {

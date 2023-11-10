@@ -5,6 +5,7 @@
 
 use super::Symbolic;
 use crate::{uuid_val, Str};
+use anyhow::Result;
 use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
@@ -17,6 +18,12 @@ uuid_val!(RouteId, ROUTE_NS);
 pub struct Route {
     pub id: RouteId,
     pub name: Str,
+}
+
+impl Route {
+    pub fn new(name: &str) -> Result<Self> {
+        Ok(Self { id: RouteId::from(name), name: Str::try_from(name)? })
+    }
 }
 
 impl Symbolic for Route {

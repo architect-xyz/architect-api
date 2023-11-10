@@ -3,6 +3,7 @@
 
 use super::Symbolic;
 use crate::{uuid_val, Str};
+use anyhow::Result;
 use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
@@ -16,6 +17,12 @@ pub struct Venue {
     pub id: VenueId,
     pub name: Str,
     // TODO: maybe VenueInfo
+}
+
+impl Venue {
+    pub fn new(name: &str) -> Result<Self> {
+        Ok(Venue { id: VenueId::from(name), name: Str::try_from(name)? })
+    }
 }
 
 impl Symbolic for Venue {

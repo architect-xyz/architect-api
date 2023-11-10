@@ -18,8 +18,8 @@ pub mod product;
 pub mod route;
 pub mod venue;
 
-pub use market::{Market, MarketId};
-pub use product::{Product, ProductId};
+pub use market::{Market, MarketId, MarketInfo, MarketKind};
+pub use product::{Product, ProductId, ProductKind};
 pub use route::{Route, RouteId};
 pub use venue::{Venue, VenueId};
 

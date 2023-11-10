@@ -3,6 +3,7 @@
 
 use super::{Symbolic, VenueId};
 use crate::{uuid_val, Str};
+use anyhow::Result;
 use bytes::Bytes;
 use derive::FromValue;
 use netidx_derive::Pack;
@@ -19,6 +20,12 @@ pub struct Product {
     pub id: ProductId,
     pub name: Str,
     pub kind: ProductKind,
+}
+
+impl Product {
+    pub fn new(name: &str, kind: ProductKind) -> Result<Product> {
+        Ok(Product { id: ProductId::from(name), name: Str::try_from(name)?, kind })
+    }
 }
 
 impl Symbolic for Product {
