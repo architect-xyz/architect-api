@@ -41,7 +41,7 @@ pub enum MarketKind {
     /// A regular exchange trading pair, e.g. Coinbase BTC/USD
     Exchange { base: ProductId, quote: ProductId },
     /// An unordered pool of products, e.g. a Uniswap pool or Curve 3-pool
-    Pool(SmallVec<[ProductId; 2]>),
+    Pool(SmallVec<[ProductId; 2]>), // TODO: this should be SmallSet
     #[pack(other)]
     Unknown,
 }

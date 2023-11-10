@@ -8,6 +8,7 @@
 use crate::Str;
 use anyhow::Result;
 use bytes::Bytes;
+use derive::FromValue;
 use netidx_derive::Pack;
 use serde_derive::{Deserialize, Serialize};
 
@@ -29,15 +30,14 @@ pub trait Symbolic: Clone + 'static {
 
     fn id(&self) -> Self::Id;
     fn name(&self) -> Str;
-
-    // TODO: think harder about how and whether we want the old validation back
-    fn validate_name(_name: &str) -> Result<()> {
+    fn validate(&self) -> Result<()> {
         Ok(())
     }
+    // TODO: think about merge semantics. its mechanically pretty tricky, let's see if we can get away with out it
 }
 
 /// Symbology server/client wire type
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
 pub struct SymbologyUpdate {
     pub sequence_number: u64,
     pub kind: SymbologyUpdateKind,
