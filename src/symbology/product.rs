@@ -64,7 +64,7 @@ pub enum ProductKind {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Pack)]
 pub enum TokenInfo {
     // TODO: don't use bytes, just use the packed ethers type
     ERC20 { address: Bytes, decimals: u8 },

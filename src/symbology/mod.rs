@@ -33,7 +33,6 @@ pub trait Symbolic: Clone + 'static {
     fn validate(&self) -> Result<()> {
         Ok(())
     }
-    // TODO: think about merge semantics. its mechanically pretty tricky, let's see if we can get away with out it
 }
 
 /// Symbology server/client wire type

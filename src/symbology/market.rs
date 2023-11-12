@@ -2,7 +2,7 @@
 //! For example, the market "BTC Crypto/USD*COINBASE/DIRECT" represents the direct
 //! market connection to Coinbase's BTC/USD market.
 
-use super::{ProductId, Route, RouteId, Symbolic, Venue, VenueId};
+use super::{Product, ProductId, Route, RouteId, Symbolic, Venue, VenueId};
 use crate::{cpty, uuid_val, Str};
 use anyhow::Result;
 use derive::FromValue;
@@ -26,23 +26,64 @@ pub struct Market {
 }
 
 impl Market {
-    pub fn new(
-        name: &str,
+    fn new(
+        kind_name: &str,
         kind: MarketKind,
         venue: &Venue,
         route: &Route,
         exchange_symbol: &str,
         extra_info: MarketInfo,
     ) -> Result<Self> {
+        let name = format!("{kind_name}*{}/{}", venue.name, route.name);
         Ok(Self {
-            id: MarketId::from(name),
-            name: Str::try_from(name)?,
+            id: MarketId::from(&name),
+            name: Str::try_from(name.as_str())?,
             kind,
             venue: venue.id,
             route: route.id,
             exchange_symbol: Str::try_from(exchange_symbol)?,
             extra_info,
         })
+    }
+
+    pub fn exchange(
+        base: &Product,
+        quote: &Product,
+        venue: &Venue,
+        route: &Route,
+        exchange_symbol: &str,
+        extra_info: MarketInfo,
+    ) -> Result<Self> {
+        Self::new(
+            &format!("{}/{}", base.name, quote.name),
+            MarketKind::Exchange { base: base.id, quote: quote.id },
+            venue,
+            route,
+            exchange_symbol,
+            extra_info,
+        )
+    }
+
+    pub fn pool(
+        products: &[Product],
+        venue: &Venue,
+        route: &Route,
+        exchange_symbol: &str,
+        extra_info: MarketInfo,
+    ) -> Result<Self> {
+        let mut kind_name = String::new();
+        for p in products {
+            kind_name.push_str(p.name.as_str());
+            kind_name.push('/');
+        }
+        Self::new(
+            &kind_name,
+            MarketKind::Pool(products.iter().map(|p| p.id).collect()),
+            venue,
+            route,
+            exchange_symbol,
+            extra_info,
+        )
     }
 }
 
@@ -64,7 +105,8 @@ pub enum MarketKind {
     /// A regular exchange trading pair, e.g. Coinbase BTC/USD
     Exchange { base: ProductId, quote: ProductId },
     /// An unordered pool of products, e.g. a Uniswap pool or Curve 3-pool
-    Pool(SmallVec<[ProductId; 2]>), // TODO: this should be SmallSet
+    /// The type is still ordered for canonical naming purpose
+    Pool(SmallVec<[ProductId; 2]>),
     #[pack(other)]
     Unknown,
 }
