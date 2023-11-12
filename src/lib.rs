@@ -2,35 +2,18 @@ use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
-use std::str::FromStr;
 
 pub mod cpty;
+pub mod qf;
 pub mod symbology;
 pub mod utils;
 
+// common, basic types which should cover a lot of use cases
 pub use utils::component_id::ComponentId;
+pub use utils::dir::Dir;
+pub use utils::dir_pair::DirPair;
 pub use utils::envelope::Envelope;
 pub use utils::hcstr::Str;
-
-// common, basic types which should cover a lot of use cases
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack)]
-pub enum Dir {
-    Buy,
-    Sell,
-}
-
-impl FromStr for Dir {
-    type Err = anyhow::Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "BUY" => Ok(Self::Buy),
-            "SELL" => Ok(Self::Sell),
-            _ => Err(anyhow::anyhow!("invalid format: {s}")),
-        }
-    }
-}
 
 // common orderflow types suitable for generic oms/risk engine work
 // maybe move this to orderflow.rs

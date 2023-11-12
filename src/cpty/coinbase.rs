@@ -1,4 +1,7 @@
-use crate::{Ack, Dir, Fill, Order, OrderflowMessage, Out, Reject};
+use crate::{
+    symbology::market::NormalizedMarketInfo, Ack, Dir, Fill, Order, OrderflowMessage,
+    Out, Reject,
+};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
@@ -16,6 +19,16 @@ pub struct CoinbaseMarketInfo {
     pub limit_only: bool,
     pub fx_stablecoin: bool,
     pub auction_mode: bool,
+}
+
+impl NormalizedMarketInfo for CoinbaseMarketInfo {
+    fn tick_size(&self) -> Decimal {
+        self.quote_increment
+    }
+
+    fn step_size(&self) -> Decimal {
+        self.base_increment
+    }
 }
 
 // maybe we should also handle generic Order/Ack/Fill types

@@ -7,6 +7,7 @@ use crate::{cpty, uuid_val, Str};
 use anyhow::Result;
 use derive::FromValue;
 use netidx_derive::Pack;
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
 use uuid::{uuid, Uuid};
@@ -119,4 +120,25 @@ pub enum MarketInfo {
     Coinbase(cpty::coinbase::CoinbaseMarketInfo),
 }
 
-// TODO: CommonMarketInfo trait to extract some bs when you don't care spec
+pub trait NormalizedMarketInfo {
+    /// Return the tick size of the market or 1 if unknown
+    fn tick_size(&self) -> Decimal;
+
+    /// Return the step size of the market
+    fn step_size(&self) -> Decimal;
+}
+
+// TODO: proc macro for ForwardTrait?
+impl NormalizedMarketInfo for Market {
+    fn tick_size(&self) -> Decimal {
+        match &self.extra_info {
+            MarketInfo::Coinbase(info) => info.tick_size(),
+        }
+    }
+
+    fn step_size(&self) -> Decimal {
+        match &self.extra_info {
+            MarketInfo::Coinbase(info) => info.step_size(),
+        }
+    }
+}
