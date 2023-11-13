@@ -29,6 +29,11 @@ impl NormalizedMarketInfo for CoinbaseMarketInfo {
     fn step_size(&self) -> Decimal {
         self.base_increment
     }
+
+    fn is_delisted(&self) -> bool {
+        // CR alee: not really true?
+        self.trading_disabled
+    }
 }
 
 // maybe we should also handle generic Order/Ack/Fill types

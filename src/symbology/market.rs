@@ -126,19 +126,28 @@ pub trait NormalizedMarketInfo {
 
     /// Return the step size of the market
     fn step_size(&self) -> Decimal;
+
+    /// Return if the market is delisted
+    fn is_delisted(&self) -> bool;
 }
 
 // TODO: proc macro for ForwardTrait?
-impl NormalizedMarketInfo for Market {
+impl NormalizedMarketInfo for MarketInfo {
     fn tick_size(&self) -> Decimal {
-        match &self.extra_info {
+        match &self {
             MarketInfo::Coinbase(info) => info.tick_size(),
         }
     }
 
     fn step_size(&self) -> Decimal {
-        match &self.extra_info {
+        match &self {
             MarketInfo::Coinbase(info) => info.step_size(),
+        }
+    }
+
+    fn is_delisted(&self) -> bool {
+        match &self {
+            MarketInfo::Coinbase(info) => info.is_delisted(),
         }
     }
 }

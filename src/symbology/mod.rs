@@ -15,6 +15,7 @@ use serde_derive::{Deserialize, Serialize};
 pub mod cficode;
 pub mod market;
 pub mod product;
+pub mod query;
 pub mod route;
 pub mod venue;
 

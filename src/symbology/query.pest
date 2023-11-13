@@ -1,0 +1,18 @@
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+quoted_identifier = _{ "\"" ~ identifier ~ "\"" }
+identifier = @{ char* }
+char = {
+    !("\"" | "\\") ~ ANY
+    | "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t")
+    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
+}
+tag_all = { "All" }
+tag_stringlike = { "Base" | "BaseKind" | "Quote" | "Pool" | "Venue" | "Route" | "Underlying" }
+variant_stringlike = { tag_stringlike ~ "(" ~ quoted_identifier ~ ")" }
+bin_op = _{ and | or }
+and = { "&&" | "and" }
+or = { "||" | "or" }
+not = { "!" | "~" | "not" }
+primary = _{ tag_all | variant_stringlike | "(" ~ expr ~ ")" }
+atom = _{ not? ~ primary }
+expr = { atom ~ (bin_op ~ atom)* }

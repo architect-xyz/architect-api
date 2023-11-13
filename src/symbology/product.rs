@@ -5,6 +5,7 @@ use super::{Symbolic, VenueId};
 use crate::{uuid_val, Str};
 use anyhow::Result;
 use bytes::Bytes;
+use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
@@ -48,13 +49,16 @@ pub enum ProductKind {
     },
     Fiat,
     Equity,
+    Perpetual,
     Future {
         underlying: ProductId,
         multiplier: Decimal,
+        expiration: DateTime<Utc>,
     },
     Option {
         underlying: ProductId,
         multiplier: Decimal,
+        expiration: DateTime<Utc>,
     },
     Commodity,
     Energy,
@@ -62,6 +66,24 @@ pub enum ProductKind {
     Index,
     #[pack(other)]
     Unknown,
+}
+
+impl ProductKind {
+    pub fn name(&self) -> &'static str {
+        match self {
+            ProductKind::Coin { .. } => "Coin",
+            ProductKind::Fiat => "Fiat",
+            ProductKind::Equity => "Equity",
+            ProductKind::Perpetual => "Perpetual",
+            ProductKind::Future { .. } => "Future",
+            ProductKind::Option { .. } => "Option",
+            ProductKind::Commodity => "Commodity",
+            ProductKind::Energy => "Energy",
+            ProductKind::Metal => "Metal",
+            ProductKind::Index => "Index",
+            ProductKind::Unknown => "Unknown",
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Pack)]
