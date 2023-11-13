@@ -27,7 +27,6 @@ pub enum OrderflowMessage {
     Out(Out),
 }
 
-// TODO: cleaner if new() fns are impled, as well as choice accessors like id()
 #[derive(Debug, Clone, Pack)]
 pub struct Order {
     pub id: u64,
