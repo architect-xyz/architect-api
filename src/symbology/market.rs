@@ -66,20 +66,22 @@ impl Market {
     }
 
     pub fn pool(
-        products: &[Product],
+        products: impl Iterator<Item = Product>,
         venue: &Venue,
         route: &Route,
         exchange_symbol: &str,
         extra_info: MarketInfo,
     ) -> Result<Self> {
+        let mut pool: SmallVec<[ProductId; 2]> = SmallVec::new();
         let mut kind_name = String::new();
         for p in products {
             kind_name.push_str(p.name.as_str());
             kind_name.push('/');
+            pool.push(p.id);
         }
         Self::new(
             &kind_name,
-            MarketKind::Pool(products.iter().map(|p| p.id).collect()),
+            MarketKind::Pool(pool),
             venue,
             route,
             exchange_symbol,
