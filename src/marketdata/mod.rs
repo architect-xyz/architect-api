@@ -8,7 +8,7 @@ use serde::Serialize;
 
 // CR alee: deprecate this in favor of [Symbolic]; would need to adjust how blockchain QFs work
 /// Quotefeed path definitions for symbolics
-pub trait NetidxQfPaths {
+pub trait NetidxFeedPaths {
     fn path_by_id(&self, base: &Path) -> Path;
     fn path_by_name(&self, base: &Path) -> Path;
     // TODO: document this shit

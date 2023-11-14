@@ -4,7 +4,7 @@ use netidx_derive::Pack;
 use rust_decimal::Decimal;
 
 pub mod cpty;
-pub mod qf;
+pub mod marketdata;
 pub mod symbology;
 pub mod utils;
 
