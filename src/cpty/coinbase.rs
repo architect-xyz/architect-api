@@ -1,11 +1,13 @@
 use crate::{
-    symbology::market::NormalizedMarketInfo, Ack, Dir, Fill, Order, OrderflowMessage,
-    Out, Reject,
+    orderflow::{Ack, Fill, Order, OrderflowMessage, Out, Reject},
+    symbology::{market::NormalizedMarketInfo, MarketId},
 };
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use std::ops::Deref;
+use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct CoinbaseMarketInfo {
@@ -36,23 +38,20 @@ impl NormalizedMarketInfo for CoinbaseMarketInfo {
     }
 }
 
-// maybe we should also handle generic Order/Ack/Fill types
-// but you could opt into the more specific one to use the more
-// advanced exchange-specific order types
-//
-// a little From/Into could help
-//
-// another loose end: choice between restating the cases vs embeding the type,
-// programmer should choose former. exercise why left for reader
 #[derive(Debug, Clone, Pack, FromValue)]
 pub enum CoinbaseMessage {
     CoinbaseOrder(CoinbaseOrder),
     Order(Order),
     Reject(Reject),
     Ack(Ack),
+    CoinbaseFill(CoinbaseFill),
     Fill(Fill),
     Out(Out),
     ExchangeOrderUpdate(u64),
+    ExchangeFills(Vec<CoinbaseFill>),
+    ExchangeExternalOrderUpdate(MarketId, Uuid),
+    ExchangeExternalOrderNew(Uuid, CoinbaseOrder),
+    ExchangeExternalOrderOut(Uuid),
 }
 
 impl TryFrom<OrderflowMessage> for CoinbaseMessage {
@@ -74,49 +73,49 @@ impl TryInto<OrderflowMessage> for CoinbaseMessage {
 
     fn try_into(self) -> Result<OrderflowMessage, Self::Error> {
         match self {
-            Self::CoinbaseOrder(o) => Ok(OrderflowMessage::Order(o.into())),
+            Self::CoinbaseOrder(o) => Ok(OrderflowMessage::Order(*o)),
             Self::Order(o) => Ok(OrderflowMessage::Order(o)),
             Self::Reject(r) => Ok(OrderflowMessage::Reject(r)),
             Self::Ack(a) => Ok(OrderflowMessage::Ack(a)),
+            Self::CoinbaseFill(f) => Ok(OrderflowMessage::Fill(*f)),
             Self::Fill(f) => Ok(OrderflowMessage::Fill(f)),
             Self::Out(o) => Ok(OrderflowMessage::Out(o)),
             Self::ExchangeOrderUpdate(..) => Err(()),
+            Self::ExchangeFills(..) => Err(()),
+            Self::ExchangeExternalOrderUpdate(..) => Err(()),
+            Self::ExchangeExternalOrderNew(..) => Err(()),
+            Self::ExchangeExternalOrderOut(..) => Err(()),
         }
     }
 }
 
-#[derive(Debug, Clone, Pack)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct CoinbaseOrder {
-    pub id: u64,
-    pub target: String,
-    pub dir: Dir,
-    pub price: Decimal,
-    pub quantity: Decimal,
+    pub order: Order,
     #[allow(dead_code)]
     pub special_coinbase_flag: (),
 }
 
-impl From<Order> for CoinbaseOrder {
-    fn from(o: Order) -> Self {
-        Self {
-            id: o.id,
-            target: o.target,
-            dir: o.dir,
-            price: o.price,
-            quantity: o.quantity,
-            special_coinbase_flag: (),
-        }
+impl Deref for CoinbaseOrder {
+    type Target = Order;
+
+    fn deref(&self) -> &Self::Target {
+        &self.order
     }
 }
 
-impl Into<Order> for CoinbaseOrder {
-    fn into(self) -> Order {
-        Order {
-            id: self.id,
-            target: self.target,
-            dir: self.dir,
-            price: self.price,
-            quantity: self.quantity,
-        }
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+pub struct CoinbaseFill {
+    #[serde(flatten)]
+    pub fill: Fill,
+    pub exchange_trade_id: Uuid,
+    pub exchange_order_id: Uuid,
+}
+
+impl Deref for CoinbaseFill {
+    type Target = Fill;
+
+    fn deref(&self) -> &Self::Target {
+        &self.fill
     }
 }

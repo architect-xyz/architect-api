@@ -27,6 +27,7 @@ pub enum Query {
     Pool(Str),
     Venue(Str),
     Route(Str),
+    ExchangeSymbol(Str),
     Underlying(Str),
     Expired,
     Expiration(DateQ),

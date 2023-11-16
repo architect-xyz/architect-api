@@ -4,8 +4,8 @@ pub mod component_id;
 pub mod dir;
 pub mod dir_pair;
 pub mod envelope;
-pub mod hcstr;
 pub mod pool;
+pub mod str;
 pub mod uuid_val;
 
 pub use atomic_bitflags::AtomicBitFlags;
