@@ -153,3 +153,11 @@ impl NormalizedMarketInfo for MarketInfo {
         }
     }
 }
+
+impl std::fmt::Display for MarketInfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match &self {
+            MarketInfo::Coinbase(a_market_info) => write!(f, "{}", a_market_info),
+        }
+    }
+}
