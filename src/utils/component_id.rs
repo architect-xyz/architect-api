@@ -16,7 +16,7 @@ use std::{error::Error as StdError, fmt, str::FromStr};
 )]
 #[pack(unwrapped)]
 #[repr(transparent)]
-pub struct ComponentId(u16);
+pub struct ComponentId(pub(crate) u16);
 
 impl ComponentId {
     pub fn new(id: u16) -> Result<Self, ComponentIdError> {

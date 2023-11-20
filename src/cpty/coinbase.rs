@@ -1,12 +1,12 @@
 use crate::{
-    orderflow::{Ack, Fill, Order, OrderflowMessage, Out, Reject},
+    orderflow::*,
     symbology::{market::NormalizedMarketInfo, MarketId},
 };
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
@@ -40,60 +40,53 @@ impl NormalizedMarketInfo for CoinbaseMarketInfo {
 
 #[derive(Debug, Clone, Pack, FromValue)]
 pub enum CoinbaseMessage {
-    CoinbaseOrder(CoinbaseOrder),
-    Order(Order),
+    Order(CoinbaseOrder),
+    Cancel(Cancel),
     Reject(Reject),
     Ack(Ack),
-    CoinbaseFill(CoinbaseFill),
-    Fill(Fill),
+    Fill(CoinbaseFill),
     Out(Out),
-    ExchangeOrderUpdate(u64),
+    ExchangeOrderUpdate(OrderId),
+    ExchangeAck(OrderId, Uuid),
     ExchangeFills(Vec<CoinbaseFill>),
     ExchangeExternalOrderUpdate(MarketId, Uuid),
     ExchangeExternalOrderNew(Uuid, CoinbaseOrder),
     ExchangeExternalOrderOut(Uuid),
 }
 
-impl TryFrom<OrderflowMessage> for CoinbaseMessage {
+impl TryInto<OrderflowMessage> for &CoinbaseMessage {
     type Error = ();
 
-    fn try_from(msg: OrderflowMessage) -> Result<Self, Self::Error> {
-        match msg {
-            OrderflowMessage::Order(o) => Ok(Self::Order(o)),
-            OrderflowMessage::Reject(r) => Ok(Self::Reject(r)),
-            OrderflowMessage::Ack(a) => Ok(Self::Ack(a)),
-            OrderflowMessage::Fill(f) => Ok(Self::Fill(f)),
-            OrderflowMessage::Out(o) => Ok(Self::Out(o)),
-        }
-    }
-}
-
-impl TryInto<OrderflowMessage> for CoinbaseMessage {
-    type Error = ();
-
-    fn try_into(self) -> Result<OrderflowMessage, Self::Error> {
+    fn try_into(self) -> Result<OrderflowMessage, ()> {
         match self {
-            Self::CoinbaseOrder(o) => Ok(OrderflowMessage::Order(*o)),
-            Self::Order(o) => Ok(OrderflowMessage::Order(o)),
-            Self::Reject(r) => Ok(OrderflowMessage::Reject(r)),
-            Self::Ack(a) => Ok(OrderflowMessage::Ack(a)),
-            Self::CoinbaseFill(f) => Ok(OrderflowMessage::Fill(*f)),
-            Self::Fill(f) => Ok(OrderflowMessage::Fill(f)),
-            Self::Out(o) => Ok(OrderflowMessage::Out(o)),
-            Self::ExchangeOrderUpdate(..) => Err(()),
-            Self::ExchangeFills(..) => Err(()),
-            Self::ExchangeExternalOrderUpdate(..) => Err(()),
-            Self::ExchangeExternalOrderNew(..) => Err(()),
-            Self::ExchangeExternalOrderOut(..) => Err(()),
+            CoinbaseMessage::Order(o) => Ok(OrderflowMessage::Order(**o)),
+            CoinbaseMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
+            CoinbaseMessage::Reject(r) => Ok(OrderflowMessage::Reject(*r)),
+            CoinbaseMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
+            CoinbaseMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
+            CoinbaseMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
+            CoinbaseMessage::ExchangeOrderUpdate(..)
+            | CoinbaseMessage::ExchangeAck(..)
+            | CoinbaseMessage::ExchangeFills(..)
+            | CoinbaseMessage::ExchangeExternalOrderUpdate(..)
+            | CoinbaseMessage::ExchangeExternalOrderNew(..)
+            | CoinbaseMessage::ExchangeExternalOrderOut(..) => Err(()),
         }
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct CoinbaseOrder {
+    #[serde(flatten)]
     pub order: Order,
     #[allow(dead_code)]
     pub special_coinbase_flag: (),
+}
+
+impl From<Order> for CoinbaseOrder {
+    fn from(order: Order) -> Self {
+        Self { order, special_coinbase_flag: () }
+    }
 }
 
 impl Deref for CoinbaseOrder {
@@ -104,16 +97,22 @@ impl Deref for CoinbaseOrder {
     }
 }
 
+impl DerefMut for CoinbaseOrder {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.order
+    }
+}
+
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct CoinbaseFill {
     #[serde(flatten)]
-    pub fill: Fill,
+    pub fill: Result<Fill, AberrantFill>,
     pub exchange_trade_id: Uuid,
     pub exchange_order_id: Uuid,
 }
 
 impl Deref for CoinbaseFill {
-    type Target = Fill;
+    type Target = Result<Fill, AberrantFill>;
 
     fn deref(&self) -> &Self::Target {
         &self.fill

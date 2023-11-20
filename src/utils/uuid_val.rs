@@ -28,7 +28,10 @@ macro_rules! uuid_val {
             type Err = anyhow::Error;
 
             fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-                Ok(Self(s.parse::<uuid::Uuid>()?))
+                match s.parse::<uuid::Uuid>() {
+                    Ok(uuid) => Ok(Self(uuid)),
+                    Err(_) => Ok(Self::from(s)),
+                }
             }
         }
 

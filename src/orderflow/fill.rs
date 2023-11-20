@@ -1,7 +1,6 @@
-use crate::{symbology::MarketId, Dir};
+use crate::{symbology::MarketId, Dir, OrderId};
 use chrono::{DateTime, Utc};
 use derive::FromValue;
-use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
@@ -35,12 +34,10 @@ impl Default for FillId {
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct Fill {
-    /// Bad things about the fill that don't quite make it aberrant
-    pub warnings: BitFlags<FillWarning>,
-    /// Corresponding order ID, if the order originated from Architect
-    // TODO: OrderId where 0 is none
-    pub order_id: u64,
+    pub kind: FillKind,
     pub fill_id: FillId,
+    /// Corresponding order ID, if the order originated from Architect
+    pub order_id: OrderId,
     pub market: MarketId,
     pub quantity: Decimal,
     pub price: Decimal,
@@ -51,9 +48,43 @@ pub struct Fill {
     pub trade_time: DateTime<Utc>,
 }
 
-#[bitflags]
-#[repr(u64)]
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, JsonSchema_repr)]
-pub enum FillWarning {
-    FillAfterOut,
+impl Fill {
+    pub fn into_aberrant(self) -> AberrantFill {
+        AberrantFill {
+            kind: Some(self.kind),
+            fill_id: self.fill_id,
+            order_id: Some(self.order_id),
+            market: Some(self.market),
+            quantity: Some(self.quantity),
+            price: Some(self.price),
+            dir: Some(self.dir),
+            recv_time: self.recv_time,
+            trade_time: Some(self.trade_time),
+        }
+    }
+}
+
+#[derive(
+    Debug, Clone, Copy, Hash, PartialEq, Eq, Pack, Serialize, Deserialize, JsonSchema_repr,
+)]
+#[repr(u8)]
+pub enum FillKind {
+    Normal,
+    Reversal,
+    Correction,
+}
+
+/// Fills which we received but couldn't parse fully, return details
+/// best effort
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+pub struct AberrantFill {
+    pub kind: Option<FillKind>,
+    pub fill_id: FillId,
+    pub order_id: Option<OrderId>,
+    pub market: Option<MarketId>,
+    pub quantity: Option<Decimal>,
+    pub price: Option<Decimal>,
+    pub dir: Option<Dir>,
+    pub recv_time: Option<DateTime<Utc>>,
+    pub trade_time: Option<DateTime<Utc>>,
 }
