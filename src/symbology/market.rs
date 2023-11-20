@@ -120,6 +120,8 @@ pub enum MarketKind {
 pub enum MarketInfo {
     #[pack(tag(100))]
     Coinbase(cpty::coinbase::CoinbaseMarketInfo),
+    #[pack(tag(101))]
+    Deribit(cpty::deribit::DeribitMarketInfo),
 }
 
 pub trait NormalizedMarketInfo {
@@ -138,18 +140,21 @@ impl NormalizedMarketInfo for MarketInfo {
     fn tick_size(&self) -> Decimal {
         match &self {
             MarketInfo::Coinbase(info) => info.tick_size(),
+            MarketInfo::Deribit(info) => info.tick_size(),
         }
     }
 
     fn step_size(&self) -> Decimal {
         match &self {
             MarketInfo::Coinbase(info) => info.step_size(),
+            MarketInfo::Deribit(info) => info.tick_size,
         }
     }
 
     fn is_delisted(&self) -> bool {
         match &self {
             MarketInfo::Coinbase(info) => info.is_delisted(),
+            MarketInfo::Deribit(info) => info.is_delisted,
         }
     }
 }
@@ -158,6 +163,7 @@ impl std::fmt::Display for MarketInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self {
             MarketInfo::Coinbase(a_market_info) => write!(f, "{}", a_market_info),
+            MarketInfo::Deribit(a_market_info) => write!(f, "{}", a_market_info),
         }
     }
 }

@@ -121,33 +121,7 @@ impl Deref for CoinbaseFill {
 
 impl std::fmt::Display for CoinbaseMarketInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let status = match &self.status_message {
-            Some(status) => status.clone(),
-            None => String::from(""),
-        };
-
-        write!(
-            f,
-            "min market funds: {}\n\
-                    status message: {}\n\
-                    base increment: {}\n\
-                    quote increment: {}\n\
-                    trading disabled: {}\n\
-                    cancel only: {}\n\
-                    post only: {}\n\
-                    limit only: {}\n\
-                    is fx stablecoin: {}\n\
-                    auction mode: {}",
-            self.min_market_funds,
-            status,
-            self.base_increment,
-            self.quote_increment,
-            self.trading_disabled,
-            self.cancel_only,
-            self.post_only,
-            self.limit_only,
-            self.fx_stablecoin,
-            self.auction_mode
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap())?;
+        Ok(())
     }
 }
