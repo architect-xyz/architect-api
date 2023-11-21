@@ -38,7 +38,8 @@ impl NormalizedMarketInfo for CoinbaseMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue)]
+// CR alee: consider BatchCancel
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum CoinbaseMessage {
     Order(CoinbaseOrder),
     Cancel(Cancel),

@@ -48,6 +48,11 @@ impl OrderIdGenerator {
     pub fn next(&self) -> OrderId {
         OrderId(self.0.fetch_add(1, Ordering::Relaxed))
     }
+
+    /// Returns true if the order_id matches this generator's channel/component mask
+    pub fn matches(&self, order_id: OrderId) -> bool {
+        self.0.load(Ordering::Relaxed) & CHANNEL_ID_MASK == order_id.0 & CHANNEL_ID_MASK
+    }
 }
 
 /// System-unique, persistent order identifiers

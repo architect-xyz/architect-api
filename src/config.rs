@@ -41,11 +41,34 @@ impl Config {
         }
     }
 
+    pub fn default_log_path() -> Result<PathBuf> {
+        match dirs::config_dir() {
+            None => bail!("no default config dir could be found"),
+            Some(mut path) => {
+                path.push("architect");
+                path.push("logs");
+                Ok(path)
+            }
+        }
+    }
+
     fn default_hosted_base() -> Path {
         Path::from("/architect")
     }
 
     fn default_local_base() -> Path {
         Path::from("/local/architect")
+    }
+
+    pub fn find_local_component(
+        &self,
+        id: ComponentId,
+    ) -> Option<&(String, serde_json::Value)> {
+        for group in &self.local {
+            if let Some(c) = group.get(&id) {
+                return Some(c);
+            }
+        }
+        None
     }
 }

@@ -42,6 +42,10 @@ impl ComponentId {
     pub fn is_loopback(&self) -> bool {
         self.0 == 1
     }
+
+    pub fn filename(&self) -> String {
+        format!("{}", self.0)
+    }
 }
 
 impl fmt::Display for ComponentId {

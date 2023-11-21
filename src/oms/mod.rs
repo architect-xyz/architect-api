@@ -3,12 +3,13 @@ use derive::FromValue;
 use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
 use schemars::JsonSchema_repr;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::ops::Deref;
 
 pub mod limits_file;
 
-#[derive(Debug, Clone, Pack, FromValue)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum OmsMessage {
     Order(Order),
     Cancel(Cancel),
@@ -37,7 +38,7 @@ impl From<&OrderflowMessage> for OmsMessage {
     }
 }
 
-#[derive(Debug, Clone, Pack)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct OmsReject {
     pub reject: Reject,
     pub reason: OmsRejectReason,
@@ -51,7 +52,7 @@ impl Deref for OmsReject {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack)]
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub enum OmsRejectReason {
     OmsNotInitialized,
     OrderRateLimitExceeded,
