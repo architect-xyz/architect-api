@@ -7,8 +7,8 @@ use crate::symbology::market::NormalizedMarketInfo;
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct DeribitMarketInfo {
     pub tick_size: Decimal,
-    pub step_size: Decimal,
-    pub is_delisted: bool,
+    pub min_trade_amount: Decimal,
+    pub is_active: bool,
 }
 
 impl NormalizedMarketInfo for DeribitMarketInfo {
@@ -17,11 +17,11 @@ impl NormalizedMarketInfo for DeribitMarketInfo {
     }
 
     fn step_size(&self) -> Decimal {
-        self.step_size
+        self.min_trade_amount
     }
 
     fn is_delisted(&self) -> bool {
-        self.is_delisted
+        !self.is_active
     }
 }
 

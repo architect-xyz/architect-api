@@ -147,14 +147,14 @@ impl NormalizedMarketInfo for MarketInfo {
     fn step_size(&self) -> Decimal {
         match &self {
             MarketInfo::Coinbase(info) => info.step_size(),
-            MarketInfo::Deribit(info) => info.tick_size,
+            MarketInfo::Deribit(info) => info.step_size(),
         }
     }
 
     fn is_delisted(&self) -> bool {
         match &self {
             MarketInfo::Coinbase(info) => info.is_delisted(),
-            MarketInfo::Deribit(info) => info.is_delisted,
+            MarketInfo::Deribit(info) => info.is_delisted(),
         }
     }
 }
