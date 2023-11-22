@@ -71,4 +71,18 @@ impl Config {
         }
         None
     }
+
+    pub fn find_local_component_of_kind(
+        &self,
+        kind: &str,
+    ) -> Option<(ComponentId, (&String, &serde_json::Value))> {
+        for group in &self.local {
+            for (id, (k, cfg)) in group {
+                if k == kind {
+                    return Some((*id, (&k, &cfg)));
+                }
+            }
+        }
+        None
+    }
 }

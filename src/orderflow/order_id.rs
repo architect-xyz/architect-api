@@ -63,7 +63,6 @@ impl OrderIdGenerator {
 /// Component order ids are considered ephemeral and can be
 /// recycled on system restart.
 #[derive(
-    Debug,
     Clone,
     Copy,
     Hash,
@@ -147,7 +146,7 @@ impl FromStr for OrderId {
     }
 }
 
-impl fmt::Display for OrderId {
+impl fmt::Debug for OrderId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let seq = self.sequence_number();
         match self.channel_or_component_id() {
@@ -155,6 +154,12 @@ impl fmt::Display for OrderId {
             Either::Right(Ok(cid)) => write!(f, "#{cid}:{seq}"),
             Either::Right(Err(_)) => write!(f, "#<invalid>:{seq}"),
         }
+    }
+}
+
+impl fmt::Display for OrderId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
