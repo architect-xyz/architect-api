@@ -1,9 +1,10 @@
 use crate::ComponentId;
 use derive::FromValue;
 use netidx_derive::Pack;
+use serde::Serialize;
 
 /// Architect components communicate with each other by sending `Envelope`s.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
 pub struct Envelope<M: 'static> {
     pub src: ComponentId,
     pub dst: ComponentId,

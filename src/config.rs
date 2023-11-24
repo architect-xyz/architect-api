@@ -23,7 +23,7 @@ pub struct Config {
     pub local_base: Path,
     /// Locally run components in the same process, grouped by thread
     #[serde(default)]
-    pub local: Vec<HashMap<ComponentId, (String, serde_json::Value)>>,
+    pub local: HashMap<ComponentId, (String, serde_json::Value)>,
     /// Remote components elsewhere on the network
     #[serde(default)]
     pub remote: HashMap<ComponentId, Path>,
@@ -64,10 +64,8 @@ impl Config {
         &self,
         id: ComponentId,
     ) -> Option<&(String, serde_json::Value)> {
-        for group in &self.local {
-            if let Some(c) = group.get(&id) {
-                return Some(c);
-            }
+        if let Some(c) = self.local.get(&id) {
+            return Some(c);
         }
         None
     }
@@ -76,11 +74,9 @@ impl Config {
         &self,
         kind: &str,
     ) -> Option<(ComponentId, (&String, &serde_json::Value))> {
-        for group in &self.local {
-            for (id, (k, cfg)) in group {
-                if k == kind {
-                    return Some((*id, (&k, &cfg)));
-                }
+        for (id, (k, cfg)) in &self.local {
+            if k == kind {
+                return Some((*id, (&k, &cfg)));
             }
         }
         None

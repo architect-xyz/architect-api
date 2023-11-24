@@ -1,3 +1,4 @@
+use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use std::{error::Error as StdError, fmt, str::FromStr};
@@ -12,7 +13,18 @@ use std::{error::Error as StdError, fmt, str::FromStr};
 /// * `0x0` -- None
 /// * `0x1` -- Self/loopback
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Pack, Serialize, Deserialize,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Pack,
+    FromValue,
+    Serialize,
+    Deserialize,
 )]
 #[pack(unwrapped)]
 #[repr(transparent)]
@@ -27,18 +39,22 @@ impl ComponentId {
         }
     }
 
+    #[inline(always)]
     pub fn none() -> Self {
         Self(0)
     }
 
+    #[inline(always)]
     pub fn is_none(&self) -> bool {
         self.0 == 0
     }
 
+    #[inline(always)]
     pub fn loopback() -> Self {
         Self(1)
     }
 
+    #[inline(always)]
     pub fn is_loopback(&self) -> bool {
         self.0 == 1
     }
