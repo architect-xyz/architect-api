@@ -19,16 +19,19 @@ use serde::{Deserialize, Serialize};
 #[transitive(Orderflow -> Oms)]
 #[rustfmt::skip]
 pub enum TypedMessage {
-    #[pack(tag(0))]   Nothing(Nothing),
-    #[pack(tag(1))]   ChannelAuthority(orderflow::ChannelAuthorityMessage),
-    #[pack(tag(2))]   Orderflow(orderflow::OrderflowMessage),
-    #[pack(tag(3))]   Oms(oms::OmsMessage),
+    #[pack(tag(  0))] SystemControl(system_control::SystemControlMessage),
+    #[pack(tag(  1))] Symbology(symbology::SymbologyUpdate),
+    #[pack(tag(  2))] ChannelAuthority(orderflow::ChannelAuthorityMessage),
+    #[pack(tag(  3))] Orderflow(orderflow::OrderflowMessage),
+    #[pack(tag(  4))] Oms(oms::OmsMessage),
     #[pack(tag(100))] CptyCoinbase(cpty::coinbase::CoinbaseMessage),
 }
 
-/// Used by components that have nothing to say
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
-pub struct Nothing(u64);
+impl TypedMessage {
+    pub fn is_system_control(&self) -> bool {
+        matches!(self, TypedMessage::SystemControl(..))
+    }
+}
 
 pub enum MaybeSplit<A, B> {
     Just(B),

@@ -18,7 +18,7 @@ pub enum OmsMessage {
     Fill(Result<Fill, AberrantFill>),
     FillWarning(OrderId, FillId, BitFlags<FillWarning>),
     Out(Out),
-    LimitsFileLoaded(limits_file::LimitsFile),
+    Initialize(limits_file::LimitsFile),
     RetireOutedOrders,
 }
 

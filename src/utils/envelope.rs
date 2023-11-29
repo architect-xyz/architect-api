@@ -16,4 +16,8 @@ impl<M> Envelope<M> {
     pub fn to(dst: ComponentId, msg: M) -> Self {
         Self { src: ComponentId::none(), dst, msg }
     }
+
+    pub fn system_control(msg: M) -> Self {
+        Self { src: ComponentId::none(), dst: ComponentId::none(), msg }
+    }
 }

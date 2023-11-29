@@ -10,7 +10,7 @@ use std::{error::Error as StdError, fmt, str::FromStr};
 ///
 /// Canonical meanings of special values:
 ///
-/// * `0x0` -- None
+/// * `0x0` -- None/executor/broadcast
 /// * `0x1` -- Self/loopback
 #[derive(
     Debug,

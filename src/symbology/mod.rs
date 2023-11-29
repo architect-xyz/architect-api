@@ -58,6 +58,9 @@ pub enum SymbologyUpdateKind {
         original_length: usize,
         compressed: Bytes,
     },
+    /// elided version of [Snapshot] for no-op squashes--never stored in history,
+    /// only used for synced clients
+    SnapshotUnchanged(Bytes),
     #[pack(other)]
     Unknown,
 }
