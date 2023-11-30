@@ -5,8 +5,8 @@ use serde::{Deserialize, Serialize};
 
 /// TypedMessage is a wrapper enum for component messages, for all components that
 /// this version of Architect is compiled with and supports.  This lets components
-/// own their own independent message types while still allowing cross-component
-/// communication.
+/// define and operate over their own independent message types while still allowing 
+/// cross-component communication.
 ///
 /// Architect installations are mutually intelligible to the extent of TypedMessage
 /// variants they share in common.
