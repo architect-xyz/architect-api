@@ -122,6 +122,8 @@ pub enum MarketInfo {
     Coinbase(cpty::coinbase::CoinbaseMarketInfo),
     #[pack(tag(101))]
     Deribit(cpty::deribit::DeribitMarketInfo),
+    #[pack(tag(102))]
+    Kraken(cpty::kraken::KrakenMarketInfo),
 }
 
 pub trait NormalizedMarketInfo {
@@ -141,6 +143,7 @@ impl NormalizedMarketInfo for MarketInfo {
         match &self {
             MarketInfo::Coinbase(info) => info.tick_size(),
             MarketInfo::Deribit(info) => info.tick_size(),
+            MarketInfo::Kraken(info) => info.tick_size(),
         }
     }
 
@@ -148,6 +151,7 @@ impl NormalizedMarketInfo for MarketInfo {
         match &self {
             MarketInfo::Coinbase(info) => info.step_size(),
             MarketInfo::Deribit(info) => info.step_size(),
+            MarketInfo::Kraken(info) => info.step_size(),
         }
     }
 
@@ -155,6 +159,7 @@ impl NormalizedMarketInfo for MarketInfo {
         match &self {
             MarketInfo::Coinbase(info) => info.is_delisted(),
             MarketInfo::Deribit(info) => info.is_delisted(),
+            MarketInfo::Kraken(info) => info.is_delisted(),
         }
     }
 }
@@ -164,6 +169,7 @@ impl std::fmt::Display for MarketInfo {
         match &self {
             MarketInfo::Coinbase(a_market_info) => write!(f, "{}", a_market_info),
             MarketInfo::Deribit(a_market_info) => write!(f, "{}", a_market_info),
+            MarketInfo::Kraken(a_market_info) => write!(f, "{}", a_market_info),
         }
     }
 }
