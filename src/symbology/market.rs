@@ -6,6 +6,8 @@ use super::{Product, ProductId, Route, RouteId, Symbolic, Venue, VenueId};
 use crate::{cpty, uuid_val, Str};
 use anyhow::Result;
 use derive::FromValue;
+use derive_more::Display;
+use enum_dispatch::enum_dispatch;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -115,17 +117,18 @@ pub enum MarketKind {
 }
 
 /// Cpty-specific info about a market
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Display, Clone, Serialize, Deserialize, Pack)]
+#[enum_dispatch(NormalizedMarketInfo)]
 #[serde(tag = "type", content = "value")]
+#[rustfmt::skip]
 pub enum MarketInfo {
-    #[pack(tag(100))]
-    Coinbase(cpty::coinbase::CoinbaseMarketInfo),
-    #[pack(tag(101))]
-    Deribit(cpty::deribit::DeribitMarketInfo),
-    #[pack(tag(102))]
-    Kraken(cpty::kraken::KrakenMarketInfo),
+    #[pack(tag(100))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
+    #[pack(tag(101))] Deribit(cpty::deribit::DeribitMarketInfo),
+    #[pack(tag(102))] Kraken(cpty::kraken::KrakenMarketInfo),
+    #[pack(tag(103))] Okx(cpty::okx::OkxMarketInfo),
 }
 
+#[enum_dispatch]
 pub trait NormalizedMarketInfo {
     /// Return the tick size of the market or 1 if unknown
     fn tick_size(&self) -> Decimal;
@@ -135,41 +138,4 @@ pub trait NormalizedMarketInfo {
 
     /// Return if the market is delisted
     fn is_delisted(&self) -> bool;
-}
-
-// TODO: proc macro for ForwardTrait?
-impl NormalizedMarketInfo for MarketInfo {
-    fn tick_size(&self) -> Decimal {
-        match &self {
-            MarketInfo::Coinbase(info) => info.tick_size(),
-            MarketInfo::Deribit(info) => info.tick_size(),
-            MarketInfo::Kraken(info) => info.tick_size(),
-        }
-    }
-
-    fn step_size(&self) -> Decimal {
-        match &self {
-            MarketInfo::Coinbase(info) => info.step_size(),
-            MarketInfo::Deribit(info) => info.step_size(),
-            MarketInfo::Kraken(info) => info.step_size(),
-        }
-    }
-
-    fn is_delisted(&self) -> bool {
-        match &self {
-            MarketInfo::Coinbase(info) => info.is_delisted(),
-            MarketInfo::Deribit(info) => info.is_delisted(),
-            MarketInfo::Kraken(info) => info.is_delisted(),
-        }
-    }
-}
-
-impl std::fmt::Display for MarketInfo {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self {
-            MarketInfo::Coinbase(a_market_info) => write!(f, "{}", a_market_info),
-            MarketInfo::Deribit(a_market_info) => write!(f, "{}", a_market_info),
-            MarketInfo::Kraken(a_market_info) => write!(f, "{}", a_market_info),
-        }
-    }
 }
