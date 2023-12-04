@@ -123,6 +123,7 @@ pub enum MarketKind {
 #[rustfmt::skip]
 pub enum MarketInfo {
     #[pack(tag(100))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
+    #[pack(tag(104))] Cqg(cpty::cqg::CqgMarketInfo),
     #[pack(tag(101))] Deribit(cpty::deribit::DeribitMarketInfo),
     #[pack(tag(102))] Kraken(cpty::kraken::KrakenMarketInfo),
     #[pack(tag(103))] Okx(cpty::okx::OkxMarketInfo),
