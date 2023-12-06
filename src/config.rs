@@ -21,7 +21,7 @@ pub struct Config {
     pub hosted_base: Path,
     #[serde(default = "Config::default_local_base")]
     pub local_base: Path,
-    /// Locally run components in the same process, grouped by thread
+    /// Locally run components in the same process
     #[serde(default)]
     pub local: HashMap<ComponentId, (String, serde_json::Value)>,
     /// Remote components elsewhere on the network

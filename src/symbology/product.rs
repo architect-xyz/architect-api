@@ -88,6 +88,6 @@ impl ProductKind {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Pack)]
 pub enum TokenInfo {
-    // TODO: don't use bytes, just use the packed ethers type
+    // CR alee: don't use bytes, just use the packed ethers type
     ERC20 { address: Bytes, decimals: u8 },
 }

@@ -16,7 +16,7 @@ uuid_val!(VenueId, VENUE_NS);
 pub struct Venue {
     pub id: VenueId,
     pub name: Str,
-    // TODO: maybe VenueInfo
+    // CR alee: maybe VenueInfo
 }
 
 impl Venue {

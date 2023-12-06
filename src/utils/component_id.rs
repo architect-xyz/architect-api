@@ -4,14 +4,14 @@ use serde::{Deserialize, Serialize};
 use std::{error::Error as StdError, fmt, str::FromStr};
 
 /// Components within an Architect installation are uniquely identified by a 16-bit integer
-/// in the range `2..=0xffff`.
+/// in the range `1..<0xFFFF`.
 ///
-/// The integers 0 and 1 are reserved as special values and MUST NOT be used as component IDs.
+/// The integers 0 and 0xFFFF are reserved as special values and MUST NOT be used as component IDs.
 ///
 /// Canonical meanings of special values:
 ///
 /// * `0x0` -- None/executor/broadcast
-/// * `0x1` -- Self/loopback
+/// * `0xFFFF` -- Self/loopback
 #[derive(
     Debug,
     Clone,
@@ -51,12 +51,12 @@ impl ComponentId {
 
     #[inline(always)]
     pub fn loopback() -> Self {
-        Self(1)
+        Self(u16::MAX)
     }
 
     #[inline(always)]
     pub fn is_loopback(&self) -> bool {
-        self.0 == 1
+        self.0 == u16::MAX
     }
 
     pub fn filename(&self) -> String {
@@ -99,7 +99,7 @@ impl fmt::Display for ComponentIdError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::InvalidId => {
-                write!(f, "invalid component id; must not be 0 or 1")
+                write!(f, "invalid component id; must not be 0 or 0xFFFF")
             }
             Self::ParseError => {
                 write!(f, "invalid component id format; must be of the form #<id>")

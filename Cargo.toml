@@ -1,7 +1,7 @@
 [package]
 authors = ["Architect Financial Technologies LLC"]
 description = "Architect.xyz Trading Platform API"
-documentation = "https://docs.rs/does-not-exist"
+documentation = "https://docs.rs/architect-api"
 homepage = "https://www.architect.xyz"
 license = "AGPL-3.0-only"
 name = "architect-api"

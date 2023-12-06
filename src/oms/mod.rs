@@ -38,6 +38,24 @@ impl From<&OrderflowMessage> for OmsMessage {
     }
 }
 
+impl TryInto<OrderflowMessage> for &OmsMessage {
+    type Error = ();
+
+    fn try_into(self) -> Result<OrderflowMessage, ()> {
+        match self {
+            OmsMessage::Order(msg) => Ok(OrderflowMessage::Order(*msg)),
+            OmsMessage::Cancel(msg) => Ok(OrderflowMessage::Cancel(*msg)),
+            OmsMessage::Reject(msg) => Ok(OrderflowMessage::Reject(msg.reject)),
+            OmsMessage::Ack(msg) => Ok(OrderflowMessage::Ack(*msg)),
+            OmsMessage::Fill(msg) => Ok(OrderflowMessage::Fill(*msg)),
+            OmsMessage::Out(msg) => Ok(OrderflowMessage::Out(*msg)),
+            OmsMessage::Initialize(..)
+            | OmsMessage::RetireOutedOrders
+            | OmsMessage::FillWarning(..) => Err(()),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct OmsReject {
     pub reject: Reject,

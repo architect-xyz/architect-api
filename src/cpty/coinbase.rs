@@ -80,13 +80,11 @@ impl TryInto<OrderflowMessage> for &CoinbaseMessage {
 pub struct CoinbaseOrder {
     #[serde(flatten)]
     pub order: Order,
-    #[allow(dead_code)]
-    pub special_coinbase_flag: (),
 }
 
 impl From<Order> for CoinbaseOrder {
     fn from(order: Order) -> Self {
-        Self { order, special_coinbase_flag: () }
+        Self { order }
     }
 }
 

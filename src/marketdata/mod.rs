@@ -11,7 +11,6 @@ use serde::Serialize;
 pub trait NetidxFeedPaths {
     fn path_by_id(&self, base: &Path) -> Path;
     fn path_by_name(&self, base: &Path) -> Path;
-    // TODO: document this shit
     fn unalias_id(&self) -> Option<String>;
 }
 
