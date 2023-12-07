@@ -32,7 +32,7 @@ pub struct ComponentId(pub(crate) u16);
 
 impl ComponentId {
     pub fn new(id: u16) -> Result<Self, ComponentIdError> {
-        if id <= 1 {
+        if id == 0 || id == u16::MAX {
             Err(ComponentIdError::InvalidId)
         } else {
             Ok(Self(id))
