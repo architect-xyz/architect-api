@@ -1,17 +1,33 @@
-use crate::orderflow::*;
+use crate::{orderflow::*, utils::messaging::MaybeRequest, ComponentId};
 use derive::FromValue;
 use enumflags2::{bitflags, BitFlags};
+use netidx::pool::Pooled;
 use netidx_derive::Pack;
+use rust_decimal::Decimal;
 use schemars::JsonSchema_repr;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::ops::Deref;
+use uuid::Uuid;
 
 pub mod limits_file;
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+pub struct ForwardOrderflow {
+    pub to: ComponentId,
+    pub rule: ForwardOrderflowRule,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, Serialize, Deserialize)]
+pub enum ForwardOrderflowRule {
+    Always,
+    OnlyIfNoCptyMatch,
+}
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum OmsMessage {
     Order(Order),
+    OrderUpdate(OmsOrderUpdate),
     Cancel(Cancel),
     Reject(OmsReject),
     Ack(Ack),
@@ -20,6 +36,27 @@ pub enum OmsMessage {
     Out(Out),
     Initialize(limits_file::LimitsFile),
     RetireOutedOrders,
+    // some of these are better queried via a follower Oms or StatsDb;
+    // for latency sensitive applications, responding to these requests
+    // blocks the Oms for too long; but the option is available
+    GetFills(Uuid, OrderId),
+    GetFillsResponse(Uuid, Result<GetFillsResponse, GetFillsError>),
+}
+
+impl MaybeRequest for OmsMessage {
+    fn request_id(&self) -> Option<Uuid> {
+        match self {
+            OmsMessage::GetFills(id, ..) => Some(*id),
+            _ => None,
+        }
+    }
+
+    fn response_id(&self) -> Option<Uuid> {
+        match self {
+            OmsMessage::GetFillsResponse(id, ..) => Some(*id),
+            _ => None,
+        }
+    }
 }
 
 impl From<&OrderflowMessage> for OmsMessage {
@@ -49,11 +86,22 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
             OmsMessage::Ack(msg) => Ok(OrderflowMessage::Ack(*msg)),
             OmsMessage::Fill(msg) => Ok(OrderflowMessage::Fill(*msg)),
             OmsMessage::Out(msg) => Ok(OrderflowMessage::Out(*msg)),
-            OmsMessage::Initialize(..)
+            OmsMessage::OrderUpdate(..)
+            | OmsMessage::Initialize(..)
             | OmsMessage::RetireOutedOrders
-            | OmsMessage::FillWarning(..) => Err(()),
+            | OmsMessage::FillWarning(..)
+            | OmsMessage::GetFills(..)
+            | OmsMessage::GetFillsResponse(..) => Err(()),
         }
     }
+}
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+pub struct OmsOrderUpdate {
+    pub order_id: OrderId,
+    pub state: OrderState,
+    pub filled_qty: Decimal,
+    pub avg_fill_price: Option<Decimal>,
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
@@ -92,3 +140,24 @@ pub enum FillWarning {
     FillAfterOut,
     Overfilled,
 }
+
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+pub struct GetFillsResponse {
+    pub fills: Option<Pooled<Vec<Fill>>>,
+    pub aberrant_fills: Option<Pooled<Vec<AberrantFill>>>,
+}
+
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+pub enum GetFillsError {
+    OrderNotFound,
+}
+
+impl std::fmt::Display for GetFillsError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GetFillsError::OrderNotFound => write!(f, "order not found"),
+        }
+    }
+}
+
+impl std::error::Error for GetFillsError {}

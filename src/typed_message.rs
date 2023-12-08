@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 /// compatibility, such as explicit tagging of variants, and avoiding breaking 
 /// changes to the component message types.
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, FromInner, TryIntoAnyInner)]
-#[transitive(CptyCoinbase -> Orderflow)]
+#[transitive(CoinbaseCpty -> Orderflow)]
 #[transitive(Orderflow -> Oms)]
 #[transitive(Oms -> Orderflow)]
 #[rustfmt::skip]
@@ -25,7 +25,7 @@ pub enum TypedMessage {
     #[pack(tag(  2))] ChannelAuthority(orderflow::ChannelAuthorityMessage),
     #[pack(tag(  3))] Orderflow(orderflow::OrderflowMessage),
     #[pack(tag(  4))] Oms(oms::OmsMessage),
-    #[pack(tag(100))] CptyCoinbase(cpty::coinbase::CoinbaseMessage),
+    #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
 }
 
 impl TypedMessage {
