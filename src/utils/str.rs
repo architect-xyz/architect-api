@@ -112,6 +112,8 @@ struct AsStr(&'static str);
 #[serde(try_from = "&str")]
 #[serde(into = "&str")]
 #[repr(transparent)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
+#[cfg_attr(feature = "juniper", graphql(description = "A String type"))]
 pub struct Str(#[schemars(with = "AsStr")] usize);
 
 unsafe impl Send for Str {}
@@ -336,6 +338,30 @@ impl TryFrom<&str> for Str {
                 }
             }
         }
+    }
+}
+
+#[cfg(feature = "juniper")]
+impl Str {
+    fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
+        juniper::Value::scalar(self.as_str().to_string())
+    }
+
+    fn from_input<S>(v: &juniper::InputValue<S>) -> Result<Self, String>
+    where
+        S: juniper::ScalarValue,
+    {
+        v.as_string_value()
+            .map(|s| Self::try_from(s))
+            .ok_or_else(|| format!("Expected `String`, found: {v}"))?
+            .map_err(|e| e.to_string())
+    }
+
+    fn parse_token<S>(value: juniper::ScalarToken<'_>) -> juniper::ParseScalarResult<S>
+    where
+        S: juniper::ScalarValue,
+    {
+        <String as juniper::ParseScalarValue<S>>::from_str(value)
     }
 }
 

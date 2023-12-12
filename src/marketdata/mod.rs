@@ -66,6 +66,7 @@ pub enum MessageHeader {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct TradeV1 {
     pub time: Option<DateTime<Utc>>,
     pub direction: Dir,

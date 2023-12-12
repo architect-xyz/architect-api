@@ -10,6 +10,9 @@ edition = "2021"
 keywords = ["crypto", "hft", "trading", "finance"]
 categories = ["finance", "cryptography::cryptocurrencies"]
 
+[features]
+graphql = ["juniper"]
+
 [dependencies]
 anyhow = { workspace = true }
 bytes = { workspace = true }
@@ -23,6 +26,7 @@ enum_dispatch = { workspace = true }
 enumflags2 = { workspace = true }
 futures = { workspace = true }
 fxhash = { workspace = true }
+juniper = { workspace = true, optional = true }
 netidx = { workspace = true }
 netidx-core = { workspace = true }
 netidx-derive = { workspace = true }

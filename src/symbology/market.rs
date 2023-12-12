@@ -8,6 +8,7 @@ use anyhow::Result;
 use derive::FromValue;
 use derive_more::Display;
 use enum_dispatch::enum_dispatch;
+use juniper::graphql_object;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -18,6 +19,7 @@ static MARKET_NS: Uuid = uuid!("0bfe858c-a749-43a9-a99e-6d1f31a760ad");
 uuid_val!(MarketId, MARKET_NS);
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Market {
     pub id: MarketId,
     pub name: Str,
@@ -25,6 +27,7 @@ pub struct Market {
     pub venue: VenueId,
     pub route: RouteId,
     pub exchange_symbol: Str,
+    #[cfg_attr(feature = "juniper", graphql(skip))]
     pub extra_info: MarketInfo,
 }
 
@@ -59,7 +62,7 @@ impl Market {
     ) -> Result<Self> {
         Self::new(
             &format!("{}/{}", base.name, quote.name),
-            MarketKind::Exchange { base: base.id, quote: quote.id },
+            MarketKind::Exchange(ExchangeMarketKind { base: base.id, quote: quote.id }),
             venue,
             route,
             exchange_symbol,
@@ -83,7 +86,7 @@ impl Market {
         }
         Self::new(
             &kind_name,
-            MarketKind::Pool(pool),
+            MarketKind::Pool(PoolMarketKind { products: pool }),
             venue,
             route,
             exchange_symbol,
@@ -106,14 +109,35 @@ impl Symbolic for Market {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 #[serde(tag = "type", content = "value")]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLUnion))]
 pub enum MarketKind {
     /// A regular exchange trading pair, e.g. Coinbase BTC/USD
-    Exchange { base: ProductId, quote: ProductId },
+    Exchange(ExchangeMarketKind),
     /// An unordered pool of products, e.g. a Uniswap pool or Curve 3-pool
     /// The type is still ordered for canonical naming purpose
-    Pool(SmallVec<[ProductId; 2]>),
+    Pool(PoolMarketKind),
     #[pack(other)]
+    #[cfg_attr(feature = "juniper", graphql(skip))]
     Unknown,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct ExchangeMarketKind {
+    pub base: ProductId,
+    pub quote: ProductId,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+pub struct PoolMarketKind {
+    pub products: SmallVec<[ProductId; 2]>,
+}
+
+#[cfg_attr(feature = "juniper", graphql_object)]
+impl PoolMarketKind {
+    pub fn products(&self) -> Vec<ProductId> {
+        self.products.iter().copied().collect()
+    }
 }
 
 /// Cpty-specific info about a market

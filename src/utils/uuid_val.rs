@@ -2,6 +2,9 @@
 #[macro_export]
 macro_rules! uuid_val {
     ($name:ident, $ns:ident) => {
+        /// Wrapper type around a UUIDv5 for a given namespace.  These types are
+        /// parseable from either the UUIDv5 string representation, or from the
+        /// name itself, as they are 1-1.
         #[derive(
             Debug,
             Clone,
@@ -16,6 +19,7 @@ macro_rules! uuid_val {
             netidx_derive::Pack,
             derive::FromValue,
         )]
+        #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
         pub struct $name(pub uuid::Uuid);
 
         impl std::fmt::Display for $name {
@@ -53,6 +57,33 @@ macro_rules! uuid_val {
         impl std::borrow::Borrow<uuid::Uuid> for $name {
             fn borrow(&self) -> &uuid::Uuid {
                 &self.0
+            }
+        }
+
+        #[cfg(feature = "juniper")]
+        impl $name {
+            fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
+                juniper::Value::scalar(self.0.to_string())
+            }
+
+            fn from_input<S>(v: &juniper::InputValue<S>) -> Result<Self, String>
+            where
+                S: juniper::ScalarValue,
+            {
+                v.as_string_value()
+                    .map(|s| <Self as std::str::FromStr>::from_str(s))
+                    .ok_or_else(|| format!("Expected `String`, found: {v}"))?
+                    .map(|uuid| Self(*uuid))
+                    .map_err(|e| e.to_string())
+            }
+
+            fn parse_token<S>(
+                value: juniper::ScalarToken<'_>,
+            ) -> juniper::ParseScalarResult<S>
+            where
+                S: juniper::ScalarValue,
+            {
+                <String as juniper::ParseScalarValue<S>>::from_str(value)
             }
         }
 

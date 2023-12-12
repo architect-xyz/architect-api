@@ -7,6 +7,13 @@ use netidx::{path::Path, subscriber::DesiredAuth};
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, path::PathBuf};
 
+/// Component location--local to the installation, or hosted by Architect
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum Location {
+    Hosted,
+    Local,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
     #[serde(default)]
@@ -21,6 +28,13 @@ pub struct Config {
     pub hosted_base: Path,
     #[serde(default = "Config::default_local_base")]
     pub local_base: Path,
+    /// Use legacy marketdata paths; does not support legacy blockchain marketdata;
+    /// not all subsystems respect this flag
+    #[serde(default)]
+    pub legacy_marketdata_paths: bool,
+    // CR alee: implement CptyId deserialization from string
+    #[serde(default)]
+    pub marketdata_location_override: HashMap<String, Location>,
     /// Locally run components in the same process
     #[serde(default)]
     pub local: HashMap<ComponentId, (String, serde_json::Value)>,

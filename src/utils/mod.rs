@@ -3,6 +3,8 @@ pub mod dir;
 pub mod dir_pair;
 pub mod duration;
 pub mod envelope;
+#[cfg(feature = "juniper")]
+pub mod graphql_scalars;
 pub mod messaging;
 pub mod pool;
 pub mod str;

@@ -17,6 +17,7 @@ static PRODUCT_NS: Uuid = uuid!("bb25a7a7-a61c-485a-ac29-1de369a6a043");
 uuid_val!(ProductId, PRODUCT_NS);
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Product {
     pub id: ProductId,
     pub name: Str,
@@ -68,6 +69,7 @@ pub enum ProductKind {
     Unknown,
 }
 
+#[cfg_attr(feature = "juniper", juniper::graphql_object)]
 impl ProductKind {
     pub fn name(&self) -> &'static str {
         match self {
@@ -84,10 +86,57 @@ impl ProductKind {
             ProductKind::Unknown => "Unknown",
         }
     }
+
+    pub fn token_info(&self, venue: VenueId) -> Option<&TokenInfo> {
+        match self {
+            ProductKind::Coin { token_info } => token_info.get(&venue),
+            _ => None,
+        }
+    }
+
+    pub fn underlying(&self) -> Option<ProductId> {
+        match self {
+            ProductKind::Future { underlying, .. } => Some(*underlying),
+            ProductKind::Option { underlying, .. } => Some(*underlying),
+            _ => None,
+        }
+    }
+
+    pub fn multiplier(&self) -> Option<Decimal> {
+        match self {
+            ProductKind::Future { multiplier, .. } => Some(*multiplier),
+            ProductKind::Option { multiplier, .. } => Some(*multiplier),
+            _ => None,
+        }
+    }
+
+    pub fn expiration(&self) -> Option<DateTime<Utc>> {
+        match self {
+            ProductKind::Future { expiration, .. } => Some(*expiration),
+            ProductKind::Option { expiration, .. } => Some(*expiration),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Pack)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLUnion))]
 pub enum TokenInfo {
+    ERC20(ERC20TokenInfo),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Pack)]
+pub struct ERC20TokenInfo {
     // CR alee: don't use bytes, just use the packed ethers type
-    ERC20 { address: Bytes, decimals: u8 },
+    pub address: Bytes,
+    pub decimals: u8,
+}
+
+#[cfg_attr(feature = "juniper", juniper::graphql_object)]
+impl ERC20TokenInfo {
+    // CR alee: resolve above CR before implementing address()
+
+    pub fn decimals(&self) -> crate::utils::graphql_scalars::U8 {
+        self.decimals.into()
+    }
 }

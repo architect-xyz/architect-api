@@ -14,7 +14,8 @@ use uuid::{uuid, Uuid};
 static ROUTE_NS: Uuid = uuid!("0cadbcc5-98bc-4888-94ba-fbbcb6f39132");
 uuid_val!(RouteId, ROUTE_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Route {
     pub id: RouteId,
     pub name: Str,

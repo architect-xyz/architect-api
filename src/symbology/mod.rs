@@ -21,7 +21,9 @@ pub mod route;
 pub mod venue;
 
 pub use cpty::CptyId;
-pub use market::{Market, MarketId, MarketInfo, MarketKind};
+pub use market::{
+    ExchangeMarketKind, Market, MarketId, MarketInfo, MarketKind, PoolMarketKind,
+};
 pub use product::{Product, ProductId, ProductKind};
 pub use route::{Route, RouteId};
 pub use venue::{Venue, VenueId};

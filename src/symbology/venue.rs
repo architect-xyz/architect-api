@@ -12,7 +12,8 @@ use uuid::{uuid, Uuid};
 static VENUE_NS: Uuid = uuid!("dd85a6c5-b45f-46d1-bf50-793dacb1e51a");
 uuid_val!(VenueId, VENUE_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Venue {
     pub id: VenueId,
     pub name: Str,
