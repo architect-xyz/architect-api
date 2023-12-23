@@ -52,19 +52,21 @@ pub enum ProductKind {
     Equity,
     Perpetual,
     Future {
-        underlying: ProductId,
-        multiplier: Decimal,
-        expiration: DateTime<Utc>,
+        underlying: Option<ProductId>,
+        multiplier: Option<Decimal>,
+        expiration: Option<DateTime<Utc>>,
+    },
+    FutureSpread {
+        same_side_leg: Option<ProductId>,
+        opp_side_leg: Option<ProductId>,
     },
     Option {
-        underlying: ProductId,
-        multiplier: Decimal,
-        expiration: DateTime<Utc>,
+        underlying: Option<ProductId>,
+        multiplier: Option<Decimal>,
+        expiration: Option<DateTime<Utc>>,
     },
-    Commodity,
-    Energy,
-    Metal,
     Index,
+    Commodity,
     #[pack(other)]
     Unknown,
 }
@@ -78,11 +80,10 @@ impl ProductKind {
             ProductKind::Equity => "Equity",
             ProductKind::Perpetual => "Perpetual",
             ProductKind::Future { .. } => "Future",
+            ProductKind::FutureSpread { .. } => "FutureSpread",
             ProductKind::Option { .. } => "Option",
-            ProductKind::Commodity => "Commodity",
-            ProductKind::Energy => "Energy",
-            ProductKind::Metal => "Metal",
             ProductKind::Index => "Index",
+            ProductKind::Commodity => "Commodity",
             ProductKind::Unknown => "Unknown",
         }
     }
@@ -96,24 +97,24 @@ impl ProductKind {
 
     pub fn underlying(&self) -> Option<ProductId> {
         match self {
-            ProductKind::Future { underlying, .. } => Some(*underlying),
-            ProductKind::Option { underlying, .. } => Some(*underlying),
+            ProductKind::Future { underlying, .. } => *underlying,
+            ProductKind::Option { underlying, .. } => *underlying,
             _ => None,
         }
     }
 
     pub fn multiplier(&self) -> Option<Decimal> {
         match self {
-            ProductKind::Future { multiplier, .. } => Some(*multiplier),
-            ProductKind::Option { multiplier, .. } => Some(*multiplier),
+            ProductKind::Future { multiplier, .. } => *multiplier,
+            ProductKind::Option { multiplier, .. } => *multiplier,
             _ => None,
         }
     }
 
     pub fn expiration(&self) -> Option<DateTime<Utc>> {
         match self {
-            ProductKind::Future { expiration, .. } => Some(*expiration),
-            ProductKind::Option { expiration, .. } => Some(*expiration),
+            ProductKind::Future { expiration, .. } => *expiration,
+            ProductKind::Option { expiration, .. } => *expiration,
             _ => None,
         }
     }
