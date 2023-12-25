@@ -3,12 +3,31 @@ use bytes::Bytes;
 use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, sync::Arc};
+use std::{collections::BTreeMap, sync::Arc};
+use uuid::Uuid;
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum SystemControlMessage {
-    // id => (kind, json cfg, packed state)
-    Snapshot(Arc<HashMap<ComponentId, (String, String, Bytes)>>),
+    Snapshot(SystemSnapshot),
+    DebugSnapshot(DebugSystemSnapshot), // for integration testing
     SymbologyReady,
     Shutdown,
+}
+
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+pub struct SystemSnapshot {
+    pub core_id: Uuid,
+    pub last_seqno: u64,
+    pub last_remote_seqno: BTreeMap<Uuid, u64>,
+    // id => (kind, json cfg, packed state)
+    pub components: Arc<BTreeMap<ComponentId, (String, String, Bytes)>>,
+}
+
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+pub struct DebugSystemSnapshot {
+    pub core_id: Uuid,
+    pub last_seqno: u64,
+    pub last_remote_seqno: BTreeMap<Uuid, u64>,
+    // id => (kind, json cfg, json state)
+    pub components: Arc<BTreeMap<ComponentId, (String, String, String)>>,
 }

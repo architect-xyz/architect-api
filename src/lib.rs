@@ -13,5 +13,9 @@ pub use config::Config;
 pub use orderflow::{ChannelId, OrderId};
 pub use typed_message::{MaybeSplit, TypedMessage};
 pub use utils::{
-    component_id::ComponentId, dir::Dir, dir_pair::DirPair, envelope::Envelope, str::Str,
+    component_id::ComponentId,
+    dir::Dir,
+    dir_pair::DirPair,
+    envelope::{Envelope, RemoteStamp, Stamp},
+    str::Str,
 };

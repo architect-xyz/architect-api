@@ -64,6 +64,14 @@ impl ComponentId {
     }
 }
 
+impl TryFrom<u16> for ComponentId {
+    type Error = ComponentIdError;
+
+    fn try_from(id: u16) -> Result<Self, Self::Error> {
+        Self::new(id)
+    }
+}
+
 impl fmt::Display for ComponentId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if self.is_none() {

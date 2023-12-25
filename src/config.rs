@@ -40,7 +40,10 @@ pub struct Config {
     pub local: HashMap<ComponentId, (String, serde_json::Value)>,
     /// Remote components elsewhere on the network
     #[serde(default)]
-    pub remote: HashMap<ComponentId, Path>,
+    pub remote: HashMap<Path, Vec<ComponentId>>,
+    /// Sync with a remote core at the given base path
+    #[serde(default)]
+    pub rsync: Option<Path>,
 }
 
 impl Config {

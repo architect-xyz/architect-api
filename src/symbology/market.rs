@@ -146,6 +146,7 @@ impl PoolMarketKind {
 #[serde(tag = "type", content = "value")]
 #[rustfmt::skip]
 pub enum MarketInfo {
+    #[pack(tag(  0))] Test(TestMarketInfo),
     #[pack(tag(100))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
     #[pack(tag(104))] Cqg(cpty::cqg::CqgMarketInfo),
     #[pack(tag(105))] Databento(cpty::databento::DatabentoMarketInfo),
@@ -164,4 +165,32 @@ pub trait NormalizedMarketInfo {
 
     /// Return if the market is delisted
     fn is_delisted(&self) -> bool;
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+pub struct TestMarketInfo {
+    pub tick_size: Decimal,
+    pub step_size: Decimal,
+    pub is_delisted: bool,
+}
+
+impl std::fmt::Display for TestMarketInfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap())?;
+        Ok(())
+    }
+}
+
+impl NormalizedMarketInfo for TestMarketInfo {
+    fn tick_size(&self) -> Decimal {
+        self.tick_size
+    }
+
+    fn step_size(&self) -> Decimal {
+        self.step_size
+    }
+
+    fn is_delisted(&self) -> bool {
+        self.is_delisted
+    }
 }
