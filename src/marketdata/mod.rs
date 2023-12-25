@@ -1,10 +1,13 @@
-use crate::{symbology::MarketId, Dir, DirPair};
+use crate::{
+    symbology::{MarketId, ProductId},
+    Dir, DirPair,
+};
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx::{path::Path, pool::Pooled};
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 // CR alee: deprecate this in favor of [Symbolic]; would need to adjust how blockchain QFs work
 /// Quotefeed path definitions for symbolics
@@ -98,4 +101,26 @@ pub struct LiquidationGlobalV1 {
     pub direction: Dir,
     pub price: Decimal,
     pub size: Decimal,
+}
+
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize, Pack, FromValue,
+)]
+pub struct RfqRequest {
+    pub base: ProductId,
+    pub quote: ProductId,
+    pub quantity: Decimal,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+pub struct RfqResponseSide {
+    pub price: Decimal,
+    pub quantity: Decimal,
+    pub quote_id: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+pub struct RfqResponse {
+    pub market: MarketId,
+    pub sides: DirPair<Result<RfqResponseSide, String>>,
 }
