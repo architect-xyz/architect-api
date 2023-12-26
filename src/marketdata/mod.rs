@@ -68,6 +68,20 @@ pub enum MessageHeader {
     Snapshot,
 }
 
+/// NB: buy_volume + sell_volume <> volume; volume may count trades
+/// that don't have a discernible direction.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
+pub struct CandleV1 {
+    pub time: DateTime<Utc>,
+    pub open: Decimal,
+    pub high: Decimal,
+    pub low: Decimal,
+    pub close: Decimal,
+    pub volume: Decimal,
+    pub buy_volume: Decimal,
+    pub sell_volume: Decimal,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct TradeV1 {
