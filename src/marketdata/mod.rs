@@ -127,6 +127,7 @@ pub struct RfqRequest {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct RfqResponseSide {
     pub price: Decimal,
     pub quantity: Decimal,
@@ -137,4 +138,11 @@ pub struct RfqResponseSide {
 pub struct RfqResponse {
     pub market: MarketId,
     pub sides: DirPair<Result<RfqResponseSide, String>>,
+}
+
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct GraphQLRfqResponse {
+    pub market: MarketId,
+    pub buy: Option<RfqResponseSide>,
+    pub sell: Option<RfqResponseSide>,
 }
