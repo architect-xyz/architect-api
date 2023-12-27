@@ -16,6 +16,7 @@ use serde::{Deserialize, Serialize};
 /// changes to the component message types.
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, FromInner, TryIntoAnyInner)]
 #[transitive(CoinbaseCpty -> Orderflow)]
+#[transitive(B2C2Cpty -> Orderflow)]
 #[transitive(Orderflow -> Oms)]
 #[transitive(Oms -> Orderflow)]
 #[rustfmt::skip]
@@ -26,6 +27,7 @@ pub enum TypedMessage {
     #[pack(tag(  3))] Orderflow(orderflow::OrderflowMessage),
     #[pack(tag(  4))] Oms(oms::OmsMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
+    #[pack(tag(101))] B2C2Cpty(cpty::b2c2::B2C2Message),
 }
 
 impl TypedMessage {

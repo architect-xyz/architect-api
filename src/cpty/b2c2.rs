@@ -1,7 +1,9 @@
-use crate::symbology::market::NormalizedMarketInfo;
+use crate::{orderflow::*, symbology::market::NormalizedMarketInfo};
+use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
+use std::ops::{Deref, DerefMut};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct B2C2MarketInfo {
@@ -28,5 +30,68 @@ impl std::fmt::Display for B2C2MarketInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", serde_json::to_string_pretty(self).unwrap())?;
         Ok(())
+    }
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub enum B2C2Message {
+    Order(B2C2Order),
+    Reject(Reject),
+    Fill(B2C2Fill),
+    Out(Out),
+    ExchangeExternalFills(Vec<B2C2Fill>),
+}
+
+impl TryInto<OrderflowMessage> for &B2C2Message {
+    type Error = ();
+
+    fn try_into(self) -> Result<OrderflowMessage, ()> {
+        match self {
+            B2C2Message::Order(o) => Ok(OrderflowMessage::Order(**o)),
+            B2C2Message::Reject(r) => Ok(OrderflowMessage::Reject(*r)),
+            B2C2Message::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
+            B2C2Message::Out(o) => Ok(OrderflowMessage::Out(*o)),
+            B2C2Message::ExchangeExternalFills(..) => Err(()),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+pub struct B2C2Order {
+    #[serde(flatten)]
+    pub order: Order,
+}
+
+impl From<Order> for B2C2Order {
+    fn from(order: Order) -> Self {
+        Self { order }
+    }
+}
+
+impl Deref for B2C2Order {
+    type Target = Order;
+
+    fn deref(&self) -> &Self::Target {
+        &self.order
+    }
+}
+
+impl DerefMut for B2C2Order {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.order
+    }
+}
+
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+pub struct B2C2Fill {
+    #[serde(flatten)]
+    pub fill: Result<Fill, AberrantFill>,
+}
+
+impl Deref for B2C2Fill {
+    type Target = Result<Fill, AberrantFill>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.fill
     }
 }
