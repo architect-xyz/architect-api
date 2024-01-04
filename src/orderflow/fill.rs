@@ -24,6 +24,7 @@ use uuid::Uuid;
     Deserialize,
     JsonSchema,
 )]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar), graphql(transparent))]
 pub struct FillId(Uuid);
 
 impl Default for FillId {
@@ -33,6 +34,7 @@ impl Default for FillId {
 }
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Fill {
     pub kind: FillKind,
     pub fill_id: FillId,
@@ -67,6 +69,7 @@ impl Fill {
 #[derive(
     Debug, Clone, Copy, Hash, PartialEq, Eq, Pack, Serialize, Deserialize, JsonSchema_repr,
 )]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[repr(u8)]
 pub enum FillKind {
     Normal,
@@ -77,6 +80,7 @@ pub enum FillKind {
 /// Fills which we received but couldn't parse fully, return details
 /// best effort
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct AberrantFill {
     pub kind: Option<FillKind>,
     pub fill_id: FillId,

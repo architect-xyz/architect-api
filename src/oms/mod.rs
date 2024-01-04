@@ -104,6 +104,26 @@ pub struct OmsOrderUpdate {
     pub avg_fill_price: Option<Decimal>,
 }
 
+#[cfg(feature = "juniper")]
+#[juniper::graphql_object]
+impl OmsOrderUpdate {
+    pub fn order_id(&self) -> OrderId {
+        self.order_id
+    }
+
+    pub fn state(&self) -> Vec<OrderStateFlags> {
+        self.state.iter().collect()
+    }
+
+    pub fn filled_qty(&self) -> Decimal {
+        self.filled_qty
+    }
+
+    pub fn avg_fill_price(&self) -> Option<Decimal> {
+        self.avg_fill_price
+    }
+}
+
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct OmsReject {
     pub reject: Reject,

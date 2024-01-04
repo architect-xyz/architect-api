@@ -75,6 +75,7 @@ impl OrderIdGenerator {
     Deserialize,
     JsonSchema,
 )]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[pack(unwrapped)]
 pub struct OrderId(u64);
 
@@ -163,10 +164,36 @@ impl fmt::Display for OrderId {
     }
 }
 
+#[cfg(feature = "juniper")]
+impl OrderId {
+    fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
+        juniper::Value::scalar(self.0.to_string())
+    }
+
+    fn from_input<S>(v: &juniper::InputValue<S>) -> Result<Self, String>
+    where
+        S: juniper::ScalarValue,
+    {
+        v.as_string_value()
+            .map(|s| u64::from_str(s))
+            .ok_or_else(|| format!("Expected `String`, found: {v}"))?
+            .map(|oid| Self(oid))
+            .map_err(|e| e.to_string())
+    }
+
+    fn parse_token<S>(value: juniper::ScalarToken<'_>) -> juniper::ParseScalarResult<S>
+    where
+        S: juniper::ScalarValue,
+    {
+        <String as juniper::ParseScalarValue<S>>::from_str(value)
+    }
+}
+
 /// The id of the channel an order is sent through
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Pack, Serialize, Deserialize,
 )]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[pack(unwrapped)]
 pub struct ChannelId(u32);
 
@@ -186,5 +213,30 @@ impl ChannelId {
 impl fmt::Display for ChannelId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+#[cfg(feature = "juniper")]
+impl ChannelId {
+    fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
+        juniper::Value::scalar(self.0.to_string())
+    }
+
+    fn from_input<S>(v: &juniper::InputValue<S>) -> Result<Self, String>
+    where
+        S: juniper::ScalarValue,
+    {
+        v.as_string_value()
+            .map(|s| u32::from_str(s))
+            .ok_or_else(|| format!("Expected `String`, found: {v}"))?
+            .map(|cid| Self(cid))
+            .map_err(|e| e.to_string())
+    }
+
+    fn parse_token<S>(value: juniper::ScalarToken<'_>) -> juniper::ParseScalarResult<S>
+    where
+        S: juniper::ScalarValue,
+    {
+        <String as juniper::ParseScalarValue<S>>::from_str(value)
     }
 }
