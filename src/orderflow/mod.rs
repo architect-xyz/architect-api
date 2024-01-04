@@ -5,6 +5,7 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 
+pub mod algo;
 pub mod channel_authority;
 pub mod fill;
 pub mod order;

@@ -42,6 +42,21 @@ pub enum B2C2Message {
     ExchangeExternalFills(Vec<B2C2Fill>),
 }
 
+impl TryInto<B2C2Message> for &OrderflowMessage {
+    type Error = ();
+
+    fn try_into(self) -> Result<B2C2Message, ()> {
+        match self {
+            OrderflowMessage::Order(o) => Ok(B2C2Message::Order(B2C2Order { order: *o })),
+            OrderflowMessage::Cancel(_) => Err(()),
+            OrderflowMessage::Reject(r) => Ok(B2C2Message::Reject(*r)),
+            OrderflowMessage::Ack(_) => Err(()),
+            OrderflowMessage::Fill(f) => Ok(B2C2Message::Fill(B2C2Fill { fill: *f })),
+            OrderflowMessage::Out(o) => Ok(B2C2Message::Out(*o)),
+        }
+    }
+}
+
 impl TryInto<OrderflowMessage> for &B2C2Message {
     type Error = ();
 

@@ -133,6 +133,7 @@ pub struct ERC20TokenInfo {
     pub decimals: u8,
 }
 
+#[cfg(feature = "juniper")]
 #[cfg_attr(feature = "juniper", juniper::graphql_object)]
 impl ERC20TokenInfo {
     // CR alee: resolve above CR before implementing address()

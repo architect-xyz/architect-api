@@ -1,3 +1,4 @@
+pub mod algo;
 pub mod config;
 pub mod cpty;
 pub mod marketdata;

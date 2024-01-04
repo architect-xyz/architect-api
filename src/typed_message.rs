@@ -16,9 +16,10 @@ use serde::{Deserialize, Serialize};
 /// changes to the component message types.
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, FromInner, TryIntoAnyInner)]
 #[transitive(CoinbaseCpty -> Orderflow)]
-#[transitive(B2C2Cpty -> Orderflow)]
-#[transitive(Orderflow -> Oms)]
-#[transitive(Oms -> Orderflow)]
+#[transitive(B2C2Cpty <-> Orderflow)]
+#[transitive(Orderflow -> Algo)]
+#[transitive(Orderflow <-> Oms)]
+#[transitive(Algo <-> TwapAlgo)]
 #[rustfmt::skip]
 pub enum TypedMessage {
     #[pack(tag(  0))] SystemControl(system_control::SystemControlMessage),
@@ -26,8 +27,10 @@ pub enum TypedMessage {
     #[pack(tag(  2))] ChannelAuthority(orderflow::ChannelAuthorityMessage),
     #[pack(tag(  3))] Orderflow(orderflow::OrderflowMessage),
     #[pack(tag(  4))] Oms(oms::OmsMessage),
+    #[pack(tag(  5))] Algo(orderflow::algo::AlgoMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
     #[pack(tag(101))] B2C2Cpty(cpty::b2c2::B2C2Message),
+    #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
 }
 
 impl TypedMessage {
@@ -54,7 +57,7 @@ impl<A, B> MaybeSplit<A, B> {
 mod test {
     use super::*;
     use crate::{
-        orderflow::{ChannelId, OrderIdGenerator},
+        orderflow::{ChannelId, OrderIdGenerator, Out},
         symbology::MarketId,
     };
     use anyhow::Result;
@@ -75,6 +78,18 @@ mod test {
         let m2: std::result::Result<MaybeSplit<TypedMessage, oms::OmsMessage>, _> =
             m.try_into();
         assert_eq!(m2.is_ok(), true);
+        Ok(())
+    }
+
+    /// test transitive closure of length 3 (B2C2 -> Orderflow -> Algo -> TWAPAlgo)
+    #[test]
+    fn test_try_into_any_variant_3() -> Result<()> {
+        use crate::{algo::twap::TwapMessage, cpty::b2c2::B2C2Message};
+        let oids = OrderIdGenerator::channel(ChannelId::new(0x10000)?)?;
+        let src = TypedMessage::B2C2Cpty(B2C2Message::Out(Out { order_id: oids.next() }));
+        let dst: std::result::Result<MaybeSplit<TypedMessage, TwapMessage>, _> =
+            src.try_into();
+        assert_eq!(dst.is_ok(), true);
         Ok(())
     }
 }

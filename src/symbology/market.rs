@@ -8,7 +8,6 @@ use anyhow::Result;
 use derive::FromValue;
 use derive_more::Display;
 use enum_dispatch::enum_dispatch;
-use juniper::graphql_object;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -133,7 +132,7 @@ pub struct PoolMarketKind {
     pub products: SmallVec<[ProductId; 2]>,
 }
 
-#[cfg_attr(feature = "juniper", graphql_object)]
+#[cfg_attr(feature = "juniper", juniper::graphql_object)]
 impl PoolMarketKind {
     pub fn products(&self) -> Vec<ProductId> {
         self.products.iter().copied().collect()
