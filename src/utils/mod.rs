@@ -6,6 +6,7 @@ pub mod envelope;
 #[cfg(feature = "juniper")]
 pub mod graphql_scalars;
 pub mod messaging;
+pub mod option_type;
 pub mod pool;
 pub mod str;
 pub mod uuid_val;
