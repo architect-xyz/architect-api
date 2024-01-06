@@ -67,14 +67,16 @@ mod test {
     fn test_try_into_any_variant() -> Result<()> {
         use crate::orderflow::{Order, OrderflowMessage};
         let oids = OrderIdGenerator::channel(ChannelId::new(0x10000)?)?;
-        let m = TypedMessage::Orderflow(OrderflowMessage::Order(Order {
-            id: oids.next(),
-            market: MarketId::try_from("BTC Crypto/USD*COINBASE/DIRECT")?,
-            dir: Dir::Buy,
-            price: Decimal::new(100, 0),
-            quantity: Decimal::new(1, 0),
-            account: None,
-        }));
+        let m = TypedMessage::Orderflow(OrderflowMessage::Order(
+            Order::builder(
+                oids.next(),
+                MarketId::try_from("BTC Crypto/USD*COINBASE/DIRECT")?,
+                Dir::Buy,
+                Decimal::new(100, 0),
+                Decimal::new(1, 0),
+            )
+            .build()?,
+        ));
         let m2: std::result::Result<MaybeSplit<TypedMessage, oms::OmsMessage>, _> =
             m.try_into();
         assert_eq!(m2.is_ok(), true);
