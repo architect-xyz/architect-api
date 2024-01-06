@@ -1,7 +1,7 @@
 use crate::{
     orderflow::{algo::*, AberrantFill, Ack, Fill, Out, Reject},
     symbology::MarketId,
-    Dir, OrderId,
+    Dir, DirPair, OrderId, Str,
 };
 use chrono::{DateTime, Utc};
 use derive::FromValue;
@@ -22,6 +22,7 @@ pub enum TwapMessage {
     ChildOut(Out),
     ChildFill(Result<Fill, AberrantFill>),
     ChildReject(Reject),
+    BookUpdate(BookUpdate),
 }
 
 impl TryInto<AlgoMessage> for &TwapMessage {
@@ -39,6 +40,7 @@ impl TryInto<AlgoMessage> for &TwapMessage {
             TwapMessage::ChildOut(_) => Err(()),
             TwapMessage::ChildFill(_) => Err(()),
             TwapMessage::ChildReject(_) => Err(()),
+            TwapMessage::BookUpdate(_) => Err(()),
         }
     }
 }
@@ -70,6 +72,7 @@ pub struct TwapOrder {
     pub quantity: Decimal,
     pub interval: Duration,
     pub end_time: DateTime<Utc>,
+    pub account: Option<Str>,
 }
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
@@ -82,4 +85,10 @@ pub struct TwapStatus {
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub struct TwapWakeup {
     pub order_id: OrderId,
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub struct BookUpdate {
+    pub market: MarketId,
+    pub bbo: DirPair<Option<(Decimal, Decimal)>>,
 }
