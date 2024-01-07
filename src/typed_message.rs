@@ -30,6 +30,7 @@ pub enum TypedMessage {
     #[pack(tag(  5))] Algo(orderflow::algo::AlgoMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
     #[pack(tag(101))] B2C2Cpty(cpty::b2c2::B2C2Message),
+    #[pack(tag(103))] KrakenCpty(cpty::kraken::KrakenMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
 }
 
