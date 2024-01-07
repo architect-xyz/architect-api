@@ -3,7 +3,7 @@
 //! market connection to Coinbase's BTC/USD market.
 
 use super::{Product, ProductId, Route, RouteId, Symbolic, Venue, VenueId};
-use crate::{cpty, uuid_val, Str};
+use crate::{cpty, marketdata, uuid_val, Str};
 use anyhow::Result;
 use derive::FromValue;
 use derive_more::Display;
@@ -149,7 +149,7 @@ pub enum MarketInfo {
     #[pack(tag(106))] B2C2(cpty::b2c2::B2C2MarketInfo),
     #[pack(tag(100))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
     #[pack(tag(104))] Cqg(cpty::cqg::CqgMarketInfo),
-    #[pack(tag(105))] Databento(cpty::databento::DatabentoMarketInfo),
+    #[pack(tag(105))] Databento(marketdata::databento::DatabentoMarketInfo),
     #[pack(tag(101))] Deribit(cpty::deribit::DeribitMarketInfo),
     #[pack(tag(102))] Kraken(cpty::kraken::KrakenMarketInfo),
     #[pack(tag(103))] Okx(cpty::okx::OkxMarketInfo),

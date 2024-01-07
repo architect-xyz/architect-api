@@ -9,6 +9,8 @@ use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
+pub mod databento;
+
 // CR alee: deprecate this in favor of [Symbolic]; would need to adjust how blockchain QFs work
 /// Quotefeed path definitions for symbolics
 pub trait NetidxFeedPaths {

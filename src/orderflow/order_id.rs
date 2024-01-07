@@ -164,6 +164,16 @@ impl fmt::Display for OrderId {
     }
 }
 
+#[cfg(feature = "rusqlite")]
+impl rusqlite::ToSql for OrderId {
+    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+        use rusqlite::types::{ToSqlOutput, Value};
+        let val =
+            if self.is_none() { Value::Null } else { Value::Integer(self.0 as i64) };
+        Ok(ToSqlOutput::Owned(val))
+    }
+}
+
 #[cfg(feature = "juniper")]
 impl OrderId {
     fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {

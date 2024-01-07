@@ -15,6 +15,18 @@ pub enum Dir {
     Sell,
 }
 
+#[cfg(feature = "rusqlite")]
+impl rusqlite::ToSql for Dir {
+    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+        use rusqlite::types::{ToSqlOutput, ValueRef};
+        let value_ref = match self {
+            Self::Buy => ValueRef::Text("BUY".as_ref()),
+            Self::Sell => ValueRef::Text("SELL".as_ref()),
+        };
+        Ok(ToSqlOutput::Borrowed(value_ref))
+    }
+}
+
 #[cfg(feature = "juniper")]
 impl Dir {
     fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {

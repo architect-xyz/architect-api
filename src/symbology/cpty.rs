@@ -4,7 +4,9 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, Pack, FromValue)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Pack, FromValue,
+)]
 pub struct CptyId {
     pub venue: VenueId,
     pub route: RouteId,

@@ -1,4 +1,5 @@
 use crate::{
+    folio::FolioMessage,
     orderflow::*,
     symbology::{market::NormalizedMarketInfo, MarketId},
 };
@@ -47,6 +48,7 @@ pub enum CoinbaseMessage {
     Ack(Ack),
     Fill(CoinbaseFill),
     Out(Out),
+    Folio(FolioMessage),
     ExchangeOrderUpdate(OrderId),
     ExchangeAck(OrderId, Uuid),
     ExchangeFills(Vec<CoinbaseFill>),
@@ -66,13 +68,33 @@ impl TryInto<OrderflowMessage> for &CoinbaseMessage {
             CoinbaseMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
             CoinbaseMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
             CoinbaseMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
-            CoinbaseMessage::ExchangeOrderUpdate(..)
+            CoinbaseMessage::Folio(..)
+            | CoinbaseMessage::ExchangeOrderUpdate(..)
             | CoinbaseMessage::ExchangeAck(..)
             | CoinbaseMessage::ExchangeFills(..)
             | CoinbaseMessage::ExchangeExternalOrderUpdate(..)
             | CoinbaseMessage::ExchangeExternalOrderNew(..)
             | CoinbaseMessage::ExchangeExternalOrderOut(..) => Err(()),
         }
+    }
+}
+
+impl TryInto<FolioMessage> for &CoinbaseMessage {
+    type Error = ();
+
+    fn try_into(self) -> Result<FolioMessage, ()> {
+        match self {
+            CoinbaseMessage::Folio(f) => Ok(f.clone()),
+            _ => Err(()),
+        }
+    }
+}
+
+impl TryFrom<&FolioMessage> for CoinbaseMessage {
+    type Error = ();
+
+    fn try_from(f: &FolioMessage) -> Result<Self, ()> {
+        Ok(Self::Folio(f.clone()))
     }
 }
 

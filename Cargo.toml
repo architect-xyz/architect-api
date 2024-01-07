@@ -37,6 +37,7 @@ pest_derive = { workspace = true }
 rand = { workspace = true }
 rust_decimal = { workspace = true }
 rust_decimal_macros = { workspace = true }
+rusqlite = { workspace = true, optional = true }
 schemars = { workspace = true }
 serde = { workspace = true }
 serde_derive = { workspace = true }

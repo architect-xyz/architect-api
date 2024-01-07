@@ -6,6 +6,7 @@ use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use std::fmt::Display;
 use uuid::Uuid;
 
 /// The ID of a fill
@@ -30,6 +31,20 @@ pub struct FillId(Uuid);
 impl Default for FillId {
     fn default() -> Self {
         FillId(Uuid::new_v4())
+    }
+}
+
+impl Display for FillId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+#[cfg(feature = "rusqlite")]
+impl rusqlite::ToSql for FillId {
+    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+        use rusqlite::types::{ToSqlOutput, Value};
+        Ok(ToSqlOutput::Owned(Value::Text(self.to_string())))
     }
 }
 
@@ -75,6 +90,19 @@ pub enum FillKind {
     Normal,
     Reversal,
     Correction,
+}
+
+#[cfg(feature = "rusqlite")]
+impl rusqlite::ToSql for FillKind {
+    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+        use rusqlite::types::{ToSqlOutput, ValueRef};
+        let value_ref = match self {
+            FillKind::Normal => ValueRef::Text("Normal".as_ref()),
+            FillKind::Reversal => ValueRef::Text("Reversal".as_ref()),
+            FillKind::Correction => ValueRef::Text("Correction".as_ref()),
+        };
+        Ok(ToSqlOutput::Borrowed(value_ref))
+    }
 }
 
 /// Fills which we received but couldn't parse fully, return details
