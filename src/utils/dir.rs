@@ -72,7 +72,7 @@ impl Dir {
         }
     }
 
-    pub fn to_str_uppercase(self) -> &'static str {
+    pub fn to_str_uppercase(&self) -> &'static str {
         match self {
             Self::Buy => "BUY",
             Self::Sell => "SELL",
@@ -87,7 +87,7 @@ impl Dir {
         }
     }
 
-    pub fn to_str_lowercase(self) -> &'static str {
+    pub fn to_str_lowercase(&self) -> &'static str {
         match self {
             Self::Buy => "buy",
             Self::Sell => "sell",

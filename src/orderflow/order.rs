@@ -1,5 +1,5 @@
 use crate::{symbology::MarketId, Dir, OrderId, Str};
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use chrono::{DateTime, Utc};
 use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
@@ -14,93 +14,159 @@ pub struct Order {
     pub id: OrderId,
     pub market: MarketId,
     pub dir: Dir,
-    pub limit_price: Decimal,
     pub quantity: Decimal,
     pub account: Option<Str>,
     pub order_type: OrderType,
-    pub trigger_price: Option<Decimal>,
     pub time_in_force: TimeInForce,
-    pub expiration: Option<DateTime<Utc>>,
-    pub post_only: bool,
-}
-
-impl Order {
-    pub fn builder(
-        id: OrderId,
-        market: MarketId,
-        dir: Dir,
-        limit_price: Decimal,
-        quantity: Decimal,
-    ) -> OrderBuilder {
-        OrderBuilder(Self {
-            id,
-            market,
-            dir,
-            limit_price,
-            quantity,
-            account: None,
-            order_type: OrderType::Limit,
-            trigger_price: None,
-            time_in_force: TimeInForce::GoodTilDate,
-            expiration: None,
-            post_only: false,
-        })
-    }
 }
 
 pub struct OrderBuilder(Order);
 
 impl OrderBuilder {
-    pub fn account(mut self, account: Option<Str>) -> Self {
-        self.0.account = account;
-        self
+    pub fn limit(
+        id: OrderId,
+        market: MarketId,
+        dir: Dir,
+        quantity: Decimal,
+        limit_price: Decimal,
+        post_only: bool,
+    ) -> Self {
+        Self(Order {
+            id,
+            market,
+            dir,
+            quantity,
+            account: None,
+            order_type: OrderType::Limit(LimitOrderType { limit_price, post_only }),
+            time_in_force: TimeInForce::GoodTilCancel,
+        })
     }
 
-    pub fn order_type(mut self, order_type: OrderType) -> Self {
-        self.0.order_type = order_type;
-        self
+    pub fn stop_loss_limit(
+        id: OrderId,
+        market: MarketId,
+        dir: Dir,
+        quantity: Decimal,
+        limit_price: Decimal,
+        trigger_price: Decimal,
+    ) -> Self {
+        Self(Order {
+            id,
+            market,
+            dir,
+            quantity,
+            account: None,
+            order_type: OrderType::StopLossLimit(StopLossLimitOrderType {
+                trigger_price,
+                limit_price,
+            }),
+            time_in_force: TimeInForce::GoodTilCancel,
+        })
     }
 
-    pub fn trigger_price(mut self, trigger_price: Option<Decimal>) -> Self {
-        self.0.trigger_price = trigger_price;
-        self
+    pub fn take_profit_limit(
+        id: OrderId,
+        market: MarketId,
+        dir: Dir,
+        quantity: Decimal,
+        limit_price: Decimal,
+        trigger_price: Decimal,
+    ) -> Self {
+        Self(Order {
+            id,
+            market,
+            dir,
+            quantity,
+            account: None,
+            order_type: OrderType::TakeProfitLimit(TakeProfitLimitOrderType {
+                trigger_price,
+                limit_price,
+            }),
+            time_in_force: TimeInForce::GoodTilCancel,
+        })
     }
 
-    pub fn time_in_force(mut self, time_in_force: TimeInForce) -> Self {
-        self.0.time_in_force = time_in_force;
-        self
+    pub fn account(self, account: Option<Str>) -> Self {
+        Self(Order { account, ..self.0 })
     }
 
-    pub fn expiration(mut self, expiration: Option<DateTime<Utc>>) -> Self {
-        self.0.expiration = expiration;
-        self
+    pub fn time_in_force(self, time_in_force: TimeInForce) -> Self {
+        Self(Order { time_in_force, ..self.0 })
     }
 
-    pub fn post_only(mut self, post_only: bool) -> Self {
-        self.0.post_only = post_only;
-        self
-    }
-
-    pub fn build(self) -> Result<Order> {
-        // CR bharrison: add validation of invariants
-        Ok(self.0)
+    pub fn build(self) -> Order {
+        self.0
     }
 }
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLUnion))]
 pub enum OrderType {
-    Limit,
-    StopLossLimit,
-    TakeProfitLimit,
+    Limit(LimitOrderType),
+    StopLossLimit(StopLossLimitOrderType),
+    TakeProfitLimit(TakeProfitLimitOrderType),
 }
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct LimitOrderType {
+    pub limit_price: Decimal,
+    pub post_only: bool,
+}
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct StopLossLimitOrderType {
+    pub limit_price: Decimal,
+    pub trigger_price: Decimal,
+}
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct TakeProfitLimitOrderType {
+    pub limit_price: Decimal,
+    pub trigger_price: Decimal,
+}
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub enum TimeInForce {
     GoodTilCancel,
-    GoodTilDate,
+    GoodTilDate(DateTime<Utc>),
     ImmediateOrCancel,
+}
+
+impl TimeInForce {
+    pub fn from_instruction(
+        instruction: &str,
+        good_til_date: Option<DateTime<Utc>>,
+    ) -> Result<Self> {
+        match instruction {
+            "GTC" => Ok(Self::GoodTilCancel),
+            "GTD" => Ok(Self::GoodTilDate(
+                good_til_date.ok_or_else(|| anyhow!("GTD requires good_til_date"))?,
+            )),
+            "IOC" => Ok(Self::ImmediateOrCancel),
+            _ => Err(anyhow!("unknown time-in-force instruction: {}", instruction)),
+        }
+    }
+}
+
+#[cfg_attr(feature = "juniper", juniper::graphql_object)]
+impl TimeInForce {
+    fn instruction(&self) -> &'static str {
+        match self {
+            Self::GoodTilCancel => "GTC",
+            Self::GoodTilDate(_) => "GTD",
+            Self::ImmediateOrCancel => "IOC",
+        }
+    }
+
+    fn good_til_date(&self) -> Option<DateTime<Utc>> {
+        match self {
+            Self::GoodTilDate(d) => Some(*d),
+            _ => None,
+        }
+    }
 }
 
 /// The state of an order

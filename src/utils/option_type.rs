@@ -5,36 +5,12 @@ use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize, Deserialize)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum OptionType {
     #[serde(alias = "Call", alias = "call", alias = "CALL")]
     Call,
     #[serde(alias = "Put", alias = "put", alias = "PUT")]
     Put,
-}
-
-#[cfg(feature = "juniper")]
-impl OptionType {
-    fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
-        juniper::Value::scalar(self.to_str_lowercase().to_string())
-    }
-
-    fn from_input<S>(v: &juniper::InputValue<S>) -> std::result::Result<Self, String>
-    where
-        S: juniper::ScalarValue,
-    {
-        v.as_string_value()
-            .map(|s| Self::from_str_lowercase(s))
-            .ok_or_else(|| format!("Expected `String`, found: {v}"))?
-            .map_err(|e| e.to_string())
-    }
-
-    fn parse_token<S>(value: juniper::ScalarToken<'_>) -> juniper::ParseScalarResult<S>
-    where
-        S: juniper::ScalarValue,
-    {
-        <String as juniper::ParseScalarValue<S>>::from_str(value)
-    }
 }
 
 impl FromStr for OptionType {
@@ -50,14 +26,29 @@ impl FromStr for OptionType {
 }
 
 impl OptionType {
-    pub fn flip(self) -> Self {
+    pub fn flip(&self) -> Self {
         match self {
             Self::Call => Self::Put,
             Self::Put => Self::Call,
         }
     }
 
-    pub fn to_str_uppercase(self) -> &'static str {
+    pub fn to_char(&self) -> char {
+        match self {
+            Self::Call => 'C',
+            Self::Put => 'P',
+        }
+    }
+
+    pub fn from_char(c: char) -> Result<Self> {
+        match c {
+            'C' => Ok(Self::Call),
+            'P' => Ok(Self::Put),
+            _ => bail!("invalid option char: {}", c),
+        }
+    }
+
+    pub fn to_str_uppercase(&self) -> &'static str {
         match self {
             Self::Call => "CALL",
             Self::Put => "PUT",
@@ -72,7 +63,7 @@ impl OptionType {
         }
     }
 
-    pub fn to_str_lowercase(self) -> &'static str {
+    pub fn to_str_lowercase(&self) -> &'static str {
         match self {
             Self::Call => "call",
             Self::Put => "put",
