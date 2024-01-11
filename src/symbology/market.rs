@@ -26,6 +26,7 @@ pub struct Market {
     pub venue: VenueId,
     pub route: RouteId,
     pub exchange_symbol: Str,
+
     #[cfg_attr(feature = "juniper", graphql(skip))]
     pub extra_info: MarketInfo,
 }
@@ -40,6 +41,7 @@ impl Market {
         extra_info: MarketInfo,
     ) -> Result<Self> {
         let name = format!("{kind_name}*{}/{}", venue.name, route.name);
+
         Ok(Self {
             id: MarketId::from(&name),
             name: Str::try_from(name.as_str())?,

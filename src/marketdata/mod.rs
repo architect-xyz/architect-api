@@ -1,5 +1,5 @@
 use crate::{
-    symbology::{MarketId, ProductId, Market},
+    symbology::{Market, MarketId, ProductId},
     Dir, DirPair,
 };
 use chrono::{DateTime, Utc};
