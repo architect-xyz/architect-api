@@ -79,6 +79,23 @@ impl TryInto<OrderflowMessage> for &CoinbaseMessage {
     }
 }
 
+impl TryInto<CoinbaseMessage> for &OrderflowMessage {
+    type Error = ();
+
+    fn try_into(self) -> Result<CoinbaseMessage, ()> {
+        match self {
+            OrderflowMessage::Order(o) => {
+                Ok(CoinbaseMessage::Order(CoinbaseOrder { order: *o }))
+            }
+            OrderflowMessage::Cancel(c) => Ok(CoinbaseMessage::Cancel(*c)),
+            OrderflowMessage::Reject(r) => Ok(CoinbaseMessage::Reject(*r)),
+            OrderflowMessage::Ack(a) => Ok(CoinbaseMessage::Ack(*a)),
+            OrderflowMessage::Fill(_) => Err(()),
+            OrderflowMessage::Out(o) => Ok(CoinbaseMessage::Out(*o)),
+        }
+    }
+}
+
 impl TryInto<FolioMessage> for &CoinbaseMessage {
     type Error = ();
 

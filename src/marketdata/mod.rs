@@ -1,5 +1,5 @@
 use crate::{
-    symbology::{MarketId, ProductId},
+    symbology::{MarketId, ProductId, Market},
     Dir, DirPair,
 };
 use chrono::{DateTime, Utc};
@@ -144,7 +144,8 @@ pub struct RfqResponse {
 
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct GraphQLRfqResponse {
-    pub market: MarketId,
+    pub market_id: MarketId,
+    pub market: Option<Market>,
     pub buy: Option<RfqResponseSide>,
     pub sell: Option<RfqResponseSide>,
 }

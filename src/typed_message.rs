@@ -15,8 +15,8 @@ use serde::{Deserialize, Serialize};
 /// compatibility, such as explicit tagging of variants, and avoiding breaking 
 /// changes to the component message types.
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, FromInner, TryIntoAnyInner)]
-#[transitive(CoinbaseCpty -> Orderflow)]
 #[transitive(CoinbaseCpty <-> Folio)]
+#[transitive(CoinbaseCpty <-> Orderflow)]
 #[transitive(B2C2Cpty <-> Orderflow)]
 #[transitive(Orderflow -> Algo)]
 #[transitive(Orderflow <-> Oms)]
