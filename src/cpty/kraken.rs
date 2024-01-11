@@ -1,5 +1,8 @@
 use crate::{
-    orderflow::{AberrantFill, Ack, Cancel, Fill, Order, OrderflowMessage, Out, Reject},
+    orderflow::{
+        AberrantFill, Ack, Cancel, Fill, Order, OrderType, OrderflowMessage, Out, Reject,
+        TimeInForce,
+    },
     symbology::market::NormalizedMarketInfo,
     Dir, OrderId,
 };
@@ -164,11 +167,11 @@ pub struct KrakenExternalOrder {
     pub exchange_order_id: KrakenExchangeId,
     pub user_reference_id: KrakenUserRef,
     pub quantity: Decimal,
-    pub price: Decimal,
     pub trigger_price: Option<Decimal>,
     pub dir: Dir,
     pub expiration: Option<DateTime<Utc>>,
-    pub post_only: bool,
+    pub order_type: OrderType,
+    pub time_in_force: TimeInForce,
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]

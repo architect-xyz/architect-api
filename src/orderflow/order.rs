@@ -49,6 +49,7 @@ impl OrderBuilder {
         quantity: Decimal,
         limit_price: Decimal,
         trigger_price: Decimal,
+        time_in_force: TimeInForce,
     ) -> Self {
         Self(Order {
             id,
@@ -60,7 +61,7 @@ impl OrderBuilder {
                 trigger_price,
                 limit_price,
             }),
-            time_in_force: TimeInForce::GoodTilCancel,
+            time_in_force: time_in_force,
         })
     }
 
@@ -71,6 +72,7 @@ impl OrderBuilder {
         quantity: Decimal,
         limit_price: Decimal,
         trigger_price: Decimal,
+        time_in_force: TimeInForce,
     ) -> Self {
         Self(Order {
             id,
@@ -82,7 +84,7 @@ impl OrderBuilder {
                 trigger_price,
                 limit_price,
             }),
-            time_in_force: TimeInForce::GoodTilCancel,
+            time_in_force: time_in_force,
         })
     }
 

@@ -77,7 +77,7 @@ impl OrderIdGenerator {
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[pack(unwrapped)]
-pub struct OrderId(u64);
+pub struct OrderId(pub u64);
 
 #[rustfmt::skip] const DISCRIMINANT: u64         = 0xFF00_0000_0000_0000;
 #[rustfmt::skip] const CHANNEL_ID_MASK: u64      = 0xFFFF_FF00_0000_0000; // >> 40
