@@ -83,7 +83,7 @@ pub enum CandleWidth {
 }
 
 impl CandleWidth {
-    pub fn to_netidx_path(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             Self::OneSecond => "1s",
             Self::FiveSecond => "5s",
