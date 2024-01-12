@@ -70,9 +70,35 @@ pub enum MessageHeader {
     Snapshot,
 }
 
+#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[repr(u8)]
+pub enum CandleWidth {
+    OneSecond,
+    FiveSecond,
+    OneMinute,
+    FifteenMinute,
+    OneHour,
+    OneDay,
+}
+
+impl CandleWidth {
+    pub fn to_netidx_path(&self) -> &'static str {
+        match self {
+            Self::OneSecond => "1s",
+            Self::FiveSecond => "5s",
+            Self::OneMinute => "1m",
+            Self::FifteenMinute => "15m",
+            Self::OneHour => "1h",
+            Self::OneDay => "1d",
+        }
+    }
+}
+
 /// NB: buy_volume + sell_volume <> volume; volume may count trades
 /// that don't have a discernible direction.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CandleV1 {
     pub time: DateTime<Utc>,
     pub open: Decimal,
