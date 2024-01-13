@@ -83,12 +83,12 @@ pub enum KrakenMessage {
     ExchangeOrderUpdate(
         KrakenUserRef,
         KrakenExchangeId,
-        Option<KrakenExternalOrder>,
+        Option<(OrderId, KrakenExternalOrder)>,
         bool, /* out */
     ),
     ExchangeAck(OrderId, KrakenExchangeId),
     ExchangeFill(KrakenExternalFill),
-    ExchangeExternalOrderNew(KrakenExternalOrder),
+    ExchangeExternalOrderNew(OrderId, KrakenExternalOrder),
     ExchangeExternalOrderOut(KrakenExchangeId),
     ExchangeExternalFill(KrakenExternalFill),
 }

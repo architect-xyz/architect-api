@@ -1,5 +1,5 @@
 use crate::{
-    orderflow::{algo::*, AberrantFill, Ack, Fill, Out, Reject},
+    orderflow::{algo::*, AberrantFill, Ack, Fill, OrderIdAllocation, Out, Reject},
     symbology::MarketId,
     Dir, DirPair, OrderId, Str,
 };
@@ -22,6 +22,7 @@ pub enum TwapMessage {
     ChildOut(Out),
     ChildFill(Result<Fill, AberrantFill>),
     ChildReject(Reject),
+    OrderIdAllocation(OrderIdAllocation),
     BookUpdate(BookUpdate),
 }
 
@@ -40,6 +41,7 @@ impl TryInto<AlgoMessage> for &TwapMessage {
             TwapMessage::ChildOut(_) => Err(()),
             TwapMessage::ChildFill(_) => Err(()),
             TwapMessage::ChildReject(_) => Err(()),
+            TwapMessage::OrderIdAllocation(_) => Err(()),
             TwapMessage::BookUpdate(_) => Err(()),
         }
     }

@@ -24,15 +24,22 @@ pub struct Config {
     pub desired_auth: Option<DesiredAuth>,
     #[serde(default)]
     pub bind_config: Option<String>,
+    /// UserDB registration servers
+    #[serde(default = "Config::default_registration_servers")]
+    pub registration_servers: Vec<String>,
     #[serde(default = "Config::default_hosted_base")]
     pub hosted_base: Path,
     #[serde(default = "Config::default_local_base")]
     pub local_base: Path,
+    /// Where to mount this core's RPCs and channel; also identifies this core
+    pub core_base: Path,
+    /// Use local symbology instead of centralized symbology
+    #[serde(default)]
+    pub use_local_symbology: bool,
     /// Use legacy marketdata paths; does not support legacy blockchain marketdata;
     /// not all subsystems respect this flag
     #[serde(default)]
-    pub legacy_marketdata_paths: bool,
-    // CR alee: implement CptyId deserialization from string
+    pub use_legacy_marketdata_paths: bool,
     #[serde(default)]
     pub marketdata_location_override: HashMap<String, Location>,
     /// Locally run components in the same process
@@ -40,7 +47,7 @@ pub struct Config {
     pub local: HashMap<ComponentId, (String, serde_json::Value)>,
     /// Remote components elsewhere on the network
     #[serde(default)]
-    pub remote: HashMap<Path, Vec<ComponentId>>,
+    pub remote: HashMap<Path, Vec<(ComponentId, String)>>,
     /// Sync with a remote core at the given base path
     #[serde(default)]
     pub rsync: Option<Path>,
@@ -69,33 +76,15 @@ impl Config {
         }
     }
 
+    fn default_registration_servers() -> Vec<String> {
+        vec!["https://54.163.187.179:5999".into(), "https://35.84.43.204:5999".into()]
+    }
+
     fn default_hosted_base() -> Path {
         Path::from("/architect")
     }
 
     fn default_local_base() -> Path {
         Path::from("/local/architect")
-    }
-
-    pub fn find_local_component(
-        &self,
-        id: ComponentId,
-    ) -> Option<&(String, serde_json::Value)> {
-        if let Some(c) = self.local.get(&id) {
-            return Some(c);
-        }
-        None
-    }
-
-    pub fn find_local_component_of_kind(
-        &self,
-        kind: &str,
-    ) -> Option<(ComponentId, (&String, &serde_json::Value))> {
-        for (id, (k, cfg)) in &self.local {
-            if k == kind {
-                return Some((*id, (&k, &cfg)));
-            }
-        }
-        None
     }
 }

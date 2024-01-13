@@ -54,7 +54,7 @@ pub struct Fill {
     pub kind: FillKind,
     pub fill_id: FillId,
     /// Corresponding order ID, if the order originated from Architect
-    pub order_id: OrderId,
+    pub order_id: Option<OrderId>,
     pub market: MarketId,
     pub quantity: Decimal,
     pub price: Decimal,
@@ -70,7 +70,7 @@ impl Fill {
         AberrantFill {
             kind: Some(self.kind),
             fill_id: self.fill_id,
-            order_id: Some(self.order_id),
+            order_id: self.order_id,
             market: Some(self.market),
             quantity: Some(self.quantity),
             price: Some(self.price),

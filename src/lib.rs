@@ -1,4 +1,5 @@
 pub mod algo;
+pub mod auth;
 pub mod config;
 pub mod cpty;
 pub mod folio;
@@ -11,14 +12,15 @@ pub mod typed_message;
 pub mod utils;
 
 // common, basic types which should cover a lot of use cases
+pub use auth::user_id::UserId;
 pub use config::Config;
-pub use orderflow::{ChannelId, OrderId};
+pub use orderflow::OrderId;
 pub use typed_message::{MaybeSplit, TypedMessage};
 pub use utils::{
     component_id::ComponentId,
     dir::Dir,
     dir_pair::DirPair,
-    envelope::{Envelope, RemoteStamp, Stamp},
+    envelope::{Address, Envelope, RemoteStamp, Stamp},
     half_open_range::HalfOpenRange,
     str::Str,
 };

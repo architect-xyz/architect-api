@@ -1,28 +1,56 @@
-use crate::ComponentId;
+use crate::{ComponentId, UserId};
+use anyhow::Result;
 use derive::FromValue;
 use netidx_derive::Pack;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize, Deserialize)]
+pub enum Address {
+    Component(ComponentId),
+    Channel(UserId, u32),
+}
+
+impl From<ComponentId> for Address {
+    #[inline(always)]
+    fn from(id: ComponentId) -> Self {
+        Self::Component(id)
+    }
+}
+
+impl Address {
+    #[inline(always)]
+    pub fn is_loopback(&self) -> bool {
+        match self {
+            Address::Component(id) => id.is_loopback(),
+            Address::Channel(..) => false,
+        }
+    }
+
+    #[inline(always)]
+    pub fn component<T>(id: T) -> Result<Self>
+    where
+        T: TryInto<ComponentId>,
+        <T as TryInto<ComponentId>>::Error: std::error::Error + Send + Sync + 'static,
+    {
+        Ok(Self::Component(id.try_into()?))
+    }
+}
 
 /// Architect components communicate with each other by sending `Envelope`s.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
 pub struct Envelope<M: 'static> {
-    pub src: ComponentId,
-    pub dst: ComponentId,
+    pub src: Address,
+    pub dst: Address,
     pub stamp: Stamp,
     pub msg: M,
 }
 
 impl<M> Envelope<M> {
-    // external utils/algos should use this fn to construct envelopes
-    pub fn to(dst: ComponentId, msg: M) -> Self {
-        Self { src: ComponentId::none(), dst, stamp: Stamp::Unstamped, msg }
-    }
-
     pub fn system_control(msg: M) -> Self {
         Self {
-            src: ComponentId::none(),
-            dst: ComponentId::none(),
+            src: Address::Component(ComponentId::none()),
+            dst: Address::Component(ComponentId::none()),
             stamp: Stamp::Unstamped,
             msg,
         }

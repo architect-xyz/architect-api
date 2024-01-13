@@ -6,15 +6,15 @@ use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 
 pub mod algo;
-pub mod channel_authority;
 pub mod fill;
 pub mod order;
 pub mod order_id;
+pub mod order_id_authority;
 
-pub use channel_authority::*;
 pub use fill::*;
 pub use order::*;
 pub use order_id::*;
+pub use order_id_authority::*;
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub enum OrderflowMessage {

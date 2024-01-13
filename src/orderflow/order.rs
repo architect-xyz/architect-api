@@ -153,6 +153,7 @@ impl TimeInForce {
     }
 }
 
+#[cfg(feature = "juniper")]
 #[cfg_attr(feature = "juniper", juniper::graphql_object)]
 impl TimeInForce {
     fn instruction(&self) -> &'static str {

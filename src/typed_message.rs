@@ -25,7 +25,7 @@ use serde::{Deserialize, Serialize};
 pub enum TypedMessage {
     #[pack(tag(  0))] SystemControl(system_control::SystemControlMessage),
     #[pack(tag(  1))] Symbology(symbology::SymbologyUpdate),
-    #[pack(tag(  2))] ChannelAuthority(orderflow::ChannelAuthorityMessage),
+    #[pack(tag(  2))] OrderAuthority(orderflow::OrderAuthorityMessage),
     #[pack(tag(  3))] Orderflow(orderflow::OrderflowMessage),
     #[pack(tag(  4))] Oms(oms::OmsMessage),
     #[pack(tag(  5))] Algo(orderflow::algo::AlgoMessage),
@@ -39,6 +39,19 @@ pub enum TypedMessage {
 impl TypedMessage {
     pub fn is_system_control(&self) -> bool {
         matches!(self, TypedMessage::SystemControl(..))
+    }
+
+    pub fn downcast<T>(self) -> Option<T>
+    where
+        TypedMessage: TryInto<MaybeSplit<TypedMessage, T>>,
+    {
+        if let Ok((_, downcasted)) =
+            TryInto::<MaybeSplit<TypedMessage, T>>::try_into(self).map(MaybeSplit::parts)
+        {
+            Some(downcasted)
+        } else {
+            None
+        }
     }
 }
 
@@ -60,7 +73,7 @@ impl<A, B> MaybeSplit<A, B> {
 mod test {
     use super::*;
     use crate::{
-        orderflow::{ChannelId, OrderIdGenerator, Out},
+        orderflow::{OrderBuilder, OrderId, Out},
         symbology::MarketId,
     };
     use anyhow::Result;
@@ -68,17 +81,17 @@ mod test {
 
     #[test]
     fn test_try_into_any_variant() -> Result<()> {
-        use crate::orderflow::{Order, OrderflowMessage};
-        let oids = OrderIdGenerator::channel(ChannelId::new(0x10000)?)?;
+        use crate::orderflow::OrderflowMessage;
         let m = TypedMessage::Orderflow(OrderflowMessage::Order(
-            Order::builder(
-                oids.next(),
+            OrderBuilder::limit(
+                OrderId::new_unchecked(123),
                 MarketId::try_from("BTC Crypto/USD*COINBASE/DIRECT")?,
                 Dir::Buy,
                 Decimal::new(100, 0),
                 Decimal::new(1, 0),
+                false,
             )
-            .build()?,
+            .build(),
         ));
         let m2: std::result::Result<MaybeSplit<TypedMessage, oms::OmsMessage>, _> =
             m.try_into();
@@ -90,8 +103,9 @@ mod test {
     #[test]
     fn test_try_into_any_variant_3() -> Result<()> {
         use crate::{algo::twap::TwapMessage, cpty::b2c2::B2C2Message};
-        let oids = OrderIdGenerator::channel(ChannelId::new(0x10000)?)?;
-        let src = TypedMessage::B2C2Cpty(B2C2Message::Out(Out { order_id: oids.next() }));
+        let src = TypedMessage::B2C2Cpty(B2C2Message::Out(Out {
+            order_id: OrderId::new_unchecked(123),
+        }));
         let dst: std::result::Result<MaybeSplit<TypedMessage, TwapMessage>, _> =
             src.try_into();
         assert_eq!(dst.is_ok(), true);
