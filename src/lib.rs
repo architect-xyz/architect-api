@@ -4,6 +4,7 @@ pub mod config;
 pub mod cpty;
 pub mod folio;
 pub mod marketdata;
+pub mod misc;
 pub mod oms;
 pub mod orderflow;
 pub mod symbology;
