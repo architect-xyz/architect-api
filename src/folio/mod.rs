@@ -20,7 +20,9 @@ pub enum FolioMessage {
         HalfOpenRange<Option<DateTime<Utc>>>,
         Arc<Vec<Result<Fill, AberrantFill>>>,
     ),
+    GetAllBalances,
     GetBalances(CptyId),
+    AllBalances(Vec<(CptyId, Arc<BTreeMap<ProductId, Decimal>>)>),
     Balances(CptyId, Arc<BTreeMap<ProductId, Decimal>>),
     /// Control message to folio to update balances
     UpdateBalances,
