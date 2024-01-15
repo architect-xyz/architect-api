@@ -1,4 +1,5 @@
 use crate::{orderflow::*, utils::messaging::MaybeRequest, ComponentId};
+use chrono::{DateTime, Utc};
 use derive::FromValue;
 use enumflags2::{bitflags, BitFlags};
 use netidx::pool::Pooled;
@@ -39,6 +40,8 @@ pub enum OmsMessage {
     // some of these are better queried via a follower Oms or StatsDb;
     // for latency sensitive applications, responding to these requests
     // blocks the Oms for too long; but the option is available
+    GetOpenOrders(Uuid),
+    GetOpenOrdersResponse(Uuid, Vec<OpenOrder>),
     GetFills(Uuid, OrderId),
     GetFillsResponse(Uuid, Result<GetFillsResponse, GetFillsError>),
 }
@@ -90,10 +93,21 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
             | OmsMessage::Initialize(..)
             | OmsMessage::RetireOutedOrders
             | OmsMessage::FillWarning(..)
+            | OmsMessage::GetOpenOrders(_)
+            | OmsMessage::GetOpenOrdersResponse(..)
             | OmsMessage::GetFills(..)
             | OmsMessage::GetFillsResponse(..) => Err(()),
         }
     }
+}
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct OpenOrder {
+    pub timestamp: DateTime<Utc>,
+    pub order: Order,
+    pub filled_qty: Decimal,
+    pub avg_fill_price: Option<Decimal>,
 }
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
