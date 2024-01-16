@@ -18,7 +18,6 @@ static MARKET_NS: Uuid = uuid!("0bfe858c-a749-43a9-a99e-6d1f31a760ad");
 uuid_val!(MarketId, MARKET_NS);
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Market {
     pub id: MarketId,
     pub name: Str,
@@ -26,8 +25,6 @@ pub struct Market {
     pub venue: VenueId,
     pub route: RouteId,
     pub exchange_symbol: Str,
-
-    #[cfg_attr(feature = "juniper", graphql(skip))]
     pub extra_info: MarketInfo,
 }
 
@@ -41,7 +38,6 @@ impl Market {
         extra_info: MarketInfo,
     ) -> Result<Self> {
         let name = format!("{kind_name}*{}/{}", venue.name, route.name);
-
         Ok(Self {
             id: MarketId::from(&name),
             name: Str::try_from(name.as_str())?,
@@ -110,7 +106,6 @@ impl Symbolic for Market {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 #[serde(tag = "type", content = "value")]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLUnion))]
 pub enum MarketKind {
     /// A regular exchange trading pair, e.g. Coinbase BTC/USD
     Exchange(ExchangeMarketKind),
@@ -118,7 +113,6 @@ pub enum MarketKind {
     /// The type is still ordered for canonical naming purpose
     Pool(PoolMarketKind),
     #[pack(other)]
-    #[cfg_attr(feature = "juniper", graphql(skip))]
     Unknown,
 }
 

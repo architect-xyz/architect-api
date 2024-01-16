@@ -20,7 +20,7 @@ use std::{fmt, str::FromStr};
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[pack(unwrapped)]
-pub struct OrderId(pub u64);
+pub struct OrderId(u64);
 
 impl OrderId {
     /// Can use this for debugging, tests; not recommended for

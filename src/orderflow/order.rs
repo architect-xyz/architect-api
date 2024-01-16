@@ -61,7 +61,7 @@ impl OrderBuilder {
                 trigger_price,
                 limit_price,
             }),
-            time_in_force: time_in_force,
+            time_in_force,
         })
     }
 
@@ -84,7 +84,7 @@ impl OrderBuilder {
                 trigger_price,
                 limit_price,
             }),
-            time_in_force: time_in_force,
+            time_in_force,
         })
     }
 
@@ -169,6 +169,41 @@ impl TimeInForce {
             Self::GoodTilDate(d) => Some(*d),
             _ => None,
         }
+    }
+}
+
+#[cfg(feature = "clap")]
+#[cfg_attr(feature = "clap", derive(clap::Args))]
+pub struct TimeInForceArgs {
+    /// GTC, GTD, IOC
+    #[arg(long, default_value = "GTC")]
+    time_in_force: String,
+    /// If TIF instruction is GTD, the datetime or relative duration from now;
+    /// e.g. +1d or 2021-01-01T00:00:00Z
+    #[arg(long)]
+    good_til_date: Option<String>,
+}
+
+#[cfg(feature = "clap")]
+impl TryInto<TimeInForce> for TimeInForceArgs {
+    type Error = anyhow::Error;
+
+    fn try_into(self) -> Result<TimeInForce> {
+        let good_til_date = self
+            .good_til_date
+            .map(|s| {
+                if s.starts_with('+') {
+                    let dur_s = &s[1..];
+                    let dur = crate::utils::duration::parse_duration(&dur_s)?;
+                    let now = Utc::now();
+                    Ok::<_, anyhow::Error>(now + dur)
+                } else {
+                    let dt = DateTime::parse_from_rfc3339(&s)?;
+                    Ok::<_, anyhow::Error>(dt.with_timezone(&Utc))
+                }
+            })
+            .transpose()?;
+        TimeInForce::from_instruction(&self.time_in_force, good_til_date)
     }
 }
 

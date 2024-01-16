@@ -17,6 +17,7 @@ graphql = ["juniper"]
 anyhow = { workspace = true }
 bytes = { workspace = true }
 chrono = { workspace = true }
+clap = { workspace = true, optional = true }
 compact_str = { workspace = true }
 derive = { package = "architect-derive", version = "0.2.0", path = "../derive" }
 derive_more = { workspace = true }
