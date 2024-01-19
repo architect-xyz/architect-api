@@ -8,8 +8,8 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 use std::time::Duration;
+use uuid::Uuid;
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum TwapMessage {
@@ -39,17 +39,19 @@ impl TryInto<AlgoMessage> for &TwapMessage {
             TwapMessage::AlgoControl(c) => Ok(AlgoMessage::AlgoControl(*c)),
             TwapMessage::AlgoAck(a) => Ok(AlgoMessage::AlgoAck(*a)),
             TwapMessage::AlgoReject(r) => Ok(AlgoMessage::AlgoReject(*r)),
-            TwapMessage::AlgoStatus(s) => Ok(AlgoMessage::AlgoStatus(s.algo_status.clone())),
+            TwapMessage::AlgoStatus(s) => {
+                Ok(AlgoMessage::AlgoStatus(s.algo_status.clone()))
+            }
             TwapMessage::TwapWakeup(_) => Err(()),
             TwapMessage::Orderflow(o) => Ok(AlgoMessage::Orderflow(*o)),
-            TwapMessage::ChildAck(_) 
-            | TwapMessage::ChildOut(_) 
-            | TwapMessage::ChildFill(_) 
-            | TwapMessage::ChildReject(_) 
-            | TwapMessage::OrderIdAllocation(_) 
-            | TwapMessage::BookUpdate(_) 
-            | TwapMessage::GetTwapStatuses(_) 
-            | TwapMessage::GetTwapStatusesResponse(..) => Err(())
+            TwapMessage::ChildAck(_)
+            | TwapMessage::ChildOut(_)
+            | TwapMessage::ChildFill(_)
+            | TwapMessage::ChildReject(_)
+            | TwapMessage::OrderIdAllocation(_)
+            | TwapMessage::BookUpdate(_)
+            | TwapMessage::GetTwapStatuses(_)
+            | TwapMessage::GetTwapStatusesResponse(..) => Err(()),
         }
     }
 }

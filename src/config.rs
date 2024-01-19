@@ -28,6 +28,7 @@ pub struct Config {
     #[serde(default = "Config::default_registration_servers")]
     pub registration_servers: Vec<String>,
     /// Custom chain of trust for UserDB, for debugging
+    #[cfg(debug_assertions)]
     #[serde(default)]
     pub registration_trust_chain: Option<String>,
     #[serde(default = "Config::default_hosted_base")]
@@ -40,6 +41,9 @@ pub struct Config {
     /// Use local symbology instead of centralized symbology
     #[serde(default)]
     pub use_local_symbology: bool,
+    /// Use local userdb instead of centralized userdb (for debugging)
+    #[serde(default)]
+    pub use_local_userdb: bool,
     /// Use legacy marketdata paths; does not support legacy blockchain marketdata;
     /// not all subsystems respect this flag
     #[serde(default)]

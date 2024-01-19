@@ -109,7 +109,6 @@ pub enum AlgoMessage {
 }
 
 impl Into<AlgoMessage> for &OrderflowMessage {
-
     fn into(self) -> AlgoMessage {
         AlgoMessage::Orderflow(*self)
     }
