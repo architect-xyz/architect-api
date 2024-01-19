@@ -237,11 +237,12 @@ pub struct Cancel {
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Reject {
     pub order_id: OrderId,
+    pub reason: Str,
 }
 
 impl Reject {
-    pub fn new(order_id: OrderId) -> Self {
-        Self { order_id }
+    pub fn new(order_id: OrderId, reason: Str) -> Self {
+        Self { order_id, reason }
     }
 }
 

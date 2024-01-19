@@ -1,18 +1,20 @@
 use super::*;
-use crate::{ComponentId, OrderId, Str};
+use crate::{OrderId, Str};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub struct AlgoOrder {
     pub order_id: OrderId,
     pub name: Str,
-    pub algo_component: ComponentId,
+    pub algo: Str,
 }
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum AlgoControlCommand {
     Start,
     Pause,
@@ -36,7 +38,20 @@ pub struct AlgoReject {
     pub reason: Str,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    Pack,
+    FromValue,
+    Serialize,
+    Deserialize,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum AlgoRunningStatus {
     NotYetStarted,
     Active,
@@ -44,36 +59,58 @@ pub enum AlgoRunningStatus {
     Done,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub struct AlgoStatus {
+    pub order_id: OrderId,
     pub status: AlgoRunningStatus,
     pub percent_complete: Option<Decimal>,
+    pub fills: Vec<Result<Fill, AberrantFill>>,
+    pub rejects: Vec<Reject>,
 }
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub struct ChildAck {
+    pub algo_order_id: OrderId,
+    pub ack: Ack,
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub struct ChildOut {
+    pub algo_order_id: OrderId,
+    pub out: Out,
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub struct ChildReject {
+    pub algo_order_id: OrderId,
+    pub reject: Reject,
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub struct ChildFill {
+    pub algo_order_id: OrderId,
+    pub fill: Result<Fill, AberrantFill>,
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum AlgoMessage {
     AlgoOrder(AlgoOrder),
     AlgoControl(AlgoControl),
     AlgoAck(AlgoAck),
     AlgoReject(AlgoReject),
     AlgoStatus(AlgoStatus),
-    ChildAck(Ack),
-    ChildOut(Out),
-    ChildFill(Result<Fill, AberrantFill>),
-    ChildReject(Reject),
+    Orderflow(OrderflowMessage),
+    ChildAck(ChildAck),
+    ChildOut(ChildOut),
+    ChildFill(ChildFill),
+    ChildReject(ChildReject),
+    GetAlgoStatuses(Uuid),
+    GetAlgoStatusesResponse(Uuid, Vec<AlgoStatus>),
 }
 
-impl TryInto<AlgoMessage> for &OrderflowMessage {
-    type Error = ();
+impl Into<AlgoMessage> for &OrderflowMessage {
 
-    fn try_into(self) -> Result<AlgoMessage, ()> {
-        match self {
-            OrderflowMessage::Order(_) => Err(()),
-            OrderflowMessage::Cancel(_) => Err(()),
-            OrderflowMessage::Reject(r) => Ok(AlgoMessage::ChildReject(*r)),
-            OrderflowMessage::Ack(a) => Ok(AlgoMessage::ChildAck(*a)),
-            OrderflowMessage::Fill(f) => Ok(AlgoMessage::ChildFill(*f)),
-            OrderflowMessage::Out(o) => Ok(AlgoMessage::ChildOut(*o)),
-        }
+    fn into(self) -> AlgoMessage {
+        AlgoMessage::Orderflow(*self)
     }
 }

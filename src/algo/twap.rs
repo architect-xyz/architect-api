@@ -1,5 +1,5 @@
 use crate::{
-    orderflow::{algo::*, AberrantFill, Ack, Fill, OrderIdAllocation, Out, Reject},
+    orderflow::{algo::*, OrderIdAllocation, OrderflowMessage},
     symbology::MarketId,
     Dir, DirPair, OrderId, Str,
 };
@@ -8,6 +8,7 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 use std::time::Duration;
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
@@ -18,12 +19,15 @@ pub enum TwapMessage {
     AlgoReject(AlgoReject),
     AlgoStatus(TwapStatus),
     TwapWakeup(TwapWakeup),
-    ChildAck(Ack),
-    ChildOut(Out),
-    ChildFill(Result<Fill, AberrantFill>),
-    ChildReject(Reject),
+    Orderflow(OrderflowMessage),
+    ChildAck(ChildAck),
+    ChildOut(ChildOut),
+    ChildFill(ChildFill),
+    ChildReject(ChildReject),
     OrderIdAllocation(OrderIdAllocation),
     BookUpdate(BookUpdate),
+    GetTwapStatuses(Uuid),
+    GetTwapStatusesResponse(Uuid, Vec<TwapStatus>),
 }
 
 impl TryInto<AlgoMessage> for &TwapMessage {
@@ -35,14 +39,17 @@ impl TryInto<AlgoMessage> for &TwapMessage {
             TwapMessage::AlgoControl(c) => Ok(AlgoMessage::AlgoControl(*c)),
             TwapMessage::AlgoAck(a) => Ok(AlgoMessage::AlgoAck(*a)),
             TwapMessage::AlgoReject(r) => Ok(AlgoMessage::AlgoReject(*r)),
-            TwapMessage::AlgoStatus(s) => Ok(AlgoMessage::AlgoStatus(s.algo_status)),
+            TwapMessage::AlgoStatus(s) => Ok(AlgoMessage::AlgoStatus(s.algo_status.clone())),
             TwapMessage::TwapWakeup(_) => Err(()),
-            TwapMessage::ChildAck(_) => Err(()),
-            TwapMessage::ChildOut(_) => Err(()),
-            TwapMessage::ChildFill(_) => Err(()),
-            TwapMessage::ChildReject(_) => Err(()),
-            TwapMessage::OrderIdAllocation(_) => Err(()),
-            TwapMessage::BookUpdate(_) => Err(()),
+            TwapMessage::Orderflow(o) => Ok(AlgoMessage::Orderflow(*o)),
+            TwapMessage::ChildAck(_) 
+            | TwapMessage::ChildOut(_) 
+            | TwapMessage::ChildFill(_) 
+            | TwapMessage::ChildReject(_) 
+            | TwapMessage::OrderIdAllocation(_) 
+            | TwapMessage::BookUpdate(_) 
+            | TwapMessage::GetTwapStatuses(_) 
+            | TwapMessage::GetTwapStatusesResponse(..) => Err(())
         }
     }
 }
@@ -56,11 +63,14 @@ impl TryInto<TwapMessage> for &AlgoMessage {
             AlgoMessage::ChildAck(a) => Ok(TwapMessage::ChildAck(*a)),
             AlgoMessage::ChildFill(f) => Ok(TwapMessage::ChildFill(*f)),
             AlgoMessage::ChildOut(o) => Ok(TwapMessage::ChildOut(*o)),
+            AlgoMessage::Orderflow(o) => Ok(TwapMessage::Orderflow(*o)),
             AlgoMessage::AlgoOrder(_) => Err(()),
             AlgoMessage::AlgoControl(c) => Ok(TwapMessage::AlgoControl(*c)),
             AlgoMessage::AlgoAck(a) => Ok(TwapMessage::AlgoAck(*a)),
             AlgoMessage::AlgoReject(r) => Ok(TwapMessage::AlgoReject(*r)),
             AlgoMessage::AlgoStatus(_) => Err(()),
+            AlgoMessage::GetAlgoStatuses(_) => Err(()),
+            AlgoMessage::GetAlgoStatusesResponse(..) => Err(()),
         }
     }
 }
@@ -77,8 +87,10 @@ pub struct TwapOrder {
     pub account: Option<Str>,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub struct TwapStatus {
+    #[serde(flatten)]
+    pub twap_order: TwapOrder,
     #[serde(flatten)]
     pub algo_status: AlgoStatus,
     pub realized_twap: Option<Decimal>,
