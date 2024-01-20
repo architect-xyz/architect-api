@@ -22,6 +22,22 @@ impl<T: Zeroize> MaybeSecret<T> {
     }
 }
 
+// Most useful implementations of T for MaybeSecret will require
+// a FromStr implementation.  If you don't have one handy, use
+// this macro to get a reasonable-ish one using serde_json.
+#[macro_export]
+macro_rules! from_str_json {
+    ($t:ty) => {
+        impl std::str::FromStr for $t {
+            type Err = serde_json::Error;
+
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                serde_json::from_str(s)
+            }
+        }
+    };
+}
+
 impl<T: Display + Serialize + Zeroize> Display for MaybeSecret<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &*self {
@@ -91,7 +107,6 @@ impl<'de, T: DeserializeOwned + FromStr + Zeroize> Deserialize<'de> for MaybeSec
 #[cfg(test)]
 mod tests {
     use super::*;
-    use anyhow::bail;
     use zeroize::ZeroizeOnDrop;
 
     #[test]
@@ -143,12 +158,7 @@ mod tests {
             bar: u64,
             baz: String,
         }
-        impl FromStr for Foo {
-            type Err = anyhow::Error;
-            fn from_str(_: &str) -> Result<Self, Self::Err> {
-                bail!("ambiguous format")
-            }
-        }
+        from_str_json!(Foo);
         let x: MaybeSecret<Foo> =
             MaybeSecret::plain(Foo { bar: 42, baz: "asdf".to_string() });
         let y = serde_json::to_string(&x).unwrap();
