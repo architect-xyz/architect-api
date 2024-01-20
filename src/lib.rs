@@ -23,5 +23,6 @@ pub use utils::{
     dir_pair::DirPair,
     envelope::{Address, Envelope, RemoteStamp, Stamp},
     half_open_range::HalfOpenRange,
+    secrets::MaybeSecret,
     str::Str,
 };

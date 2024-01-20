@@ -50,6 +50,8 @@ pub struct Config {
     pub use_legacy_marketdata_paths: bool,
     #[serde(default)]
     pub marketdata_location_override: HashMap<String, Location>,
+    #[serde(default)]
+    pub secrets_path_override: Option<String>,
     // TODO: these only make sense for core, API config should have some other way
     // for that matter, who has a consistent view of topology?
     //
