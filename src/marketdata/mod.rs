@@ -112,6 +112,26 @@ pub struct CandleV1 {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct TradeV0 {
+    pub time: Option<DateTime<Utc>>,
+    pub direction: Dir,
+    pub price: Decimal,
+    pub size: Decimal,
+}
+
+impl Into<TradeV1> for TradeV0 {
+    fn into(self) -> TradeV1 {
+        TradeV1 {
+            time: self.time,
+            direction: Some(self.direction),
+            price: self.price,
+            size: self.size,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct TradeV1 {
     pub time: Option<DateTime<Utc>>,
     pub direction: Option<Dir>,
