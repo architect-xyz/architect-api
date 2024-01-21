@@ -1,5 +1,5 @@
 use crate::{
-    symbology::{MarketId, ProductId},
+    symbology::{MarketId, ProductId, VenueId},
     Dir, DirPair,
 };
 use chrono::{DateTime, Utc};
@@ -186,4 +186,21 @@ pub struct RfqResponseSide {
     pub price: Decimal,
     pub quantity: Decimal,
     pub quote_id: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+pub struct MarketSnapshot {
+    pub update_time: DateTime<Utc>,
+    pub market: MarketId,
+    pub venue: VenueId,
+    pub base: ProductId,
+    pub quote: ProductId,
+    pub base_kind: String,
+    pub bid_price: Option<Decimal>,
+    pub ask_price: Option<Decimal>,
+    pub last_price: Option<Decimal>,
+    pub high_24h: Option<Decimal>,
+    pub low_24h: Option<Decimal>,
+    pub open_24h: Option<Decimal>,
+    pub volume_24h: Option<Decimal>,
 }
