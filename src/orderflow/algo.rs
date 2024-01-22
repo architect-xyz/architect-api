@@ -1,5 +1,6 @@
 use super::*;
 use crate::{OrderId, Str};
+use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
@@ -62,6 +63,7 @@ pub enum AlgoRunningStatus {
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub struct AlgoStatus {
     pub order_id: OrderId,
+    pub creation_time: DateTime<Utc>,
     pub status: AlgoRunningStatus,
     pub percent_complete: Option<Decimal>,
     pub fills: Vec<Result<Fill, AberrantFill>>,
