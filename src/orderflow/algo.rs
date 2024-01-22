@@ -63,6 +63,8 @@ pub enum AlgoRunningStatus {
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub struct AlgoStatus {
     pub order_id: OrderId,
+    pub name: Str,
+    pub algo: Str,
     pub creation_time: DateTime<Utc>,
     pub status: AlgoRunningStatus,
     pub percent_complete: Option<Decimal>,
