@@ -20,6 +20,7 @@ pub enum FolioMessage {
         HalfOpenRange<Option<DateTime<Utc>>>,
         Arc<Vec<Result<Fill, AberrantFill>>>,
     ),
+    RealtimeFill(Result<Fill, AberrantFill>),
     GetAllBalances,
     GetBalances(CptyId),
     AllBalances(Vec<(CptyId, Arc<BTreeMap<ProductId, Decimal>>)>),
