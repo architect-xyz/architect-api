@@ -11,6 +11,7 @@ use bytes::Bytes;
 use derive::FromValue;
 use netidx_derive::Pack;
 use serde_derive::{Deserialize, Serialize};
+use std::str::FromStr;
 
 pub mod cficode;
 pub mod cpty;
@@ -31,7 +32,7 @@ pub use venue::{Venue, VenueId};
 /// All named symbology identifiers implement the trait Symbolic, which specifies
 /// some common minimum functionality.
 pub trait Symbolic: Clone + 'static {
-    type Id: Copy + Ord + Eq + From<Str>;
+    type Id: Copy + Ord + Eq + FromStr + From<Str>;
 
     fn id(&self) -> Self::Id;
     fn name(&self) -> Str;
