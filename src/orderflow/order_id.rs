@@ -29,6 +29,10 @@ impl OrderId {
     pub fn new_unchecked(id: u64) -> Self {
         Self(id)
     }
+
+    pub fn to_u64(&self) -> u64 {
+        self.0
+    }
 }
 
 impl FromStr for OrderId {
