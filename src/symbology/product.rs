@@ -32,6 +32,10 @@ impl Product {
 impl Symbolic for Product {
     type Id = ProductId;
 
+    fn type_name() -> &'static str {
+        "product"
+    }
+
     fn id(&self) -> Self::Id {
         self.id
     }

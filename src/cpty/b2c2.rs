@@ -49,7 +49,7 @@ impl TryInto<B2C2Message> for &OrderflowMessage {
         match self {
             OrderflowMessage::Order(o) => Ok(B2C2Message::Order(B2C2Order { order: *o })),
             OrderflowMessage::Cancel(_) => Err(()),
-            OrderflowMessage::Reject(r) => Ok(B2C2Message::Reject(*r)),
+            OrderflowMessage::Reject(r) => Ok(B2C2Message::Reject(r.clone())),
             OrderflowMessage::Ack(_) => Err(()),
             OrderflowMessage::Fill(f) => Ok(B2C2Message::Fill(B2C2Fill { fill: *f })),
             OrderflowMessage::Out(o) => Ok(B2C2Message::Out(*o)),
@@ -63,7 +63,7 @@ impl TryInto<OrderflowMessage> for &B2C2Message {
     fn try_into(self) -> Result<OrderflowMessage, ()> {
         match self {
             B2C2Message::Order(o) => Ok(OrderflowMessage::Order(**o)),
-            B2C2Message::Reject(r) => Ok(OrderflowMessage::Reject(*r)),
+            B2C2Message::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             B2C2Message::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
             B2C2Message::Out(o) => Ok(OrderflowMessage::Out(*o)),
             B2C2Message::ExchangeExternalFills(..) => Err(()),

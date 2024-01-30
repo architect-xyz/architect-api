@@ -29,6 +29,10 @@ impl Venue {
 impl Symbolic for Venue {
     type Id = VenueId;
 
+    fn type_name() -> &'static str {
+        "venue"
+    }
+
     fn id(&self) -> Self::Id {
         self.id
     }

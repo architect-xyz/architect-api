@@ -1,5 +1,6 @@
 use crate::{symbology::MarketId, Dir, OrderId, Str};
 use anyhow::{anyhow, Result};
+use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
@@ -233,15 +234,26 @@ pub struct Cancel {
     pub order_id: OrderId,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct Reject {
     pub order_id: OrderId,
-    pub reason: Str,
+    pub reason: ArcStr,
+}
+
+#[cfg(feature = "juniper")]
+#[cfg_attr(feature = "juniper", juniper::graphql_object)]
+impl Reject {
+    pub fn order_id(&self) -> OrderId {
+        self.order_id
+    }
+
+    pub fn reason(&self) -> &str {
+        &self.reason
+    }
 }
 
 impl Reject {
-    pub fn new(order_id: OrderId, reason: Str) -> Self {
+    pub fn new(order_id: OrderId, reason: ArcStr) -> Self {
         Self { order_id, reason }
     }
 }

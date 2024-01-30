@@ -30,6 +30,10 @@ impl Route {
 impl Symbolic for Route {
     type Id = RouteId;
 
+    fn type_name() -> &'static str {
+        "route"
+    }
+
     fn id(&self) -> Self::Id {
         self.id
     }

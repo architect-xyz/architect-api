@@ -9,6 +9,7 @@ pub mod half_open_range;
 pub mod messaging;
 pub mod option_type;
 pub mod pool;
+pub mod price;
 pub mod secrets;
 pub mod str;
 pub mod uuid_val;

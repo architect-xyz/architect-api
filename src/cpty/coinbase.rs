@@ -65,7 +65,7 @@ impl TryInto<OrderflowMessage> for &CoinbaseMessage {
         match self {
             CoinbaseMessage::Order(o) => Ok(OrderflowMessage::Order(**o)),
             CoinbaseMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
-            CoinbaseMessage::Reject(r) => Ok(OrderflowMessage::Reject(*r)),
+            CoinbaseMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             CoinbaseMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
             CoinbaseMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
             CoinbaseMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
@@ -90,7 +90,7 @@ impl TryInto<CoinbaseMessage> for &OrderflowMessage {
                 Ok(CoinbaseMessage::Order(CoinbaseOrder { order: *o }))
             }
             OrderflowMessage::Cancel(c) => Ok(CoinbaseMessage::Cancel(*c)),
-            OrderflowMessage::Reject(r) => Ok(CoinbaseMessage::Reject(*r)),
+            OrderflowMessage::Reject(r) => Ok(CoinbaseMessage::Reject(r.clone())),
             OrderflowMessage::Ack(a) => Ok(CoinbaseMessage::Ack(*a)),
             OrderflowMessage::Fill(_) => Err(()),
             OrderflowMessage::Out(o) => Ok(CoinbaseMessage::Out(*o)),

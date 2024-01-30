@@ -56,8 +56,8 @@ impl FromStr for Dir {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "BUY" => Ok(Self::Buy),
-            "SELL" => Ok(Self::Sell),
+            "buy" | "Buy" | "BUY" => Ok(Self::Buy),
+            "sell" | "Sell" | "SELL" => Ok(Self::Sell),
             _ => Err(anyhow::anyhow!("invalid format: {s}")),
         }
     }

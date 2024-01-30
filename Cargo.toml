@@ -15,6 +15,7 @@ graphql = ["juniper"]
 
 [dependencies]
 anyhow = { workspace = true }
+arcstr = { workspace = true }
 bytes = { workspace = true }
 chrono = { workspace = true }
 clap = { workspace = true, optional = true }

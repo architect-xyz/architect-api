@@ -21,6 +21,7 @@ pub use utils::{
     component_id::ComponentId,
     dir::Dir,
     dir_pair::DirPair,
+    duration::HumanDuration,
     envelope::{Address, Envelope, RemoteStamp, Stamp},
     half_open_range::HalfOpenRange,
     secrets::MaybeSecret,

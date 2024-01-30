@@ -4,6 +4,7 @@ use crate::{
     symbology::{market::NormalizedMarketInfo, ProductId},
     Dir, Str,
 };
+use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
@@ -61,7 +62,7 @@ impl TryInto<WintermuteMessage> for &OrderflowMessage {
             }
             OrderflowMessage::Ack(a) => Ok(WintermuteMessage::Ack(*a)),
             OrderflowMessage::Cancel(_) => Err(()),
-            OrderflowMessage::Reject(r) => Ok(WintermuteMessage::Reject(*r)),
+            OrderflowMessage::Reject(r) => Ok(WintermuteMessage::Reject(r.clone())),
             OrderflowMessage::Fill(f) => {
                 Ok(WintermuteMessage::Fill(WintermuteFill { fill: *f }))
             }
@@ -77,7 +78,7 @@ impl TryInto<OrderflowMessage> for &WintermuteMessage {
         match self {
             WintermuteMessage::Order(o) => Ok(OrderflowMessage::Order(**o)),
             WintermuteMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
-            WintermuteMessage::Reject(r) => Ok(OrderflowMessage::Reject(*r)),
+            WintermuteMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             WintermuteMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
             WintermuteMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             WintermuteMessage::Balances(_)
@@ -106,7 +107,7 @@ impl TryFrom<&FolioMessage> for WintermuteMessage {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, FromValue, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromValue, Pack)]
 pub struct ExecutionReport {
     pub client_order_id: Str,
     pub order_id: Str,
@@ -123,7 +124,7 @@ pub struct ExecutionReport {
     pub leaves_qty: Decimal,
     pub price: Option<Decimal>,
     pub transact_time: DateTime<Utc>,
-    pub text: Option<Str>,
+    pub text: Option<ArcStr>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, FromValue, Pack)]

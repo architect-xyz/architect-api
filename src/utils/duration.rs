@@ -2,6 +2,42 @@
 
 use anyhow::{anyhow, Result};
 use chrono::Duration;
+use derive::Newtype;
+use netidx_derive::Pack;
+use serde::{Deserialize, Serialize};
+use std::str::FromStr;
+
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Pack,
+    Serialize,
+    Deserialize,
+    Newtype,
+)]
+#[newtype(Deref, DerefMut, From)]
+#[serde(transparent)]
+#[pack(unwrapped)]
+pub struct HumanDuration(
+    #[serde(
+        serialize_with = "serialize_duration",
+        deserialize_with = "deserialize_duration"
+    )]
+    pub Duration,
+);
+
+impl FromStr for HumanDuration {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        parse_duration(s).map(HumanDuration)
+    }
+}
 
 /// Parse a duration string into a `chrono::Duration`.
 ///
@@ -83,7 +119,6 @@ pub fn deserialize_duration_opt<'de, D>(d: D) -> Result<Option<Duration>, D::Err
 where
     D: serde::Deserializer<'de>,
 {
-    use serde::Deserialize;
     let s = Option::<String>::deserialize(d)?;
     match s {
         Some(s) => Ok(Some(parse_duration(&s).map_err(serde::de::Error::custom)?)),

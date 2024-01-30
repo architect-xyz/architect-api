@@ -14,7 +14,7 @@ impl TryInto<OrderflowMessage> for &MockCptyMessage {
 
     fn try_into(self) -> Result<OrderflowMessage, ()> {
         match self {
-            MockCptyMessage::Orderflow(o) => Ok(*o),
+            MockCptyMessage::Orderflow(o) => Ok(o.clone()),
             MockCptyMessage::Folio(_) => Err(()),
         }
     }
@@ -22,7 +22,7 @@ impl TryInto<OrderflowMessage> for &MockCptyMessage {
 
 impl Into<MockCptyMessage> for &OrderflowMessage {
     fn into(self) -> MockCptyMessage {
-        MockCptyMessage::Orderflow(*self)
+        MockCptyMessage::Orderflow(self.clone())
     }
 }
 

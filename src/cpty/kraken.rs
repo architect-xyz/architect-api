@@ -100,7 +100,7 @@ impl TryInto<OrderflowMessage> for &KrakenMessage {
         match self {
             KrakenMessage::Order(o) => Ok(OrderflowMessage::Order(**o)),
             KrakenMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
-            KrakenMessage::Reject(r) => Ok(OrderflowMessage::Reject(*r)),
+            KrakenMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             KrakenMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
             KrakenMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
             KrakenMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),

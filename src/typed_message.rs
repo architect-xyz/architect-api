@@ -21,9 +21,9 @@ use serde::{Deserialize, Serialize};
 #[transitive(WintermuteCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
-#[transitive(Orderflow -> Algo)]
 #[transitive(Orderflow <-> Oms)]
-#[transitive(Algo <-> TwapAlgo)]
+#[transitive(Algo <-> TwapAlgo <- Orderflow)]
+#[transitive(Algo <-> SmartOrderRouterAlgo)]
 #[rustfmt::skip]
 pub enum TypedMessage {
     #[pack(tag(  0))] SystemControl(system_control::SystemControlMessage),
@@ -31,7 +31,7 @@ pub enum TypedMessage {
     #[pack(tag(  2))] OrderAuthority(orderflow::OrderAuthorityMessage),
     #[pack(tag(  3))] Orderflow(orderflow::OrderflowMessage),
     #[pack(tag(  4))] Oms(oms::OmsMessage),
-    #[pack(tag(  5))] Algo(orderflow::algo::AlgoMessage),
+    #[pack(tag(  5))] Algo(algo::AlgoMessage),
     #[pack(tag(  6))] Folio(folio::FolioMessage),
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
@@ -39,6 +39,7 @@ pub enum TypedMessage {
     #[pack(tag(103))] KrakenCpty(cpty::kraken::KrakenMessage),
     #[pack(tag(105))] WintermuteCpty(cpty::wintermute::WintermuteMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
+    #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
 }
 
 impl TypedMessage {
