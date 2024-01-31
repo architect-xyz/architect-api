@@ -154,6 +154,7 @@ pub enum MarketInfo {
     #[pack(tag(102))] Kraken(cpty::kraken::KrakenMarketInfo),
     #[pack(tag(103))] Okx(cpty::okx::OkxMarketInfo),
     #[pack(tag(107))] Wintermute(cpty::wintermute::WintermuteMarketInfo),
+    #[pack(tag(108))] Galaxy(cpty::galaxy::GalaxyMarketInfo),
 }
 
 #[enum_dispatch]
