@@ -1,12 +1,10 @@
-use std::ops::{Deref, DerefMut};
-
+use crate::{folio::FolioMessage, orderflow::*, symbology::market::NormalizedMarketInfo};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
-
-use crate::{folio::FolioMessage, orderflow::*, symbology::market::NormalizedMarketInfo};
+use std::ops::{Deref, DerefMut};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct FalconXMarketInfo {}

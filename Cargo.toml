@@ -1,14 +1,14 @@
 [package]
 authors = ["Architect Financial Technologies LLC"]
+categories = ["finance", "cryptography::cryptocurrencies"]
 description = "Architect.xyz Trading Platform API"
 documentation = "https://docs.rs/architect-api"
+edition = "2021"
 homepage = "https://www.architect.xyz"
+keywords = ["crypto", "hft", "trading", "finance"]
 license = "AGPL-3.0-only"
 name = "architect-api"
 version = "0.2.1"
-edition = "2021"
-keywords = ["crypto", "hft", "trading", "finance"]
-categories = ["finance", "cryptography::cryptocurrencies"]
 
 [features]
 graphql = ["juniper"]
@@ -37,9 +37,9 @@ parking_lot = { workspace = true }
 pest = { workspace = true }
 pest_derive = { workspace = true }
 rand = { workspace = true }
+rusqlite = { workspace = true, optional = true }
 rust_decimal = { workspace = true }
 rust_decimal_macros = { workspace = true }
-rusqlite = { workspace = true, optional = true }
 schemars = { workspace = true }
 serde = { workspace = true }
 serde_derive = { workspace = true }
