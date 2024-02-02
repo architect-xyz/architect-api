@@ -18,6 +18,8 @@ use serde::{Deserialize, Serialize};
 #[transitive(CoinbaseCpty <-> Folio)]
 #[transitive(CoinbaseCpty <-> Orderflow)]
 #[transitive(B2C2Cpty <-> Orderflow)]
+#[transitive(FalconXCpty <-> Folio)]
+#[transitive(FalconXCpty <-> Orderflow)]
 #[transitive(WintermuteCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
@@ -36,6 +38,7 @@ pub enum TypedMessage {
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
     #[pack(tag(101))] B2C2Cpty(cpty::b2c2::B2C2Message),
+    #[pack(tag(106))] FalconXCpty(cpty::falconx::FalconXMessage),
     #[pack(tag(103))] KrakenCpty(cpty::kraken::KrakenMessage),
     #[pack(tag(105))] WintermuteCpty(cpty::wintermute::WintermuteMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
@@ -96,6 +99,7 @@ mod test {
                 Decimal::new(100, 0),
                 Decimal::new(1, 0),
                 false,
+                None,
             )
             .build(),
         ));

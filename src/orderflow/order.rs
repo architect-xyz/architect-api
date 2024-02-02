@@ -19,6 +19,7 @@ pub struct Order {
     pub account: Option<Str>,
     pub order_type: OrderType,
     pub time_in_force: TimeInForce,
+    pub quote_id: Option<Str>,
 }
 
 pub struct OrderBuilder(Order);
@@ -31,6 +32,7 @@ impl OrderBuilder {
         quantity: Decimal,
         limit_price: Decimal,
         post_only: bool,
+        quote_id: Option<Str>,
     ) -> Self {
         Self(Order {
             id,
@@ -40,6 +42,7 @@ impl OrderBuilder {
             account: None,
             order_type: OrderType::Limit(LimitOrderType { limit_price, post_only }),
             time_in_force: TimeInForce::GoodTilCancel,
+            quote_id,
         })
     }
 
@@ -63,6 +66,7 @@ impl OrderBuilder {
                 limit_price,
             }),
             time_in_force,
+            quote_id: None,
         })
     }
 
@@ -86,6 +90,7 @@ impl OrderBuilder {
                 limit_price,
             }),
             time_in_force,
+            quote_id: None,
         })
     }
 

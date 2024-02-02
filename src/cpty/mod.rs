@@ -2,6 +2,7 @@ pub mod b2c2;
 pub mod coinbase;
 pub mod cqg;
 pub mod deribit;
+pub mod falconx;
 pub mod galaxy;
 pub mod kraken;
 pub mod mock;
