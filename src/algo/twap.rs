@@ -36,6 +36,7 @@ pub struct TwapStatus {
     #[serde(flatten)]
     pub algo_status: AlgoStatus,
     pub realized_twap: Option<Decimal>,
+    pub quantity_filled: Decimal,
 }
 
 impl TryInto<AlgoStatus> for &TwapStatus {
