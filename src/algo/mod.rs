@@ -9,6 +9,7 @@ use uuid::Uuid;
 
 pub mod generic_container;
 pub mod smart_order_router;
+pub mod mm;
 pub mod twap;
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]

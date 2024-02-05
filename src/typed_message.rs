@@ -26,6 +26,7 @@ use serde::{Deserialize, Serialize};
 #[transitive(Orderflow <-> Oms)]
 #[transitive(Algo <-> TwapAlgo <- Orderflow)]
 #[transitive(Algo <-> SmartOrderRouterAlgo)]
+#[transitive(Algo <-> MMAlgo <- Orderflow)]
 #[rustfmt::skip]
 pub enum TypedMessage {
     #[pack(tag(  0))] SystemControl(system_control::SystemControlMessage),
@@ -43,6 +44,7 @@ pub enum TypedMessage {
     #[pack(tag(105))] WintermuteCpty(cpty::wintermute::WintermuteMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
+    #[pack(tag(202))] MMAlgo(algo::mm::MMAlgoMessage),
 }
 
 impl TypedMessage {

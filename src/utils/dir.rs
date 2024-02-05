@@ -1,6 +1,8 @@
 use anyhow::{bail, Result};
 use derive::FromValue;
 use netidx_derive::Pack;
+use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
@@ -99,6 +101,13 @@ impl Dir {
             "buy" => Ok(Self::Buy),
             "sell" => Ok(Self::Sell),
             _ => bail!("invalid format: {}", s),
+        }
+    }
+
+    pub fn pos_mult(&self) -> Decimal {
+        match self {
+            Self::Buy => dec!(1),
+            Self::Sell => dec!(-1),
         }
     }
 }
