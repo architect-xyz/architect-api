@@ -8,8 +8,8 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 pub mod generic_container;
-pub mod smart_order_router;
 pub mod mm;
+pub mod smart_order_router;
 pub mod twap;
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]

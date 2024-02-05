@@ -4,7 +4,6 @@ use crate::{
     HumanDuration, OrderId, Str,
 };
 use derive::FromValue;
-use juniper::GraphQLEnum;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -12,7 +11,8 @@ use serde::{Deserialize, Serialize};
 pub type MMAlgoMessage =
     AlgoContainerMessage<MMAlgoOrder, AlgoPreview, MMAlgoStatus, AlgoLog>;
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, GraphQLEnum)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum ReferencePrice {
     Mid,
 }
@@ -49,9 +49,6 @@ pub struct MMAlgoStatus {
     pub sides: DirPair<Side>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
-pub struct MMAlgoStatusSide {}
-
 impl TryInto<AlgoStatus> for &MMAlgoStatus {
     type Error = ();
 
@@ -67,7 +64,8 @@ pub enum Decision {
     Send { price: Decimal, quantity: Decimal },
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, GraphQLEnum)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum Reason {
     MinPosition,
     MaxPosition,

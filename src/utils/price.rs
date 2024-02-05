@@ -36,32 +36,17 @@ pub fn less_agg_by(price: Decimal, by: Decimal, dir: Dir) -> Decimal {
     }
 }
 
-pub fn min_agg(p1: Decimal, p2: Decimal, dir: Dir) -> Decimal {
+pub fn least_agg(p1: Decimal, p2: Decimal, dir: Dir) -> Decimal {
     match dir {
         Dir::Buy => p1.min(p2),
-        Dir::Sell => p1.max(p2)
+        Dir::Sell => p1.max(p2),
     }
 }
 
-
-pub fn max_agg(p1: Decimal, p2: Decimal, dir: Dir) -> Decimal {
+pub fn most_agg(p1: Decimal, p2: Decimal, dir: Dir) -> Decimal {
     match dir {
         Dir::Buy => p1.max(p2),
-        Dir::Sell => p1.min(p2)
-    }
-}
-
-pub fn incr_agg(price: Decimal, by: Decimal, dir: Dir) -> Decimal {
-    match dir {
-        Dir::Buy => price + by,
-        Dir::Sell => price - by,
-    }
-}
-
-pub fn decr_agg(price: Decimal, by: Decimal, dir: Dir) -> Decimal {
-    match dir {
-        Dir::Buy => price - by,
-        Dir::Sell => price + by,
+        Dir::Sell => p1.min(p2),
     }
 }
 

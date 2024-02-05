@@ -104,7 +104,7 @@ impl Dir {
         }
     }
 
-    pub fn pos_mult(&self) -> Decimal {
+    pub fn position_sign(&self) -> Decimal {
         match self {
             Self::Buy => dec!(1),
             Self::Sell => dec!(-1),
