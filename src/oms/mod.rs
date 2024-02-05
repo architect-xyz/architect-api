@@ -41,6 +41,8 @@ pub enum OmsMessage {
     // blocks the Oms for too long; but the option is available
     GetOpenOrders(Uuid),
     GetOpenOrdersResponse(Uuid, Vec<OpenOrder>),
+    GetOrder(Uuid, OrderId),
+    GetOrderResponse(Uuid, Option<Order>),
     GetFills(Uuid, OrderId),
     GetFillsResponse(Uuid, Result<GetFillsResponse, GetFillsError>),
 }
@@ -92,7 +94,9 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
             | OmsMessage::GetOpenOrders(_)
             | OmsMessage::GetOpenOrdersResponse(..)
             | OmsMessage::GetFills(..)
-            | OmsMessage::GetFillsResponse(..) => Err(()),
+            | OmsMessage::GetFillsResponse(..)
+            | OmsMessage::GetOrder(..)
+            | OmsMessage::GetOrderResponse(..) => Err(()),
         }
     }
 }
@@ -162,3 +166,18 @@ impl std::fmt::Display for GetFillsError {
 }
 
 impl std::error::Error for GetFillsError {}
+
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+pub enum GetOrderError {
+    OrderNotFound,
+}
+
+impl std::fmt::Display for GetOrderError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GetOrderError::OrderNotFound => write!(f, "order not found"),
+        }
+    }
+}
+
+impl std::error::Error for GetOrderError {}
