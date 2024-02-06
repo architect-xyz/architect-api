@@ -1,8 +1,7 @@
+use crate::symbology::market::NormalizedMarketInfo;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
-
-use crate::symbology::market::NormalizedMarketInfo;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct DYDXMarketInfo {
