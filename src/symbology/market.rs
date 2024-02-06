@@ -149,6 +149,7 @@ pub enum MarketInfo {
     #[pack(tag(106))] B2C2(cpty::b2c2::B2C2MarketInfo),
     #[pack(tag(100))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
     #[pack(tag(104))] Cqg(cpty::cqg::CqgMarketInfo),
+    #[pack(tag(110))] DYDX(cpty::dydx::DYDXMarketInfo),
     #[pack(tag(105))] Databento(marketdata::databento::DatabentoMarketInfo),
     #[pack(tag(101))] Deribit(cpty::deribit::DeribitMarketInfo),
     #[pack(tag(102))] Kraken(cpty::kraken::KrakenMarketInfo),
