@@ -24,13 +24,6 @@ pub struct Config {
     pub desired_auth: Option<DesiredAuth>,
     #[serde(default)]
     pub bind_config: Option<String>,
-    /// UserDB registration servers
-    #[serde(default = "Config::default_registration_servers")]
-    pub registration_servers: Vec<String>,
-    /// Custom chain of trust for UserDB, for debugging
-    #[cfg(debug_assertions)]
-    #[serde(default)]
-    pub registration_trust_chain: Option<String>,
     #[serde(default = "Config::default_hosted_base")]
     pub hosted_base: Path,
     #[serde(default = "Config::default_local_base")]
@@ -88,10 +81,6 @@ impl Config {
                 Ok(path)
             }
         }
-    }
-
-    fn default_registration_servers() -> Vec<String> {
-        vec!["https://54.163.187.179:5999".into(), "https://35.84.43.204:5999".into()]
     }
 
     fn default_hosted_base() -> Path {
