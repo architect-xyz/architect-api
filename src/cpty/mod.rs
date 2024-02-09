@@ -1,5 +1,6 @@
 pub mod b2c2;
 pub mod coinbase;
+pub mod coinbase_prime;
 pub mod cqg;
 pub mod deribit;
 pub mod dydx;

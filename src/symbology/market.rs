@@ -157,6 +157,7 @@ pub enum MarketInfo {
     #[pack(tag(107))] Wintermute(cpty::wintermute::WintermuteMarketInfo),
     #[pack(tag(108))] Galaxy(cpty::galaxy::GalaxyMarketInfo),
     #[pack(tag(109))] FalconX(cpty::falconx::FalconXMarketInfo),
+    #[pack(tag(111))] CoinbasePrime(cpty::coinbase_prime::CoinbasePrimeMarketInfo),
 }
 
 #[enum_dispatch]
