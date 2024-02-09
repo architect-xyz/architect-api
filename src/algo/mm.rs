@@ -67,6 +67,8 @@ pub enum Decision {
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum Reason {
+    AlgoPaused,
+    AlgoStopped,
     MinPosition,
     MaxPosition,
     WithinFillLockout,
