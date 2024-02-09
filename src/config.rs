@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, path::PathBuf};
 
 /// Component location--local to the installation, or hosted by Architect
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Location {
     Hosted,
     Local,
@@ -37,12 +37,13 @@ pub struct Config {
     /// Use local userdb instead of centralized userdb (for debugging)
     #[serde(default)]
     pub use_local_userdb: bool,
-    /// Use legacy marketdata paths; does not support legacy blockchain marketdata;
-    /// not all subsystems respect this flag
+    /// Use local marketdata paths for the specified cptys
     #[serde(default)]
-    pub use_legacy_marketdata_paths: bool,
+    pub use_local_marketdata: Vec<String>,
+    /// Use legacy marketdata paths for the specified cptys; does not support
+    /// legacy blockchain marketdata; not all subsystems respect this flag
     #[serde(default)]
-    pub marketdata_location_override: HashMap<String, Location>,
+    pub use_legacy_marketdata: Vec<String>,
     #[serde(default)]
     pub secrets_path_override: Option<String>,
     // TODO: these only make sense for core, API config should have some other way
