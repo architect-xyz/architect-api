@@ -102,7 +102,6 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
 }
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct OpenOrder {
     pub timestamp: DateTime<Utc>,
     pub order: Order,

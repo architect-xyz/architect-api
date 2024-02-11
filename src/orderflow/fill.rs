@@ -49,7 +49,6 @@ impl rusqlite::ToSql for FillId {
 }
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Fill {
     pub kind: FillKind,
     pub fill_id: FillId,

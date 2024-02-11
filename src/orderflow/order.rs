@@ -10,7 +10,6 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Order {
     pub id: OrderId,
     pub market: MarketId,
