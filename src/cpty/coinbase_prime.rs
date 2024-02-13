@@ -1,5 +1,3 @@
-use std::ops::{Deref, DerefMut};
-
 use crate::{
     folio::FolioMessage, orderflow::*, symbology::market::NormalizedMarketInfo, Dir, Str,
 };
@@ -8,6 +6,7 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use std::ops::{Deref, DerefMut};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct CoinbasePrimeMarketInfo {
