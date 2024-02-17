@@ -241,7 +241,13 @@ pub struct Cancel {
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct Reject {
     pub order_id: OrderId,
-    pub reason: ArcStr,
+    pub reason: RejectReason,
+}
+
+impl Reject {
+    pub fn new(order_id: OrderId, reason: RejectReason) -> Self {
+        Self { order_id, reason }
+    }
 }
 
 #[cfg(feature = "juniper")]
@@ -251,14 +257,38 @@ impl Reject {
         self.order_id
     }
 
-    pub fn reason(&self) -> &str {
-        &self.reason
+    pub fn reason(&self) -> String {
+        self.reason.to_string()
     }
 }
 
-impl Reject {
-    pub fn new(order_id: OrderId, reason: ArcStr) -> Self {
-        Self { order_id, reason }
+/// Reject reason, includes common reasons as unit enum variants,
+/// but leaves room for custom reasons if needed; although, performance
+/// sensitive components should still supertype their own rejects.
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+pub enum RejectReason {
+    // custom message...can be slow b/c sending the whole string
+    Literal(ArcStr),
+    ComponentNotInitialized,
+    UnknownCpty,
+    UnknownMarket,
+    DuplicateOrderId,
+    #[pack(other)]
+    #[serde(other)]
+    Unknown,
+}
+
+impl std::fmt::Display for RejectReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        use RejectReason::*;
+        match self {
+            Literal(s) => write!(f, "{}", s),
+            ComponentNotInitialized => write!(f, "component not initialized"),
+            UnknownCpty => write!(f, "unknown cpty"),
+            UnknownMarket => write!(f, "unknown market"),
+            DuplicateOrderId => write!(f, "duplicate order id"),
+            Unknown => write!(f, "unknown"),
+        }
     }
 }
 
