@@ -19,3 +19,9 @@ impl<T: Copy> HalfOpenRange<T> {
         Self { from_inclusive: at, to_exclusive: at }
     }
 }
+
+impl<T: Ord> HalfOpenRange<T> {
+    pub fn contains(&self, x: T) -> bool {
+        self.from_inclusive <= x && x < self.to_exclusive
+    }
+}

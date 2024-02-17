@@ -1,4 +1,4 @@
-use crate::{orderflow::*, utils::messaging::MaybeRequest, ComponentId};
+use crate::{orderflow::*, utils::messaging::MaybeRequest, ComponentId, HalfOpenRange};
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use enumflags2::{bitflags, BitFlags};
@@ -8,6 +8,7 @@ use rust_decimal::Decimal;
 use schemars::JsonSchema_repr;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use std::sync::Arc;
 use uuid::Uuid;
 
 pub mod limits_file;
@@ -41,6 +42,10 @@ pub enum OmsMessage {
     // blocks the Oms for too long; but the option is available
     GetOpenOrders(Uuid),
     GetOpenOrdersResponse(Uuid, Vec<OpenOrder>),
+    // retrieve outed orders that the oms knows about; outed orders are retired
+    // from the oms after the configured interval
+    GetOutedOrders(Uuid, HalfOpenRange<DateTime<Utc>>),
+    GetOutedOrdersResponse(Uuid, Arc<Vec<Order>>),
     GetOrder(Uuid, OrderId),
     GetOrderResponse(Uuid, Option<Order>),
     GetFills(Uuid, OrderId),
@@ -50,14 +55,20 @@ pub enum OmsMessage {
 impl MaybeRequest for OmsMessage {
     fn request_id(&self) -> Option<Uuid> {
         match self {
-            OmsMessage::GetFills(id, ..) => Some(*id),
+            OmsMessage::GetOpenOrders(id)
+            | OmsMessage::GetOutedOrders(id, ..)
+            | OmsMessage::GetOrder(id, ..)
+            | OmsMessage::GetFills(id, ..) => Some(*id),
             _ => None,
         }
     }
 
     fn response_id(&self) -> Option<Uuid> {
         match self {
-            OmsMessage::GetFillsResponse(id, ..) => Some(*id),
+            OmsMessage::GetOpenOrdersResponse(id, ..)
+            | OmsMessage::GetOutedOrdersResponse(id, ..)
+            | OmsMessage::GetOrderResponse(id, ..)
+            | OmsMessage::GetFillsResponse(id, ..) => Some(*id),
             _ => None,
         }
     }
@@ -93,6 +104,8 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
             | OmsMessage::FillWarning(..)
             | OmsMessage::GetOpenOrders(_)
             | OmsMessage::GetOpenOrdersResponse(..)
+            | OmsMessage::GetOutedOrders(..)
+            | OmsMessage::GetOutedOrdersResponse(..)
             | OmsMessage::GetFills(..)
             | OmsMessage::GetFillsResponse(..)
             | OmsMessage::GetOrder(..)

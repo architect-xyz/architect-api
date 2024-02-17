@@ -29,4 +29,3 @@ impl std::fmt::Display for CboeDigitalMarketInfo {
         Ok(())
     }
 }
-
