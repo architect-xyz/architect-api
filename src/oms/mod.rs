@@ -1,4 +1,5 @@
 use crate::{orderflow::*, utils::messaging::MaybeRequest, ComponentId, HalfOpenRange};
+use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use enumflags2::{bitflags, BitFlags};
@@ -41,11 +42,11 @@ pub enum OmsMessage {
     // for latency sensitive applications, responding to these requests
     // blocks the Oms for too long; but the option is available
     GetOpenOrders(Uuid),
-    GetOpenOrdersResponse(Uuid, Vec<OpenOrder>),
+    GetOpenOrdersResponse(Uuid, Vec<OrderLog>),
     // retrieve outed orders that the oms knows about; outed orders are retired
     // from the oms after the configured interval
     GetOutedOrders(Uuid, HalfOpenRange<DateTime<Utc>>),
-    GetOutedOrdersResponse(Uuid, Arc<Vec<Order>>),
+    GetOutedOrdersResponse(Uuid, Arc<Vec<OrderLog>>),
     GetOrder(Uuid, OrderId),
     GetOrderResponse(Uuid, Option<Order>),
     GetFills(Uuid, OrderId),
@@ -114,12 +115,14 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
-pub struct OpenOrder {
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+pub struct OrderLog {
     pub timestamp: DateTime<Utc>,
     pub order: Order,
+    pub order_state: OrderState,
     pub filled_qty: Decimal,
     pub avg_fill_price: Option<Decimal>,
+    pub reject_reason: Option<ArcStr>,
 }
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
