@@ -15,6 +15,17 @@ pub type MMAlgoMessage =
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum ReferencePrice {
     Mid,
+    BidAsk,
+    HedgeMarketBidAsk,
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct HedgeMarket {
+    pub market: MarketId,
+    pub conversion_ratio: Decimal,
+    pub premium: Decimal,
+    pub hedge_frac: Decimal,
 }
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
@@ -33,6 +44,7 @@ pub struct MMAlgoOrder {
     pub fill_lockout: HumanDuration,
     pub order_lockout: HumanDuration,
     pub reject_lockout: HumanDuration,
+    pub hedge_market: Option<HedgeMarket>,
 }
 
 impl Into<AlgoOrder> for &MMAlgoOrder {
@@ -46,6 +58,7 @@ pub struct MMAlgoStatus {
     #[serde(flatten)]
     pub algo_status: AlgoStatus,
     pub position: Decimal,
+    pub hedge_position: Decimal,
     pub sides: DirPair<Side>,
 }
 
@@ -75,6 +88,7 @@ pub enum Reason {
     WithinRejectLockout,
     WithinOrderLockout,
     NoReferencePrice,
+    NoReferenceSize,
     NoBid,
     NoAsk,
     OpenOrderWithinTolerance,
@@ -89,6 +103,7 @@ pub struct Side {
     pub last_fill_time: DateTime<Utc>,
     pub last_reject_time: DateTime<Utc>,
     pub open_order: Option<OpenOrder>,
+    pub reference_price: Option<Decimal>,
 }
 
 impl Side {
@@ -99,6 +114,7 @@ impl Side {
             last_fill_time: DateTime::<Utc>::MIN_UTC,
             last_reject_time: DateTime::<Utc>::MIN_UTC,
             open_order: None,
+            reference_price: None,
         }
     }
 }
