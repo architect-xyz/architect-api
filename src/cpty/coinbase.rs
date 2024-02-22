@@ -3,12 +3,19 @@ use crate::{
     orderflow::*,
     symbology::{market::NormalizedMarketInfo, MarketId},
 };
-use derive::FromValue;
+use derive::{FromStrJson, FromValue};
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 use uuid::Uuid;
+use zeroize::Zeroize;
+
+#[derive(Debug, Clone, Pack, FromValue, FromStrJson, Serialize, Deserialize, Zeroize)]
+pub struct CoinbaseCredentials {
+    pub api_key: String,
+    pub api_secret: String,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct CoinbaseMarketInfo {

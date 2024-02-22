@@ -90,6 +90,9 @@ impl<'de, T: DeserializeOwned + FromStr + Zeroize> Deserialize<'de> for MaybeSec
                     // important cases of T = String, &str, etc... at
                     // the cost of requiring FromStr from structs
                     //
+                    // if you're looking for some dumb FromStr to use
+                    // try the FromStrJson macro in derive
+                    //
                     // maybe there's some trick leveraging auto(de)ref
                     // specialization [https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html]
                     // that could help here?

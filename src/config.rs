@@ -43,6 +43,11 @@ pub struct Config {
     pub use_legacy_marketdata: Vec<String>,
     #[serde(default)]
     pub secrets_path_override: Option<String>,
+    /// In addition to netidx-based userdb authentication, restrict users to
+    /// the given authorized domain only.  Subdomains of the domain will also
+    /// be accepted.
+    #[serde(default)]
+    pub authorized_domain: String,
     // TODO: move this to core command-line argument?
     /// Where to mount this core's RPCs and channel; also identifies this core
     pub core_base: Path,

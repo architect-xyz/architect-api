@@ -47,7 +47,7 @@ serde_json = { workspace = true }
 smallvec = { workspace = true }
 tokio = { workspace = true }
 uuid = { workspace = true }
-zeroize = { workspace = true }
+zeroize = { workspace = true, features = ["zeroize_derive"] }
 
 [dev-dependencies]
 serde_yaml = { workspace = true }
