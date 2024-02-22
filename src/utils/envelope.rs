@@ -5,7 +5,9 @@ use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, Pack, FromValue, Serialize, Deserialize,
+)]
 pub enum Address {
     Component(ComponentId),
     Channel(UserId, u32),
@@ -15,6 +17,15 @@ impl From<ComponentId> for Address {
     #[inline(always)]
     fn from(id: ComponentId) -> Self {
         Self::Component(id)
+    }
+}
+
+impl std::fmt::Display for Address {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Address::Component(id) => write!(f, "#{}", id),
+            Address::Channel(user_id, channel) => write!(f, "{}:{}", user_id, channel),
+        }
     }
 }
 
@@ -51,22 +62,20 @@ impl<M> Envelope<M> {
         Self {
             src: Address::Component(ComponentId::none()),
             dst: Address::Component(ComponentId::none()),
-            stamp: Stamp::Unstamped,
+            stamp: Stamp::default(),
             msg,
         }
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
-pub enum Stamp {
-    Unstamped,
-    Local(u64),
-    Remote(RemoteStamp),
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
+pub struct Stamp {
+    pub user_id: Option<UserId>,
+    pub sequence: Option<Sequence>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
-pub struct RemoteStamp {
-    pub core_id: Uuid,
-    pub last_seqno: Option<u64>,
-    pub seqno: u64,
+pub enum Sequence {
+    Local(u64),
+    Remote { core_id: Uuid, last_seqno: Option<u64>, seqno: u64 },
 }

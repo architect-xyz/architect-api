@@ -28,6 +28,12 @@ use uuid::Uuid;
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar), graphql(transparent))]
 pub struct FillId(Uuid);
 
+impl FillId {
+    pub fn nil() -> Self {
+        FillId(Uuid::nil())
+    }
+}
+
 impl Default for FillId {
     fn default() -> Self {
         FillId(Uuid::new_v4())

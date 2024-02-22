@@ -22,7 +22,7 @@ pub use utils::{
     dir::Dir,
     dir_pair::DirPair,
     duration::HumanDuration,
-    envelope::{Address, Envelope, RemoteStamp, Stamp},
+    envelope::{Address, Envelope, Sequence, Stamp},
     half_open_range::HalfOpenRange,
     secrets::MaybeSecret,
     str::Str,

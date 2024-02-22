@@ -28,9 +28,6 @@ pub struct Config {
     pub hosted_base: Path,
     #[serde(default = "Config::default_local_base")]
     pub local_base: Path,
-    // TODO: move this to core command-line argument?
-    /// Where to mount this core's RPCs and channel; also identifies this core
-    pub core_base: Path,
     /// Use local symbology instead of centralized symbology
     #[serde(default)]
     pub use_local_symbology: bool,
@@ -46,6 +43,9 @@ pub struct Config {
     pub use_legacy_marketdata: Vec<String>,
     #[serde(default)]
     pub secrets_path_override: Option<String>,
+    // TODO: move this to core command-line argument?
+    /// Where to mount this core's RPCs and channel; also identifies this core
+    pub core_base: Path,
     // TODO: these only make sense for core, API config should have some other way
     // for that matter, who has a consistent view of topology?
     //

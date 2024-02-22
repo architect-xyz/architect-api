@@ -8,7 +8,6 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum SystemControlMessage {
-    Channel(u32), // sent to clients on channel connection
     Snapshot(SystemSnapshot),
     DebugSnapshot(DebugSystemSnapshot), // for integration testing
     SymbologyReady,
