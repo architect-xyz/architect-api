@@ -7,10 +7,11 @@ use crate::{
     Dir, OrderId,
 };
 use chrono::{DateTime, Utc};
-use derive::FromValue;
+use derive::{FromStrJson, FromValue};
 use netidx_derive::Pack;
 use rust_decimal::{prelude::FromPrimitive, Decimal};
 use serde::{Deserialize, Serialize};
+use zeroize::Zeroize;
 use std::ops::{Deref, DerefMut};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
@@ -183,4 +184,10 @@ pub struct KrakenExternalFill {
     pub quantity: Decimal,
     pub price: Decimal,
     pub dir: Dir,
+}
+
+#[derive(Debug, Clone, Pack, FromValue, FromStrJson, Serialize, Deserialize, Zeroize)]
+pub struct KrakenCredentials {
+    pub api_key: String,
+    pub api_secret: String,
 }
