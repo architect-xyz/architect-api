@@ -135,6 +135,7 @@ impl Into<OmsRejectReason> for &RejectReason {
             R::Literal(s) if s == &WOULD_EXCEED_OPEN_SELL_QTY => WouldExceedOpenSellQty,
             R::Literal(s) if s == &WOULD_EXCEED_OPEN_QTY => WouldExceedOpenQty,
             R::Literal(s) if s == &WOULD_EXCEED_POS_LIMIT => WouldExceedPosLimit,
+            R::Literal(s) => Literal(s.clone()),
             _ => Unknown,
         }
     }
