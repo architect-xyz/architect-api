@@ -53,7 +53,7 @@ pub enum OmsMessage {
     GetFillsResponse(Uuid, Result<GetFillsResponse, GetFillsError>),
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct OmsReject {
     pub order_id: OrderId,
     pub reason: OmsRejectReason,
@@ -77,7 +77,7 @@ impl Into<OmsReject> for &Reject {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub enum OmsRejectReason {
     NotInitialized,
     RateLimitExceeded,
@@ -88,6 +88,7 @@ pub enum OmsRejectReason {
     WouldExceedOpenSellQty,
     WouldExceedOpenQty,
     WouldExceedPosLimit,
+    Literal(ArcStr),
     #[pack(other)]
     #[serde(other)]
     Unknown,
@@ -114,6 +115,7 @@ impl Into<RejectReason> for OmsRejectReason {
             WouldExceedOpenSellQty => R::Literal(WOULD_EXCEED_OPEN_SELL_QTY),
             WouldExceedOpenQty => R::Literal(WOULD_EXCEED_OPEN_QTY),
             WouldExceedPosLimit => R::Literal(WOULD_EXCEED_POS_LIMIT),
+            Literal(s) => R::Literal(s),
             Unknown => R::Unknown,
         }
     }
@@ -180,7 +182,7 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
         match self {
             OmsMessage::Order(msg) => Ok(OrderflowMessage::Order(*msg)),
             OmsMessage::Cancel(msg) => Ok(OrderflowMessage::Cancel(*msg)),
-            OmsMessage::Reject(msg) => Ok(OrderflowMessage::Reject((*msg).into())),
+            OmsMessage::Reject(msg) => Ok(OrderflowMessage::Reject(msg.clone().into())),
             OmsMessage::Ack(msg) => Ok(OrderflowMessage::Ack(*msg)),
             OmsMessage::Fill(msg) => Ok(OrderflowMessage::Fill(*msg)),
             OmsMessage::Out(msg) => Ok(OrderflowMessage::Out(*msg)),
