@@ -1,4 +1,6 @@
-use anyhow::Result;
+use anyhow::{bail, Result};
+use base64::Engine;
+use compact_str::CompactString;
 use netidx_derive::Pack;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -32,6 +34,24 @@ impl OrderId {
 
     pub fn to_u64(&self) -> u64 {
         self.0
+    }
+
+    pub fn encode_base64(&self) -> Result<CompactString> {
+        let base64 = base64::engine::general_purpose::STANDARD;
+        let bytes = self.0.to_be_bytes();
+        let mut output_buf: [u8; 12] = [0; 12];
+        let size = base64.encode_slice(&bytes, &mut output_buf)?;
+        let cs = CompactString::from_utf8_lossy(&output_buf[0..size]);
+        Ok(cs)
+    }
+
+    pub fn decode_base64(input: impl AsRef<[u8]>) -> Result<Self> {
+        let bytes = base64::engine::general_purpose::STANDARD.decode(input)?;
+        if bytes.len() != 8 {
+            bail!("incorrect number of bytes to decode OrderId from base64");
+        }
+        let oid = u64::from_be_bytes(bytes.as_slice().try_into().unwrap()); // can't fail
+        Ok(Self(oid))
     }
 }
 

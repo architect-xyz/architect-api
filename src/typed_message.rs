@@ -23,6 +23,7 @@ use serde::{Deserialize, Serialize};
 #[transitive(FalconXCpty <-> Folio)]
 #[transitive(FalconXCpty <-> Orderflow)]
 #[transitive(WintermuteCpty <-> Folio)]
+#[transitive(GalaxyCpty <-> Orderflow)]
 #[transitive(WintermuteCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
@@ -46,6 +47,7 @@ pub enum TypedMessage {
     #[pack(tag(103))] KrakenCpty(cpty::kraken::KrakenMessage),
     #[pack(tag(105))] WintermuteCpty(cpty::wintermute::WintermuteMessage),
     #[pack(tag(107))] CoinbasePrimeCpty(cpty::coinbase_prime::CoinbasePrimeMessage),
+    #[pack(tag(108))] GalaxyCpty(cpty::galaxy::GalaxyMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
     #[pack(tag(202))] MMAlgo(algo::mm::MMAlgoMessage),
