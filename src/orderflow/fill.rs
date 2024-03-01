@@ -7,7 +7,9 @@ use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::fmt::Display;
-use uuid::Uuid;
+use uuid::{uuid, Uuid};
+
+static FILL_NS: Uuid = uuid!("c5e7ca09-1223-4f3a-9ba9-609b8d07629d");
 
 /// The ID of a fill
 #[derive(
@@ -29,6 +31,11 @@ use uuid::Uuid;
 pub struct FillId(Uuid);
 
 impl FillId {
+    /// This function will always generate the same UUID for the identifier provided
+    pub fn from_id(id: &str) -> Self {
+        FillId(Uuid::new_v5(&FILL_NS, id.as_bytes()))
+    }
+
     pub fn nil() -> Self {
         FillId(Uuid::nil())
     }

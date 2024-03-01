@@ -15,20 +15,22 @@ use serde::{Deserialize, Serialize};
 /// compatibility, such as explicit tagging of variants, and avoiding breaking 
 /// changes to the component message types.
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, FromInner, TryIntoAnyInner)]
+#[transitive(B2C2Cpty <-> Orderflow)]
 #[transitive(CoinbaseCpty <-> Folio)]
 #[transitive(CoinbaseCpty <-> Orderflow)]
-#[transitive(B2C2Cpty <-> Orderflow)]
 #[transitive(CoinbasePrimeCpty <-> Folio)]
 #[transitive(CoinbasePrimeCpty <-> Orderflow)]
 #[transitive(CumberlandCpty <-> Orderflow)]
 #[transitive(CumberlandCpty <-> Folio)]
+#[transitive(DeribitCpty <-> Folio)]
+#[transitive(DeribitCpty <-> Orderflow)]
 #[transitive(FalconXCpty <-> Folio)]
 #[transitive(FalconXCpty <-> Orderflow)]
-#[transitive(WintermuteCpty <-> Folio)]
 #[transitive(GalaxyCpty <-> Orderflow)]
-#[transitive(WintermuteCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
+#[transitive(WintermuteCpty <-> Folio)]
+#[transitive(WintermuteCpty <-> Orderflow)]
 #[transitive(Orderflow <-> Oms)]
 #[transitive(Algo <-> TwapAlgo <- Orderflow)]
 #[transitive(Algo <-> SmartOrderRouterAlgo)]
@@ -45,12 +47,13 @@ pub enum TypedMessage {
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
     #[pack(tag(101))] B2C2Cpty(cpty::b2c2::B2C2Message),
-    #[pack(tag(109))] CumberlandCpty(cpty::cumberland::CumberlandMessage),
-    #[pack(tag(106))] FalconXCpty(cpty::falconx::FalconXMessage),
     #[pack(tag(103))] KrakenCpty(cpty::kraken::KrakenMessage),
+    #[pack(tag(104))] DeribitCpty(cpty::deribit::DeribitMessage),
     #[pack(tag(105))] WintermuteCpty(cpty::wintermute::WintermuteMessage),
+    #[pack(tag(106))] FalconXCpty(cpty::falconx::FalconXMessage),
     #[pack(tag(107))] CoinbasePrimeCpty(cpty::coinbase_prime::CoinbasePrimeMessage),
     #[pack(tag(108))] GalaxyCpty(cpty::galaxy::GalaxyMessage),
+    #[pack(tag(109))] CumberlandCpty(cpty::cumberland::CumberlandMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
     #[pack(tag(202))] MMAlgo(algo::mm::MMAlgoMessage),

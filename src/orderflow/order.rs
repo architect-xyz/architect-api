@@ -139,7 +139,10 @@ pub struct TakeProfitLimitOrderType {
 pub enum TimeInForce {
     GoodTilCancel,
     GoodTilDate(DateTime<Utc>),
+    /// Day order--the specific time which this expires will be dependent on the venue
+    GoodTilDay,
     ImmediateOrCancel,
+    FillOrKill,
 }
 
 impl TimeInForce {
@@ -152,7 +155,9 @@ impl TimeInForce {
             "GTD" => Ok(Self::GoodTilDate(
                 good_til_date.ok_or_else(|| anyhow!("GTD requires good_til_date"))?,
             )),
+            "DAY" => Ok(Self::GoodTilDay),
             "IOC" => Ok(Self::ImmediateOrCancel),
+            "FOK" => Ok(Self::FillOrKill),
             _ => Err(anyhow!("unknown time-in-force instruction: {}", instruction)),
         }
     }
@@ -165,7 +170,9 @@ impl TimeInForce {
         match self {
             Self::GoodTilCancel => "GTC",
             Self::GoodTilDate(_) => "GTD",
+            Self::GoodTilDay => "DAY",
             Self::ImmediateOrCancel => "IOC",
+            Self::FillOrKill => "FOK",
         }
     }
 
@@ -180,7 +187,7 @@ impl TimeInForce {
 #[cfg(feature = "clap")]
 #[cfg_attr(feature = "clap", derive(clap::Args))]
 pub struct TimeInForceArgs {
-    /// GTC, GTD, IOC
+    /// GTC, GTD, IOC, DAY, FOK
     #[arg(long, default_value = "GTC")]
     time_in_force: String,
     /// If TIF instruction is GTD, the datetime or relative duration from now;
