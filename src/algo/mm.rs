@@ -49,7 +49,8 @@ pub struct MMAlgoOrder {
 
 impl Into<AlgoOrder> for &MMAlgoOrder {
     fn into(self) -> AlgoOrder {
-        AlgoOrder { order_id: self.order_id, algo: Str::try_from("MM").unwrap() }
+        let algo = if self.hedge_market.is_some() { "Spread" } else { "MM" };
+        AlgoOrder { order_id: self.order_id, algo: Str::try_from(algo).unwrap() }
     }
 }
 
@@ -60,6 +61,7 @@ pub struct MMAlgoStatus {
     pub position: Decimal,
     pub hedge_position: Decimal,
     pub sides: DirPair<Side>,
+    pub kind: MMAlgoKind,
 }
 
 impl TryInto<AlgoStatus> for &MMAlgoStatus {
@@ -68,6 +70,13 @@ impl TryInto<AlgoStatus> for &MMAlgoStatus {
     fn try_into(self) -> Result<AlgoStatus, ()> {
         Ok(self.algo_status)
     }
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+pub enum MMAlgoKind {
+    MM,
+    Spread,
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
