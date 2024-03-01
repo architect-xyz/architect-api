@@ -20,6 +20,8 @@ use serde::{Deserialize, Serialize};
 #[transitive(B2C2Cpty <-> Orderflow)]
 #[transitive(CoinbasePrimeCpty <-> Folio)]
 #[transitive(CoinbasePrimeCpty <-> Orderflow)]
+#[transitive(CumberlandCpty <-> Orderflow)]
+#[transitive(CumberlandCpty <-> Folio)]
 #[transitive(FalconXCpty <-> Folio)]
 #[transitive(FalconXCpty <-> Orderflow)]
 #[transitive(WintermuteCpty <-> Folio)]
@@ -43,6 +45,7 @@ pub enum TypedMessage {
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
     #[pack(tag(101))] B2C2Cpty(cpty::b2c2::B2C2Message),
+    #[pack(tag(109))] CumberlandCpty(cpty::cumberland::CumberlandMessage),
     #[pack(tag(106))] FalconXCpty(cpty::falconx::FalconXMessage),
     #[pack(tag(103))] KrakenCpty(cpty::kraken::KrakenMessage),
     #[pack(tag(105))] WintermuteCpty(cpty::wintermute::WintermuteMessage),

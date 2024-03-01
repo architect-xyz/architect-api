@@ -3,6 +3,7 @@ pub mod cboe_digital;
 pub mod coinbase;
 pub mod coinbase_prime;
 pub mod cqg;
+pub mod cumberland;
 pub mod deribit;
 pub mod dydx;
 pub mod falconx;

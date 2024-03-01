@@ -150,6 +150,7 @@ pub enum MarketInfo {
     #[pack(tag(112))] CboeDigital(cpty::cboe_digital::CboeDigitalMarketInfo),
     #[pack(tag(100))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
     #[pack(tag(104))] Cqg(cpty::cqg::CqgMarketInfo),
+    #[pack(tag(113))] Cumberland(cpty::cumberland::CumberlandMarketInfo),
     #[pack(tag(110))] DYDX(cpty::dydx::DYDXMarketInfo),
     #[pack(tag(105))] Databento(marketdata::databento::DatabentoMarketInfo),
     #[pack(tag(101))] Deribit(cpty::deribit::DeribitMarketInfo),
