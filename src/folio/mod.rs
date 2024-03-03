@@ -14,7 +14,16 @@ pub static SCHEMA: &'static str = include_str!("schema.sql");
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum FolioMessage {
-    GetFills(CptyId, HalfOpenRange<Option<DateTime<Utc>>>),
+    GetFillsQuery(MarketFilter, HalfOpenRange<Option<DateTime<Utc>>>),
+    GetFillsQueryResponse(
+        MarketFilter, 
+        HalfOpenRange<Option<DateTime<Utc>>>,
+        Arc<Vec<Result<Fill, AberrantFill>>>,
+    ),
+    GetFills(
+        CptyId,
+        HalfOpenRange<Option<DateTime<Utc>>>,
+    ),
     Fills(
         CptyId,
         HalfOpenRange<Option<DateTime<Utc>>>,
@@ -32,4 +41,12 @@ pub enum FolioMessage {
     SyncFillsBackward(CptyId),
     InvalidateSyncBefore(CptyId, DateTime<Utc>),
     InvalidateSyncAfter(CptyId, DateTime<Utc>),
+}
+
+#[derive(Copy, Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
+pub struct MarketFilter {
+    pub venue: Option<VenueId>,
+    pub route: Option<RouteId>,
+    pub base: Option<ProductId>,
+    pub quote: Option<ProductId>,
 }
