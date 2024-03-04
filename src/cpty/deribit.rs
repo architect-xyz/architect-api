@@ -1,8 +1,7 @@
 use crate::{
     folio::FolioMessage,
     orderflow::{
-        AberrantFill, Ack, Cancel, Fill, Order, OrderIdAllocation, OrderStateFlags,
-        OrderType, OrderflowMessage, Out, Reject, TimeInForce,
+        AberrantFill, Ack, Cancel, Fill, Order, OrderIdAllocation, OrderSource, OrderStateFlags, OrderType, OrderflowMessage, Out, Reject, TimeInForce
     },
     symbology::{market::NormalizedMarketInfo, CptyId, MarketId},
     Address, Dir, HalfOpenRange, OrderId, Str,
@@ -233,6 +232,7 @@ impl DeribitExternalOrderAck {
             order_type: self.order_type,
             time_in_force: self.time_in_force,
             quote_id: None,
+            source: OrderSource::External,
         };
         Ok(DeribitOrder { order })
     }

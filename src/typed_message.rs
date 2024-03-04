@@ -96,7 +96,7 @@ impl<A, B> MaybeSplit<A, B> {
 mod test {
     use super::*;
     use crate::{
-        orderflow::{OrderBuilder, OrderId, Out},
+        orderflow::{OrderBuilder, OrderId, OrderSource, Out},
         symbology::MarketId,
     };
     use anyhow::Result;
@@ -114,6 +114,7 @@ mod test {
                 Decimal::new(1, 0),
                 false,
                 None,
+                OrderSource::API,
             )
             .build(),
         ));

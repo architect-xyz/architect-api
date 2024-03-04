@@ -19,6 +19,17 @@ pub struct Order {
     pub order_type: OrderType,
     pub time_in_force: TimeInForce,
     pub quote_id: Option<Str>,
+    pub source: OrderSource,
+}
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[repr(u8)]
+pub enum OrderSource {
+    API,
+    GUI,
+    Algo,
+    External,
 }
 
 pub struct OrderBuilder(Order);
@@ -32,6 +43,7 @@ impl OrderBuilder {
         limit_price: Decimal,
         post_only: bool,
         quote_id: Option<Str>,
+        source: OrderSource,
     ) -> Self {
         Self(Order {
             id,
@@ -42,6 +54,7 @@ impl OrderBuilder {
             order_type: OrderType::Limit(LimitOrderType { limit_price, post_only }),
             time_in_force: TimeInForce::GoodTilCancel,
             quote_id,
+            source,
         })
     }
 
@@ -53,6 +66,7 @@ impl OrderBuilder {
         limit_price: Decimal,
         trigger_price: Decimal,
         time_in_force: TimeInForce,
+        source: OrderSource,
     ) -> Self {
         Self(Order {
             id,
@@ -66,6 +80,7 @@ impl OrderBuilder {
             }),
             time_in_force,
             quote_id: None,
+            source,
         })
     }
 
@@ -77,6 +92,7 @@ impl OrderBuilder {
         limit_price: Decimal,
         trigger_price: Decimal,
         time_in_force: TimeInForce,
+        source: OrderSource,
     ) -> Self {
         Self(Order {
             id,
@@ -90,6 +106,7 @@ impl OrderBuilder {
             }),
             time_in_force,
             quote_id: None,
+            source,
         })
     }
 
