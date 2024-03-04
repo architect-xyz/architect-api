@@ -16,14 +16,11 @@ pub static SCHEMA: &'static str = include_str!("schema.sql");
 pub enum FolioMessage {
     GetFillsQuery(MarketFilter, HalfOpenRange<Option<DateTime<Utc>>>),
     GetFillsQueryResponse(
-        MarketFilter, 
+        MarketFilter,
         HalfOpenRange<Option<DateTime<Utc>>>,
         Arc<Vec<Result<Fill, AberrantFill>>>,
     ),
-    GetFills(
-        CptyId,
-        HalfOpenRange<Option<DateTime<Utc>>>,
-    ),
+    GetFills(CptyId, HalfOpenRange<Option<DateTime<Utc>>>),
     Fills(
         CptyId,
         HalfOpenRange<Option<DateTime<Utc>>>,

@@ -4,6 +4,7 @@ use crate::{
 };
 use chrono::{DateTime, Utc};
 use derive::FromValue;
+use enumflags2::bitflags;
 use netidx::{path::Path, pool::Pooled};
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
@@ -72,6 +73,7 @@ pub enum MessageHeader {
 
 #[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq, Serialize, Pack, FromValue)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[bitflags]
 #[repr(u8)]
 pub enum CandleWidth {
     OneSecond,
