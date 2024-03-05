@@ -27,6 +27,8 @@ use serde::{Deserialize, Serialize};
 #[transitive(FalconXCpty <-> Folio)]
 #[transitive(FalconXCpty <-> Orderflow)]
 #[transitive(GalaxyCpty <-> Orderflow)]
+#[transitive(KrakenCpty <-> Folio)]
+#[transitive(KrakenCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
 #[transitive(WintermuteCpty <-> Folio)]

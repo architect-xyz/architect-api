@@ -1,4 +1,5 @@
 use crate::{
+    folio::FolioMessage,
     orderflow::{
         AberrantFill, Ack, Cancel, Fill, Order, OrderType, OrderflowMessage, Out, Reject,
         TimeInForce,
@@ -92,6 +93,7 @@ pub enum KrakenMessage {
     ExchangeExternalOrderNew(OrderId, KrakenExternalOrder),
     ExchangeExternalOrderOut(KrakenExchangeId),
     ExchangeExternalFill(KrakenExternalFill),
+    Folio(FolioMessage),
 }
 
 impl TryInto<OrderflowMessage> for &KrakenMessage {
@@ -110,8 +112,45 @@ impl TryInto<OrderflowMessage> for &KrakenMessage {
             | KrakenMessage::ExchangeFill(..)
             | KrakenMessage::ExchangeExternalOrderNew(..)
             | KrakenMessage::ExchangeExternalFill(..)
-            | KrakenMessage::ExchangeExternalOrderOut(..) => Err(()),
+            | KrakenMessage::ExchangeExternalOrderOut(..)
+            | KrakenMessage::Folio(..) => Err(()),
         }
+    }
+}
+
+impl TryInto<KrakenMessage> for &OrderflowMessage {
+    type Error = ();
+
+    fn try_into(self) -> Result<KrakenMessage, ()> {
+        match self {
+            OrderflowMessage::Order(o) => {
+                Ok(KrakenMessage::Order(KrakenOrder { order: *o }))
+            }
+            OrderflowMessage::Cancel(c) => Ok(KrakenMessage::Cancel(*c)),
+            OrderflowMessage::Reject(r) => Ok(KrakenMessage::Reject(r.clone())),
+            OrderflowMessage::Ack(a) => Ok(KrakenMessage::Ack(*a)),
+            OrderflowMessage::Fill(_) => Err(()),
+            OrderflowMessage::Out(o) => Ok(KrakenMessage::Out(*o)),
+        }
+    }
+}
+
+impl TryInto<FolioMessage> for &KrakenMessage {
+    type Error = ();
+
+    fn try_into(self) -> Result<FolioMessage, ()> {
+        match self {
+            KrakenMessage::Folio(f) => Ok(f.clone()),
+            _ => Err(()),
+        }
+    }
+}
+
+impl TryFrom<&FolioMessage> for KrakenMessage {
+    type Error = ();
+
+    fn try_from(f: &FolioMessage) -> Result<Self, ()> {
+        Ok(Self::Folio(f.clone()))
     }
 }
 
@@ -122,13 +161,11 @@ pub type KrakenUserRef = i32;
 pub struct KrakenOrder {
     #[serde(flatten)]
     pub order: Order,
-    #[allow(dead_code)]
-    pub special_kraken_flag: (),
 }
 
 impl From<Order> for KrakenOrder {
     fn from(order: Order) -> Self {
-        Self { order, special_kraken_flag: () }
+        Self { order }
     }
 }
 
