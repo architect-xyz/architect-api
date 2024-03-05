@@ -41,6 +41,10 @@ pub struct Config {
     /// legacy blockchain marketdata; not all subsystems respect this flag
     #[serde(default)]
     pub use_legacy_marketdata: Vec<String>,
+    /// Use legacy marketdata paths for the specified cptys, for historical
+    /// marketdata only.  Live marketdata will use new-style paths.
+    #[serde(default)]
+    pub use_legacy_hist_marketdata: Vec<String>,
     #[serde(default)]
     pub secrets_path_override: Option<String>,
     /// In addition to netidx-based userdb authentication, restrict users to
