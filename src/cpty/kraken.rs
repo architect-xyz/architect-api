@@ -76,6 +76,7 @@ impl std::fmt::Display for KrakenMarketInfo {
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum KrakenMessage {
+    Initialize,
     Order(KrakenOrder),
     Cancel(Cancel),
     Reject(Reject),
@@ -108,6 +109,7 @@ impl TryInto<OrderflowMessage> for &KrakenMessage {
             KrakenMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
             KrakenMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             KrakenMessage::ExchangeOrderUpdate(..)
+            | KrakenMessage::Initialize
             | KrakenMessage::ExchangeAck(..)
             | KrakenMessage::ExchangeFill(..)
             | KrakenMessage::ExchangeExternalOrderNew(..)
