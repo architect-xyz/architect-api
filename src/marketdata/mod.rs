@@ -2,6 +2,7 @@ use crate::{
     symbology::{MarketId, ProductId, VenueId},
     Dir, DirPair,
 };
+use anyhow::anyhow;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use enumflags2::bitflags;
@@ -9,6 +10,7 @@ use netidx::{path::Path, pool::Pooled};
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 
 pub mod databento;
 
@@ -93,6 +95,22 @@ impl CandleWidth {
             Self::FifteenMinute => "15m",
             Self::OneHour => "1h",
             Self::OneDay => "1d",
+        }
+    }
+}
+
+impl FromStr for CandleWidth {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "1s" => Ok(Self::OneSecond),
+            "5s" => Ok(Self::FiveSecond),
+            "1m" => Ok(Self::OneMinute),
+            "15m" => Ok(Self::FifteenMinute),
+            "1h" => Ok(Self::OneHour),
+            "1d" => Ok(Self::OneDay),
+            _ => Err(anyhow!("invalid candle width: {}", s)),
         }
     }
 }

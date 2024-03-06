@@ -1,7 +1,7 @@
 //! Utility functions for working with durations
 
 use anyhow::{anyhow, Result};
-use chrono::Duration;
+use chrono::{DateTime, Duration, Utc};
 use derive::Newtype;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
@@ -36,6 +36,45 @@ impl FromStr for HumanDuration {
 
     fn from_str(s: &str) -> Result<Self> {
         parse_duration(s).map(HumanDuration)
+    }
+}
+
+/// Helper struct to parse from either an absolute ISO 8601 datetime,
+/// or some duration relative to now (e.g. +1h, -3d, etc.)
+#[derive(Debug, Clone)]
+pub enum AbsoluteOrRelativeTime {
+    Absolute(DateTime<Utc>),
+    RelativeFuture(Duration),
+    RelativePast(Duration),
+}
+
+impl AbsoluteOrRelativeTime {
+    pub fn resolve_to(&self, now: DateTime<Utc>) -> DateTime<Utc> {
+        match self {
+            Self::Absolute(dt) => *dt,
+            Self::RelativeFuture(d) => now + *d,
+            Self::RelativePast(d) => now - *d,
+        }
+    }
+
+    pub fn resolve(&self) -> DateTime<Utc> {
+        self.resolve_to(Utc::now())
+    }
+}
+
+impl FromStr for AbsoluteOrRelativeTime {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        if s.starts_with('+') {
+            Ok(Self::RelativeFuture(parse_duration(&s[1..])?))
+        } else if s.starts_with('_') || s.starts_with("~") {
+            // CR-someday alee: clap is actually a bad library in a lot of ways, including
+            // not understanding a leading '-' in argument value following a flag
+            Ok(Self::RelativePast(parse_duration(&s[1..])?))
+        } else {
+            Ok(Self::Absolute(DateTime::from_str(s)?))
+        }
     }
 }
 
