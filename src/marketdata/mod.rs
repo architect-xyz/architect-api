@@ -223,4 +223,13 @@ pub struct MarketSnapshot {
     pub low_24h: Option<Decimal>,
     pub open_24h: Option<Decimal>,
     pub volume_24h: Option<Decimal>,
+    pub open_interest: Option<Decimal>,
+    pub delta: Option<Decimal>,
+    pub gamma: Option<Decimal>,
+    pub theta: Option<Decimal>,
+    pub vega: Option<Decimal>,
+    pub rho: Option<Decimal>,
+    pub bid_iv: Option<Decimal>,
+    pub ask_iv: Option<Decimal>,
+    pub underlying_price: Option<Decimal>,
 }
