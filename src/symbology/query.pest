@@ -7,7 +7,7 @@ char = {
     | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
 }
 tag_all = { "All" }
-tag_stringlike = { "Base" | "BaseKind" | "Quote" | "Pool" | "Venue" | "Route" | "Underlying" }
+tag_stringlike = { "Regex" | "Base" | "BaseKind" | "Quote" | "Pool" | "Venue" | "Route" | "Underlying" }
 variant_stringlike = { tag_stringlike ~ "(" ~ quoted_identifier ~ ")" }
 bin_op = _{ and | or }
 and = { "&&" | "and" }

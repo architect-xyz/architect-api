@@ -20,6 +20,7 @@ use serde::Deserialize;
 #[serde(tag = "type", content = "value")]
 pub enum Query {
     All,
+    Regex(Str),
     Base(Str),
     BaseKind(Str),
     Quote(Str),
@@ -65,6 +66,7 @@ fn parse_expr(pairs: Pairs<Rule>) -> Query {
                 let tag = inner.next().unwrap().as_str();
                 let quoted = inner.next().unwrap().as_str();
                 match tag {
+                    "Regex" => Query::Regex(Str::try_from(quoted).unwrap()),
                     "Base" => Query::Base(Str::try_from(quoted).unwrap()),
                     "BaseKind" => Query::BaseKind(Str::try_from(quoted).unwrap()),
                     "Quote" => Query::Quote(Str::try_from(quoted).unwrap()),
