@@ -9,6 +9,7 @@ use uuid::Uuid;
 
 pub mod generic_container;
 pub mod mm;
+pub mod pov;
 pub mod smart_order_router;
 pub mod twap;
 
