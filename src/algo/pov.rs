@@ -1,6 +1,7 @@
 use super::*;
 use crate::{
-    algo::generic_container::AlgoContainerMessage, symbology::MarketId, Dir, HumanDuration, OrderId, Str
+    algo::generic_container::AlgoContainerMessage, symbology::MarketId, Dir,
+    HumanDuration, OrderId, Str,
 };
 use chrono::{DateTime, Utc};
 use derive::FromValue;
@@ -8,7 +9,8 @@ use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-pub type PovAlgoMessage = AlgoContainerMessage<PovAlgoOrder, AlgoPreview, PovAlgoStatus, AlgoLog>;
+pub type PovAlgoMessage =
+    AlgoContainerMessage<PovAlgoOrder, AlgoPreview, PovAlgoStatus, AlgoLog>;
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub struct PovAlgoOrder {
@@ -48,4 +50,3 @@ impl TryInto<AlgoStatus> for &PovAlgoStatus {
         Ok(self.algo_status)
     }
 }
-
