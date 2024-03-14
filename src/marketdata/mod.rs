@@ -1,5 +1,5 @@
 use crate::{
-    symbology::{MarketId, ProductId, VenueId},
+    symbology::{MarketId, ProductId},
     Dir, DirPair,
 };
 use anyhow::anyhow;
@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
 pub mod databento;
+pub mod snapshots;
 
 // CR alee: deprecate this in favor of [Symbolic]; would need to adjust how blockchain QFs work
 /// Quotefeed path definitions for symbolics
@@ -206,30 +207,4 @@ pub struct RfqResponseSide {
     pub price: Decimal,
     pub quantity: Decimal,
     pub quote_id: Option<String>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
-pub struct MarketSnapshot {
-    pub update_time: DateTime<Utc>,
-    pub market: MarketId,
-    pub venue: VenueId,
-    pub base: ProductId,
-    pub quote: ProductId,
-    pub base_kind: String,
-    pub bid_price: Option<Decimal>,
-    pub ask_price: Option<Decimal>,
-    pub last_price: Option<Decimal>,
-    pub high_24h: Option<Decimal>,
-    pub low_24h: Option<Decimal>,
-    pub open_24h: Option<Decimal>,
-    pub volume_24h: Option<Decimal>,
-    pub open_interest: Option<Decimal>,
-    pub delta: Option<Decimal>,
-    pub gamma: Option<Decimal>,
-    pub theta: Option<Decimal>,
-    pub vega: Option<Decimal>,
-    pub rho: Option<Decimal>,
-    pub bid_iv: Option<Decimal>,
-    pub ask_iv: Option<Decimal>,
-    pub underlying_price: Option<Decimal>,
 }

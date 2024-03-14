@@ -1,8 +1,9 @@
 use super::{RouteId, VenueId};
 use anyhow::bail;
-use derive::FromValue;
+use derive::{FromValue, Newtype};
 use netidx_derive::Pack;
 use serde_derive::{Deserialize, Serialize};
+use serde_with::DeserializeFromStr;
 
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, Hash, Pack, Serialize, Deserialize, FromValue,
@@ -29,5 +30,17 @@ impl std::str::FromStr for CptyId {
         } else {
             bail!("invalid cpty string, expected venue-id/route-id")
         }
+    }
+}
+
+#[derive(Clone, Debug, DeserializeFromStr, Newtype)]
+#[newtype(Deref)]
+pub struct CptyIdFromStr(CptyId);
+
+impl std::str::FromStr for CptyIdFromStr {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        Ok(Self(s.parse()?))
     }
 }
