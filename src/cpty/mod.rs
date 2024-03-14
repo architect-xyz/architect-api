@@ -1,4 +1,5 @@
 pub mod b2c2;
+pub mod binance;
 pub mod cboe_digital;
 pub mod coinbase;
 pub mod coinbase_prime;
