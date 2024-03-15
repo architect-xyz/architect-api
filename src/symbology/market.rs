@@ -150,17 +150,18 @@ pub enum MarketInfo {
     #[pack(tag(114))] Binance(cpty::binance::BinanceMarketInfo),
     #[pack(tag(112))] CboeDigital(cpty::cboe_digital::CboeDigitalMarketInfo),
     #[pack(tag(100))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
+    #[pack(tag(111))] CoinbasePrime(cpty::coinbase_prime::CoinbasePrimeMarketInfo),
     #[pack(tag(104))] Cqg(cpty::cqg::CqgMarketInfo),
     #[pack(tag(113))] Cumberland(cpty::cumberland::CumberlandMarketInfo),
     #[pack(tag(110))] DYDX(cpty::dydx::DYDXMarketInfo),
     #[pack(tag(105))] Databento(marketdata::databento::DatabentoMarketInfo),
+    #[pack(tag(115))] Deltix(cpty::deltix::DeltixMarketInfo),
     #[pack(tag(101))] Deribit(cpty::deribit::DeribitMarketInfo),
+    #[pack(tag(109))] FalconX(cpty::falconx::FalconXMarketInfo),
+    #[pack(tag(108))] Galaxy(cpty::galaxy::GalaxyMarketInfo),
     #[pack(tag(102))] Kraken(cpty::kraken::KrakenMarketInfo),
     #[pack(tag(103))] Okx(cpty::okx::OkxMarketInfo),
     #[pack(tag(107))] Wintermute(cpty::wintermute::WintermuteMarketInfo),
-    #[pack(tag(108))] Galaxy(cpty::galaxy::GalaxyMarketInfo),
-    #[pack(tag(109))] FalconX(cpty::falconx::FalconXMarketInfo),
-    #[pack(tag(111))] CoinbasePrime(cpty::coinbase_prime::CoinbasePrimeMarketInfo),
 }
 
 #[enum_dispatch]

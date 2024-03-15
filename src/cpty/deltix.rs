@@ -4,13 +4,12 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
-pub struct BinanceMarketInfo {
+pub struct DeltixMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,
-    pub is_delisted: bool,
 }
 
-impl NormalizedMarketInfo for BinanceMarketInfo {
+impl NormalizedMarketInfo for DeltixMarketInfo {
     fn tick_size(&self) -> Decimal {
         self.tick_size
     }
@@ -20,11 +19,11 @@ impl NormalizedMarketInfo for BinanceMarketInfo {
     }
 
     fn is_delisted(&self) -> bool {
-        self.is_delisted
+        false
     }
 }
 
-impl std::fmt::Display for BinanceMarketInfo {
+impl std::fmt::Display for DeltixMarketInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", serde_json::to_string_pretty(self).unwrap())?;
         Ok(())
