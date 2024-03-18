@@ -6,7 +6,18 @@ use serde_derive::{Deserialize, Serialize};
 use serde_with::DeserializeFromStr;
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, Pack, Serialize, Deserialize, FromValue,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Pack,
+    Serialize,
+    Deserialize,
+    FromValue,
 )]
 pub struct CptyId {
     pub venue: VenueId,

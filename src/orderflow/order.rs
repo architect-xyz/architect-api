@@ -1,4 +1,4 @@
-use crate::{symbology::MarketId, Dir, OrderId, Str};
+use crate::{symbology::MarketId, AccountId, Dir, OrderId, Str};
 use anyhow::{anyhow, Result};
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
@@ -15,7 +15,7 @@ pub struct Order {
     pub market: MarketId,
     pub dir: Dir,
     pub quantity: Decimal,
-    pub account: Option<Str>,
+    pub account: Option<AccountId>,
     pub order_type: OrderType,
     pub time_in_force: TimeInForce,
     pub quote_id: Option<Str>,
@@ -110,7 +110,7 @@ impl OrderBuilder {
         })
     }
 
-    pub fn account(self, account: Option<Str>) -> Self {
+    pub fn account(self, account: Option<AccountId>) -> Self {
         Self(Order { account, ..self.0 })
     }
 

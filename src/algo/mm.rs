@@ -32,7 +32,7 @@ pub struct HedgeMarket {
 pub struct MMAlgoOrder {
     pub order_id: OrderId,
     pub market: MarketId,
-    pub account: Option<Str>,
+    pub account: Option<AccountId>,
     pub quantity: DirPair<Decimal>,
     pub min_position: Decimal,
     pub max_position: Decimal,

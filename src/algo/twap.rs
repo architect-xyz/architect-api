@@ -19,7 +19,7 @@ pub struct TwapOrder {
     pub quantity: Decimal,
     pub interval: Duration,
     pub end_time: DateTime<Utc>,
-    pub account: Option<Str>,
+    pub account: Option<AccountId>,
 }
 
 impl Into<AlgoOrder> for &TwapOrder {

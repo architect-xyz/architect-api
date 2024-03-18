@@ -13,6 +13,12 @@ use zeroize::Zeroize;
 
 #[derive(Debug, Clone, Pack, FromValue, FromStrJson, Serialize, Deserialize, Zeroize)]
 pub struct CoinbaseCredentials {
+    /// No way to tell from the API itself which portfolio the key controls,
+    /// so we need some help from the user.  Default/None to state that the
+    /// key controls the default portfolio; otherwise, state the portfolio
+    /// UUID.
+    #[serde(default)]
+    pub portfolio_id: Option<String>,
     pub api_key: String,
     pub api_secret: String,
 }

@@ -1,4 +1,4 @@
-use crate::{symbology::MarketId, Dir, OrderId};
+use crate::{symbology::MarketId, AccountId, Dir, OrderId};
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
@@ -67,6 +67,7 @@ pub struct Fill {
     pub fill_id: FillId,
     /// Corresponding order ID, if the order originated from Architect
     pub order_id: Option<OrderId>,
+    pub account_id: Option<AccountId>,
     pub market: MarketId,
     pub quantity: Decimal,
     pub price: Decimal,
@@ -83,6 +84,7 @@ impl Fill {
             kind: Some(self.kind),
             fill_id: self.fill_id,
             order_id: self.order_id,
+            account_id: self.account_id,
             market: Some(self.market),
             quantity: Some(self.quantity),
             price: Some(self.price),
@@ -125,6 +127,7 @@ pub struct AberrantFill {
     pub kind: Option<FillKind>,
     pub fill_id: FillId,
     pub order_id: Option<OrderId>,
+    pub account_id: Option<AccountId>,
     pub market: Option<MarketId>,
     pub quantity: Option<Decimal>,
     pub price: Option<Decimal>,

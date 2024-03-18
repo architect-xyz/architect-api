@@ -1,7 +1,7 @@
 use crate::{
     orderflow::{AberrantFill, Fill},
     symbology::*,
-    HalfOpenRange,
+    AccountId, HalfOpenRange,
 };
 use chrono::{DateTime, Utc};
 use derive::FromValue;
@@ -28,9 +28,9 @@ pub enum FolioMessage {
     ),
     RealtimeFill(Result<Fill, AberrantFill>),
     GetAllBalances,
+    AllBalances(Vec<(CptyId, Arc<Balances>)>),
     GetBalances(CptyId),
-    AllBalances(Vec<(CptyId, Arc<BTreeMap<ProductId, Decimal>>)>),
-    Balances(CptyId, Arc<BTreeMap<ProductId, Decimal>>),
+    Balances(CptyId, Option<Arc<Balances>>),
     /// Control message to folio to update balances
     UpdateBalances,
     /// Control messages to folio to sync fills
@@ -38,6 +38,8 @@ pub enum FolioMessage {
     SyncFillsBackward(CptyId),
     InvalidateSyncBefore(CptyId, DateTime<Utc>),
     InvalidateSyncAfter(CptyId, DateTime<Utc>),
+    /// Account advertising
+    AdvertiseAccounts(CptyId, Arc<Vec<AccountId>>),
 }
 
 #[derive(Copy, Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
@@ -46,4 +48,10 @@ pub struct MarketFilter {
     pub route: Option<RouteId>,
     pub base: Option<ProductId>,
     pub quote: Option<ProductId>,
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub struct Balances {
+    pub snapshot_ts: DateTime<Utc>,
+    pub by_account: BTreeMap<AccountId, BTreeMap<ProductId, Decimal>>,
 }

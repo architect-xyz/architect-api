@@ -227,6 +227,11 @@ pub struct KrakenExternalFill {
 
 #[derive(Debug, Clone, Pack, FromValue, FromStrJson, Serialize, Deserialize, Zeroize)]
 pub struct KrakenCredentials {
+    /// Account name for the API key--must be user generated since there's
+    /// no way to programmatically determine this.  If not provided, the
+    /// account name defaults to "DEFAULT".
+    #[serde(default)]
+    pub account_name: Option<String>,
     pub api_key: String,
     pub api_secret: String,
 }

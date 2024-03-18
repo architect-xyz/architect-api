@@ -21,7 +21,7 @@ pub struct PovAlgoOrder {
     pub min_order_quantity: Decimal,
     pub max_quantity: Decimal,
     pub end_time: DateTime<Utc>,
-    pub account: Option<Str>,
+    pub account: Option<AccountId>,
     pub order_lockout: HumanDuration,
 }
 
