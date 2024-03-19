@@ -31,9 +31,9 @@ pub struct Config {
     /// Use local symbology instead of centralized symbology
     #[serde(default)]
     pub use_local_symbology: bool,
-    /// Use local userdb instead of centralized userdb (for debugging)
+    /// Use local license server instead of centralized (for debugging)
     #[serde(default)]
-    pub use_local_userdb: bool,
+    pub use_local_licensedb: bool,
     /// Use local marketdata paths for the specified cptys
     #[serde(default)]
     pub use_local_marketdata: Vec<String>,
