@@ -47,7 +47,7 @@ pub struct Config {
     pub use_legacy_hist_marketdata: Vec<String>,
     #[serde(default)]
     pub secrets_path_override: Option<String>,
-    /// In addition to netidx-based userdb authentication, restrict users to
+    /// In addition to netidx-based licensedb authentication, restrict users to
     /// the given authorized domain only.  Subdomains of the domain will also
     /// be accepted.
     #[serde(default)]
