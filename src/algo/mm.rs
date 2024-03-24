@@ -3,9 +3,11 @@ use crate::{
     algo::generic_container::AlgoContainerMessage, symbology::MarketId, DirPair,
     HumanDuration, OrderId, Str,
 };
+use anyhow::bail;
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 
 pub type MMAlgoMessage =
@@ -51,6 +53,45 @@ impl Into<AlgoOrder> for &MMAlgoOrder {
     fn into(self) -> AlgoOrder {
         let algo = if self.hedge_market.is_some() { "Spread" } else { "MM" };
         AlgoOrder { order_id: self.order_id, algo: Str::try_from(algo).unwrap() }
+    }
+}
+
+impl Validate for MMAlgoOrder {
+    fn validate(&self) -> Result<()> {
+        if !self.quantity.buy.is_sign_positive() {
+            bail!("quantity.buy must be positive");
+        }
+        if !self.quantity.sell.is_sign_positive() {
+            bail!("quantity.sell must be positive");
+        }
+        if self.min_position >= self.max_position {
+            bail!("min_position must be < max_position");
+        }
+        if self.position_tilt.is_sign_negative() {
+            bail!("position_tilt must be non-negative");
+        }
+        if self.ref_dist_frac < dec!(0.0001) || self.ref_dist_frac > dec!(0.25) {
+            bail!("ref_dist_frac must be between 1bp and 25%");
+        }
+        if self.tolerance_frac < dec!(0.0001) || self.tolerance_frac > dec!(0.25) {
+            bail!("tolerance_frac must be between 1bp and 25%");
+        }
+        if self.reject_lockout.num_milliseconds() < 500
+            || self.reject_lockout.num_seconds() > 300
+        {
+            bail!("reject_lockout must be between 0.5 seconds and 300 seconds");
+        }
+        if self.order_lockout.num_milliseconds() < 500
+            || self.order_lockout.num_seconds() > 300
+        {
+            bail!("order_lockout must be between 0.5 seconds and 300 seconds");
+        }
+        if self.fill_lockout.num_milliseconds() < 500
+            || self.fill_lockout.num_seconds() > 300
+        {
+            bail!("fill_lockout must be between 0.5 seconds and 300 seconds");
+        }
+        Ok(())
     }
 }
 

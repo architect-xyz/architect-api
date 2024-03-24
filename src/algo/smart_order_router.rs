@@ -4,6 +4,7 @@ use crate::{
     symbology::{MarketId, ProductId},
     Dir, HumanDuration, OrderId,
 };
+use anyhow::bail;
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
@@ -31,5 +32,17 @@ impl Into<AlgoOrder> for &SmartOrderRouterOrder {
             order_id: self.order_id,
             algo: Str::try_from("SMART-ORDER-ROUTER").unwrap(), // won't panic
         }
+    }
+}
+
+impl Validate for SmartOrderRouterOrder {
+    fn validate(&self) -> Result<()> {
+        if !self.target_size.is_sign_positive() {
+            bail!("target_size must be positive");
+        }
+        if self.execution_time_limit.num_seconds() <= 0 {
+            bail!("execution_time_limit must be positive");
+        }
+        Ok(())
     }
 }

@@ -63,3 +63,10 @@ pub fn alias_to_step_size(x: Decimal, step_size: Option<Decimal>) -> Decimal {
         x
     }
 }
+
+pub fn tick_size_round_less_agg(x: Decimal, dir: Dir, tick_size: Decimal) -> Decimal {
+    match dir {
+        Dir::Buy => (x / tick_size).floor() * tick_size,
+        Dir::Sell => (x / tick_size).ceil() * tick_size,
+    }
+}

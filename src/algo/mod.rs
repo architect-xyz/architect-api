@@ -1,4 +1,5 @@
 use crate::{orderflow::*, utils::messaging::MaybeRequest, OrderId, Str};
+use anyhow::Result;
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
@@ -42,6 +43,13 @@ pub enum AlgoMessage {
 pub struct AlgoOrder {
     pub order_id: OrderId,
     pub algo: Str,
+}
+
+// CR-someday alee: use something more akin to the validator crate
+pub trait Validate {
+    fn validate(&self) -> Result<()> {
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
