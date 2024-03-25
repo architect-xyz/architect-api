@@ -13,6 +13,13 @@ pub enum MaybeSecret<T: Zeroize> {
 }
 
 impl<T: Zeroize> MaybeSecret<T> {
+    pub fn key(&self) -> Option<String> {
+        match self {
+            MaybeSecret::Secret(s) => Some(s.clone()),
+            MaybeSecret::Plain(_) => None,
+        }
+    }
+
     pub fn secret<S: AsRef<str>>(key: S) -> Self {
         MaybeSecret::Secret(key.as_ref().to_string())
     }

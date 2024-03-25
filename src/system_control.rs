@@ -12,6 +12,7 @@ pub enum SystemControlMessage {
     DebugSnapshot(DebugSystemSnapshot), // for integration testing
     SymbologyReady,
     Shutdown,
+    RestartComponent(ComponentId),
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
