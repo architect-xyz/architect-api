@@ -54,6 +54,8 @@ pub enum ProductKind {
     Fiat,
     Equity,
     Perpetual,
+    /// The one guarantee for [underlying] if set is that it can
+    /// be used to uniquely identify strips of related futures
     Future {
         underlying: Option<ProductId>,
         multiplier: Option<Decimal>,
@@ -63,6 +65,8 @@ pub enum ProductKind {
         same_side_leg: Option<ProductId>,
         opp_side_leg: Option<ProductId>,
     },
+    /// The one guarantee for [underlying] if set is that it can
+    /// be used to uniquely identify strips of related options
     Option {
         underlying: Option<ProductId>,
         multiplier: Option<Decimal>,
