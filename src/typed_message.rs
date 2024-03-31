@@ -114,17 +114,13 @@ mod test {
     fn test_try_into_any_variant() -> Result<()> {
         use crate::orderflow::OrderflowMessage;
         let m = TypedMessage::Orderflow(OrderflowMessage::Order(
-            OrderBuilder::limit(
+            OrderBuilder::new(
                 OrderId::new_unchecked(123),
-                MarketId::try_from("BTC Crypto/USD*COINBASE/DIRECT")?,
-                Dir::Buy,
-                Decimal::new(100, 0),
-                Decimal::new(1, 0),
-                false,
-                None,
                 OrderSource::API,
+                MarketId::try_from("BTC Crypto/USD*COINBASE/DIRECT")?,
             )
-            .build(),
+            .limit(Dir::Buy, Decimal::new(100, 0), Decimal::new(1, 0), false)
+            .build()?,
         ));
         let m2: std::result::Result<MaybeSplit<TypedMessage, oms::OmsMessage>, _> =
             m.try_into();

@@ -72,6 +72,7 @@ pub struct Fill {
     pub quantity: Decimal,
     pub price: Decimal,
     pub dir: Dir,
+    pub is_maker: Option<bool>,
     /// When Architect received the fill, if realtime
     pub recv_time: Option<DateTime<Utc>>,
     /// When the cpty claims the trade happened

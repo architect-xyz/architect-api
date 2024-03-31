@@ -23,6 +23,7 @@ pub struct PovAlgoOrder {
     pub min_order_quantity: Decimal,
     pub total_quantity: Decimal,
     pub end_time: DateTime<Utc>,
+    pub trader: UserId,
     pub account: Option<AccountId>,
     pub order_lockout: HumanDuration,
     pub take_through_frac: Option<Decimal>,
@@ -32,6 +33,7 @@ impl Into<AlgoOrder> for &PovAlgoOrder {
     fn into(self) -> AlgoOrder {
         AlgoOrder {
             order_id: self.order_id,
+            trader: self.trader,
             algo: Str::try_from("POV").unwrap(), // won't panic
         }
     }

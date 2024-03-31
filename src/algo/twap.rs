@@ -21,6 +21,7 @@ pub struct TwapOrder {
     pub quantity: Decimal,
     pub interval: Duration,
     pub end_time: DateTime<Utc>,
+    pub trader: UserId,
     pub account: Option<AccountId>,
     pub reject_lockout: Duration,
     pub take_through_frac: Option<Decimal>,
@@ -30,6 +31,7 @@ impl Into<AlgoOrder> for &TwapOrder {
     fn into(self) -> AlgoOrder {
         AlgoOrder {
             order_id: self.order_id,
+            trader: self.trader,
             algo: Str::try_from("TWAP").unwrap(), // won't panic
         }
     }

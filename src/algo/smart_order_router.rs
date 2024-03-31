@@ -17,6 +17,7 @@ pub type SmartOrderRouterMessage =
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub struct SmartOrderRouterOrder {
     pub order_id: OrderId,
+    pub trader: UserId,
     pub markets: Arc<Vec<MarketId>>,
     pub base: ProductId,
     pub quote: ProductId,
@@ -30,6 +31,7 @@ impl Into<AlgoOrder> for &SmartOrderRouterOrder {
     fn into(self) -> AlgoOrder {
         AlgoOrder {
             order_id: self.order_id,
+            trader: self.trader,
             algo: Str::try_from("SMART-ORDER-ROUTER").unwrap(), // won't panic
         }
     }

@@ -34,6 +34,7 @@ pub struct HedgeMarket {
 pub struct MMAlgoOrder {
     pub order_id: OrderId,
     pub market: MarketId,
+    pub trader: UserId,
     pub account: Option<AccountId>,
     pub quantity: DirPair<Decimal>,
     pub min_position: Decimal,
@@ -52,7 +53,11 @@ pub struct MMAlgoOrder {
 impl Into<AlgoOrder> for &MMAlgoOrder {
     fn into(self) -> AlgoOrder {
         let algo = if self.hedge_market.is_some() { "Spread" } else { "MM" };
-        AlgoOrder { order_id: self.order_id, algo: Str::try_from(algo).unwrap() }
+        AlgoOrder {
+            order_id: self.order_id,
+            trader: self.trader,
+            algo: Str::try_from(algo).unwrap(),
+        }
     }
 }
 

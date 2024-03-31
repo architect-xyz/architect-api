@@ -1,7 +1,8 @@
-use crate::{symbology::MarketId, AccountId, Dir, OrderId, Str};
+use crate::{symbology::MarketId, AccountId, Dir, OrderId, Str, UserId};
 use anyhow::{anyhow, Result};
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
+use derive_builder::Builder;
 use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
@@ -9,15 +10,20 @@ use schemars::JsonSchema_repr;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Builder, Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct Order {
     pub id: OrderId,
     pub market: MarketId,
     pub dir: Dir,
     pub quantity: Decimal,
+    #[builder(setter(strip_option), default)]
+    pub trader: Option<UserId>,
+    #[builder(setter(strip_option), default)]
     pub account: Option<AccountId>,
     pub order_type: OrderType,
+    #[builder(default = "TimeInForce::GoodTilCancel")]
     pub time_in_force: TimeInForce,
+    #[builder(setter(strip_option), default)]
     pub quote_id: Option<Str>,
     pub source: OrderSource,
 }
@@ -32,94 +38,70 @@ pub enum OrderSource {
     External,
 }
 
-pub struct OrderBuilder(Order);
-
 impl OrderBuilder {
+    pub fn new(id: OrderId, source: OrderSource, market: MarketId) -> Self {
+        let mut t = Self::default();
+        t.id(id);
+        t.source(source);
+        t.market(market);
+        t
+    }
+
+    /// Option version of trader(&mut self, ..)
+    pub fn with_trader(&mut self, trader: Option<UserId>) -> &mut Self {
+        self.trader = Some(trader);
+        self
+    }
+
+    /// Option version of account(&mut self, ..)
+    pub fn with_account(&mut self, account: Option<AccountId>) -> &mut Self {
+        self.account = Some(account);
+        self
+    }
+
     pub fn limit(
-        id: OrderId,
-        market: MarketId,
+        &mut self,
         dir: Dir,
         quantity: Decimal,
         limit_price: Decimal,
         post_only: bool,
-        quote_id: Option<Str>,
-        source: OrderSource,
-    ) -> Self {
-        Self(Order {
-            id,
-            market,
-            dir,
-            quantity,
-            account: None,
-            order_type: OrderType::Limit(LimitOrderType { limit_price, post_only }),
-            time_in_force: TimeInForce::GoodTilCancel,
-            quote_id,
-            source,
-        })
+    ) -> &mut Self {
+        self.dir(dir);
+        self.quantity(quantity);
+        self.order_type(OrderType::Limit(LimitOrderType { limit_price, post_only }));
+        self
     }
 
     pub fn stop_loss_limit(
-        id: OrderId,
-        market: MarketId,
+        &mut self,
         dir: Dir,
         quantity: Decimal,
         limit_price: Decimal,
         trigger_price: Decimal,
-        time_in_force: TimeInForce,
-        source: OrderSource,
-    ) -> Self {
-        Self(Order {
-            id,
-            market,
-            dir,
-            quantity,
-            account: None,
-            order_type: OrderType::StopLossLimit(StopLossLimitOrderType {
-                trigger_price,
-                limit_price,
-            }),
-            time_in_force,
-            quote_id: None,
-            source,
-        })
+    ) -> &mut Self {
+        self.dir(dir);
+        self.quantity(quantity);
+        self.order_type(OrderType::StopLossLimit(StopLossLimitOrderType {
+            limit_price,
+            trigger_price,
+        }));
+        self
     }
 
     pub fn take_profit_limit(
-        id: OrderId,
-        market: MarketId,
+        &mut self,
         dir: Dir,
         quantity: Decimal,
         limit_price: Decimal,
         trigger_price: Decimal,
-        time_in_force: TimeInForce,
-        source: OrderSource,
-    ) -> Self {
-        Self(Order {
-            id,
-            market,
-            dir,
-            quantity,
-            account: None,
-            order_type: OrderType::TakeProfitLimit(TakeProfitLimitOrderType {
-                trigger_price,
-                limit_price,
-            }),
-            time_in_force,
-            quote_id: None,
-            source,
-        })
-    }
-
-    pub fn account(self, account: Option<AccountId>) -> Self {
-        Self(Order { account, ..self.0 })
-    }
-
-    pub fn time_in_force(self, time_in_force: TimeInForce) -> Self {
-        Self(Order { time_in_force, ..self.0 })
-    }
-
-    pub fn build(self) -> Order {
-        self.0
+    ) -> &mut Self {
+        self.dir(dir);
+        self.quantity(quantity);
+        self.order_type(OrderType::TakeProfitLimit(TakeProfitLimitOrderType {
+            limit_price,
+            trigger_price,
+        }));
+        self
     }
 }
 

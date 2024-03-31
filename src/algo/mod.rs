@@ -1,4 +1,4 @@
-use crate::{orderflow::*, utils::messaging::MaybeRequest, OrderId, Str};
+use crate::{orderflow::*, utils::messaging::MaybeRequest, OrderId, Str, UserId};
 use anyhow::Result;
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
@@ -42,6 +42,7 @@ pub enum AlgoMessage {
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct AlgoOrder {
     pub order_id: OrderId,
+    pub trader: UserId,
     pub algo: Str,
 }
 

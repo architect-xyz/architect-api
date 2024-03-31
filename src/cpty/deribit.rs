@@ -5,7 +5,7 @@ use crate::{
         OrderStateFlags, OrderType, OrderflowMessage, Out, Reject, TimeInForce,
     },
     symbology::{market::NormalizedMarketInfo, CptyId, MarketId},
-    Address, Dir, HalfOpenRange, OrderId, Str,
+    Address, Dir, HalfOpenRange, OrderId, Str, UserId,
 };
 use anyhow::Result;
 use chrono::{DateTime, Utc};
@@ -221,14 +221,16 @@ pub struct DeribitExternalOrderAck {
 impl DeribitExternalOrderAck {
     pub fn to_deribit_order(
         &mut self,
-        oid: &OrderId,
-        mid: &MarketId,
+        oid: OrderId,
+        mid: MarketId,
+        trader: Option<UserId>,
     ) -> Result<DeribitOrder> {
         let order = Order {
-            id: *oid,
-            market: *mid,
+            id: oid,
+            market: mid,
             dir: self.dir,
             quantity: self.quantity,
+            trader,
             account: None,
             order_type: self.order_type,
             time_in_force: self.time_in_force,
