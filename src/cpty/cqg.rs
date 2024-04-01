@@ -1,6 +1,4 @@
-use crate::{
-    symbology::{market::NormalizedMarketInfo },
-};
+use crate::symbology::market::NormalizedMarketInfo;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
