@@ -8,7 +8,7 @@ homepage = "https://www.architect.xyz"
 keywords = ["crypto", "hft", "trading", "finance"]
 license = "AGPL-3.0-only"
 name = "architect-api"
-version = "0.2.1"
+version = "0.3.0"
 
 [features]
 graphql = ["juniper"]
@@ -21,7 +21,7 @@ bytes = { workspace = true }
 chrono = { workspace = true }
 clap = { workspace = true, optional = true }
 compact_str = { workspace = true }
-derive = { package = "architect-derive", version = "0.2.0", path = "../derive" }
+derive = { package = "architect-derive", version = "0.3.0", path = "../derive" }
 derive_builder = { workspace = true }
 derive_more = { workspace = true }
 dirs = { workspace = true }
