@@ -155,7 +155,7 @@ impl Into<TradeV1> for TradeV0 {
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct TradeV1 {
     pub time: Option<DateTime<Utc>>,
-    pub direction: Option<Dir>,
+    pub direction: Option<Dir>, // maker dir
     pub price: Decimal,
     pub size: Decimal,
 }
@@ -164,7 +164,7 @@ pub struct TradeV1 {
 pub struct TradeGlobalV1 {
     pub market: MarketId,
     pub time: Option<DateTime<Utc>>,
-    pub direction: Option<Dir>,
+    pub direction: Option<Dir>, // maker dir
     pub price: Decimal,
     pub size: Decimal,
 }

@@ -5,7 +5,7 @@ use chrono::{DateTime, Duration, Utc};
 use derive::Newtype;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
-use std::str::FromStr;
+use std::{num::NonZeroU32, str::FromStr};
 
 #[derive(
     Debug,
@@ -36,6 +36,22 @@ impl FromStr for HumanDuration {
 
     fn from_str(s: &str) -> Result<Self> {
         parse_duration(s).map(HumanDuration)
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RateLimit {
+    pub max: NonZeroU32,
+    pub per: HumanDuration,
+}
+
+impl TryInto<governor::Quota> for &RateLimit {
+    type Error = anyhow::Error;
+
+    fn try_into(self) -> Result<governor::Quota> {
+        Ok(governor::Quota::with_period(self.per.to_std()?)
+            .ok_or_else(|| anyhow!("rate limit period must be non-zero"))?
+            .allow_burst(self.max))
     }
 }
 
