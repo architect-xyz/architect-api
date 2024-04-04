@@ -1,8 +1,11 @@
 use crate::{
-    folio::FolioMessage, orderflow::{
+    folio::FolioMessage,
+    orderflow::{
         AberrantFill, Ack, Cancel, Fill, Order, OrderType, OrderflowMessage, Out, Reject,
         TimeInForce,
-    }, symbology::market::{MinOrderQuantityUnit, NormalizedMarketInfo}, Amount, Dir, OrderId
+    },
+    symbology::market::{MinOrderQuantityUnit, NormalizedMarketInfo},
+    Amount, Dir, OrderId,
 };
 use chrono::{DateTime, Utc};
 use derive::{FromStrJson, FromValue};
@@ -60,7 +63,7 @@ impl NormalizedMarketInfo for KrakenMarketInfo {
     }
 
     fn min_order_quantity(&self) -> Amount<Decimal, MinOrderQuantityUnit> {
-        return Amount::new(self.ordermin, MinOrderQuantityUnit::Base)
+        return Amount::new(self.ordermin, MinOrderQuantityUnit::Base);
     }
 
     fn is_delisted(&self) -> bool {
