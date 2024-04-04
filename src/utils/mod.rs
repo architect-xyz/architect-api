@@ -1,3 +1,4 @@
+pub mod amount;
 pub mod component_id;
 pub mod dir;
 pub mod dir_pair;

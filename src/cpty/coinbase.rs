@@ -1,7 +1,11 @@
 use crate::{
     folio::FolioMessage,
     orderflow::*,
-    symbology::{market::NormalizedMarketInfo, MarketId},
+    symbology::{
+        market::{MinOrderQuantityUnit, NormalizedMarketInfo},
+        MarketId,
+    },
+    Amount,
 };
 use derive::{FromStrJson, FromValue};
 use netidx_derive::Pack;
@@ -44,6 +48,10 @@ impl NormalizedMarketInfo for CoinbaseMarketInfo {
 
     fn step_size(&self) -> Decimal {
         self.base_increment
+    }
+
+    fn min_order_quantity(&self) -> Amount<Decimal, MinOrderQuantityUnit> {
+        return Amount::new(self.min_market_funds, MinOrderQuantityUnit::Quote);
     }
 
     fn is_delisted(&self) -> bool {

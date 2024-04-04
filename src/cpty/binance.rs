@@ -1,4 +1,7 @@
-use crate::symbology::market::NormalizedMarketInfo;
+use crate::{
+    symbology::market::{MinOrderQuantityUnit, NormalizedMarketInfo},
+    Amount,
+};
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -7,6 +10,7 @@ use serde::{Deserialize, Serialize};
 pub struct BinanceMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,
+    pub min_order_quantity: Amount<Decimal, MinOrderQuantityUnit>,
     pub is_delisted: bool,
 }
 
@@ -17,6 +21,10 @@ impl NormalizedMarketInfo for BinanceMarketInfo {
 
     fn step_size(&self) -> Decimal {
         self.step_size
+    }
+
+    fn min_order_quantity(&self) -> Amount<Decimal, MinOrderQuantityUnit> {
+        return self.min_order_quantity.clone();
     }
 
     fn is_delisted(&self) -> bool {

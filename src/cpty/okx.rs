@@ -1,4 +1,7 @@
-use crate::symbology::market::NormalizedMarketInfo;
+use crate::{
+    symbology::market::{MinOrderQuantityUnit, NormalizedMarketInfo},
+    Amount,
+};
 use compact_str::CompactString;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
@@ -20,6 +23,10 @@ impl NormalizedMarketInfo for OkxMarketInfo {
 
     fn step_size(&self) -> Decimal {
         self.min_sz
+    }
+
+    fn min_order_quantity(&self) -> Amount<Decimal, MinOrderQuantityUnit> {
+        return Amount::new(self.min_sz, MinOrderQuantityUnit::Base);
     }
 
     fn is_delisted(&self) -> bool {

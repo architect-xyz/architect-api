@@ -3,7 +3,7 @@
 //! market connection to Coinbase's BTC/USD market.
 
 use super::{Product, ProductId, Route, RouteId, Symbolic, Venue, VenueId};
-use crate::{cpty, marketdata, uuid_val, Str};
+use crate::{cpty, marketdata, uuid_val, Amount, Str};
 use anyhow::Result;
 use derive::FromValue;
 use derive_more::Display;
@@ -172,8 +172,22 @@ pub trait NormalizedMarketInfo {
     /// Return the step size of the market
     fn step_size(&self) -> Decimal;
 
+    /// The minimum quantity per order allowed by the exchange.
+    /// Some exchanges like Coinbase express this in terms of quote currency
+    /// (min market funds) while most others express in terms of base currency.
+    /// Defaults to the step size in base currency.
+    fn min_order_quantity(&self) -> Amount<Decimal, MinOrderQuantityUnit> {
+        return Amount::new(self.step_size(), MinOrderQuantityUnit::Base);
+    }
+
     /// Return if the market is delisted
     fn is_delisted(&self) -> bool;
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+pub enum MinOrderQuantityUnit {
+    Base,
+    Quote,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
