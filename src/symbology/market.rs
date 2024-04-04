@@ -184,8 +184,9 @@ pub trait NormalizedMarketInfo {
     fn is_delisted(&self) -> bool;
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Pack)]
 pub enum MinOrderQuantityUnit {
+    #[default]
     Base,
     Quote,
 }

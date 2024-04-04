@@ -2,7 +2,9 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Pack, FromValue)]
+#[derive(
+    Default, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Pack, FromValue,
+)]
 pub struct Amount<T: 'static, U: 'static> {
     amount: T,
     unit: U,

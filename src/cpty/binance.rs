@@ -10,8 +10,9 @@ use serde::{Deserialize, Serialize};
 pub struct BinanceMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,
-    pub min_order_quantity: Amount<Decimal, MinOrderQuantityUnit>,
     pub is_delisted: bool,
+    #[pack(default)]
+    pub min_order_quantity: Amount<Decimal, MinOrderQuantityUnit>,
 }
 
 impl NormalizedMarketInfo for BinanceMarketInfo {
