@@ -53,7 +53,10 @@ pub enum ProductKind {
     },
     Fiat,
     Equity,
-    Perpetual,
+    Perpetual {
+        underlying: Option<ProductId>,
+        multiplier: Option<Decimal>,
+    },
     /// The one guarantee for [underlying] if set is that it can
     /// be used to uniquely identify strips of related futures
     Future {
