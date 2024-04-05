@@ -48,7 +48,7 @@ pub enum OmsMessage {
     GetOutedOrders(Uuid, HalfOpenRange<DateTime<Utc>>),
     GetOutedOrdersResponse(Uuid, Arc<Vec<OrderLog>>),
     GetOrder(Uuid, OrderId),
-    GetOrderResponse(Uuid, Option<Order>),
+    GetOrderResponse(Uuid, Option<OrderLog>),
     GetFills(Uuid, OrderId),
     GetFillsResponse(Uuid, Result<GetFillsResponse, GetFillsError>),
 }
