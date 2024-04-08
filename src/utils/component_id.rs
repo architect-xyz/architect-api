@@ -26,6 +26,7 @@ use std::{error::Error as StdError, fmt, str::FromStr};
     Serialize,
     Deserialize,
 )]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[pack(unwrapped)]
 #[repr(transparent)]
 pub struct ComponentId(pub(crate) u16);
@@ -94,6 +95,33 @@ impl FromStr for ComponentId {
         } else {
             Err(ComponentIdError::ParseError)
         }
+    }
+}
+
+// CR alee: JuniperScalarFromStr macro
+#[cfg(feature = "juniper")]
+impl ComponentId {
+    pub fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
+        juniper::Value::scalar(self.to_string())
+    }
+
+    pub fn from_input<S>(v: &juniper::InputValue<S>) -> Result<Self, String>
+    where
+        S: juniper::ScalarValue,
+    {
+        v.as_string_value()
+            .map(|s| s.parse::<Self>())
+            .ok_or_else(|| format!("Expected `String`, found: {v}"))?
+            .map_err(|e| e.to_string())
+    }
+
+    pub fn parse_token<S>(
+        value: juniper::ScalarToken<'_>,
+    ) -> juniper::ParseScalarResult<S>
+    where
+        S: juniper::ScalarValue,
+    {
+        <String as juniper::ParseScalarValue<S>>::from_str(value)
     }
 }
 
