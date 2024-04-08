@@ -71,7 +71,7 @@ pub enum CoinbaseMessage {
     Out(Out),
     Folio(FolioMessage),
     OrderIdAllocation(OrderIdAllocation),
-    ExchangeOrderUpdate(OrderId),
+    ExchangeOrderUpdate(CoinbaseExchangeOrderUpdate),
     ExchangeAck(OrderId, Uuid),
     ExchangeFills(Vec<CoinbaseFill>),
     ExchangeExternalOrderUpdate(MarketId, Uuid),
@@ -178,6 +178,12 @@ impl Deref for CoinbaseFill {
     fn deref(&self) -> &Self::Target {
         &self.fill
     }
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub struct CoinbaseExchangeOrderUpdate {
+    pub order_id: OrderId,
+    pub out: bool,
 }
 
 impl std::fmt::Display for CoinbaseMarketInfo {

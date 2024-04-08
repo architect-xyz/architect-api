@@ -256,8 +256,6 @@ impl Reject {
     }
 }
 
-#[cfg(feature = "juniper")]
-#[cfg_attr(feature = "juniper", juniper::graphql_object)]
 impl Reject {
     pub fn order_id(&self) -> OrderId {
         self.order_id
