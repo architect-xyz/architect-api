@@ -7,12 +7,20 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub struct LimitsFile {
+    #[serde(default)]
     pub max_open_qty: FxHashMap<ProductId, Decimal>,
+    #[serde(default)]
     pub max_open_buy_qty: FxHashMap<ProductId, Decimal>,
+    #[serde(default)]
     pub max_open_sell_qty: FxHashMap<ProductId, Decimal>,
+    #[serde(default)]
     pub max_position: FxHashMap<ProductId, Decimal>,
+    #[serde(default)]
     pub default_max_open_qty: Option<Decimal>,
+    #[serde(default)]
     pub default_max_open_buy_qty: Option<Decimal>,
+    #[serde(default)]
     pub default_max_open_sell_qty: Option<Decimal>,
+    #[serde(default)]
     pub default_max_position: Option<Decimal>,
 }
