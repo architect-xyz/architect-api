@@ -148,6 +148,7 @@ pub enum MarketInfo {
     #[pack(tag(  0))] Test(TestMarketInfo),
     #[pack(tag(106))] B2C2(cpty::b2c2::B2C2MarketInfo),
     #[pack(tag(114))] Binance(cpty::binance::BinanceMarketInfo),
+    #[pack(tag(116))] Bybit(cpty::bybit::BybitMarketInfo),
     #[pack(tag(112))] CboeDigital(cpty::cboe_digital::CboeDigitalMarketInfo),
     #[pack(tag(100))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
     #[pack(tag(111))] CoinbasePrime(cpty::coinbase_prime::CoinbasePrimeMarketInfo),
