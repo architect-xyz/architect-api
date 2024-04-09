@@ -39,6 +39,8 @@ pub struct CoinbaseMarketInfo {
     pub limit_only: bool,
     pub fx_stablecoin: bool,
     pub auction_mode: bool,
+    #[serde(default)]
+    pub is_delisted: bool,
 }
 
 impl NormalizedMarketInfo for CoinbaseMarketInfo {
@@ -55,8 +57,7 @@ impl NormalizedMarketInfo for CoinbaseMarketInfo {
     }
 
     fn is_delisted(&self) -> bool {
-        // CR alee: not really true?
-        self.trading_disabled
+        self.is_delisted
     }
 }
 
