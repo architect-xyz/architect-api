@@ -1,4 +1,7 @@
-use crate::{symbology::MarketId, AccountId, Dir, OrderId};
+use crate::{
+    symbology::{MarketId, VenueId},
+    AccountId, Dir, OrderId,
+};
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
@@ -7,9 +10,7 @@ use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::fmt::Display;
-use uuid::{uuid, Uuid};
-
-static FILL_NS: Uuid = uuid!("c5e7ca09-1223-4f3a-9ba9-609b8d07629d");
+use uuid::Uuid;
 
 /// The ID of a fill
 #[derive(
@@ -31,9 +32,10 @@ static FILL_NS: Uuid = uuid!("c5e7ca09-1223-4f3a-9ba9-609b8d07629d");
 pub struct FillId(Uuid);
 
 impl FillId {
-    /// This function will always generate the same UUID for the identifier provided
-    pub fn from_id(id: &str) -> Self {
-        FillId(Uuid::new_v5(&FILL_NS, id.as_bytes()))
+    /// This function will always generate the same UUID for the identifier provided;
+    /// venue is split out as an input to reduce the chance of accidental collision.
+    pub fn from_id(venue: VenueId, id: &str) -> Self {
+        FillId(Uuid::new_v5(&venue, id.as_bytes()))
     }
 
     pub fn nil() -> Self {
