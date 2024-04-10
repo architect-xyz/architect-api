@@ -75,11 +75,11 @@ impl Validate for MMAlgoOrder {
         if self.position_tilt.is_sign_negative() {
             bail!("position_tilt must be non-negative");
         }
-        if self.ref_dist_frac < dec!(0.0001) || self.ref_dist_frac > dec!(0.25) {
-            bail!("ref_dist_frac must be between 1bp and 25%");
+        if self.ref_dist_frac < dec!(0.00001) || self.ref_dist_frac > dec!(0.25) {
+            bail!("ref_dist_frac must be between 0.1bp and 25%");
         }
-        if self.tolerance_frac < dec!(0.0001) || self.tolerance_frac > dec!(0.25) {
-            bail!("tolerance_frac must be between 1bp and 25%");
+        if self.tolerance_frac < dec!(0.00001) || self.tolerance_frac > dec!(0.25) {
+            bail!("tolerance_frac must be between 0.1bp and 25%");
         }
         if self.reject_lockout.num_milliseconds() < 500
             || self.reject_lockout.num_seconds() > 300
