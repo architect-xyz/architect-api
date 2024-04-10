@@ -40,6 +40,7 @@ pub struct CoinbaseMarketInfo {
     pub fx_stablecoin: bool,
     pub auction_mode: bool,
     #[serde(default)]
+    #[pack(default)]
     pub is_delisted: bool,
 }
 
