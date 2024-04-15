@@ -24,6 +24,8 @@ pub struct Config {
     pub desired_auth: Option<DesiredAuth>,
     #[serde(default)]
     pub bind_config: Option<String>,
+    #[serde(default)]
+    pub audit_log: Option<PathBuf>,
     #[serde(default = "Config::default_hosted_base")]
     pub hosted_base: Path,
     #[serde(default = "Config::default_local_base")]

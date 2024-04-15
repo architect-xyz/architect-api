@@ -36,6 +36,10 @@ pub enum OrderSource {
     GUI,
     Algo,
     External,
+    CLI,
+    #[serde(other)]
+    #[pack(other)]
+    Other,
 }
 
 impl OrderBuilder {

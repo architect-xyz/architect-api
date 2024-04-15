@@ -1,17 +1,14 @@
 use crate::{
     folio::FolioMessage,
-    orderflow::{Ack, Cancel, Fill, Order, OrderflowMessage, Out, Reject},
-    symbology::{
-        market::{MinOrderQuantityUnit, NormalizedMarketInfo},
-        CptyId,
-    },
-    Address, Amount, Dir, HalfOpenRange, OrderId,
+    orderflow::{AberrantFill, Ack, Cancel, Fill, Order, OrderflowMessage, Out, Reject},
+    symbology::market::{MinOrderQuantityUnit, NormalizedMarketInfo},
+    Amount, OrderId,
 };
-use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use std::{ops::Deref, sync::Arc};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct BinanceMarketInfo {
@@ -52,50 +49,30 @@ pub enum BinanceMessage {
     Order(Order),
     Cancel(Cancel),
     Reject(Reject),
-    Ack(Ack),
-    Fill(Fill),
+    Ack(BinanceAck),
+    Fill(Result<Fill, AberrantFill>),
     Out(Out),
-    ExchangeAck(BinanceExchangeAck),
-    ExchangeHistoricalFills(BinanceExchangeHistoricalFills),
-    ExchangeOrderFailed(OrderId),
-    ExternalOrderUpdates(BinanceExternalOrderUpdates),
     Folio(FolioMessage),
+    ExchangeAccountSnapshot(Arc<BinanceSnapshot>),
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
-pub struct BinanceExchangeAck {
-    pub order_id: OrderId,
+pub struct BinanceAck {
+    pub ack: Ack,
     pub exchange_order_id: u64,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
-pub struct BinanceExchangeHistoricalFills {
-    pub cpty: CptyId,
-    pub range: HalfOpenRange<Option<DateTime<Utc>>>,
-    pub fills: Vec<BinancePartialFill>,
-    pub reply_to: Address,
-}
+impl Deref for BinanceAck {
+    type Target = Ack;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
-pub struct BinancePartialFill {
-    pub xoid: u64,
-    pub quantity: Decimal,
-    pub price: Decimal,
-    pub side: Dir,
-    pub trade_time: DateTime<Utc>,
-    pub is_maker: Option<bool>,
+    fn deref(&self) -> &Self::Target {
+        &self.ack
+    }
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
-pub struct BinanceExternalOrderUpdates {
-    pub fills: Vec<BinanceExternalOrderUpdate>,
-}
-
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
-pub struct BinanceExternalOrderUpdate {
-    pub exchange_order_id: u64,
-    pub fill: Fill,
-    pub original_qty: Decimal,
+pub struct BinanceSnapshot {
+    pub open_oids: Vec<OrderId>,
 }
 
 impl TryFrom<&BinanceMessage> for OrderflowMessage {
@@ -106,14 +83,12 @@ impl TryFrom<&BinanceMessage> for OrderflowMessage {
             BinanceMessage::Order(o) => Ok(OrderflowMessage::Order(*o)),
             BinanceMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
             BinanceMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
-            BinanceMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
-            BinanceMessage::Fill(f) => Ok(OrderflowMessage::Fill(Ok(*f))),
+            BinanceMessage::Ack(a) => Ok(OrderflowMessage::Ack(**a)),
+            BinanceMessage::Fill(f) => Ok(OrderflowMessage::Fill(f.clone())),
             BinanceMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
-            BinanceMessage::ExchangeAck(_)
-            | BinanceMessage::ExchangeHistoricalFills(_)
-            | BinanceMessage::ExchangeOrderFailed(_)
-            | BinanceMessage::ExternalOrderUpdates(_)
-            | BinanceMessage::Folio(_) => Err(()),
+            BinanceMessage::Folio(_) | BinanceMessage::ExchangeAccountSnapshot(..) => {
+                Err(())
+            }
         }
     }
 }
@@ -126,11 +101,8 @@ impl TryFrom<&OrderflowMessage> for BinanceMessage {
             OrderflowMessage::Order(o) => Ok(BinanceMessage::Order(*o)),
             OrderflowMessage::Cancel(c) => Ok(BinanceMessage::Cancel(*c)),
             OrderflowMessage::Reject(r) => Ok(BinanceMessage::Reject(r.clone())),
-            OrderflowMessage::Ack(a) => Ok(BinanceMessage::Ack(*a)),
-            OrderflowMessage::Fill(f) => match f {
-                Ok(f) => Ok(BinanceMessage::Fill(*f)),
-                Err(_) => Err(()),
-            },
+            OrderflowMessage::Ack(_a) => Err(()),
+            OrderflowMessage::Fill(f) => Ok(BinanceMessage::Fill(f.clone())),
             OrderflowMessage::Out(o) => Ok(BinanceMessage::Out(*o)),
         }
     }

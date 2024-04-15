@@ -2,6 +2,7 @@ use crate::{
     symbology::{MarketId, VenueId},
     AccountId, Dir, OrderId,
 };
+use anyhow::anyhow;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
@@ -32,10 +33,11 @@ use uuid::Uuid;
 pub struct FillId(Uuid);
 
 impl FillId {
-    /// This function will always generate the same UUID for the identifier provided;
-    /// venue is split out as an input to reduce the chance of accidental collision.
-    pub fn from_id(venue: VenueId, id: &str) -> Self {
-        FillId(Uuid::new_v5(&venue, id.as_bytes()))
+    /// This function will always generate the same UUID for the
+    /// identifier bytes provided; venue is split out as an input
+    /// to reduce the chance of accidental collision.
+    pub fn from_id(venue: VenueId, id: &[u8]) -> Self {
+        FillId(Uuid::new_v5(&venue, id))
     }
 
     pub fn nil() -> Self {
@@ -92,6 +94,7 @@ impl Fill {
             quantity: Some(self.quantity),
             price: Some(self.price),
             dir: Some(self.dir),
+            is_maker: self.is_maker,
             recv_time: self.recv_time,
             trade_time: Some(self.trade_time),
         }
@@ -135,6 +138,28 @@ pub struct AberrantFill {
     pub quantity: Option<Decimal>,
     pub price: Option<Decimal>,
     pub dir: Option<Dir>,
+    pub is_maker: Option<bool>,
     pub recv_time: Option<DateTime<Utc>>,
     pub trade_time: Option<DateTime<Utc>>,
+}
+
+impl AberrantFill {
+    /// If sufficient fields on AberrantFill, upgrade it into a Fill
+    pub fn try_into_fill(self) -> anyhow::Result<Fill> {
+        Ok(Fill {
+            kind: self.kind.ok_or_else(|| anyhow!("kind is required"))?,
+            fill_id: self.fill_id,
+            order_id: self.order_id,
+            account_id: self.account_id,
+            market: self.market.ok_or_else(|| anyhow!("market is required"))?,
+            quantity: self.quantity.ok_or_else(|| anyhow!("quantity is required"))?,
+            price: self.price.ok_or_else(|| anyhow!("price is required"))?,
+            dir: self.dir.ok_or_else(|| anyhow!("dir is required"))?,
+            is_maker: self.is_maker,
+            recv_time: self.recv_time,
+            trade_time: self
+                .trade_time
+                .ok_or_else(|| anyhow!("trade_time is required"))?,
+        })
+    }
 }

@@ -86,6 +86,7 @@ impl<'de> serde::de::Visitor<'de> for StrVisitor {
     }
 }
 
+#[allow(dead_code)]
 #[derive(JsonSchema)]
 struct AsStr(&'static str);
 
