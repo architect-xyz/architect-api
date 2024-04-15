@@ -46,7 +46,7 @@ impl std::fmt::Display for BinanceMarketInfo {
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum BinanceMessage {
-    Order(Order),
+    Order(BinanceOrder),
     Cancel(Cancel),
     Reject(Reject),
     Ack(BinanceAck),
@@ -54,6 +54,21 @@ pub enum BinanceMessage {
     Out(Out),
     Folio(FolioMessage),
     ExchangeAccountSnapshot(Arc<BinanceSnapshot>),
+}
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+pub struct BinanceOrder {
+    #[serde(flatten)]
+    pub order: Order,
+    // CR alee: coming soon--more futures orders options
+}
+
+impl Deref for BinanceOrder {
+    type Target = Order;
+
+    fn deref(&self) -> &Self::Target {
+        &self.order
+    }
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
@@ -80,7 +95,7 @@ impl TryFrom<&BinanceMessage> for OrderflowMessage {
 
     fn try_from(value: &BinanceMessage) -> Result<Self, Self::Error> {
         match value {
-            BinanceMessage::Order(o) => Ok(OrderflowMessage::Order(*o)),
+            BinanceMessage::Order(o) => Ok(OrderflowMessage::Order(**o)),
             BinanceMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
             BinanceMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             BinanceMessage::Ack(a) => Ok(OrderflowMessage::Ack(**a)),
@@ -98,7 +113,9 @@ impl TryFrom<&OrderflowMessage> for BinanceMessage {
 
     fn try_from(value: &OrderflowMessage) -> Result<Self, Self::Error> {
         match value {
-            OrderflowMessage::Order(o) => Ok(BinanceMessage::Order(*o)),
+            OrderflowMessage::Order(o) => {
+                Ok(BinanceMessage::Order(BinanceOrder { order: *o }))
+            }
             OrderflowMessage::Cancel(c) => Ok(BinanceMessage::Cancel(*c)),
             OrderflowMessage::Reject(r) => Ok(BinanceMessage::Reject(r.clone())),
             OrderflowMessage::Ack(_a) => Err(()),
