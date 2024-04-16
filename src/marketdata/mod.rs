@@ -74,7 +74,9 @@ pub enum MessageHeader {
     Snapshot,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[derive(
+    Debug, Clone, Copy, Deserialize, PartialEq, Eq, Hash, Serialize, Pack, FromValue,
+)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[bitflags]
 #[repr(u8)]
@@ -98,6 +100,17 @@ impl CandleWidth {
             Self::OneDay => "1d",
         }
     }
+
+    pub fn as_seconds(&self) -> i64 {
+        match self {
+            Self::OneSecond => 1,
+            Self::FiveSecond => 5,
+            Self::OneMinute => 60,
+            Self::FifteenMinute => 900,
+            Self::OneHour => 3600,
+            Self::OneDay => 86400,
+        }
+    }
 }
 
 impl FromStr for CandleWidth {
@@ -118,7 +131,19 @@ impl FromStr for CandleWidth {
 
 /// NB: buy_volume + sell_volume <> volume; volume may count trades
 /// that don't have a discernible direction.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Ord,
+    PartialOrd,
+    Deserialize,
+    Serialize,
+    Pack,
+    FromValue,
+)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CandleV1 {
     pub time: DateTime<Utc>,
@@ -129,6 +154,11 @@ pub struct CandleV1 {
     pub volume: Decimal,
     pub buy_volume: Decimal,
     pub sell_volume: Decimal,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Pack, FromValue)]
+pub struct HistoricalCandlesV1 {
+    pub candles: Vec<CandleV1>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
