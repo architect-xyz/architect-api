@@ -1,6 +1,8 @@
 use crate::{
     folio::FolioMessage,
-    orderflow::{AberrantFill, Ack, Cancel, Fill, Order, OrderflowMessage, Out, Reject},
+    orderflow::{
+        AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderflowMessage, Out, Reject,
+    },
     symbology::market::{MinOrderQuantityUnit, NormalizedMarketInfo},
     Amount, OrderId,
 };
@@ -48,6 +50,7 @@ impl std::fmt::Display for BinanceMarketInfo {
 pub enum BinanceMessage {
     Order(BinanceOrder),
     Cancel(Cancel),
+    CancelAll(BinanceCancelAll),
     Reject(Reject),
     Ack(BinanceAck),
     Fill(Result<Fill, AberrantFill>),
@@ -85,6 +88,9 @@ impl Deref for BinanceAck {
     }
 }
 
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+pub struct BinanceCancelAll {}
+
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct BinanceSnapshot {
     pub open_oids: Vec<OrderId>,
@@ -99,6 +105,9 @@ impl TryFrom<&BinanceMessage> for OrderflowMessage {
             BinanceMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
             BinanceMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             BinanceMessage::Ack(a) => Ok(OrderflowMessage::Ack(**a)),
+            BinanceMessage::CancelAll(_) => {
+                Ok(OrderflowMessage::CancelAll(CancelAll { venue_id: None }))
+            }
             BinanceMessage::Fill(f) => Ok(OrderflowMessage::Fill(f.clone())),
             BinanceMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             BinanceMessage::Folio(_) | BinanceMessage::ExchangeAccountSnapshot(..) => {
@@ -117,6 +126,9 @@ impl TryFrom<&OrderflowMessage> for BinanceMessage {
                 Ok(BinanceMessage::Order(BinanceOrder { order: *o }))
             }
             OrderflowMessage::Cancel(c) => Ok(BinanceMessage::Cancel(*c)),
+            OrderflowMessage::CancelAll(_) => {
+                Ok(BinanceMessage::CancelAll(BinanceCancelAll {}))
+            }
             OrderflowMessage::Reject(r) => Ok(BinanceMessage::Reject(r.clone())),
             OrderflowMessage::Ack(_a) => Err(()),
             OrderflowMessage::Fill(f) => Ok(BinanceMessage::Fill(f.clone())),

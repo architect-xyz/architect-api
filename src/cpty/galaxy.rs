@@ -5,6 +5,7 @@ use crate::{
 };
 use compact_str::CompactString;
 use derive::FromValue;
+use log::error;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
@@ -68,6 +69,9 @@ impl TryInto<GalaxyMessage> for &OrderflowMessage {
                 Ok(GalaxyMessage::Order(GalaxyOrder { order: *o }))
             }
             OrderflowMessage::Cancel(cancel) => Ok(GalaxyMessage::Cancel(*cancel)),
+            OrderflowMessage::CancelAll(_) => {
+                Err(error!("Cancel all not implemented for Galaxy"))
+            }
             OrderflowMessage::Ack(_)
             | OrderflowMessage::Reject(_)
             | OrderflowMessage::Fill(_)

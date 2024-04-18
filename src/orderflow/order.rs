@@ -1,4 +1,7 @@
-use crate::{symbology::MarketId, AccountId, Dir, OrderId, Str, UserId};
+use crate::{
+    symbology::{MarketId, VenueId},
+    AccountId, Dir, OrderId, Str, UserId,
+};
 use anyhow::{anyhow, Result};
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
@@ -246,6 +249,12 @@ pub type OrderState = BitFlags<OrderStateFlags>;
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Cancel {
     pub order_id: OrderId,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, Default)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct CancelAll {
+    pub venue_id: Option<VenueId>,
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]

@@ -3,6 +3,7 @@ use crate::{
 };
 use chrono::{DateTime, Utc};
 use derive::FromValue;
+use log::error;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -66,6 +67,9 @@ impl TryInto<CoinbasePrimeMessage> for &OrderflowMessage {
                 Ok(CoinbasePrimeMessage::Fill(CoinbasePrimeFill { fill: *f }))
             }
             OrderflowMessage::Out(o) => Ok(CoinbasePrimeMessage::Out(*o)),
+            OrderflowMessage::CancelAll(_) => {
+                Err(error!("Cancel all not implemented for CoinbasePrime"))
+            }
         }
     }
 }

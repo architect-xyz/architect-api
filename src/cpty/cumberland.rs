@@ -4,6 +4,7 @@ use crate::{
     symbology::market::NormalizedMarketInfo,
 };
 use derive::FromValue;
+use log::error;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
@@ -46,6 +47,9 @@ impl TryInto<CumberlandMessage> for &OrderflowMessage {
             OrderflowMessage::Ack(_) => Err(()),
             OrderflowMessage::Fill(f) => Ok(CumberlandMessage::Fill(f.map_err(|_| ())?)),
             OrderflowMessage::Out(o) => Ok(CumberlandMessage::Out(*o)),
+            OrderflowMessage::CancelAll(_) => {
+                Err(error!("Cancel all not implemented for Cumberland"))
+            }
         }
     }
 }

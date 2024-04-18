@@ -1,8 +1,8 @@
 use crate::{
     folio::FolioMessage,
     orderflow::{
-        AberrantFill, Ack, Cancel, Fill, Order, OrderType, OrderflowMessage, Out, Reject,
-        TimeInForce,
+        AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderType, OrderflowMessage,
+        Out, Reject, TimeInForce,
     },
     symbology::market::{MinOrderQuantityUnit, NormalizedMarketInfo},
     Amount, Dir, OrderId,
@@ -83,6 +83,7 @@ pub enum KrakenMessage {
     Initialize,
     Order(KrakenOrder),
     Cancel(Cancel),
+    CancelAll(CancelAll),
     Reject(Reject),
     Ack(Ack),
     Fill(KrakenFill),
@@ -108,6 +109,7 @@ impl TryInto<OrderflowMessage> for &KrakenMessage {
         match self {
             KrakenMessage::Order(o) => Ok(OrderflowMessage::Order(**o)),
             KrakenMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
+            KrakenMessage::CancelAll(ca) => Ok(OrderflowMessage::CancelAll(*ca)),
             KrakenMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             KrakenMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
             KrakenMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
@@ -136,6 +138,7 @@ impl TryInto<KrakenMessage> for &OrderflowMessage {
             OrderflowMessage::Reject(r) => Ok(KrakenMessage::Reject(r.clone())),
             OrderflowMessage::Ack(a) => Ok(KrakenMessage::Ack(*a)),
             OrderflowMessage::Fill(_) => Err(()),
+            OrderflowMessage::CancelAll(ca) => Ok(KrakenMessage::CancelAll(*ca)),
             OrderflowMessage::Out(o) => Ok(KrakenMessage::Out(*o)),
         }
     }

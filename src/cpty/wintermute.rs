@@ -7,6 +7,7 @@ use crate::{
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
+use log::error;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
@@ -63,6 +64,9 @@ impl TryInto<WintermuteMessage> for &OrderflowMessage {
             OrderflowMessage::Ack(a) => Ok(WintermuteMessage::Ack(*a)),
             OrderflowMessage::Cancel(_) => Err(()),
             OrderflowMessage::Reject(r) => Ok(WintermuteMessage::Reject(r.clone())),
+            OrderflowMessage::CancelAll(_) => {
+                Err(error!("Cancel all not implemented for Wintermute"))
+            }
             OrderflowMessage::Fill(f) => {
                 Ok(WintermuteMessage::Fill(WintermuteFill { fill: *f }))
             }

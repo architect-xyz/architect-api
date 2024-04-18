@@ -1,7 +1,7 @@
 use crate::{
     folio::FolioMessage,
     orderflow::{
-        AberrantFill, Ack, Cancel, Fill, Order, OrderIdAllocation, OrderSource,
+        self, AberrantFill, Ack, Cancel, Fill, Order, OrderIdAllocation, OrderSource,
         OrderStateFlags, OrderType, OrderflowMessage, Out, Reject, TimeInForce,
     },
     symbology::{market::NormalizedMarketInfo, CptyId, MarketId},
@@ -80,6 +80,7 @@ impl TryInto<DeribitMessage> for &OrderflowMessage {
             OrderflowMessage::Ack(a) => Ok(DeribitMessage::Ack(*a)),
             OrderflowMessage::Fill(_) => Err(()),
             OrderflowMessage::Out(o) => Ok(DeribitMessage::Out(*o)),
+            OrderflowMessage::CancelAll(_) => Ok(DeribitMessage::CancelAll(CancelAll {})),
         }
     }
 }
@@ -113,6 +114,9 @@ impl TryInto<OrderflowMessage> for &DeribitMessage {
             DeribitMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             DeribitMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
             DeribitMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
+            DeribitMessage::CancelAll(_) => {
+                Ok(OrderflowMessage::CancelAll(orderflow::CancelAll::default()))
+            }
             DeribitMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             DeribitMessage::Folio(..)
             | DeribitMessage::SupportedCurrencies(..)
@@ -123,7 +127,6 @@ impl TryInto<OrderflowMessage> for &DeribitMessage {
             | DeribitMessage::OrderIdAllocation(..)
             | DeribitMessage::ExchangeAck(..)
             | DeribitMessage::ExchangeFill(..)
-            | DeribitMessage::CancelAll(..)
             | DeribitMessage::ExchangeOrderOut(..) => Err(()),
         }
     }

@@ -1,5 +1,6 @@
 use crate::{folio::FolioMessage, orderflow::*, symbology::market::NormalizedMarketInfo};
 use derive::FromValue;
+use log::error;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
@@ -55,6 +56,9 @@ impl TryInto<FalconXMessage> for &OrderflowMessage {
                 Ok(FalconXMessage::Fill(FalconXFill { fill: *f }))
             }
             OrderflowMessage::Out(o) => Ok(FalconXMessage::Out(*o)),
+            OrderflowMessage::CancelAll(_) => {
+                Err(error!("Cancel all not implemented for FalconX"))
+            }
         }
     }
 }

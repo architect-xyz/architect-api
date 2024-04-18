@@ -70,6 +70,7 @@ pub enum CoinbaseMessage {
     Reject(Reject),
     Ack(Ack),
     Fill(CoinbaseFill),
+    CancelAll(CancelAll),
     Out(Out),
     Folio(FolioMessage),
     OrderIdAllocation(OrderIdAllocation),
@@ -90,6 +91,9 @@ impl TryInto<OrderflowMessage> for &CoinbaseMessage {
             CoinbaseMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
             CoinbaseMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             CoinbaseMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
+            CoinbaseMessage::CancelAll(cclall) => {
+                Ok(OrderflowMessage::CancelAll(*cclall))
+            }
             CoinbaseMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
             CoinbaseMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             CoinbaseMessage::Folio(..)
@@ -117,6 +121,7 @@ impl TryInto<CoinbaseMessage> for &OrderflowMessage {
             OrderflowMessage::Ack(a) => Ok(CoinbaseMessage::Ack(*a)),
             OrderflowMessage::Fill(_) => Err(()),
             OrderflowMessage::Out(o) => Ok(CoinbaseMessage::Out(*o)),
+            OrderflowMessage::CancelAll(ccl) => Ok(CoinbaseMessage::CancelAll(*ccl)),
         }
     }
 }

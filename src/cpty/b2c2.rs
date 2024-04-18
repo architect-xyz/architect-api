@@ -49,6 +49,7 @@ impl TryInto<B2C2Message> for &OrderflowMessage {
         match self {
             OrderflowMessage::Order(o) => Ok(B2C2Message::Order(B2C2Order { order: *o })),
             OrderflowMessage::Cancel(_) => Err(()),
+            OrderflowMessage::CancelAll(_) => Err(()),
             OrderflowMessage::Reject(r) => Ok(B2C2Message::Reject(r.clone())),
             OrderflowMessage::Ack(_) => Err(()),
             OrderflowMessage::Fill(f) => Ok(B2C2Message::Fill(B2C2Fill { fill: *f })),

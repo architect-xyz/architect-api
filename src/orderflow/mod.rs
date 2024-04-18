@@ -21,6 +21,7 @@ pub use order_id_authority::*;
 pub enum OrderflowMessage {
     Order(Order),
     Cancel(Cancel),
+    CancelAll(CancelAll),
     Reject(Reject),
     Ack(Ack),
     Fill(Result<Fill, AberrantFill>),
