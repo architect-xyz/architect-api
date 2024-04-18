@@ -13,6 +13,8 @@ pub enum SystemControlMessage {
     SymbologyReady,
     Shutdown,
     RestartComponent(ComponentId),
+    Ping,
+    Pong,
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
