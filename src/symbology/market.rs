@@ -186,6 +186,7 @@ pub trait NormalizedMarketInfo {
 }
 
 #[derive(Default, Debug, Clone, Copy, Serialize, Deserialize, Pack)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum MinOrderQuantityUnit {
     #[default]
     Base,
