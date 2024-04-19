@@ -37,6 +37,7 @@ use serde::{Deserialize, Serialize};
 #[transitive(WintermuteCpty <-> Folio)]
 #[transitive(WintermuteCpty <-> Orderflow)]
 #[transitive(Orderflow <-> Oms)]
+#[transitive(Orderflow <- Algo)]
 #[transitive(Algo <-> TwapAlgo <- Orderflow)]
 #[transitive(Algo <-> SmartOrderRouterAlgo)]
 #[transitive(Algo <-> MMAlgo <- Orderflow)]
