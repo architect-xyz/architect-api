@@ -176,4 +176,7 @@ pub struct CmeProductGroupInfo {
     pub max_bid_ask_constraint: Option<String>,
     pub alt_min_quote_life: Option<String>,
     pub subfraction: Option<String>,
+    pub url: Option<String>,
+    pub category: Option<String>,
+    pub sub_category: Option<String>,
 }
