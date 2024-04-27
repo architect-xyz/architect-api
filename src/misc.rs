@@ -24,13 +24,28 @@ pub struct CoinInfo {
     pub tags: Vec<String>,
 }
 
+#[derive(Clone, Debug, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+pub enum CmeSecurityType {
+    CASH,
+    COMBO,
+    FRA,
+    FUT,
+    FWD,
+    IDX,
+    INDEX,
+    IRS,
+    OOC,
+    OOF,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CmeProductGroupInfo {
     pub product_guid: Option<String>,
     pub product_name: Option<String>,
-    pub security_type: Option<String>,
+    pub security_type: CmeSecurityType,
     pub clearing_symbol: Option<String>,
     pub master_symbol: Option<String>,
     pub exchange_clearing: Option<String>,
@@ -168,7 +183,7 @@ pub struct CmeProductGroupInfo {
     pub settl_ccy: Option<String>,
     pub is_efix_product: Option<String>,
     pub market_data: Option<String>,
-    pub fixed_payout: Option<String>,
+    pub fixed_payout: Option<f64>,
     pub size_priority_qty: Option<String>,
     pub top_eligible: Option<String>,
     pub alt_globex_min_tick: Option<String>,
