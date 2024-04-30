@@ -44,23 +44,12 @@ impl TryInto<OrderflowMessage> for &AlgoMessage {
     fn try_into(self) -> Result<OrderflowMessage, ()> {
         match self {
             AlgoMessage::ChildAck(m) => Ok(OrderflowMessage::Ack((*m).ack)),
-            AlgoMessage::ChildReject(m) => Ok(OrderflowMessage::Reject((*m).reject.clone())),
+            AlgoMessage::ChildReject(m) => {
+                Ok(OrderflowMessage::Reject((*m).reject.clone()))
+            }
             AlgoMessage::ChildFill(m) => Ok(OrderflowMessage::Fill((*m).fill)),
             AlgoMessage::ChildOut(m) => Ok(OrderflowMessage::Out((*m).out)),
-
-            AlgoMessage::AlgoOrder(_)
-            | AlgoMessage::AlgoControl(_)
-            | AlgoMessage::AlgoAck(_)
-            | AlgoMessage::AlgoReject(_)
-            | AlgoMessage::AlgoStatus(_)
-            | AlgoMessage::PreviewAlgo(_, _)
-            | AlgoMessage::PreviewAlgoResponse(_, _)
-            | AlgoMessage::GetAlgoOrder(_, _)
-            | AlgoMessage::GetAlgoOrderResponse(_, _)
-            | AlgoMessage::GetAlgoStatus(_, _)
-            | AlgoMessage::GetAlgoStatusResponse(_, _)
-            | AlgoMessage::GetAlgoLog(_, _)
-            | AlgoMessage::GetAlgoLogResponse(_, _) => Err(())
+            _ => Err(()),
         }
     }
 }
