@@ -11,6 +11,7 @@ use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
+use tokio_postgres::Row;
 
 pub mod databento;
 pub mod snapshots;
@@ -154,6 +155,23 @@ pub struct CandleV1 {
     pub volume: Decimal,
     pub buy_volume: Decimal,
     pub sell_volume: Decimal,
+}
+
+impl TryInto<CandleV1> for Row {
+    type Error = anyhow::Error;
+
+    fn try_into(self) -> Result<CandleV1, Self::Error> {
+        Ok(CandleV1 {
+            time: self.try_get("ts")?,
+            open: self.try_get("open_price")?,
+            high: self.try_get("high_price")?,
+            close: self.try_get("close_price")?,
+            low: self.try_get("low_price")?,
+            volume: self.try_get("volume")?,
+            buy_volume: self.try_get("buy_volume")?,
+            sell_volume: self.try_get("sell_volume")?,
+        })
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Pack, FromValue)]

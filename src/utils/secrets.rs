@@ -29,6 +29,15 @@ impl<T: Zeroize> MaybeSecret<T> {
     }
 }
 
+impl<T: Clone + Zeroize> MaybeSecret<T> {
+    pub fn to_plain(&self) -> Option<Zeroizing<T>> {
+        match self {
+            MaybeSecret::Secret(_) => None,
+            MaybeSecret::Plain(t) => Some(t.clone()),
+        }
+    }
+}
+
 // Most useful implementations of T for MaybeSecret will require
 // a FromStr implementation.  If you don't have one handy, use
 // this macro to get a reasonable-ish one using serde_json.
