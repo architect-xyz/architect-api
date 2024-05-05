@@ -41,3 +41,16 @@ impl std::fmt::Display for BybitMarketInfo {
         Ok(())
     }
 }
+
+impl std::fmt::Display for ProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let product_type = match self {
+            ProductType::Spot => "spot",
+            ProductType::Linear => "linear",
+            ProductType::Inverse => "inverse",
+            ProductType::Option => "option",
+        };
+        write!(f, "{}", product_type)?;
+        Ok(())
+    }
+}
