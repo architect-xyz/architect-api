@@ -2,9 +2,9 @@ use crate::{
     orderflow::{AberrantFill, Fill},
     symbology::*,
     utils::{half_open_range::ClampSign, messaging::MaybeRequest},
-    AccountId, HalfOpenRange,
+    AccountId, Dir, HalfOpenRange,
 };
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDate, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
@@ -26,14 +26,14 @@ pub enum FolioMessage {
     Fills(Option<Uuid>, CptyId, Result<Fills, GetFillsError>), // None for unsolicited
     /// Cptys should dropcopy realtime fills to Folio as they become known
     RealtimeFill(Result<Fill, AberrantFill>),
-    GetAllBalances,
-    AllBalances(Vec<(CptyId, Arc<Balances>)>),
+    GetAllAccountSummaries,
+    AllAccountSummaries(Vec<(CptyId, Arc<AccountSummaries>)>),
     /// Request to cpty for balances snapshot
-    GetBalances(CptyId),
+    GetAccountSummaries(CptyId),
     /// Response from cpty with balances snapshot
-    Balances(CptyId, Option<Arc<Balances>>),
+    AccountSummaries(CptyId, Option<Arc<AccountSummaries>>),
     /// Control message to folio to update balances
-    UpdateBalances,
+    UpdateAccountSummaries,
     /// Control messages to folio to sync fills
     SyncFillsForward,
     SyncFillsBackward(CptyId),
@@ -54,9 +54,77 @@ pub struct MarketFilter {
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
-pub struct Balances {
+pub struct AccountSummaries {
     pub snapshot_ts: DateTime<Utc>,
-    pub by_account: BTreeMap<AccountId, BTreeMap<ProductId, Decimal>>,
+    pub by_account: BTreeMap<AccountId, AccountSummary>,
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, Default)]
+pub struct AccountSummary {
+    pub balances: BTreeMap<ProductId, Balance>,
+    // There could be multiple open positions for a particular Market,
+    // so this is not a BTreeMap like [balances].
+    pub positions: Vec<Position>,
+    pub profit_loss: Option<Decimal>,
+}
+
+impl AccountSummary {
+    pub fn from_simple_balances(balances: BTreeMap<ProductId, Decimal>) -> Self {
+        Self {
+            balances: balances
+                .into_iter()
+                .map(|(product_id, total)| {
+                    (product_id, Balance { total: Some(total), ..Default::default() })
+                })
+                .collect(),
+            positions: vec![],
+            ..Default::default()
+        }
+    }
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, Default)]
+pub struct Balance {
+    /// The total amount of this asset held in the account by the
+    /// venue/broker.
+    pub total: Option<Decimal>,
+
+    /// Margin requirement calculated for worst-case based on open positions and working orders.
+    pub total_margin: Option<Decimal>,
+
+    /// Margin requirement calculated for worst-case based on open positions.
+    pub position_margin: Option<Decimal>,
+
+    /// Available account funds including balance, realized profit (or loss), collateral and credits.
+    pub purchasing_power: Option<Decimal>,
+
+    /// Cash available in the account beyond the required margin.
+    pub cash_excess: Option<Decimal>,
+
+    /// Cash balance from the last statement.
+    pub yesterday_balance: Option<Decimal>,
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub struct Position {
+    pub market_id: MarketId,
+
+    pub quantity: Option<Decimal>,
+
+    /// Average price used to open position
+    pub average_price: Option<Decimal>,
+
+    pub trade_time: Option<DateTime<Utc>>,
+
+    /// The trade date according to the exchange
+    /// settlement calendar.
+    pub trade_date: Option<NaiveDate>,
+
+    pub dir: Dir,
+
+    pub break_even_price: Option<Decimal>,
+
+    pub liquidation_price: Option<Decimal>,
 }
 
 /// Request to cpty for a certain range of fills.

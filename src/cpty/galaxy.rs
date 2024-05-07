@@ -1,8 +1,4 @@
-use crate::{
-    folio::FolioMessage,
-    orderflow::*,
-    symbology::{market::NormalizedMarketInfo, ProductId},
-};
+use crate::{folio::FolioMessage, orderflow::*, symbology::market::NormalizedMarketInfo};
 use compact_str::CompactString;
 use derive::FromValue;
 use log::error;
@@ -56,7 +52,6 @@ pub enum GalaxyMessage {
     Reject(Reject),
     Fill(GalaxyFill),
     Out(Out),
-    Balances(Vec<(ProductId, Decimal)>),
     Folio(FolioMessage),
 }
 
@@ -91,7 +86,7 @@ impl TryInto<OrderflowMessage> for &GalaxyMessage {
             GalaxyMessage::Fill(f, ..) => Ok(OrderflowMessage::Fill(**f)),
             GalaxyMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             GalaxyMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
-            GalaxyMessage::Balances(_) | GalaxyMessage::Folio(_) => Err(()),
+            GalaxyMessage::Folio(_) => Err(()),
         }
     }
 }
