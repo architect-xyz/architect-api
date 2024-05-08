@@ -38,7 +38,7 @@ pub enum OmsMessage {
     FillWarning(OrderId, FillId, BitFlags<FillWarning>),
     Out(Out),
     Initialize(limits_file::LimitsFile),
-    RetireOutedOrders,
+    RetireOutedOrdersAndUnknownFills,
     // some of these are better queried via a follower Oms or StatsDb;
     // for latency sensitive applications, responding to these requests
     // blocks the Oms for too long; but the option is available
@@ -192,7 +192,7 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
             OmsMessage::Out(msg) => Ok(OrderflowMessage::Out(*msg)),
             OmsMessage::OrderUpdate(..)
             | OmsMessage::Initialize(..)
-            | OmsMessage::RetireOutedOrders
+            | OmsMessage::RetireOutedOrdersAndUnknownFills
             | OmsMessage::FillWarning(..)
             | OmsMessage::GetOpenOrders(_)
             | OmsMessage::GetOpenOrdersResponse(..)

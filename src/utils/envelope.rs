@@ -1,6 +1,7 @@
-use crate::{ComponentId, UserId};
+use crate::{ComponentId, MessageTopic, TypedMessage, UserId};
 use anyhow::Result;
 use derive::FromValue;
+use enumflags2::BitFlags;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -11,6 +12,11 @@ use uuid::Uuid;
 pub enum Address {
     Component(ComponentId),
     Channel(UserId, u32),
+    /// For cases like external orderflow where the message doesn't ultimately route
+    /// to any particular client; in this case the message can only be picked up via
+    /// a channel subscription.  This is different from Component(#none) which
+    /// actually goes nowhere and is reserved for SystemControl messages.
+    ChannelSubscriptionOnly,
 }
 
 impl From<ComponentId> for Address {
@@ -25,6 +31,7 @@ impl std::fmt::Display for Address {
         match self {
             Address::Component(id) => write!(f, "#{}", id),
             Address::Channel(user_id, channel) => write!(f, "{}:{}", user_id, channel),
+            Address::ChannelSubscriptionOnly => write!(f, "~"),
         }
     }
 }
@@ -35,6 +42,7 @@ impl Address {
         match self {
             Address::Component(id) => id.is_loopback(),
             Address::Channel(..) => false,
+            Address::ChannelSubscriptionOnly => false,
         }
     }
 
@@ -62,16 +70,29 @@ impl<M> Envelope<M> {
         Self {
             src: Address::Component(ComponentId::none()),
             dst: Address::Component(ComponentId::none()),
-            stamp: Stamp::default(),
+            stamp: Stamp::new(Default::default()),
             msg,
         }
     }
 }
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
+impl Envelope<TypedMessage> {
+    pub fn topics(&self) -> BitFlags<MessageTopic> {
+        self.msg.topics() | self.stamp.additional_topics
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
 pub struct Stamp {
     pub user_id: Option<UserId>,
     pub sequence: Option<Sequence>,
+    pub additional_topics: BitFlags<MessageTopic>,
+}
+
+impl Stamp {
+    pub fn new(additional_topics: BitFlags<MessageTopic>) -> Self {
+        Self { user_id: None, sequence: None, additional_topics }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]

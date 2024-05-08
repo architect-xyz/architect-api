@@ -1,6 +1,7 @@
-use crate::ComponentId;
+use crate::{ComponentId, MessageTopic, UserId};
 use bytes::Bytes;
 use derive::FromValue;
+use enumflags2::BitFlags;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use std::{collections::BTreeMap, sync::Arc};
@@ -15,6 +16,7 @@ pub enum SystemControlMessage {
     RestartComponent(ComponentId),
     Ping,
     Pong,
+    ChannelSubscribe(UserId, u32, BitFlags<MessageTopic>),
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]

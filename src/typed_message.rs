@@ -1,5 +1,6 @@
 use super::*;
 use derive::{FromInner, FromValue, TryIntoAnyInner};
+use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 
@@ -90,6 +91,21 @@ impl TypedMessage {
             None
         }
     }
+
+    pub fn topics(&self) -> BitFlags<MessageTopic> {
+        match self {
+            TypedMessage::Orderflow(_) => MessageTopic::Orderflow.into(),
+            _ => BitFlags::empty(),
+        }
+    }
+}
+
+#[bitflags]
+#[repr(u64)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum MessageTopic {
+    Orderflow,
+    ExternalOrderflow,
 }
 
 pub enum MaybeSplit<A, B> {

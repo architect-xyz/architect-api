@@ -16,7 +16,7 @@ pub mod utils;
 pub use auth::user_id::UserId;
 pub use config::Config;
 pub use orderflow::{Account, AccountId, OrderId};
-pub use typed_message::{MaybeSplit, TypedMessage};
+pub use typed_message::{MaybeSplit, MessageTopic, TypedMessage};
 pub use utils::{
     amount::Amount,
     component_id::ComponentId,

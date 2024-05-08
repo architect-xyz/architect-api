@@ -5,7 +5,7 @@ use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub struct LimitsFile {
     #[serde(default)]
     pub max_open_qty: FxHashMap<ProductId, Decimal>,
