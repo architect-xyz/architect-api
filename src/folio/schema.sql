@@ -8,5 +8,6 @@ CREATE TABLE IF NOT EXISTS fills (
     dir TEXT,
     recv_time INTEGER,
     trade_time INTEGER,
+    trader TEXT,
     raw BLOB
 );

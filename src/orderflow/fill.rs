@@ -1,6 +1,6 @@
 use crate::{
     symbology::{MarketId, VenueId},
-    AccountId, Dir, OrderId,
+    AccountId, Dir, OrderId, UserId,
 };
 use anyhow::anyhow;
 use chrono::{DateTime, Utc};
@@ -81,6 +81,9 @@ pub struct Fill {
     pub recv_time: Option<DateTime<Utc>>,
     /// When the cpty claims the trade happened
     pub trade_time: DateTime<Utc>,
+    #[serde(default)]
+    #[pack(default)]
+    pub trader: Option<UserId>,
 }
 
 impl Fill {
@@ -97,6 +100,7 @@ impl Fill {
             is_maker: self.is_maker,
             recv_time: self.recv_time,
             trade_time: Some(self.trade_time),
+            trader: self.trader,
         }
     }
 }
@@ -141,6 +145,7 @@ pub struct AberrantFill {
     pub is_maker: Option<bool>,
     pub recv_time: Option<DateTime<Utc>>,
     pub trade_time: Option<DateTime<Utc>>,
+    pub trader: Option<UserId>,
 }
 
 impl AberrantFill {
@@ -160,6 +165,7 @@ impl AberrantFill {
             trade_time: self
                 .trade_time
                 .ok_or_else(|| anyhow!("trade_time is required"))?,
+            trader: self.trader,
         })
     }
 }
