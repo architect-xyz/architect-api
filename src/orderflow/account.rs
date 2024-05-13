@@ -8,7 +8,11 @@
 //! map to the same account, but don't in actuality, reconciliation
 //! errors will be raised by Folio.
 
-use crate::{symbology::{Venue, VenueId}, utils::messaging::MaybeRequest, uuid_val, Str};
+use crate::{
+    symbology::{Venue, VenueId},
+    utils::messaging::MaybeRequest,
+    uuid_val, Str,
+};
 use anyhow::Result;
 use derive::FromValue;
 use netidx_derive::Pack;
