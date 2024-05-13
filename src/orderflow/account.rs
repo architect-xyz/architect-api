@@ -8,7 +8,7 @@
 //! map to the same account, but don't in actuality, reconciliation
 //! errors will be raised by Folio.
 
-use crate::{utils::messaging::MaybeRequest, uuid_val, Str};
+use crate::{symbology::{Venue, VenueId}, utils::messaging::MaybeRequest, uuid_val, Str};
 use anyhow::Result;
 use derive::FromValue;
 use netidx_derive::Pack;
@@ -20,21 +20,18 @@ static ACCOUNT_NS: Uuid = uuid!("c9c8b8e8-69f6-4ca2-83b7-76611e5d6d90");
 uuid_val!(AccountId, ACCOUNT_NS);
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Account {
     pub id: AccountId,
     pub name: Str,
+    pub venue_id: VenueId,
 }
 
 impl Account {
     /// Constructor that codifies some attempt at standard naming convention
-    pub fn new(
-        venue_name: impl AsRef<str>,
-        exchange_account_id: impl AsRef<str>,
-    ) -> Result<Self> {
-        let name = format!("{}:{}", venue_name.as_ref(), exchange_account_id.as_ref());
+    pub fn new(venue: &Venue, exchange_account_id: impl AsRef<str>) -> Result<Self> {
+        let name = format!("{}:{}", venue.name.as_ref(), exchange_account_id.as_ref());
         let id = AccountId::from_str(&name)?;
-        Ok(Self { id, name: Str::try_from(name.as_str())? })
+        Ok(Self { id, venue_id: venue.id, name: Str::try_from(name.as_str())? })
     }
 }
 

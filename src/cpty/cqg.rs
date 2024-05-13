@@ -20,6 +20,7 @@ pub struct CqgMarketInfo {
     pub cfi_code: Option<String>,
     pub cqg_contract_symbol: Option<String>,
     pub correct_price_scale: Decimal,
+    pub exchange_symbol: String,
     pub exchange_group_symbol: String,
     pub tick_size: Decimal,  // uncorrected
     pub tick_value: Decimal, // uncorrected
