@@ -56,6 +56,7 @@ impl Into<AlgoOrder> for &MMAlgoOrder {
         AlgoOrder {
             order_id: self.order_id,
             trader: self.trader,
+            account: self.account,
             algo: Str::try_from(algo).unwrap(),
         }
     }

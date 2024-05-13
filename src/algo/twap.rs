@@ -32,6 +32,7 @@ impl Into<AlgoOrder> for &TwapOrder {
         AlgoOrder {
             order_id: self.order_id,
             trader: self.trader,
+            account: self.account,
             algo: Str::try_from("TWAP").unwrap(), // won't panic
         }
     }

@@ -59,6 +59,7 @@ impl TryInto<OrderflowMessage> for &AlgoMessage {
 pub struct AlgoOrder {
     pub order_id: OrderId,
     pub trader: UserId,
+    pub account: Option<AccountId>,
     pub algo: Str,
 }
 

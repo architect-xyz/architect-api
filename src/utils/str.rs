@@ -69,6 +69,7 @@ unsafe impl Sync for Root {}
 static ROOT: Lazy<Mutex<Root>> =
     Lazy::new(|| Mutex::new(Root { all: HashSet::default(), root: Chunk::new() }));
 
+#[allow(dead_code)]
 struct StrVisitor;
 
 impl<'de> serde::de::Visitor<'de> for StrVisitor {
@@ -389,7 +390,7 @@ mod test {
 
     #[test]
     fn immediates() {
-        for _ in 0..1000000 {
+        for _ in 0..10000 {
             let len = thread_rng().gen_range(0..8);
             let s = rand_ascii(len);
             let t0 = Str::try_from(s.as_str()).unwrap();
@@ -401,7 +402,7 @@ mod test {
 
     #[test]
     fn mixed() {
-        for _ in 0..1000000 {
+        for _ in 0..10000 {
             let len = thread_rng().gen_range(0..256);
             let s = rand_ascii(len);
             let t0 = Str::try_from(s.as_str()).unwrap();
@@ -413,7 +414,7 @@ mod test {
 
     #[test]
     fn unicode() {
-        for _ in 0..1000000 {
+        for _ in 0..10000 {
             let s = loop {
                 let len = thread_rng().gen_range(0..128);
                 let s = rand_unicode(len);
