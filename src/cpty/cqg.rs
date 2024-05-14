@@ -42,6 +42,14 @@ impl NormalizedMarketInfo for CqgMarketInfo {
     fn is_delisted(&self) -> bool {
         self.deleted
     }
+
+    fn initial_margin(&self) -> Option<Decimal> {
+        self.initial_margin
+    }
+
+    fn maintenance_margin(&self) -> Option<Decimal> {
+        self.maintenance_margin
+    }
 }
 
 impl std::fmt::Display for CqgMarketInfo {

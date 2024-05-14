@@ -183,6 +183,14 @@ pub trait NormalizedMarketInfo {
 
     /// Return if the market is delisted
     fn is_delisted(&self) -> bool;
+
+    fn initial_margin(&self) -> Option<Decimal> {
+        return None;
+    }
+
+    fn maintenance_margin(&self) -> Option<Decimal> {
+        return None;
+    }
 }
 
 #[derive(Default, Debug, Clone, Copy, Serialize, Deserialize, Pack)]
