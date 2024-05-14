@@ -32,7 +32,7 @@ pub struct CqgMarketInfo {
 
 impl NormalizedMarketInfo for CqgMarketInfo {
     fn tick_size(&self) -> Decimal {
-        self.correct_price_scale * self.tick_size
+        self.tick_size
     }
 
     fn step_size(&self) -> Decimal {
