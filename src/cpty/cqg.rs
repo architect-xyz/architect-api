@@ -381,6 +381,7 @@ pub struct CqgPosition {
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum CqgMessage {
+    Init,
     Order(CqgOrder),
     Cancel(Cancel),
     Ack(Ack),
@@ -404,7 +405,8 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
             CqgMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             CqgMessage::Fill(f) => Ok(OrderflowMessage::Fill(*f)),
             CqgMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
-            CqgMessage::Folio(_)
+            CqgMessage::Init
+            | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)
             | CqgMessage::CqgPositionStatus(_) => Err(()),
