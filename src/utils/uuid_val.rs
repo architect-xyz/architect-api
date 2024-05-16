@@ -98,5 +98,32 @@ macro_rules! uuid_val {
                 uuid::Uuid::json_schema(gen)
             }
         }
+
+        #[cfg(feature = "rusqlite")]
+        impl rusqlite::ToSql for $name {
+            fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+                use rusqlite::types::{ToSqlOutput, Value};
+                Ok(ToSqlOutput::Owned(Value::Text(self.to_string())))
+            }
+        }
+
+        impl tokio_postgres::types::ToSql for $name {
+            tokio_postgres::types::to_sql_checked!();
+
+            fn to_sql(
+                &self,
+                ty: &tokio_postgres::types::Type,
+                out: &mut bytes::BytesMut,
+            ) -> Result<
+                tokio_postgres::types::IsNull,
+                Box<dyn std::error::Error + Sync + Send>,
+            > {
+                self.0.to_sql(ty, out)
+            }
+
+            fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+                Uuid::accepts(ty)
+            }
+        }
     };
 }

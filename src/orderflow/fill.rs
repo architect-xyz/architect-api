@@ -3,6 +3,7 @@ use crate::{
     AccountId, Dir, OrderId, UserId,
 };
 use anyhow::anyhow;
+use bytes::BytesMut;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
@@ -10,7 +11,7 @@ use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::fmt::Display;
+use std::{error::Error, fmt::Display};
 use uuid::Uuid;
 
 /// The ID of a fill
@@ -62,6 +63,22 @@ impl rusqlite::ToSql for FillId {
     fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
         use rusqlite::types::{ToSqlOutput, Value};
         Ok(ToSqlOutput::Owned(Value::Text(self.to_string())))
+    }
+}
+
+impl tokio_postgres::types::ToSql for FillId {
+    tokio_postgres::types::to_sql_checked!();
+
+    fn to_sql(
+        &self,
+        ty: &tokio_postgres::types::Type,
+        out: &mut BytesMut,
+    ) -> Result<tokio_postgres::types::IsNull, Box<dyn Error + Sync + Send>> {
+        self.0.to_sql(ty, out)
+    }
+
+    fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+        Uuid::accepts(ty)
     }
 }
 

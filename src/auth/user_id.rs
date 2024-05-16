@@ -13,11 +13,3 @@ impl UserId {
         self.0.is_nil()
     }
 }
-
-#[cfg(feature = "rusqlite")]
-impl rusqlite::ToSql for UserId {
-    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
-        use rusqlite::types::{ToSqlOutput, Value};
-        Ok(ToSqlOutput::Owned(Value::Text(self.to_string())))
-    }
-}
