@@ -43,7 +43,7 @@ impl Account {
 pub enum AccountMessage {
     MapAccount(Account),
     GetAccounts(Uuid),
-    Accounts(Uuid, Arc<Vec<Account>>),
+    Accounts(Option<Uuid>, Arc<Vec<Account>>),
 }
 
 impl MaybeRequest for AccountMessage {
@@ -56,7 +56,7 @@ impl MaybeRequest for AccountMessage {
 
     fn response_id(&self) -> Option<Uuid> {
         match self {
-            AccountMessage::Accounts(uuid, _) => Some(*uuid),
+            AccountMessage::Accounts(uuid, _) => *uuid,
             _ => None,
         }
     }

@@ -414,7 +414,7 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
             CqgMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             CqgMessage::Fill(f) => Ok(OrderflowMessage::Fill(*f)),
             CqgMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
-            CqgMessage::UpdateCqgAccounts { .. } 
+            CqgMessage::UpdateCqgAccounts { .. }
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)

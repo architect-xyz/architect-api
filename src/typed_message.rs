@@ -95,6 +95,14 @@ impl TypedMessage {
     pub fn topics(&self) -> BitFlags<MessageTopic> {
         match self {
             TypedMessage::Orderflow(_) => MessageTopic::Orderflow.into(),
+            TypedMessage::AccountMaster(am) => {
+                use orderflow::account::AccountMessage;
+                match am {
+                    AccountMessage::MapAccount(..)
+                    | AccountMessage::Accounts(None, _) => MessageTopic::Accounts.into(),
+                    _ => BitFlags::empty(),
+                }
+            }
             _ => BitFlags::empty(),
         }
     }
@@ -106,6 +114,7 @@ impl TypedMessage {
 pub enum MessageTopic {
     Orderflow,
     ExternalOrderflow,
+    Accounts,
 }
 
 pub enum MaybeSplit<A, B> {
