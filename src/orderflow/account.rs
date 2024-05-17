@@ -33,7 +33,7 @@ pub struct Account {
 impl Account {
     /// Constructor that codifies some attempt at standard naming convention
     pub fn new(venue: &Venue, exchange_account_id: impl AsRef<str>) -> Result<Self> {
-        let name = format!("{}:{}", venue.name.as_ref(), exchange_account_id.as_ref());
+        let name = format!("{}:{}", venue.name, exchange_account_id.as_ref());
         let id = AccountId::from_str(&name)?;
         Ok(Self { id, venue_id: venue.id, name: Str::try_from(name.as_str())? })
     }
