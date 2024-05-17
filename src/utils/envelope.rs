@@ -54,6 +54,13 @@ impl Address {
     {
         Ok(Self::Component(id.try_into()?))
     }
+
+    pub fn component_id(&self) -> Option<ComponentId> {
+        match self {
+            Address::Component(id) => Some(*id),
+            _ => None,
+        }
+    }
 }
 
 /// Architect components communicate with each other by sending `Envelope`s.

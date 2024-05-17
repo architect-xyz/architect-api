@@ -2,14 +2,14 @@ use crate::{
     folio::FolioMessage,
     orderflow::{AberrantFill, Ack, Cancel, Fill, Order, OrderflowMessage, Out, Reject},
     symbology::{market::NormalizedMarketInfo, MarketId},
-    OrderId,
+    OrderId, UserId,
 };
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
-use std::ops::Deref;
+use std::{ops::Deref, sync::Arc};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct CqgMarketInfo {
@@ -379,9 +379,17 @@ pub struct CqgPosition {
     pub speculation_type: Option<u32>,
 }
 
+#[derive(Clone, Debug, FromValue, Serialize, Deserialize, Pack)]
+pub struct CqgAccount {
+    pub user_id: UserId,
+    pub user_email: String,
+    pub clearing_venue: String,
+    pub cqg_account_id: i32,
+    pub cqg_trader_id: i32,
+}
+
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum CqgMessage {
-    Init,
     Order(CqgOrder),
     Cancel(Cancel),
     Ack(Ack),
@@ -389,6 +397,7 @@ pub enum CqgMessage {
     Fill(Result<Fill, AberrantFill>),
     Reject(Reject),
     Folio(FolioMessage),
+    UpdateCqgAccounts { accounts: Arc<Vec<CqgAccount>>, is_snapshot: bool },
     CqgTrades(Vec<CqgTrade>),
     CqgAccountSummary(CqgAccountSummary),
     CqgPositionStatus(CqgPositionStatus),
@@ -405,7 +414,7 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
             CqgMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             CqgMessage::Fill(f) => Ok(OrderflowMessage::Fill(*f)),
             CqgMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
-            CqgMessage::Init
+            CqgMessage::UpdateCqgAccounts { .. } 
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)

@@ -291,6 +291,7 @@ pub enum RejectReason {
     UnknownMarket,
     DuplicateOrderId,
     InvalidQuantity,
+    MissingRequiredAccount,
     #[pack(other)]
     #[serde(other)]
     Unknown,
@@ -306,6 +307,7 @@ impl std::fmt::Display for RejectReason {
             UnknownMarket => write!(f, "unknown market"),
             DuplicateOrderId => write!(f, "duplicate order id"),
             InvalidQuantity => write!(f, "invalid quantity"),
+            MissingRequiredAccount => write!(f, "missing required account"),
             Unknown => write!(f, "unknown"),
         }
     }
