@@ -25,7 +25,6 @@ derive = { package = "architect-derive", version = "0.3.0", path = "../derive" }
 derive_builder = { workspace = true }
 derive_more = { workspace = true }
 dirs = { workspace = true }
-either = { workspace = true }
 enum_dispatch = { workspace = true }
 enumflags2 = { workspace = true }
 futures = { workspace = true }
