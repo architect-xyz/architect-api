@@ -385,7 +385,7 @@ pub struct CqgAccount {
     pub user_email: String,
     pub clearing_venue: String,
     pub cqg_account_id: i32,
-    pub cqg_trader_id: i32,
+    pub cqg_trader_id: String,
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
