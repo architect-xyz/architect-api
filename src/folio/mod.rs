@@ -9,7 +9,10 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use std::{collections::BTreeMap, sync::Arc};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    sync::Arc,
+};
 use uuid::Uuid;
 
 pub static SCHEMA: &'static str = include_str!("schema.sql");
@@ -26,12 +29,22 @@ pub enum FolioMessage {
     Fills(Option<Uuid>, CptyId, Result<Fills, GetFillsError>), // None for unsolicited
     /// Cptys should dropcopy realtime fills to Folio as they become known
     RealtimeFill(Result<Fill, AberrantFill>),
-    GetAllAccountSummaries,
-    AllAccountSummaries(Vec<(CptyId, Arc<AccountSummaries>)>),
-    /// Request to cpty for balances snapshot
-    GetAccountSummaries(CptyId),
-    /// Response from cpty with balances snapshot
-    AccountSummaries(CptyId, Option<Arc<AccountSummaries>>),
+    /// Request account summaries snapshot from all cptys, grouped by cpty
+    ///
+    /// - request id
+    /// - account ids (None for all accounts)
+    GetAllAccountSummaries(Uuid, Option<Arc<BTreeSet<AccountId>>>),
+    AllAccountSummaries(Uuid, Vec<(CptyId, Arc<AccountSummaries>)>),
+    /// Request account summaries snapshot; can be called internally
+    /// (as Folio <-> Cpty), or externally (client <-> Folio)
+    ///
+    /// - request id
+    /// - cpty id
+    /// - account ids (None for all accounts)
+    GetAccountSummaries(Uuid, CptyId, Option<Arc<BTreeSet<AccountId>>>),
+    /// Response from cpty with balances snapshot;
+    /// may be unsolicited (response_id = None) from cptys
+    AccountSummaries(Option<Uuid>, CptyId, Option<Arc<AccountSummaries>>),
     /// Control message to folio to update balances
     UpdateAccountSummaries,
     /// Control messages to folio to sync fills
@@ -57,6 +70,23 @@ pub struct MarketFilter {
 pub struct AccountSummaries {
     pub snapshot_ts: DateTime<Utc>,
     pub by_account: BTreeMap<AccountId, AccountSummary>,
+}
+
+impl AccountSummaries {
+    pub fn filter_accounts(&self, accounts: &BTreeSet<AccountId>) -> Self {
+        let by_account = self
+            .by_account
+            .iter()
+            .filter_map(|(account_id, summary)| {
+                if accounts.contains(account_id) {
+                    Some((*account_id, summary.clone()))
+                } else {
+                    None
+                }
+            })
+            .collect();
+        Self { snapshot_ts: self.snapshot_ts, by_account }
+    }
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, Default)]
@@ -165,17 +195,19 @@ pub struct FolioSyncStatus {
 impl MaybeRequest for FolioMessage {
     fn request_id(&self) -> Option<Uuid> {
         match self {
-            FolioMessage::GetFills(id, ..) | FolioMessage::GetSyncStatus(id, ..) => {
-                Some(*id)
-            }
+            FolioMessage::GetFills(id, ..)
+            | FolioMessage::GetSyncStatus(id, ..)
+            | FolioMessage::GetAccountSummaries(id, ..)
+            | FolioMessage::GetAllAccountSummaries(id, ..) => Some(*id),
             _ => None,
         }
     }
 
     fn response_id(&self) -> Option<Uuid> {
         match self {
-            FolioMessage::Fills(id, ..) => *id,
-            FolioMessage::GetSyncStatusResponse(id, ..) => Some(*id),
+            FolioMessage::Fills(id, ..) | FolioMessage::AccountSummaries(id, ..) => *id,
+            FolioMessage::GetSyncStatusResponse(id, ..)
+            | FolioMessage::AllAccountSummaries(id, ..) => Some(*id),
             _ => None,
         }
     }
