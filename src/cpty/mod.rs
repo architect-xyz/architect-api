@@ -11,6 +11,7 @@ pub mod deribit;
 pub mod dydx;
 pub mod falconx;
 pub mod galaxy;
+pub mod generic_external;
 pub mod kraken;
 pub mod mock;
 pub mod okx;

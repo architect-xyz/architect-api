@@ -37,6 +37,8 @@ use serde::{Deserialize, Serialize};
 #[transitive(KrakenCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
+#[transitive(ExternalCpty <-> Folio)]
+#[transitive(ExternalCpty <-> Orderflow)]
 #[transitive(WintermuteCpty <-> Folio)]
 #[transitive(WintermuteCpty <-> Orderflow)]
 #[transitive(Orderflow <-> Oms)]
@@ -55,6 +57,7 @@ pub enum TypedMessage {
     #[pack(tag(  5))] Algo(algo::AlgoMessage),
     #[pack(tag(  6))] Folio(folio::FolioMessage),
     #[pack(tag(  7))] AccountMaster(orderflow::account::AccountMessage),
+    #[pack(tag( 98))] ExternalCpty(cpty::generic_external::ExternalCptyMessage),
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
     #[pack(tag(101))] B2C2Cpty(cpty::b2c2::B2C2Message),

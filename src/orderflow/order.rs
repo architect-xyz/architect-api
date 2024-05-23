@@ -114,6 +114,7 @@ impl OrderBuilder {
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLUnion))]
+#[serde(tag = "type")]
 pub enum OrderType {
     Limit(LimitOrderType),
     StopLossLimit(StopLossLimitOrderType),
@@ -142,6 +143,7 @@ pub struct TakeProfitLimitOrderType {
 }
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[serde(tag = "type", content = "value")]
 pub enum TimeInForce {
     GoodTilCancel,
     GoodTilDate(DateTime<Utc>),

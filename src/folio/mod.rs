@@ -17,6 +17,11 @@ use uuid::Uuid;
 
 pub static SCHEMA: &'static str = include_str!("schema.sql");
 
+/// Cpty should implement the following RPCs/messages for Folio integration:
+///
+/// - GetFills/Fills
+/// - GetAccountSummaries/AccountSummaries
+/// - Fills (realtime unsolicited fill dropcopy)
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum FolioMessage {
     GetFillsQuery(MarketFilter, HalfOpenRange<Option<DateTime<Utc>>>),
