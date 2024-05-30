@@ -11,6 +11,7 @@ use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use std::str::FromStr;
 use std::{error::Error, fmt::Display};
 use uuid::Uuid;
 
@@ -58,6 +59,14 @@ impl Display for FillId {
     }
 }
 
+impl FromStr for FillId {
+    type Err = uuid::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Uuid::from_str(s).map(FillId)
+    }
+}
+
 #[cfg(feature = "rusqlite")]
 impl rusqlite::ToSql for FillId {
     fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
@@ -75,6 +84,19 @@ impl tokio_postgres::types::ToSql for FillId {
         out: &mut BytesMut,
     ) -> Result<tokio_postgres::types::IsNull, Box<dyn Error + Sync + Send>> {
         self.0.to_sql(ty, out)
+    }
+
+    fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+        Uuid::accepts(ty)
+    }
+}
+
+impl<'a> tokio_postgres::types::FromSql<'a> for FillId {
+    fn from_sql(
+        ty: &tokio_postgres::types::Type,
+        raw: &'a [u8],
+    ) -> Result<Self, Box<dyn Error + Sync + Send>> {
+        Uuid::from_sql(ty, raw).map(FillId)
     }
 
     fn accepts(ty: &tokio_postgres::types::Type) -> bool {
