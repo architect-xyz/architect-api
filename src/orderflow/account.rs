@@ -11,10 +11,12 @@
 use crate::{
     symbology::{Venue, VenueId},
     utils::messaging::MaybeRequest,
-    uuid_val, Str,
+    uuid_val, Str, UserId,
 };
 use anyhow::Result;
+use chrono::{DateTime, Utc};
 use derive::FromValue;
+use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use std::{str::FromStr, sync::Arc};
@@ -35,13 +37,14 @@ impl Account {
     pub fn new(venue: &Venue, exchange_account_id: impl AsRef<str>) -> Result<Self> {
         let name = format!("{}:{}", venue.name, exchange_account_id.as_ref());
         let id = AccountId::from_str(&name)?;
-        Ok(Self { id, venue_id: venue.id, name: Str::try_from(name.as_str())? })
+        Ok(Self { id, name: Str::try_from(name.as_str())?, venue_id: venue.id })
     }
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum AccountMessage {
     MapAccount(Account),
+    SetAccountPermissions(Arc<Vec<(UserId, AccountId, AccountPermissions)>>),
     GetAccounts(Uuid),
     Accounts(Option<Uuid>, Arc<Vec<Account>>),
 }
@@ -60,4 +63,27 @@ impl MaybeRequest for AccountMessage {
             _ => None,
         }
     }
+}
+
+/// Account manager netidx subscription wire type
+#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
+pub struct AccountsUpdate {
+    pub epoch: DateTime<Utc>,
+    pub sequence_number: u64,
+    pub is_snapshot: bool,
+    pub accounts: Option<Vec<Account>>,
+    pub permissions: Option<Vec<(UserId, AccountId, BitFlags<AccountPermission>)>>,
+}
+
+pub type AccountPermissions = BitFlags<AccountPermission>;
+
+#[bitflags]
+#[repr(u8)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
+pub enum AccountPermission {
+    List,          // know about the account's existence
+    View,          // know the account's holdings and activity
+    Trade,         // trade on the account, any position effect
+    ReduceOrClose, // trade on the account only if reducing or closing
+    SetLimits,     // set limits on the account
 }

@@ -56,7 +56,7 @@ pub enum TypedMessage {
     #[pack(tag(  4))] Oms(oms::OmsMessage),
     #[pack(tag(  5))] Algo(algo::AlgoMessage),
     #[pack(tag(  6))] Folio(folio::FolioMessage),
-    #[pack(tag(  7))] AccountMaster(orderflow::account::AccountMessage),
+    #[pack(tag(  7))] AccountManager(orderflow::account::AccountMessage),
     #[pack(tag( 98))] ExternalCpty(cpty::generic_external::ExternalCptyMessage),
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
@@ -98,7 +98,7 @@ impl TypedMessage {
     pub fn topics(&self) -> BitFlags<MessageTopic> {
         match self {
             TypedMessage::Orderflow(_) => MessageTopic::Orderflow.into(),
-            TypedMessage::AccountMaster(am) => {
+            TypedMessage::AccountManager(am) => {
                 use orderflow::account::AccountMessage;
                 match am {
                     AccountMessage::MapAccount(..)

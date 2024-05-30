@@ -15,7 +15,7 @@ pub mod utils;
 // common, basic types which should cover a lot of use cases
 pub use auth::user_id::UserId;
 pub use config::Config;
-pub use orderflow::{Account, AccountId, OrderId};
+pub use orderflow::{Account, AccountId, AccountPermission, AccountPermissions, OrderId};
 pub use typed_message::{MaybeSplit, MessageTopic, TypedMessage};
 pub use utils::{
     amount::Amount,
