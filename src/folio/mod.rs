@@ -61,6 +61,7 @@ pub enum FolioMessage {
     AdvertiseAccounts(CptyId, Arc<Vec<AccountId>>),
     GetSyncStatus(Uuid, CptyId),
     GetSyncStatusResponse(Uuid, FolioSyncStatus),
+    TcaBalanceSnapshotRequest(),
 }
 
 #[derive(Copy, Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
