@@ -125,5 +125,18 @@ macro_rules! uuid_val {
                 Uuid::accepts(ty)
             }
         }
+
+        impl<'a> tokio_postgres::types::FromSql<'a> for $name {
+            fn from_sql(
+                ty: &tokio_postgres::types::Type,
+                raw: &'a [u8],
+            ) -> Result<Self, Box<dyn std::error::Error + Sync + Send>> {
+                Uuid::from_sql(ty, raw).map($name)
+            }
+
+            fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+                Uuid::accepts(ty)
+            }
+        }
     };
 }

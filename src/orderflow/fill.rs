@@ -11,8 +11,7 @@ use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::str::FromStr;
-use std::{error::Error, fmt::Display};
+use std::{error::Error, fmt::Display, str::FromStr};
 use uuid::Uuid;
 
 /// The ID of a fill

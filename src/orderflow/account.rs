@@ -72,7 +72,7 @@ pub struct AccountsUpdate {
     pub sequence_number: u64,
     pub is_snapshot: bool,
     pub accounts: Option<Vec<Account>>,
-    pub permissions: Option<Vec<(UserId, AccountId, BitFlags<AccountPermission>)>>,
+    pub permissions: Option<Vec<(UserId, AccountId, AccountPermissions)>>,
 }
 
 pub type AccountPermissions = BitFlags<AccountPermission>;
