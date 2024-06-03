@@ -67,6 +67,10 @@ pub struct Config {
     /// Remote components elsewhere on the network
     #[serde(default)]
     pub remote: HashMap<Path, Vec<(ComponentId, String)>>,
+    /// Explicitly allow components to be messaged from external channels;
+    /// if not set, all components are allowed
+    #[serde(default)]
+    pub expose_components: Option<Vec<ComponentId>>,
     /// Sync with a remote core at the given base path
     #[serde(default)]
     pub rsync: Option<Path>,

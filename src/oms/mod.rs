@@ -90,6 +90,9 @@ pub enum OmsRejectReason {
     WouldExceedOpenQty,
     WouldExceedPosLimit,
     Literal(ArcStr),
+    NoAccount,
+    NotAuthorized,
+    NotAuthorizedForAccount,
     #[pack(other)]
     #[serde(other)]
     Unknown,
@@ -117,6 +120,9 @@ impl Into<RejectReason> for OmsRejectReason {
             WouldExceedOpenQty => R::Literal(WOULD_EXCEED_OPEN_QTY),
             WouldExceedPosLimit => R::Literal(WOULD_EXCEED_POS_LIMIT),
             Literal(s) => R::Literal(s),
+            NoAccount => R::NoAccount,
+            NotAuthorized => R::NotAuthorized,
+            NotAuthorizedForAccount => R::NotAuthorizedForAccount,
             Unknown => R::Unknown,
         }
     }
@@ -130,6 +136,9 @@ impl Into<OmsRejectReason> for &RejectReason {
             R::ComponentNotInitialized => NotInitialized,
             R::UnknownMarket => UnknownMarket,
             R::UnknownCpty => UnknownCpty,
+            R::NoAccount => NoAccount,
+            R::NotAuthorized => NotAuthorized,
+            R::NotAuthorizedForAccount => NotAuthorizedForAccount,
             R::Literal(s) if s == &RATE_LIMIT_EXCEEDED => RateLimitExceeded,
             R::Literal(s) if s == &INVALID_MARKET_KIND => InvalidMarketKind,
             R::Literal(s) if s == &WOULD_EXCEED_OPEN_BUY_QTY => WouldExceedOpenBuyQty,

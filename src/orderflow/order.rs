@@ -294,6 +294,9 @@ pub enum RejectReason {
     DuplicateOrderId,
     InvalidQuantity,
     MissingRequiredAccount,
+    NoAccount,
+    NotAuthorized,
+    NotAuthorizedForAccount,
     #[pack(other)]
     #[serde(other)]
     Unknown,
@@ -310,6 +313,9 @@ impl std::fmt::Display for RejectReason {
             DuplicateOrderId => write!(f, "duplicate order id"),
             InvalidQuantity => write!(f, "invalid quantity"),
             MissingRequiredAccount => write!(f, "missing required account"),
+            NoAccount => write!(f, "no account"),
+            NotAuthorized => write!(f, "not authorized to perform action"),
+            NotAuthorizedForAccount => write!(f, "not authorized for account"),
             Unknown => write!(f, "unknown"),
         }
     }

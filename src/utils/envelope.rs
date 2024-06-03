@@ -77,7 +77,7 @@ impl<M> Envelope<M> {
         Self {
             src: Address::Component(ComponentId::none()),
             dst: Address::Component(ComponentId::none()),
-            stamp: Stamp::new(Default::default()),
+            stamp: Stamp::new(None, Default::default()),
             msg,
         }
     }
@@ -97,8 +97,14 @@ pub struct Stamp {
 }
 
 impl Stamp {
-    pub fn new(additional_topics: BitFlags<MessageTopic>) -> Self {
-        Self { user_id: None, sequence: None, additional_topics }
+    // NB alee: not obvious at first glance but sequencing is done by
+    // the core while the other fields are set by the sender and merely
+    // checked by the core.
+    pub fn new(
+        user_id: Option<UserId>,
+        additional_topics: BitFlags<MessageTopic>,
+    ) -> Self {
+        Self { user_id, sequence: None, additional_topics }
     }
 }
 
