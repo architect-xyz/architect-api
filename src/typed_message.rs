@@ -101,7 +101,7 @@ impl TypedMessage {
             TypedMessage::AccountManager(am) => {
                 use orderflow::account::AccountMessage;
                 match am {
-                    AccountMessage::MapAccount(..)
+                    AccountMessage::MapAccounts(..)
                     | AccountMessage::Accounts(None, _) => MessageTopic::Accounts.into(),
                     _ => BitFlags::empty(),
                 }

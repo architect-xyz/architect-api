@@ -16,7 +16,6 @@ use crate::{
 use anyhow::Result;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
-use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use std::{str::FromStr, sync::Arc};
@@ -41,9 +40,105 @@ impl Account {
     }
 }
 
+/// Set of ternary flags for account permissions
+///
+/// - None = not set (default disallowed)
+/// - Some(true) = allowed
+/// - Some(false) = disallowed
+#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
+pub struct AccountPermissions {
+    pub list: Option<bool>,  // know about the account's existence
+    pub view: Option<bool>,  // know the account's holdings and activity
+    pub trade: Option<bool>, // trade on the account, any position effect
+    pub reduce_or_close: Option<bool>, // trade on the account only if reducing or closing
+    pub set_limits: Option<bool>, // set limits on the account
+}
+
+impl AccountPermissions {
+    pub fn all() -> Self {
+        Self {
+            list: Some(true),
+            view: Some(true),
+            trade: Some(true),
+            reduce_or_close: Some(true),
+            set_limits: Some(true),
+        }
+    }
+
+    pub fn none() -> Self {
+        Self {
+            list: Some(false),
+            view: Some(false),
+            trade: Some(false),
+            reduce_or_close: Some(false),
+            set_limits: Some(false),
+        }
+    }
+
+    /// Truth table for applying default permissions;
+    ///
+    /// self, default => result
+    /// T, * => T
+    /// F, * => F
+    /// -, d => d
+    ///
+    /// This is logically equivalent to `Option::or` but I think
+    /// this name is potentially less confusing.
+    pub fn with_default(&self, default: &Self) -> Self {
+        Self {
+            list: self.list.or(default.list),
+            view: self.view.or(default.view),
+            trade: self.trade.or(default.trade),
+            reduce_or_close: self.reduce_or_close.or(default.reduce_or_close),
+            set_limits: self.set_limits.or(default.set_limits),
+        }
+    }
+
+    pub fn list(&self) -> bool {
+        self.list.unwrap_or(false)
+    }
+
+    pub fn view(&self) -> bool {
+        self.view.unwrap_or(false)
+    }
+
+    pub fn trade(&self) -> bool {
+        self.trade.unwrap_or(false)
+    }
+
+    pub fn reduce_or_close(&self) -> bool {
+        self.reduce_or_close.unwrap_or(false)
+    }
+
+    pub fn set_limits(&self) -> bool {
+        self.set_limits.unwrap_or(false)
+    }
+
+    pub fn display(&self) -> String {
+        let mut allowed = vec![];
+        let mut denied = vec![];
+        macro_rules! sift {
+            ($perm:ident) => {
+                if self.$perm == Some(true) {
+                    allowed.push(stringify!($perm));
+                } else if self.$perm == Some(false) {
+                    denied.push(stringify!($perm));
+                }
+            };
+        }
+        sift!(list);
+        sift!(view);
+        sift!(trade);
+        sift!(reduce_or_close);
+        sift!(set_limits);
+        format!("allow({}) deny({})", allowed.join(", "), denied.join(", "))
+    }
+}
+
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum AccountMessage {
-    MapAccount(Account),
+    MapAccounts(Arc<Vec<Account>>),
+    SetAccountDefaultPermissions(Arc<Vec<(UserId, AccountId, AccountPermissions)>>),
     SetAccountPermissions(Arc<Vec<(UserId, AccountId, AccountPermissions)>>),
     GetAccounts(Uuid),
     Accounts(Option<Uuid>, Arc<Vec<Account>>),
@@ -72,18 +167,6 @@ pub struct AccountsUpdate {
     pub sequence_number: u64,
     pub is_snapshot: bool,
     pub accounts: Option<Vec<Account>>,
+    pub default_permissions: Option<Vec<(UserId, AccountId, AccountPermissions)>>,
     pub permissions: Option<Vec<(UserId, AccountId, AccountPermissions)>>,
-}
-
-pub type AccountPermissions = BitFlags<AccountPermission>;
-
-#[bitflags]
-#[repr(u8)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
-pub enum AccountPermission {
-    List,          // know about the account's existence
-    View,          // know the account's holdings and activity
-    Trade,         // trade on the account, any position effect
-    ReduceOrClose, // trade on the account only if reducing or closing
-    SetLimits,     // set limits on the account
 }
