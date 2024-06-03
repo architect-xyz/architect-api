@@ -45,6 +45,14 @@ impl Symbolic for Product {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, Pack, PartialEq, Copy)]
+#[serde(tag = "type", content = "value")]
+pub enum InstrumentType {
+    Inverse,
+    Linear,
+    Quanto,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 #[serde(tag = "type", content = "value")]
 pub enum ProductKind {
@@ -56,6 +64,7 @@ pub enum ProductKind {
     Perpetual {
         underlying: Option<ProductId>,
         multiplier: Option<Decimal>,
+        instrument_type: Option<InstrumentType>,
     },
     /// The one guarantee for [underlying] if set is that it can
     /// be used to uniquely identify strips of related futures
@@ -63,6 +72,7 @@ pub enum ProductKind {
         underlying: Option<ProductId>,
         multiplier: Option<Decimal>,
         expiration: Option<DateTime<Utc>>,
+        instrument_type: Option<InstrumentType>,
     },
     FutureSpread {
         same_side_leg: Option<ProductId>,
@@ -74,6 +84,7 @@ pub enum ProductKind {
         underlying: Option<ProductId>,
         multiplier: Option<Decimal>,
         expiration: Option<DateTime<Utc>>,
+        instrument_type: Option<InstrumentType>,
     },
     Index,
     Commodity,
