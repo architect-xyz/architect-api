@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{
     symbology::{MarketId, ProductId},
     Dir, DirPair,

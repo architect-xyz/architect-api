@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{ComponentId, MessageTopic, TypedMessage, UserId};
 use anyhow::Result;
 use derive::FromValue;

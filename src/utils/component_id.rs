@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};

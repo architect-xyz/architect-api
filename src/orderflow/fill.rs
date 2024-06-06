@@ -1,12 +1,16 @@
-use crate::{
-    symbology::{MarketId, VenueId},
-    AccountId, Dir, OrderId, UserId,
-};
+use crate::symbology::VenueId;
+#[cfg(feature = "netidx")]
+use crate::{symbology::MarketId, AccountId, Dir, OrderId, UserId};
+#[cfg(feature = "netidx")]
 use anyhow::anyhow;
 use bytes::BytesMut;
+#[cfg(feature = "netidx")]
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+#[cfg(feature = "netidx")]
 use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
@@ -24,13 +28,12 @@ use uuid::Uuid;
     PartialOrd,
     Ord,
     Hash,
-    Pack,
-    FromValue,
     Serialize,
     Deserialize,
     JsonSchema,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar), graphql(transparent))]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct FillId(Uuid);
 
 impl FillId {
@@ -103,6 +106,7 @@ impl<'a> tokio_postgres::types::FromSql<'a> for FillId {
     }
 }
 
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct Fill {
     pub kind: FillKind,
@@ -124,6 +128,7 @@ pub struct Fill {
     pub trader: Option<UserId>,
 }
 
+#[cfg(feature = "netidx")]
 impl Fill {
     pub fn into_aberrant(self) -> AberrantFill {
         AberrantFill {
@@ -144,9 +149,10 @@ impl Fill {
 }
 
 #[derive(
-    Debug, Clone, Copy, Hash, PartialEq, Eq, Pack, Serialize, Deserialize, JsonSchema_repr,
+    Debug, Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, JsonSchema_repr,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[repr(u8)]
 pub enum FillKind {
     Normal,
@@ -169,6 +175,7 @@ impl rusqlite::ToSql for FillKind {
 
 /// Fills which we received but couldn't parse fully, return details
 /// best effort
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct AberrantFill {
@@ -186,6 +193,7 @@ pub struct AberrantFill {
     pub trader: Option<UserId>,
 }
 
+#[cfg(feature = "netidx")]
 impl AberrantFill {
     /// If sufficient fields on AberrantFill, upgrade it into a Fill
     pub fn try_into_fill(self) -> anyhow::Result<Fill> {

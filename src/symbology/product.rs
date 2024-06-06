@@ -6,7 +6,9 @@ use crate::{uuid_val, Str};
 use anyhow::Result;
 use bytes::Bytes;
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -16,7 +18,8 @@ use uuid::{uuid, Uuid};
 static PRODUCT_NS: Uuid = uuid!("bb25a7a7-a61c-485a-ac29-1de369a6a043");
 uuid_val!(ProductId, PRODUCT_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Product {
     pub id: ProductId,
     pub name: Str,
@@ -45,7 +48,8 @@ impl Symbolic for Product {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, PartialEq, Copy)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Copy)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum InstrumentType {
     Inverse,
@@ -53,7 +57,8 @@ pub enum InstrumentType {
     Quanto,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum ProductKind {
     Coin {
@@ -88,17 +93,19 @@ pub enum ProductKind {
     },
     Index,
     Commodity,
-    #[pack(other)]
+    #[cfg_attr(feature = "netidx", pack(other))]
     Unknown,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLUnion))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum TokenInfo {
     ERC20(ERC20TokenInfo),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct ERC20TokenInfo {
     // CR alee: don't use bytes, just use the packed ethers type
     pub address: Bytes,

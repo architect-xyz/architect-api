@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{utils::messaging::MaybeRequest, UserId};
 use derive::FromValue;
 use netidx_derive::Pack;

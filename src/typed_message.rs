@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use super::*;
 use derive::{FromInner, FromValue, TryIntoAnyInner};
 use enumflags2::{bitflags, BitFlags};
@@ -56,7 +58,7 @@ pub enum TypedMessage {
     #[pack(tag(  4))] Oms(oms::OmsMessage),
     #[pack(tag(  5))] Algo(algo::AlgoMessage),
     #[pack(tag(  6))] Folio(folio::FolioMessage),
-    #[pack(tag(  7))] AccountManager(orderflow::account::AccountMessage),
+    #[pack(tag(  7))] AccountManager(account_manager::AccountMessage),
     #[pack(tag( 98))] ExternalCpty(cpty::generic_external::ExternalCptyMessage),
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
@@ -99,7 +101,7 @@ impl TypedMessage {
         match self {
             TypedMessage::Orderflow(_) => MessageTopic::Orderflow.into(),
             TypedMessage::AccountManager(am) => {
-                use orderflow::account::AccountMessage;
+                use account_manager::AccountMessage;
                 match am {
                     AccountMessage::MapAccounts(..)
                     | AccountMessage::Accounts(None, _) => MessageTopic::Accounts.into(),

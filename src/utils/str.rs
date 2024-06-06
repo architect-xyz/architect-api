@@ -11,18 +11,17 @@
 
 use anyhow::bail;
 use fxhash::FxHashSet;
+#[cfg(feature = "netidx")]
 use netidx::{
     chars::Chars,
-    pack::{decode_varint, encode_varint, varint_len, PackError},
+    pack::{decode_varint, encode_varint, varint_len, Pack, PackError},
 };
-use netidx_core::pack::Pack;
 use once_cell::sync::Lazy;
 use parking_lot::Mutex;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::{
-    borrow::Borrow, cell::RefCell, collections::HashSet, fmt, hash::Hash, mem,
-    ops::Deref, slice, str,
+    borrow::Borrow, collections::HashSet, fmt, hash::Hash, mem, ops::Deref, slice, str,
 };
 
 const TAG_MASK: usize = 0x8000_0000_0000_0000;
@@ -165,6 +164,7 @@ impl Str {
         self.0 & TAG_MASK > 0
     }
 
+    #[cfg(feature = "netidx")]
     pub fn as_chars(&self) -> Chars {
         match self.as_static_str() {
             Some(s) => Chars::from(s),
@@ -194,6 +194,7 @@ impl Serialize for Str {
     }
 }
 
+#[cfg(feature = "netidx")]
 impl Pack for Str {
     fn encoded_len(&self) -> usize {
         let len = self.len();
@@ -210,6 +211,7 @@ impl Pack for Str {
     }
 
     fn decode(buf: &mut impl bytes::Buf) -> Result<Self, netidx::pack::PackError> {
+        use std::cell::RefCell;
         thread_local! {
             static BUF: RefCell<Vec<u8>> = RefCell::new(Vec::new());
         }

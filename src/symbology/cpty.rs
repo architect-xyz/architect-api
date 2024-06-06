@@ -1,24 +1,17 @@
 use super::{RouteId, VenueId};
 use anyhow::bail;
-use derive::{FromValue, Newtype};
+#[cfg(feature = "netidx")]
+use derive::FromValue;
+use derive::Newtype;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde_derive::{Deserialize, Serialize};
 use serde_with::DeserializeFromStr;
 
 #[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    PartialOrd,
-    Ord,
-    Hash,
-    Pack,
-    Serialize,
-    Deserialize,
-    FromValue,
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize,
 )]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CptyId {
     pub venue: VenueId,
     pub route: RouteId,

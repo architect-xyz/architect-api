@@ -5,28 +5,26 @@
 //! the symbology server and clients, and from the loaders to the
 //! symbology server.
 
-use crate::Str;
-use anyhow::Result;
-use bytes::Bytes;
-use derive::FromValue;
-use netidx_derive::Pack;
-use serde_derive::{Deserialize, Serialize};
-use std::{fmt::Display, str::FromStr};
-
 pub mod cficode;
 pub mod cpty;
 pub mod market;
 pub mod product;
+pub mod protocol;
 pub mod query;
 pub mod route;
 pub mod venue;
 
+use crate::Str;
+use anyhow::Result;
 pub use cpty::CptyId;
 pub use market::{
     ExchangeMarketKind, Market, MarketId, MarketInfo, MarketKind, PoolMarketKind,
 };
 pub use product::{Product, ProductId, ProductKind};
+#[cfg(feature = "netidx")]
+pub use protocol::{SymbologyUpdate, SymbologyUpdateKind};
 pub use route::{Route, RouteId};
+use std::{fmt::Display, str::FromStr};
 pub use venue::{Venue, VenueId};
 
 /// All named symbology identifiers implement the trait Symbolic, which specifies
@@ -40,33 +38,4 @@ pub trait Symbolic: Clone + 'static {
     fn validate(&self) -> Result<()> {
         Ok(())
     }
-}
-
-/// Symbology server/client wire type
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
-pub struct SymbologyUpdate {
-    pub sequence_number: u64,
-    pub kind: SymbologyUpdateKind,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
-pub enum SymbologyUpdateKind {
-    AddRoute(Route),
-    RemoveRoute(RouteId),
-    AddVenue(Venue),
-    RemoveVenue(VenueId),
-    AddProduct(Product),
-    RemoveProduct(ProductId),
-    AddMarket(Market),
-    RemoveMarket(MarketId),
-    /// compressed is a zstd compressed packed Pooled<Vec<SymbologyUpdateKind>>
-    Snapshot {
-        original_length: usize,
-        compressed: Bytes,
-    },
-    /// elided version of [Snapshot] for no-op squashes--never stored in history,
-    /// only used for synced clients
-    SnapshotUnchanged(Bytes),
-    #[pack(other)]
-    Unknown,
 }

@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::symbology::market::NormalizedMarketInfo;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;

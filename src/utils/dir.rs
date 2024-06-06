@@ -1,6 +1,8 @@
 use anyhow::{bail, Result};
 use bytes::BytesMut;
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
@@ -9,8 +11,9 @@ use std::{error::Error, str::FromStr};
 
 /// An order side/direction or a trade execution side/direction.
 /// In GraphQL these are serialized as "buy" or "sell".
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub enum Dir {
     #[serde(alias = "Buy", alias = "buy", alias = "BUY")]
     Buy,

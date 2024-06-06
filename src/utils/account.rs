@@ -10,21 +10,22 @@
 
 use crate::{
     symbology::{Venue, VenueId},
-    utils::messaging::MaybeRequest,
-    uuid_val, Str, UserId,
+    uuid_val, Str,
 };
 use anyhow::Result;
-use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
-use std::{str::FromStr, sync::Arc};
+use std::str::FromStr;
 use uuid::{uuid, Uuid};
 
 static ACCOUNT_NS: Uuid = uuid!("c9c8b8e8-69f6-4ca2-83b7-76611e5d6d90");
 uuid_val!(AccountId, ACCOUNT_NS);
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Account {
     pub id: AccountId,
     pub name: Str,
@@ -45,7 +46,8 @@ impl Account {
 /// - None = not set (default disallowed)
 /// - Some(true) = allowed
 /// - Some(false) = disallowed
-#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct AccountPermissions {
     pub list: Option<bool>,  // know about the account's existence
     pub view: Option<bool>,  // know the account's holdings and activity
@@ -133,40 +135,4 @@ impl AccountPermissions {
         sift!(set_limits);
         format!("allow({}) deny({})", allowed.join(", "), denied.join(", "))
     }
-}
-
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
-pub enum AccountMessage {
-    MapAccounts(Arc<Vec<Account>>),
-    SetAccountDefaultPermissions(Arc<Vec<(UserId, AccountId, AccountPermissions)>>),
-    SetAccountPermissions(Arc<Vec<(UserId, AccountId, AccountPermissions)>>),
-    GetAccounts(Uuid),
-    Accounts(Option<Uuid>, Arc<Vec<Account>>),
-}
-
-impl MaybeRequest for AccountMessage {
-    fn request_id(&self) -> Option<Uuid> {
-        match self {
-            AccountMessage::GetAccounts(uuid) => Some(*uuid),
-            _ => None,
-        }
-    }
-
-    fn response_id(&self) -> Option<Uuid> {
-        match self {
-            AccountMessage::Accounts(uuid, _) => *uuid,
-            _ => None,
-        }
-    }
-}
-
-/// Account manager netidx subscription wire type
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
-pub struct AccountsUpdate {
-    pub epoch: DateTime<Utc>,
-    pub sequence_number: u64,
-    pub is_snapshot: bool,
-    pub accounts: Option<Vec<Account>>,
-    pub default_permissions: Option<Vec<(UserId, AccountId, AccountPermissions)>>,
-    pub permissions: Option<Vec<(UserId, AccountId, AccountPermissions)>>,
 }

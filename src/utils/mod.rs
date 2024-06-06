@@ -1,3 +1,4 @@
+pub mod account;
 pub mod amount;
 pub mod component_id;
 pub mod dir;

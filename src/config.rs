@@ -1,6 +1,8 @@
 //! An Architect installation is completely specified by its configuration, including
 //! the topology of its components and their individual subconfigurations.
 
+#![cfg(feature = "netidx")]
+
 use crate::ComponentId;
 use anyhow::{bail, Result};
 use netidx::{path::Path, subscriber::DesiredAuth};

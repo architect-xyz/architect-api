@@ -1,4 +1,8 @@
-use crate::{orderflow::*, utils::messaging::MaybeRequest, OrderId, Str, UserId};
+#![cfg(feature = "netidx")]
+
+use crate::{
+    orderflow::*, utils::messaging::MaybeRequest, AccountId, OrderId, Str, UserId,
+};
 use anyhow::Result;
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};

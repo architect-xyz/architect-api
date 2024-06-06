@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 // CR alee: move to sdk?
 // CR estokes: move to netidx, eliminate lazy_static from netidx, and
 // #![forbid(unsafe_code)] test if the performance is as good as

@@ -12,6 +12,7 @@ version = "0.3.0"
 
 [features]
 graphql = ["juniper"]
+netidx = ["dep:netidx", "netidx-core", "netidx-derive"]
 
 [dependencies]
 anyhow = { workspace = true }
@@ -32,9 +33,9 @@ fxhash = { workspace = true }
 governor = { workspace = true }
 juniper = { workspace = true, optional = true }
 log = { workspace = true }
-netidx = { workspace = true }
-netidx-core = { workspace = true }
-netidx-derive = { workspace = true }
+netidx = { workspace = true, optional = true }
+netidx-core = { workspace = true, optional = true }
+netidx-derive = { workspace = true, optional = true }
 once_cell = { workspace = true }
 parking_lot = { workspace = true }
 pest = { workspace = true }

@@ -16,10 +16,10 @@ macro_rules! uuid_val {
             Ord,
             serde::Serialize,
             serde::Deserialize,
-            netidx_derive::Pack,
-            derive::FromValue,
         )]
         #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
+        #[cfg_attr(feature = "netidx", derive(netidx_derive::Pack))]
+        #[cfg_attr(feature = "netidx", derive(derive::FromValue))]
         pub struct $name(pub uuid::Uuid);
 
         impl std::fmt::Display for $name {

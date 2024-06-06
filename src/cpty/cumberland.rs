@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{
     folio::FolioMessage,
     orderflow::{Fill, Order, OrderflowMessage, Out, Reject},

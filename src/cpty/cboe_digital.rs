@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{folio::FolioMessage, symbology::market::NormalizedMarketInfo};
 use derive::{FromStrJson, FromValue};
 use netidx_derive::Pack;

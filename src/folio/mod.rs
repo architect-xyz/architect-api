@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{
     orderflow::{AberrantFill, Fill},
     symbology::*,

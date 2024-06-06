@@ -2,6 +2,7 @@ use anyhow::{bail, Result};
 use base64::Engine;
 use bytes::BytesMut;
 use compact_str::CompactString;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -9,20 +10,11 @@ use std::{error::Error, fmt, str::FromStr};
 
 /// System-unique, persistent order identifiers
 #[derive(
-    Clone,
-    Copy,
-    Hash,
-    PartialEq,
-    Eq,
-    PartialOrd,
-    Ord,
-    Pack,
-    Serialize,
-    Deserialize,
-    JsonSchema,
+    Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, JsonSchema,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
-#[pack(unwrapped)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", pack(unwrapped))]
 pub struct OrderId(pub(crate) u64);
 
 impl OrderId {

@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{orderflow::*, utils::messaging::MaybeRequest, ComponentId, HalfOpenRange};
 use arcstr::{literal, ArcStr};
 use chrono::{DateTime, Utc};

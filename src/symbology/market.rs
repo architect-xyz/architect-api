@@ -3,11 +3,15 @@
 //! market connection to Coinbase's BTC/USD market.
 
 use super::{Product, ProductId, Route, RouteId, Symbolic, Venue, VenueId};
-use crate::{cpty, marketdata, uuid_val, Amount, Str};
+#[cfg(feature = "netidx")]
+use crate::{cpty, marketdata};
+use crate::{uuid_val, Amount, Str};
 use anyhow::Result;
+#[cfg(feature = "netidx")]
 use derive::FromValue;
 use derive_more::Display;
 use enum_dispatch::enum_dispatch;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -17,7 +21,8 @@ use uuid::{uuid, Uuid};
 static MARKET_NS: Uuid = uuid!("0bfe858c-a749-43a9-a99e-6d1f31a760ad");
 uuid_val!(MarketId, MARKET_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Market {
     pub id: MarketId,
     pub name: Str,
@@ -108,7 +113,8 @@ impl Symbolic for Market {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum MarketKind {
     /// A regular exchange trading pair, e.g. Coinbase BTC/USD
@@ -116,18 +122,20 @@ pub enum MarketKind {
     /// An unordered pool of products, e.g. a Uniswap pool or Curve 3-pool
     /// The type is still ordered for canonical naming purpose
     Pool(PoolMarketKind),
-    #[pack(other)]
+    #[cfg_attr(feature = "netidx", pack(other))]
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct ExchangeMarketKind {
     pub base: ProductId,
     pub quote: ProductId,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct PoolMarketKind {
     pub products: SmallVec<[ProductId; 2]>,
 }
@@ -139,8 +147,16 @@ impl PoolMarketKind {
     }
 }
 
+#[cfg(not(feature = "netidx"))]
+#[derive(Debug, Display, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", content = "value")]
+pub enum MarketInfo {
+    Test(TestMarketInfo),
+}
+
 /// Cpty-specific info about a market
-#[derive(Debug, Display, Clone, Serialize, Deserialize, Pack)]
+#[cfg(feature = "netidx")]
+#[derive(Debug, Display, Clone, Pack, Serialize, Deserialize)]
 #[enum_dispatch(NormalizedMarketInfo)]
 #[serde(tag = "type", content = "value")]
 #[rustfmt::skip]
@@ -193,15 +209,17 @@ pub trait NormalizedMarketInfo {
     }
 }
 
-#[derive(Default, Debug, Clone, Copy, Serialize, Deserialize, Pack)]
+#[derive(Default, Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum MinOrderQuantityUnit {
     #[default]
     Base,
     Quote,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct TestMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,

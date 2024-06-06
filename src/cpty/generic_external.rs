@@ -1,6 +1,10 @@
-use crate::{folio::FolioMessage, orderflow::*, Dir};
+#[cfg(feature = "netidx")]
+use crate::folio::FolioMessage;
+use crate::{orderflow::*, Dir};
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -9,7 +13,8 @@ use uuid::Uuid;
 
 /// Protocol for ExternalCpty component to talk to the external cpty;
 /// Ser/de is optimized for JSON communication.
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[serde(tag = "type")]
 pub enum ExternalCptyProtocol {
     GetSymbology,
@@ -36,17 +41,20 @@ pub enum ExternalCptyProtocol {
     Out(Out),
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalSymbology {
     pub markets: Vec<String>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalBalances {
     pub balances: Vec<(String, Decimal)>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalOrder {
     pub id: OrderId,
     pub market: String,
@@ -56,13 +64,15 @@ pub struct ExternalOrder {
     pub time_in_force: TimeInForce,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalReject {
     pub order_id: OrderId,
     pub reason: Option<String>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalFill {
     pub kind: FillKind,
     pub fill_id: FillId,
@@ -77,6 +87,7 @@ pub struct ExternalFill {
 }
 
 /// Internal core message type for the ExternalCpty component.
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum ExternalCptyMessage {
     Orderflow(OrderflowMessage),
@@ -85,6 +96,7 @@ pub enum ExternalCptyMessage {
     Initialize,
 }
 
+#[cfg(feature = "netidx")]
 impl TryInto<OrderflowMessage> for &ExternalCptyMessage {
     type Error = ();
 
@@ -96,6 +108,7 @@ impl TryInto<OrderflowMessage> for &ExternalCptyMessage {
     }
 }
 
+#[cfg(feature = "netidx")]
 impl TryInto<ExternalCptyMessage> for &OrderflowMessage {
     type Error = ();
 
@@ -104,6 +117,7 @@ impl TryInto<ExternalCptyMessage> for &OrderflowMessage {
     }
 }
 
+#[cfg(feature = "netidx")]
 impl TryInto<FolioMessage> for &ExternalCptyMessage {
     type Error = ();
 
@@ -115,6 +129,7 @@ impl TryInto<FolioMessage> for &ExternalCptyMessage {
     }
 }
 
+#[cfg(feature = "netidx")]
 impl TryInto<ExternalCptyMessage> for &FolioMessage {
     type Error = ();
 

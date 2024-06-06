@@ -1,3 +1,4 @@
+pub mod account_manager;
 pub mod algo;
 pub mod auth;
 pub mod config;
@@ -14,17 +15,23 @@ pub mod utils;
 
 // common, basic types which should cover a lot of use cases
 pub use auth::user_id::UserId;
+#[cfg(feature = "netidx")]
 pub use config::Config;
-pub use orderflow::{Account, AccountId, AccountPermissions, OrderId};
+pub use orderflow::OrderId;
+#[cfg(feature = "netidx")]
 pub use typed_message::{MaybeSplit, MessageTopic, TypedMessage};
 pub use utils::{
+    account::{Account, AccountId, AccountPermissions},
     amount::Amount,
-    component_id::ComponentId,
     dir::Dir,
     dir_pair::DirPair,
     duration::HumanDuration,
-    envelope::{Address, Envelope, Sequence, Stamp},
     half_open_range::HalfOpenRange,
-    secrets::MaybeSecret,
     str::Str,
+};
+#[cfg(feature = "netidx")]
+pub use utils::{
+    component_id::ComponentId,
+    envelope::{Address, Envelope, Sequence, Stamp},
+    secrets::MaybeSecret,
 };

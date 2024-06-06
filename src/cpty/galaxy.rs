@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{folio::FolioMessage, orderflow::*, symbology::market::NormalizedMarketInfo};
 use compact_str::CompactString;
 use derive::FromValue;

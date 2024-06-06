@@ -6,7 +6,9 @@
 use super::Symbolic;
 use crate::{uuid_val, Str};
 use anyhow::Result;
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use uuid::{uuid, Uuid};
@@ -14,8 +16,9 @@ use uuid::{uuid, Uuid};
 static ROUTE_NS: Uuid = uuid!("0cadbcc5-98bc-4888-94ba-fbbcb6f39132");
 uuid_val!(RouteId, ROUTE_NS);
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Route {
     pub id: RouteId,
     pub name: Str,
