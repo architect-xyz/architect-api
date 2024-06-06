@@ -1,10 +1,11 @@
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 
-#[derive(
-    Default, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Pack, FromValue,
-)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Amount<T: 'static, U: 'static> {
     amount: T,
     unit: U,

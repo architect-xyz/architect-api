@@ -1,4 +1,6 @@
-use crate::utils::messaging::MaybeRequest;
+#![cfg(feature = "netidx")]
+
+use crate::{utils::messaging::MaybeRequest, UserId};
 use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
@@ -6,7 +8,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub enum OrderAuthorityMessage {
-    RequestAllocation(Uuid, u64),
+    RequestAllocation(Uuid, UserId, u64),
     Allocation(Uuid, Option<OrderIdAllocation>),
 }
 
@@ -19,7 +21,7 @@ pub struct OrderIdAllocation {
 impl MaybeRequest for OrderAuthorityMessage {
     fn request_id(&self) -> Option<Uuid> {
         match self {
-            OrderAuthorityMessage::RequestAllocation(uuid, _) => Some(*uuid),
+            OrderAuthorityMessage::RequestAllocation(uuid, ..) => Some(*uuid),
             OrderAuthorityMessage::Allocation(..) => None,
         }
     }

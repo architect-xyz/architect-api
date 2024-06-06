@@ -1,11 +1,12 @@
+#![cfg(feature = "netidx")]
+
 use crate::symbology::market::NormalizedMarketInfo;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-#[derive(
-    Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq, Hash, clap::ValueEnum, Pack,
-)]
+#[derive(Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq, Hash, Pack)]
+#[cfg_attr(feature = "clap", derive(clap::ValueEnum))]
 #[serde(rename_all = "lowercase")]
 pub enum ProductType {
     Spot,

@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{orderflow::*, symbology::market::NormalizedMarketInfo};
 use derive::FromValue;
 use netidx_derive::Pack;

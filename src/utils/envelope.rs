@@ -1,6 +1,9 @@
-use crate::{ComponentId, UserId};
+#![cfg(feature = "netidx")]
+
+use crate::{ComponentId, MessageTopic, TypedMessage, UserId};
 use anyhow::Result;
 use derive::FromValue;
+use enumflags2::BitFlags;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -11,6 +14,11 @@ use uuid::Uuid;
 pub enum Address {
     Component(ComponentId),
     Channel(UserId, u32),
+    /// For cases like external orderflow where the message doesn't ultimately route
+    /// to any particular client; in this case the message can only be picked up via
+    /// a channel subscription.  This is different from Component(#none) which
+    /// actually goes nowhere and is reserved for SystemControl messages.
+    ChannelSubscriptionOnly,
 }
 
 impl From<ComponentId> for Address {
@@ -25,6 +33,7 @@ impl std::fmt::Display for Address {
         match self {
             Address::Component(id) => write!(f, "#{}", id),
             Address::Channel(user_id, channel) => write!(f, "{}:{}", user_id, channel),
+            Address::ChannelSubscriptionOnly => write!(f, "~"),
         }
     }
 }
@@ -35,6 +44,7 @@ impl Address {
         match self {
             Address::Component(id) => id.is_loopback(),
             Address::Channel(..) => false,
+            Address::ChannelSubscriptionOnly => false,
         }
     }
 
@@ -45,6 +55,13 @@ impl Address {
         <T as TryInto<ComponentId>>::Error: std::error::Error + Send + Sync + 'static,
     {
         Ok(Self::Component(id.try_into()?))
+    }
+
+    pub fn component_id(&self) -> Option<ComponentId> {
+        match self {
+            Address::Component(id) => Some(*id),
+            _ => None,
+        }
     }
 }
 
@@ -62,16 +79,35 @@ impl<M> Envelope<M> {
         Self {
             src: Address::Component(ComponentId::none()),
             dst: Address::Component(ComponentId::none()),
-            stamp: Stamp::default(),
+            stamp: Stamp::new(None, Default::default()),
             msg,
         }
     }
 }
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
+impl Envelope<TypedMessage> {
+    pub fn topics(&self) -> BitFlags<MessageTopic> {
+        self.msg.topics() | self.stamp.additional_topics
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
 pub struct Stamp {
     pub user_id: Option<UserId>,
     pub sequence: Option<Sequence>,
+    pub additional_topics: BitFlags<MessageTopic>,
+}
+
+impl Stamp {
+    // NB alee: not obvious at first glance but sequencing is done by
+    // the core while the other fields are set by the sender and merely
+    // checked by the core.
+    pub fn new(
+        user_id: Option<UserId>,
+        additional_topics: BitFlags<MessageTopic>,
+    ) -> Self {
+        Self { user_id, sequence: None, additional_topics }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]

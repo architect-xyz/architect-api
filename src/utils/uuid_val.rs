@@ -16,10 +16,10 @@ macro_rules! uuid_val {
             Ord,
             serde::Serialize,
             serde::Deserialize,
-            netidx_derive::Pack,
-            derive::FromValue,
         )]
         #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
+        #[cfg_attr(feature = "netidx", derive(netidx_derive::Pack))]
+        #[cfg_attr(feature = "netidx", derive(derive::FromValue))]
         pub struct $name(pub uuid::Uuid);
 
         impl std::fmt::Display for $name {
@@ -96,6 +96,46 @@ macro_rules! uuid_val {
                 gen: &mut schemars::gen::SchemaGenerator,
             ) -> schemars::schema::Schema {
                 uuid::Uuid::json_schema(gen)
+            }
+        }
+
+        #[cfg(feature = "rusqlite")]
+        impl rusqlite::ToSql for $name {
+            fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+                use rusqlite::types::{ToSqlOutput, Value};
+                Ok(ToSqlOutput::Owned(Value::Text(self.to_string())))
+            }
+        }
+
+        impl tokio_postgres::types::ToSql for $name {
+            tokio_postgres::types::to_sql_checked!();
+
+            fn to_sql(
+                &self,
+                ty: &tokio_postgres::types::Type,
+                out: &mut bytes::BytesMut,
+            ) -> Result<
+                tokio_postgres::types::IsNull,
+                Box<dyn std::error::Error + Sync + Send>,
+            > {
+                self.0.to_sql(ty, out)
+            }
+
+            fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+                Uuid::accepts(ty)
+            }
+        }
+
+        impl<'a> tokio_postgres::types::FromSql<'a> for $name {
+            fn from_sql(
+                ty: &tokio_postgres::types::Type,
+                raw: &'a [u8],
+            ) -> Result<Self, Box<dyn std::error::Error + Sync + Send>> {
+                Uuid::from_sql(ty, raw).map($name)
+            }
+
+            fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+                Uuid::accepts(ty)
             }
         }
     };

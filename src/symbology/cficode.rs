@@ -1,7 +1,9 @@
 //! Classification of Finacial Instruments
 //! https://en.wikipedia.org/wiki/ISO_10962
 
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
@@ -947,12 +949,11 @@ impl From<CfiCode> for Class {
     PartialOrd,
     Ord,
     Hash,
-    Pack,
-    FromValue,
     Serialize,
     Deserialize,
     JsonSchema,
 )]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CfiCode(pub [u8; 8]);
 
 impl Default for CfiCode {

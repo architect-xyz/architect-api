@@ -34,6 +34,7 @@ impl Into<AlgoOrder> for &PovAlgoOrder {
         AlgoOrder {
             order_id: self.order_id,
             trader: self.trader,
+            account: self.account,
             algo: Str::try_from("POV").unwrap(), // won't panic
         }
     }

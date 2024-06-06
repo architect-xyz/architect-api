@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{orderflow::*, utils::messaging::MaybeRequest, ComponentId, HalfOpenRange};
 use arcstr::{literal, ArcStr};
 use chrono::{DateTime, Utc};
@@ -38,7 +40,7 @@ pub enum OmsMessage {
     FillWarning(OrderId, FillId, BitFlags<FillWarning>),
     Out(Out),
     Initialize(limits_file::LimitsFile),
-    RetireOutedOrders,
+    RetireOutedOrdersAndUnknownFills,
     // some of these are better queried via a follower Oms or StatsDb;
     // for latency sensitive applications, responding to these requests
     // blocks the Oms for too long; but the option is available
@@ -90,6 +92,9 @@ pub enum OmsRejectReason {
     WouldExceedOpenQty,
     WouldExceedPosLimit,
     Literal(ArcStr),
+    NoAccount,
+    NotAuthorized,
+    NotAuthorizedForAccount,
     #[pack(other)]
     #[serde(other)]
     Unknown,
@@ -117,6 +122,9 @@ impl Into<RejectReason> for OmsRejectReason {
             WouldExceedOpenQty => R::Literal(WOULD_EXCEED_OPEN_QTY),
             WouldExceedPosLimit => R::Literal(WOULD_EXCEED_POS_LIMIT),
             Literal(s) => R::Literal(s),
+            NoAccount => R::NoAccount,
+            NotAuthorized => R::NotAuthorized,
+            NotAuthorizedForAccount => R::NotAuthorizedForAccount,
             Unknown => R::Unknown,
         }
     }
@@ -130,6 +138,9 @@ impl Into<OmsRejectReason> for &RejectReason {
             R::ComponentNotInitialized => NotInitialized,
             R::UnknownMarket => UnknownMarket,
             R::UnknownCpty => UnknownCpty,
+            R::NoAccount => NoAccount,
+            R::NotAuthorized => NotAuthorized,
+            R::NotAuthorizedForAccount => NotAuthorizedForAccount,
             R::Literal(s) if s == &RATE_LIMIT_EXCEEDED => RateLimitExceeded,
             R::Literal(s) if s == &INVALID_MARKET_KIND => InvalidMarketKind,
             R::Literal(s) if s == &WOULD_EXCEED_OPEN_BUY_QTY => WouldExceedOpenBuyQty,
@@ -192,7 +203,7 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
             OmsMessage::Out(msg) => Ok(OrderflowMessage::Out(*msg)),
             OmsMessage::OrderUpdate(..)
             | OmsMessage::Initialize(..)
-            | OmsMessage::RetireOutedOrders
+            | OmsMessage::RetireOutedOrdersAndUnknownFills
             | OmsMessage::FillWarning(..)
             | OmsMessage::GetOpenOrders(_)
             | OmsMessage::GetOpenOrdersResponse(..)

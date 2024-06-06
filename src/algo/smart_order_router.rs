@@ -32,6 +32,7 @@ impl Into<AlgoOrder> for &SmartOrderRouterOrder {
         AlgoOrder {
             order_id: self.order_id,
             trader: self.trader,
+            account: None,
             algo: Str::try_from("SMART-ORDER-ROUTER").unwrap(), // won't panic
         }
     }

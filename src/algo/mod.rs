@@ -1,4 +1,8 @@
-use crate::{orderflow::*, utils::messaging::MaybeRequest, OrderId, Str, UserId};
+#![cfg(feature = "netidx")]
+
+use crate::{
+    orderflow::*, utils::messaging::MaybeRequest, AccountId, OrderId, Str, UserId,
+};
 use anyhow::Result;
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
@@ -59,6 +63,7 @@ impl TryInto<OrderflowMessage> for &AlgoMessage {
 pub struct AlgoOrder {
     pub order_id: OrderId,
     pub trader: UserId,
+    pub account: Option<AccountId>,
     pub algo: Str,
 }
 

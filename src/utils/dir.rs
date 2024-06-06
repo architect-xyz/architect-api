@@ -1,15 +1,19 @@
 use anyhow::{bail, Result};
+use bytes::BytesMut;
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
-use std::str::FromStr;
+use std::{error::Error, str::FromStr};
 
 /// An order side/direction or a trade execution side/direction.
 /// In GraphQL these are serialized as "buy" or "sell".
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub enum Dir {
     #[serde(alias = "Buy", alias = "buy", alias = "BUY")]
     Buy,
@@ -26,6 +30,27 @@ impl rusqlite::ToSql for Dir {
             Self::Sell => ValueRef::Text("SELL".as_ref()),
         };
         Ok(ToSqlOutput::Borrowed(value_ref))
+    }
+}
+
+impl tokio_postgres::types::ToSql for Dir {
+    tokio_postgres::types::to_sql_checked!();
+
+    fn to_sql(
+        &self,
+        ty: &tokio_postgres::types::Type,
+        out: &mut BytesMut,
+    ) -> std::result::Result<tokio_postgres::types::IsNull, Box<dyn Error + Sync + Send>>
+    {
+        let value_repr = match self {
+            Self::Buy => "BUY",
+            Self::Sell => "SELL",
+        };
+        value_repr.to_sql(ty, out)
+    }
+
+    fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+        String::accepts(ty)
     }
 }
 

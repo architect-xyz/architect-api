@@ -3,26 +3,18 @@
 use anyhow::{anyhow, Result};
 use chrono::{DateTime, Duration, Utc};
 use derive::Newtype;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use std::{num::NonZeroU32, str::FromStr};
 
 #[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    PartialOrd,
-    Ord,
-    Pack,
-    Serialize,
-    Deserialize,
-    Newtype,
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Newtype,
 )]
 #[newtype(Deref, DerefMut, From)]
 #[serde(transparent)]
-#[pack(unwrapped)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", pack(unwrapped))]
 pub struct HumanDuration(
     #[serde(
         serialize_with = "serialize_duration",

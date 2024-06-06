@@ -1,5 +1,8 @@
+#![cfg(feature = "netidx")]
+
 use super::*;
 use derive::{FromInner, FromValue, TryIntoAnyInner};
+use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 
@@ -23,6 +26,8 @@ use serde::{Deserialize, Serialize};
 #[transitive(CoinbaseCpty <-> Orderflow)]
 #[transitive(CoinbasePrimeCpty <-> Folio)]
 #[transitive(CoinbasePrimeCpty <-> Orderflow)]
+#[transitive(CqgCpty <-> Orderflow)]
+#[transitive(CqgCpty <-> Folio)]
 #[transitive(CumberlandCpty <-> Orderflow)]
 #[transitive(CumberlandCpty <-> Folio)]
 #[transitive(DeribitCpty <-> Folio)]
@@ -34,6 +39,8 @@ use serde::{Deserialize, Serialize};
 #[transitive(KrakenCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
+#[transitive(ExternalCpty <-> Folio)]
+#[transitive(ExternalCpty <-> Orderflow)]
 #[transitive(WintermuteCpty <-> Folio)]
 #[transitive(WintermuteCpty <-> Orderflow)]
 #[transitive(Orderflow <-> Oms)]
@@ -51,7 +58,8 @@ pub enum TypedMessage {
     #[pack(tag(  4))] Oms(oms::OmsMessage),
     #[pack(tag(  5))] Algo(algo::AlgoMessage),
     #[pack(tag(  6))] Folio(folio::FolioMessage),
-    #[pack(tag(  7))] AccountMaster(orderflow::account::AccountMessage),
+    #[pack(tag(  7))] AccountManager(account_manager::AccountMessage),
+    #[pack(tag( 98))] ExternalCpty(cpty::generic_external::ExternalCptyMessage),
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
     #[pack(tag(101))] B2C2Cpty(cpty::b2c2::B2C2Message),
@@ -63,8 +71,8 @@ pub enum TypedMessage {
     #[pack(tag(108))] GalaxyCpty(cpty::galaxy::GalaxyMessage),
     #[pack(tag(109))] CumberlandCpty(cpty::cumberland::CumberlandMessage),
     #[pack(tag(110))] CboeDigitalCpty(cpty::cboe_digital::CboeDigitalMessage),
-    // #[pack(tag(111))] CqgCpty(cpty::cqg::CqgMessage),
     #[pack(tag(111))] BinanceCpty(cpty::binance::BinanceMessage),
+    #[pack(tag(112))] CqgCpty(cpty::cqg::CqgMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
     #[pack(tag(202))] MMAlgo(algo::mm::MMAlgoMessage),
@@ -88,6 +96,30 @@ impl TypedMessage {
             None
         }
     }
+
+    pub fn topics(&self) -> BitFlags<MessageTopic> {
+        match self {
+            TypedMessage::Orderflow(_) => MessageTopic::Orderflow.into(),
+            TypedMessage::AccountManager(am) => {
+                use account_manager::AccountMessage;
+                match am {
+                    AccountMessage::MapAccounts(..)
+                    | AccountMessage::Accounts(None, _) => MessageTopic::Accounts.into(),
+                    _ => BitFlags::empty(),
+                }
+            }
+            _ => BitFlags::empty(),
+        }
+    }
+}
+
+#[bitflags]
+#[repr(u64)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum MessageTopic {
+    Orderflow,
+    ExternalOrderflow,
+    Accounts,
 }
 
 pub enum MaybeSplit<A, B> {

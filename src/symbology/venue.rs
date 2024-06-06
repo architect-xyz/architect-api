@@ -4,7 +4,9 @@
 use super::Symbolic;
 use crate::{uuid_val, Str};
 use anyhow::Result;
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use uuid::{uuid, Uuid};
@@ -12,8 +14,9 @@ use uuid::{uuid, Uuid};
 static VENUE_NS: Uuid = uuid!("dd85a6c5-b45f-46d1-bf50-793dacb1e51a");
 uuid_val!(VenueId, VENUE_NS);
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Venue {
     pub id: VenueId,
     pub name: Str,

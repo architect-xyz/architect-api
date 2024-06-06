@@ -1,27 +1,20 @@
 use anyhow::{bail, Result};
 use base64::Engine;
+use bytes::BytesMut;
 use compact_str::CompactString;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use std::{fmt, str::FromStr};
+use std::{error::Error, fmt, str::FromStr};
 
 /// System-unique, persistent order identifiers
 #[derive(
-    Clone,
-    Copy,
-    Hash,
-    PartialEq,
-    Eq,
-    PartialOrd,
-    Ord,
-    Pack,
-    Serialize,
-    Deserialize,
-    JsonSchema,
+    Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, JsonSchema,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
-#[pack(unwrapped)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", pack(unwrapped))]
 pub struct OrderId(pub(crate) u64);
 
 impl OrderId {
@@ -81,6 +74,23 @@ impl rusqlite::ToSql for OrderId {
         use rusqlite::types::{ToSqlOutput, Value};
         let val = Value::Integer(self.0 as i64);
         Ok(ToSqlOutput::Owned(val))
+    }
+}
+
+impl tokio_postgres::types::ToSql for OrderId {
+    tokio_postgres::types::to_sql_checked!();
+
+    fn to_sql(
+        &self,
+        ty: &tokio_postgres::types::Type,
+        out: &mut BytesMut,
+    ) -> std::result::Result<tokio_postgres::types::IsNull, Box<dyn Error + Sync + Send>>
+    {
+        (self.0 as i64).to_sql(ty, out)
+    }
+
+    fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+        i64::accepts(ty)
     }
 }
 

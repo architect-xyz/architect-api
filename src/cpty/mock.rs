@@ -1,3 +1,5 @@
+#![cfg(feature = "netidx")]
+
 use crate::{folio::FolioMessage, orderflow::*};
 use derive::FromValue;
 use netidx_derive::Pack;

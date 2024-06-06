@@ -1,9 +1,11 @@
+#![cfg(feature = "netidx")]
+
 use crate::{
     symbology::{MarketId, ProductId},
     Dir, DirPair,
 };
 use anyhow::anyhow;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, TimeDelta, Utc};
 use derive::FromValue;
 use enumflags2::bitflags;
 use netidx::{path::Path, pool::Pooled};
@@ -91,6 +93,17 @@ pub enum CandleWidth {
 }
 
 impl CandleWidth {
+    pub fn all() -> Vec<Self> {
+        vec![
+            Self::OneSecond,
+            Self::FiveSecond,
+            Self::OneMinute,
+            Self::FifteenMinute,
+            Self::OneHour,
+            Self::OneDay,
+        ]
+    }
+
     pub fn as_str(&self) -> &'static str {
         match self {
             Self::OneSecond => "1s",
@@ -127,6 +140,12 @@ impl FromStr for CandleWidth {
             "1d" => Ok(Self::OneDay),
             _ => Err(anyhow!("invalid candle width: {}", s)),
         }
+    }
+}
+
+impl Into<TimeDelta> for CandleWidth {
+    fn into(self) -> TimeDelta {
+        TimeDelta::seconds(self.as_seconds())
     }
 }
 

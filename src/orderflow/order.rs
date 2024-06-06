@@ -1,18 +1,24 @@
+use crate::OrderId;
+#[cfg(feature = "netidx")]
 use crate::{
     symbology::{MarketId, VenueId},
-    AccountId, Dir, OrderId, Str, UserId,
+    AccountId, Dir, Str, UserId,
 };
 use anyhow::{anyhow, Result};
+#[cfg(feature = "netidx")]
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive_builder::Builder;
 use enumflags2::{bitflags, BitFlags};
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use schemars::JsonSchema_repr;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
+#[cfg(feature = "netidx")]
 #[derive(Builder, Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct Order {
     pub id: OrderId,
@@ -31,8 +37,9 @@ pub struct Order {
     pub source: OrderSource,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[repr(u8)]
 pub enum OrderSource {
     API,
@@ -41,10 +48,11 @@ pub enum OrderSource {
     External,
     CLI,
     #[serde(other)]
-    #[pack(other)]
+    #[cfg_attr(feature = "netidx", pack(other))]
     Other,
 }
 
+#[cfg(feature = "netidx")]
 impl OrderBuilder {
     pub fn new(id: OrderId, source: OrderSource, market: MarketId) -> Self {
         let mut t = Self::default();
@@ -112,36 +120,43 @@ impl OrderBuilder {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLUnion))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[serde(tag = "type")]
 pub enum OrderType {
     Limit(LimitOrderType),
     StopLossLimit(StopLossLimitOrderType),
     TakeProfitLimit(TakeProfitLimitOrderType),
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct LimitOrderType {
     pub limit_price: Decimal,
     pub post_only: bool,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct StopLossLimitOrderType {
     pub limit_price: Decimal,
     pub trigger_price: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct TakeProfitLimitOrderType {
     pub limit_price: Decimal,
     pub trigger_price: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[serde(tag = "type", content = "value")]
 pub enum TimeInForce {
     GoodTilCancel,
     GoodTilDate(DateTime<Utc>),
@@ -229,9 +244,10 @@ impl TryInto<TimeInForce> for TimeInForceArgs {
 #[bitflags]
 #[repr(u8)]
 #[derive(
-    Debug, Clone, Copy, Hash, PartialEq, Eq, Pack, Serialize, Deserialize, JsonSchema_repr,
+    Debug, Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, JsonSchema_repr,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum OrderStateFlags {
     Open,
     Rejected,
@@ -245,31 +261,33 @@ pub enum OrderStateFlags {
 
 pub type OrderState = BitFlags<OrderStateFlags>;
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Cancel {
     pub order_id: OrderId,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Pack, Default)]
+#[cfg(feature = "netidx")]
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize, Default)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CancelAll {
     pub venue_id: Option<VenueId>,
 }
 
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub struct Reject {
     pub order_id: OrderId,
     pub reason: RejectReason,
 }
 
+#[cfg(feature = "netidx")]
 impl Reject {
     pub fn new(order_id: OrderId, reason: RejectReason) -> Self {
         Self { order_id, reason }
     }
-}
 
-impl Reject {
     pub fn order_id(&self) -> OrderId {
         self.order_id
     }
@@ -282,6 +300,7 @@ impl Reject {
 /// Reject reason, includes common reasons as unit enum variants,
 /// but leaves room for custom reasons if needed; although, performance
 /// sensitive components should still supertype their own rejects.
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
 pub enum RejectReason {
     // custom message...can be slow b/c sending the whole string
@@ -291,11 +310,16 @@ pub enum RejectReason {
     UnknownMarket,
     DuplicateOrderId,
     InvalidQuantity,
+    MissingRequiredAccount,
+    NoAccount,
+    NotAuthorized,
+    NotAuthorizedForAccount,
     #[pack(other)]
     #[serde(other)]
     Unknown,
 }
 
+#[cfg(feature = "netidx")]
 impl std::fmt::Display for RejectReason {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use RejectReason::*;
@@ -306,13 +330,18 @@ impl std::fmt::Display for RejectReason {
             UnknownMarket => write!(f, "unknown market"),
             DuplicateOrderId => write!(f, "duplicate order id"),
             InvalidQuantity => write!(f, "invalid quantity"),
+            MissingRequiredAccount => write!(f, "missing required account"),
+            NoAccount => write!(f, "no account"),
+            NotAuthorized => write!(f, "not authorized to perform action"),
+            NotAuthorizedForAccount => write!(f, "not authorized for account"),
             Unknown => write!(f, "unknown"),
         }
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Ack {
     pub order_id: OrderId,
 }
@@ -323,8 +352,9 @@ impl Ack {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Out {
     pub order_id: OrderId,
 }

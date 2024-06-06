@@ -1,6 +1,8 @@
 //! An Architect installation is completely specified by its configuration, including
 //! the topology of its components and their individual subconfigurations.
 
+#![cfg(feature = "netidx")]
+
 use crate::ComponentId;
 use anyhow::{bail, Result};
 use netidx::{path::Path, subscriber::DesiredAuth};
@@ -67,6 +69,10 @@ pub struct Config {
     /// Remote components elsewhere on the network
     #[serde(default)]
     pub remote: HashMap<Path, Vec<(ComponentId, String)>>,
+    /// Explicitly allow components to be messaged from external channels;
+    /// if not set, all components are allowed
+    #[serde(default)]
+    pub expose_components: Option<Vec<ComponentId>>,
     /// Sync with a remote core at the given base path
     #[serde(default)]
     pub rsync: Option<Path>,

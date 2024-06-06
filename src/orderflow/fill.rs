@@ -1,16 +1,21 @@
-use crate::{
-    symbology::{MarketId, VenueId},
-    AccountId, Dir, OrderId,
-};
+use crate::symbology::VenueId;
+#[cfg(feature = "netidx")]
+use crate::{symbology::MarketId, AccountId, Dir, OrderId, UserId};
+#[cfg(feature = "netidx")]
 use anyhow::anyhow;
+use bytes::BytesMut;
+#[cfg(feature = "netidx")]
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+#[cfg(feature = "netidx")]
 use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::fmt::Display;
+use std::{error::Error, fmt::Display, str::FromStr};
 use uuid::Uuid;
 
 /// The ID of a fill
@@ -23,13 +28,12 @@ use uuid::Uuid;
     PartialOrd,
     Ord,
     Hash,
-    Pack,
-    FromValue,
     Serialize,
     Deserialize,
     JsonSchema,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar), graphql(transparent))]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct FillId(Uuid);
 
 impl FillId {
@@ -57,6 +61,14 @@ impl Display for FillId {
     }
 }
 
+impl FromStr for FillId {
+    type Err = uuid::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Uuid::from_str(s).map(FillId)
+    }
+}
+
 #[cfg(feature = "rusqlite")]
 impl rusqlite::ToSql for FillId {
     fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
@@ -65,6 +77,36 @@ impl rusqlite::ToSql for FillId {
     }
 }
 
+impl tokio_postgres::types::ToSql for FillId {
+    tokio_postgres::types::to_sql_checked!();
+
+    fn to_sql(
+        &self,
+        ty: &tokio_postgres::types::Type,
+        out: &mut BytesMut,
+    ) -> Result<tokio_postgres::types::IsNull, Box<dyn Error + Sync + Send>> {
+        self.0.to_sql(ty, out)
+    }
+
+    fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+        Uuid::accepts(ty)
+    }
+}
+
+impl<'a> tokio_postgres::types::FromSql<'a> for FillId {
+    fn from_sql(
+        ty: &tokio_postgres::types::Type,
+        raw: &'a [u8],
+    ) -> Result<Self, Box<dyn Error + Sync + Send>> {
+        Uuid::from_sql(ty, raw).map(FillId)
+    }
+
+    fn accepts(ty: &tokio_postgres::types::Type) -> bool {
+        Uuid::accepts(ty)
+    }
+}
+
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct Fill {
     pub kind: FillKind,
@@ -81,8 +123,12 @@ pub struct Fill {
     pub recv_time: Option<DateTime<Utc>>,
     /// When the cpty claims the trade happened
     pub trade_time: DateTime<Utc>,
+    #[serde(default)]
+    #[pack(default)]
+    pub trader: Option<UserId>,
 }
 
+#[cfg(feature = "netidx")]
 impl Fill {
     pub fn into_aberrant(self) -> AberrantFill {
         AberrantFill {
@@ -97,14 +143,16 @@ impl Fill {
             is_maker: self.is_maker,
             recv_time: self.recv_time,
             trade_time: Some(self.trade_time),
+            trader: self.trader,
         }
     }
 }
 
 #[derive(
-    Debug, Clone, Copy, Hash, PartialEq, Eq, Pack, Serialize, Deserialize, JsonSchema_repr,
+    Debug, Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, JsonSchema_repr,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[repr(u8)]
 pub enum FillKind {
     Normal,
@@ -127,6 +175,7 @@ impl rusqlite::ToSql for FillKind {
 
 /// Fills which we received but couldn't parse fully, return details
 /// best effort
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct AberrantFill {
@@ -141,8 +190,10 @@ pub struct AberrantFill {
     pub is_maker: Option<bool>,
     pub recv_time: Option<DateTime<Utc>>,
     pub trade_time: Option<DateTime<Utc>>,
+    pub trader: Option<UserId>,
 }
 
+#[cfg(feature = "netidx")]
 impl AberrantFill {
     /// If sufficient fields on AberrantFill, upgrade it into a Fill
     pub fn try_into_fill(self) -> anyhow::Result<Fill> {
@@ -160,6 +211,7 @@ impl AberrantFill {
             trade_time: self
                 .trade_time
                 .ok_or_else(|| anyhow!("trade_time is required"))?,
+            trader: self.trader,
         })
     }
 }

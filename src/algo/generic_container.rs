@@ -22,8 +22,8 @@ pub enum AlgoContainerMessage<
     ChildReject(ChildReject),
     ChildFill(ChildFill),
     ChildOut(ChildOut),
+    Initialize,
     RetireStopped,
-    OrderIdAllocation(OrderIdAllocation),
     Orderflow(OrderflowMessage),
     ChildOrderflow(OrderId, OrderflowMessage),
     UpdateState(OrderId, Box<Bytes>),
@@ -71,8 +71,8 @@ where
             ACM::ChildReject(r) => Ok(AM::ChildReject(r.clone())),
             ACM::ChildFill(f) => Ok(AM::ChildFill(*f)),
             ACM::ChildOut(o) => Ok(AM::ChildOut(*o)),
-            ACM::RetireStopped
-            | ACM::OrderIdAllocation(..)
+            ACM::Initialize
+            | ACM::RetireStopped
             | ACM::Orderflow(..)
             | ACM::ChildOrderflow(..)
             | ACM::UpdateState(..) => Err(()),
