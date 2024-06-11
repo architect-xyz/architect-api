@@ -1,6 +1,6 @@
-use crate::symbology::VenueId;
+use crate::symbology::{MarketId, ProductId, VenueId};
 #[cfg(feature = "netidx")]
-use crate::{symbology::MarketId, AccountId, Dir, OrderId, UserId};
+use crate::{AccountId, Dir, OrderId, UserId};
 #[cfg(feature = "netidx")]
 use anyhow::anyhow;
 use bytes::BytesMut;
@@ -108,6 +108,13 @@ impl<'a> tokio_postgres::types::FromSql<'a> for FillId {
 
 #[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct Fee {
+    pub amount: Decimal,
+    pub fee_currency: ProductId,
+}
+
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct Fill {
     pub kind: FillKind,
     pub fill_id: FillId,
@@ -126,6 +133,7 @@ pub struct Fill {
     #[serde(default)]
     #[pack(default)]
     pub trader: Option<UserId>,
+    pub fee: Option<Fee>,
 }
 
 #[cfg(feature = "netidx")]
@@ -144,6 +152,7 @@ impl Fill {
             recv_time: self.recv_time,
             trade_time: Some(self.trade_time),
             trader: self.trader,
+            fee: self.fee,
         }
     }
 }
@@ -191,6 +200,7 @@ pub struct AberrantFill {
     pub recv_time: Option<DateTime<Utc>>,
     pub trade_time: Option<DateTime<Utc>>,
     pub trader: Option<UserId>,
+    pub fee: Option<Fee>,
 }
 
 #[cfg(feature = "netidx")]
@@ -212,6 +222,7 @@ impl AberrantFill {
                 .trade_time
                 .ok_or_else(|| anyhow!("trade_time is required"))?,
             trader: self.trader,
+            fee: self.fee,
         })
     }
 }
