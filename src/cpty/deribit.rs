@@ -259,6 +259,8 @@ pub struct DeribitExternalFill {
     pub unique_fill_id: String,
     pub fee: Option<Decimal>,
     pub fee_currency: Option<String>,
+    pub exchange_symbol: Option<String>,
+    pub is_maker: Option<bool>,
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize, PartialEq, Eq)]
