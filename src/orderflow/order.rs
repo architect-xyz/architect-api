@@ -270,7 +270,6 @@ pub struct Cancel {
 
 #[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize, Default)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CancelAll {
     pub venue_id: Option<VenueId>,
 }

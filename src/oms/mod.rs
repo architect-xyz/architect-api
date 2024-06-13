@@ -180,7 +180,7 @@ impl From<&OrderflowMessage> for OmsMessage {
         match msg {
             OrderflowMessage::Order(msg) => OmsMessage::Order(*msg),
             OrderflowMessage::Cancel(msg) => OmsMessage::Cancel(*msg),
-            OrderflowMessage::CancelAll(msg) => OmsMessage::CancelAll(*msg),
+            OrderflowMessage::CancelAll(msg) => OmsMessage::CancelAll(msg.clone()),
             OrderflowMessage::Reject(msg) => OmsMessage::Reject(msg.into()),
             OrderflowMessage::Ack(msg) => OmsMessage::Ack(*msg),
             OrderflowMessage::Fill(msg) => OmsMessage::Fill(*msg),
@@ -196,7 +196,7 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
         match self {
             OmsMessage::Order(msg) => Ok(OrderflowMessage::Order(*msg)),
             OmsMessage::Cancel(msg) => Ok(OrderflowMessage::Cancel(*msg)),
-            OmsMessage::CancelAll(msg) => Ok(OrderflowMessage::CancelAll(*msg)),
+            OmsMessage::CancelAll(msg) => Ok(OrderflowMessage::CancelAll(msg.clone())),
             OmsMessage::Reject(msg) => Ok(OrderflowMessage::Reject(msg.clone().into())),
             OmsMessage::Ack(msg) => Ok(OrderflowMessage::Ack(*msg)),
             OmsMessage::Fill(msg) => Ok(OrderflowMessage::Fill(*msg)),

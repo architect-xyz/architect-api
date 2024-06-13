@@ -2,10 +2,14 @@
 
 use crate::{
     folio::FolioMessage,
-    orderflow::{AberrantFill, Ack, Cancel, Fill, Order, OrderflowMessage, Out, Reject},
+    orderflow::{
+        AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderflowMessage, Out, Reject,
+        RejectReason,
+    },
     symbology::{market::NormalizedMarketInfo, MarketId},
     OrderId, UserId,
 };
+use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
@@ -381,6 +385,13 @@ pub struct CqgPosition {
     pub speculation_type: Option<u32>,
 }
 
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub struct CancelReject {
+    pub cancel_id: ArcStr,
+    pub order_id: OrderId,
+    pub reason: RejectReason,
+}
+
 #[derive(Clone, Debug, FromValue, Serialize, Deserialize, Pack)]
 pub struct CqgAccount {
     pub user_id: UserId,
@@ -394,10 +405,12 @@ pub struct CqgAccount {
 pub enum CqgMessage {
     Order(CqgOrder),
     Cancel(Cancel),
+    CancelAll,
     Ack(Ack),
     Out(Out),
     Fill(Result<Fill, AberrantFill>),
     Reject(Reject),
+    CancelReject(CancelReject),
     Folio(FolioMessage),
     UpdateCqgAccounts { accounts: Arc<Vec<CqgAccount>>, is_snapshot: bool },
     CqgTrades(Vec<CqgTrade>),
@@ -412,11 +425,15 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
         match self {
             CqgMessage::Order(o) => Ok(OrderflowMessage::Order(**o)),
             CqgMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
+            CqgMessage::CancelAll => {
+                Ok(OrderflowMessage::CancelAll(CancelAll { venue_id: None }))
+            }
             CqgMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
             CqgMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             CqgMessage::Fill(f) => Ok(OrderflowMessage::Fill(*f)),
             CqgMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
-            CqgMessage::UpdateCqgAccounts { .. }
+            CqgMessage::CancelReject(_)
+            | CqgMessage::UpdateCqgAccounts { .. }
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)
@@ -432,11 +449,11 @@ impl TryInto<CqgMessage> for &OrderflowMessage {
         match self {
             OrderflowMessage::Order(o) => Ok(CqgMessage::Order(CqgOrder { order: *o })),
             OrderflowMessage::Cancel(c) => Ok(CqgMessage::Cancel(*c)),
+            OrderflowMessage::CancelAll(_) => Ok(CqgMessage::CancelAll),
             OrderflowMessage::Ack(a) => Ok(CqgMessage::Ack(*a)),
             OrderflowMessage::Out(o) => Ok(CqgMessage::Out(*o)),
             OrderflowMessage::Reject(r) => Ok(CqgMessage::Reject(r.clone())),
             OrderflowMessage::Fill(f) => Ok(CqgMessage::Fill(*f)),
-            _ => Err(()),
         }
     }
 }
