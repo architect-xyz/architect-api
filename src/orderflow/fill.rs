@@ -1,6 +1,9 @@
-use crate::symbology::{MarketId, ProductId, VenueId};
+use crate::symbology::VenueId;
 #[cfg(feature = "netidx")]
-use crate::{AccountId, Dir, OrderId, UserId};
+use crate::{
+    symbology::{MarketId, ProductId},
+    AccountId, Dir, OrderId, UserId,
+};
 #[cfg(feature = "netidx")]
 use anyhow::anyhow;
 use bytes::BytesMut;
@@ -114,6 +117,7 @@ pub struct Fee {
     pub fee_currency: ProductId,
 }
 
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct Fill {
     pub kind: FillKind,
