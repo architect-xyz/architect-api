@@ -18,6 +18,7 @@ pub type SmartOrderRouterMessage =
 pub struct SmartOrderRouterOrder {
     pub order_id: OrderId,
     pub trader: UserId,
+    // These should all be trading markets.
     pub markets: Arc<Vec<MarketId>>,
     pub base: ProductId,
     pub quote: ProductId,
