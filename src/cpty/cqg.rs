@@ -34,6 +34,8 @@ pub struct CqgMarketInfo {
     pub market_data_delay_ms: i64,
     pub initial_margin: Option<Decimal>,
     pub maintenance_margin: Option<Decimal>,
+    pub last_trading_date: DateTime<Utc>,
+    pub first_notice_date: Option<DateTime<Utc>>,
 }
 
 impl NormalizedMarketInfo for CqgMarketInfo {
