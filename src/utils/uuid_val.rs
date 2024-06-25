@@ -15,7 +15,7 @@ macro_rules! uuid_val {
             PartialOrd,
             Ord,
             serde::Serialize,
-            serde::Deserialize,
+            serde_with::DeserializeFromStr,
         )]
         #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
         #[cfg_attr(feature = "netidx", derive(netidx_derive::Pack))]

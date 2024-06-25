@@ -7,7 +7,7 @@ use crate::{
         RejectReason,
     },
     symbology::{market::NormalizedMarketInfo, MarketId},
-    OrderId, UserId,
+    AccountPermissions, OrderId, UserId,
 };
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
@@ -15,7 +15,11 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
-use std::{ops::Deref, sync::Arc};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    ops::Deref,
+    sync::Arc,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct CqgMarketInfo {
@@ -394,13 +398,65 @@ pub struct CancelReject {
     pub reason: RejectReason,
 }
 
-#[derive(Clone, Debug, FromValue, Serialize, Deserialize, Pack)]
+#[derive(
+    Clone,
+    Debug,
+    FromValue,
+    Serialize,
+    Deserialize,
+    Pack,
+    PartialEq,
+    Eq,
+    Hash,
+    PartialOrd,
+    Ord,
+)]
 pub struct CqgAccount {
     pub user_id: UserId,
     pub user_email: String,
     pub clearing_venue: String,
     pub cqg_account_id: i32,
     pub cqg_trader_id: String,
+}
+
+pub type AccountProxyConfig = BTreeMap<UserId, AccountProxy>;
+#[derive(Deserialize, Serialize, Clone, Pack, Debug)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum AccountProxySelector {
+    AccountId { cqg_account_id: i32 },
+    AccountIds { cqg_account_ids: Vec<i32> },
+    TraderId { cqg_trader_id: String },
+    TraderIds { cqg_trader_ids: Vec<String> },
+    AllAccounts,
+    AllAccountsForFCM { clearing_venue: String },
+}
+impl AccountProxySelector {
+    pub fn selects(&self, cqg_account: &CqgAccount) -> bool {
+        match self {
+            AccountProxySelector::AccountId { cqg_account_id } => {
+                cqg_account.cqg_account_id == *cqg_account_id
+            }
+            AccountProxySelector::AccountIds { cqg_account_ids } => {
+                cqg_account_ids.contains(&cqg_account.cqg_account_id)
+            }
+            AccountProxySelector::TraderId { cqg_trader_id } => {
+                &cqg_account.cqg_trader_id == cqg_trader_id
+            }
+            AccountProxySelector::TraderIds { cqg_trader_ids } => {
+                cqg_trader_ids.contains(&cqg_account.cqg_trader_id)
+            }
+            AccountProxySelector::AllAccounts => true,
+            AccountProxySelector::AllAccountsForFCM { clearing_venue } => {
+                &cqg_account.clearing_venue == clearing_venue
+            }
+        }
+    }
+}
+#[derive(Deserialize, Serialize, Clone, Pack, Debug)]
+pub struct AccountProxy {
+    pub selector: AccountProxySelector,
+    #[serde(flatten)]
+    pub permissions: AccountPermissions,
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
@@ -414,7 +470,8 @@ pub enum CqgMessage {
     Reject(Reject),
     CancelReject(CancelReject),
     Folio(FolioMessage),
-    UpdateCqgAccounts { accounts: Arc<Vec<CqgAccount>>, is_snapshot: bool },
+    UpdateCqgAccounts { accounts: Arc<BTreeSet<CqgAccount>>, is_snapshot: bool },
+    UpdateAccountProxyConfig { account_proxy_config: Arc<AccountProxyConfig> },
     CqgTrades(Vec<CqgTrade>),
     CqgAccountSummary(CqgAccountSummary),
     CqgPositionStatus(CqgPositionStatus),
@@ -436,6 +493,7 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
             CqgMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             CqgMessage::CancelReject(_)
             | CqgMessage::UpdateCqgAccounts { .. }
+            | CqgMessage::UpdateAccountProxyConfig { .. }
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)
