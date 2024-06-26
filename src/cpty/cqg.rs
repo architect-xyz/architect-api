@@ -420,7 +420,7 @@ pub struct CqgAccount {
 }
 
 pub type AccountProxyConfig = BTreeMap<UserId, AccountProxy>;
-#[derive(Deserialize, Serialize, Clone, Pack, Debug)]
+#[derive(Deserialize, Serialize, Clone, Pack, Debug, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum AccountProxySelector {
     AccountId { cqg_account_id: i32 },
@@ -429,6 +429,18 @@ pub enum AccountProxySelector {
     TraderIds { cqg_trader_ids: Vec<String> },
     AllAccounts,
     AllAccountsForFCM { clearing_venue: String },
+}
+#[derive(postgres_types::FromSql)]
+#[postgres(name = "Selector")]
+pub enum AccountProxySelectorPG {
+    #[postgres(name = "ACCOUNTS")]
+    Account,
+    #[postgres(name = "TRADERS")]
+    Trader,
+    #[postgres(name = "ALL")]
+    All,
+    #[postgres(name = "FCM")]
+    Fcm,
 }
 impl AccountProxySelector {
     pub fn selects(&self, cqg_account: &CqgAccount) -> bool {
@@ -452,7 +464,7 @@ impl AccountProxySelector {
         }
     }
 }
-#[derive(Deserialize, Serialize, Clone, Pack, Debug)]
+#[derive(Deserialize, Serialize, Clone, Pack, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct AccountProxy {
     pub selector: AccountProxySelector,
     #[serde(flatten)]
@@ -470,8 +482,11 @@ pub enum CqgMessage {
     Reject(Reject),
     CancelReject(CancelReject),
     Folio(FolioMessage),
-    UpdateCqgAccounts { accounts: Arc<BTreeSet<CqgAccount>>, is_snapshot: bool },
-    UpdateAccountProxyConfig { account_proxy_config: Arc<AccountProxyConfig> },
+    UpdateCqgAccounts {
+        accounts: Arc<BTreeSet<CqgAccount>>,
+        account_proxies: Arc<AccountProxyConfig>,
+        is_snapshot: bool,
+    },
     CqgTrades(Vec<CqgTrade>),
     CqgAccountSummary(CqgAccountSummary),
     CqgPositionStatus(CqgPositionStatus),
@@ -493,7 +508,6 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
             CqgMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             CqgMessage::CancelReject(_)
             | CqgMessage::UpdateCqgAccounts { .. }
-            | CqgMessage::UpdateAccountProxyConfig { .. }
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)

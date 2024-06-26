@@ -46,7 +46,9 @@ impl Account {
 /// - None = not set (default disallowed)
 /// - Some(true) = allowed
 /// - Some(false) = disallowed
-#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize)]
+#[derive(
+    Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord,
+)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct AccountPermissions {
     pub list: Option<bool>,  // know about the account's existence
