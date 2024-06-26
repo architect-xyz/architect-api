@@ -30,7 +30,6 @@ pub enum Query {
     Route(Str),
     ExchangeSymbol(Str),
     Underlying(Str),
-    Expired,
     Expiration(DateQ),
     And(Vec<Query>),
     Or(Vec<Query>),
