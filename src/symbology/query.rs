@@ -127,7 +127,7 @@ impl Query {
 //         )?;
 //         txn.add_product("USD", &ProductClass::Fiat, CfiCode::default(), dec!(1))?;
 //         txn.add_product("EUR", &ProductClass::Fiat, CfiCode::default(), dec!(1))?;
-//         txn.commit();
+//         txn.commit()?;
 //         Ok(())
 //     }
 //
