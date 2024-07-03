@@ -1,6 +1,8 @@
 #[cfg(feature = "netidx")]
-use crate::folio::FolioMessage;
-use crate::{orderflow::*, Dir};
+use crate::{folio::FolioMessage, symbology::MarketId, utils::messaging::MaybeRequest};
+use crate::{orderflow::*, Dir, DirPair};
+#[cfg(feature = "netidx")]
+use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 #[cfg(feature = "netidx")]
 use derive::FromValue;
@@ -39,6 +41,17 @@ pub enum ExternalCptyProtocol {
     Ack(Ack),
     Fill(ExternalFill),
     Out(Out),
+    GetBookSnapshot {
+        id: Uuid,
+        market: String,
+    },
+    BookSnapshot {
+        id: Uuid,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        result: Option<ExternalBookSnapshot>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        error: Option<String>,
+    },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -86,6 +99,13 @@ pub struct ExternalFill {
     pub trade_time: DateTime<Utc>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
+pub struct ExternalBookSnapshot {
+    pub book: DirPair<Arc<Vec<(Decimal, Decimal)>>>, // (price, size)
+    pub timestamp: DateTime<Utc>,
+}
+
 /// Internal core message type for the ExternalCpty component.
 #[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
@@ -94,6 +114,25 @@ pub enum ExternalCptyMessage {
     Folio(FolioMessage),
     External(ExternalCptyProtocol),
     Initialize,
+    GetBookSnapshot(Uuid, MarketId),
+    BookSnapshot(Uuid, Result<ExternalBookSnapshot, ArcStr>),
+}
+
+#[cfg(feature = "netidx")]
+impl MaybeRequest for ExternalCptyMessage {
+    fn request_id(&self) -> Option<Uuid> {
+        match self {
+            ExternalCptyMessage::GetBookSnapshot(id, _) => Some(*id),
+            _ => None,
+        }
+    }
+
+    fn response_id(&self) -> Option<Uuid> {
+        match self {
+            ExternalCptyMessage::BookSnapshot(id, _) => Some(*id),
+            _ => None,
+        }
+    }
 }
 
 #[cfg(feature = "netidx")]

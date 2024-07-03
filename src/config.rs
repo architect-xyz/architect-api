@@ -7,7 +7,10 @@ use crate::ComponentId;
 use anyhow::{bail, Result};
 use netidx::{path::Path, subscriber::DesiredAuth};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, path::PathBuf};
+use std::{
+    collections::{BTreeMap, HashMap},
+    path::PathBuf,
+};
 
 /// Component location--local to the installation, or hosted by Architect
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -49,6 +52,10 @@ pub struct Config {
     /// marketdata only.  Live marketdata will use new-style paths.
     #[serde(default)]
     pub use_legacy_hist_marketdata: Vec<String>,
+    /// Use the given components for ExternalCpty marketdata;
+    /// mapping of cpty name e.g. PHOENIX/DIRECT -> component ID
+    #[serde(default)]
+    pub use_external_cpty_marketdata: BTreeMap<String, ComponentId>,
     #[serde(default)]
     pub secrets_path_override: Option<String>,
     /// In addition to netidx-based licensedb authentication, restrict users to
