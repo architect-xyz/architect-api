@@ -37,6 +37,8 @@ use serde::{Deserialize, Serialize};
 #[transitive(GalaxyCpty <-> Orderflow)]
 #[transitive(KrakenCpty <-> Folio)]
 #[transitive(KrakenCpty <-> Orderflow)]
+#[transitive(OkxCpty <-> Folio)]
+#[transitive(OkxCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
 #[transitive(ExternalCpty <-> Folio)]
@@ -73,6 +75,7 @@ pub enum TypedMessage {
     #[pack(tag(110))] CboeDigitalCpty(cpty::cboe_digital::CboeDigitalMessage),
     #[pack(tag(111))] BinanceCpty(cpty::binance::BinanceMessage),
     #[pack(tag(112))] CqgCpty(cpty::cqg::CqgMessage),
+    #[pack(tag(113))] OkxCpty(cpty::okx::OkxMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
     #[pack(tag(202))] MMAlgo(algo::mm::MMAlgoMessage),
