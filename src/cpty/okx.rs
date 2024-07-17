@@ -61,14 +61,36 @@ pub enum OkxMessage {
     Out(Out),
     Folio(FolioMessage),
     ExchangeSnapshot(Arc<OkxSnapshot>),
+    ExchangeAccountConfig(OkxAccountConfig),
     ExchangeOrderUpdate(OkxExchangeOrderUpdate),
     ExchangeReject(Reject),
+}
+
+// Copied from AccountLevel, just making sure we're clear about which types are internal and which are external
+#[derive(Debug, Copy, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub enum OkxAccountLevel {
+    Simple,
+    SingleCurrencyMargin,
+    MultiCurrencyMargin,
+    PortfolioMargin,
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub enum OkxMarginMode {
+    Cross,
+    Isolated,
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub struct OkxAccountConfig {
+    pub account_level: OkxAccountLevel,
 }
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct OkxOrder {
     #[serde(flatten)]
     pub order: Order,
+    pub margin_mode: OkxMarginMode,
 }
 
 impl Deref for OkxOrder {
@@ -148,6 +170,7 @@ impl TryFrom<&OkxMessage> for OrderflowMessage {
             OkxMessage::Fill(f) => Ok(OrderflowMessage::Fill(f.clone())),
             OkxMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             OkxMessage::Folio(_)
+            | OkxMessage::ExchangeAccountConfig(_)
             | OkxMessage::ExchangeSnapshot(_)
             | OkxMessage::ExchangeReject(_)
             | OkxMessage::ExchangeOrderUpdate(_) => Err(()),
@@ -160,7 +183,11 @@ impl TryFrom<&OrderflowMessage> for OkxMessage {
 
     fn try_from(value: &OrderflowMessage) -> Result<Self, Self::Error> {
         match value {
-            OrderflowMessage::Order(o) => Ok(OkxMessage::Order(OkxOrder { order: *o })),
+            // CR-someday arao: Make this a parameter the OMS can pass to us
+            OrderflowMessage::Order(o) => Ok(OkxMessage::Order(OkxOrder {
+                order: *o,
+                margin_mode: OkxMarginMode::Isolated,
+            })),
             OrderflowMessage::Cancel(c) => Ok(OkxMessage::Cancel(*c)),
             OrderflowMessage::CancelAll(_) => Ok(OkxMessage::CancelAll(OkxCancelAll {})),
             OrderflowMessage::Reject(r) => Ok(OkxMessage::Reject(r.clone())),
