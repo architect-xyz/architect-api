@@ -1,6 +1,7 @@
 pub mod account_manager;
 pub mod algo;
 pub mod auth;
+pub mod channel_control;
 pub mod config;
 pub mod cpty;
 pub mod folio;

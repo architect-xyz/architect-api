@@ -61,6 +61,7 @@ pub enum TypedMessage {
     #[pack(tag(  5))] Algo(algo::AlgoMessage),
     #[pack(tag(  6))] Folio(folio::FolioMessage),
     #[pack(tag(  7))] AccountManager(account_manager::AccountMessage),
+    #[pack(tag( 10))] ChannelControl(channel_control::ChannelControlMessage),
     #[pack(tag( 98))] ExternalCpty(cpty::generic_external::ExternalCptyMessage),
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
@@ -103,6 +104,22 @@ impl TypedMessage {
     pub fn topics(&self) -> BitFlags<MessageTopic> {
         match self {
             TypedMessage::Orderflow(_) => MessageTopic::Orderflow.into(),
+            // CR alee: would be easier to determine in common+ext data format
+            TypedMessage::Oms(om) => {
+                use oms::OmsMessage;
+                match om {
+                    OmsMessage::Order(..)
+                    | OmsMessage::OrderUpdate(..)
+                    | OmsMessage::Cancel(..)
+                    | OmsMessage::CancelAll(..)
+                    | OmsMessage::Reject(..)
+                    | OmsMessage::Ack(..)
+                    | OmsMessage::Fill(..)
+                    | OmsMessage::FillWarning(..)
+                    | OmsMessage::Out(..) => MessageTopic::Orderflow.into(),
+                    _ => BitFlags::empty(),
+                }
+            }
             TypedMessage::AccountManager(am) => {
                 use account_manager::AccountMessage;
                 match am {

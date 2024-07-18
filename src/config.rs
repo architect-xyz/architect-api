@@ -80,6 +80,10 @@ pub struct Config {
     /// if not set, all components are allowed
     #[serde(default)]
     pub expose_components: Option<Vec<ComponentId>>,
+    // CR alee: deprecate this once core+ext format lands
+    /// Allow unchecked orderflow subscriptions--for Platform use only
+    #[serde(default)]
+    pub allow_unchecked_subscriptions: bool,
     /// Sync with a remote core at the given base path
     #[serde(default)]
     pub rsync: Option<Path>,
