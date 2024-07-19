@@ -440,11 +440,12 @@ pub enum AccountProxySelector {
     TraderId { cqg_trader_id: String },
     TraderIds { cqg_trader_ids: Vec<String> },
     AllAccounts,
-    AllAccountsForFCM { clearing_venue: String },
+    AllAccountsForFCMs { clearing_venues: Vec<String> },
 }
-#[derive(postgres_types::FromSql)]
+
+#[derive(Debug, postgres_types::FromSql)]
 #[postgres(name = "Selector")]
-pub enum AccountProxySelectorPG {
+pub enum AccountProxySelectorType {
     #[postgres(name = "ACCOUNTS")]
     Account,
     #[postgres(name = "TRADERS")]
@@ -454,6 +455,7 @@ pub enum AccountProxySelectorPG {
     #[postgres(name = "FCM")]
     Fcm,
 }
+
 impl AccountProxySelector {
     pub fn selects(&self, cqg_account: &CqgAccount) -> bool {
         match self {
@@ -470,12 +472,13 @@ impl AccountProxySelector {
                 cqg_trader_ids.contains(&cqg_account.cqg_trader_id)
             }
             AccountProxySelector::AllAccounts => true,
-            AccountProxySelector::AllAccountsForFCM { clearing_venue } => {
-                &cqg_account.clearing_venue == clearing_venue
+            AccountProxySelector::AllAccountsForFCMs { clearing_venues } => {
+                clearing_venues.contains(&cqg_account.clearing_venue)
             }
         }
     }
 }
+
 #[derive(Deserialize, Serialize, Clone, Pack, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct AccountProxy {
     pub selector: AccountProxySelector,

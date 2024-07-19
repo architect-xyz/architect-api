@@ -29,7 +29,7 @@ macro_rules! uuid_val {
         }
 
         impl std::str::FromStr for $name {
-            type Err = anyhow::Error;
+            type Err = std::convert::Infallible;
 
             fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
                 match s.parse::<uuid::Uuid>() {

@@ -34,5 +34,6 @@ pub use utils::{
 pub use utils::{
     component_id::ComponentId,
     envelope::{Address, Envelope, Sequence, Stamp},
+    maybe_file::MaybeFile,
     secrets::MaybeSecret,
 };
