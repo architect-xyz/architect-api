@@ -347,7 +347,7 @@ pub struct CqgPositionStatus {
     pub positions: Vec<CqgPosition>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CqgPosition {
     /// Surrogate id as a key for updates.
     pub id: i32,
@@ -359,7 +359,7 @@ pub struct CqgPosition {
 
     /// Position average price.
     /// NOTE: Since it could be an aggregated position price is sent in correct format directly.
-    pub price_correct: f64,
+    pub price_correct: Decimal,
 
     /// Exchange specific trade date when the position was open or last changed (date only value).
     pub trade_date: i64,
@@ -389,6 +389,18 @@ pub struct CqgPosition {
 
     /// Speculation type of the position. One of SpeculationType enum.
     pub speculation_type: Option<u32>,
+}
+
+impl PartialOrd for CqgPosition {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.id.partial_cmp(&other.id)
+    }
+}
+
+impl Ord for CqgPosition {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.id.cmp(&other.id)
+    }
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
