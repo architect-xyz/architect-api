@@ -505,6 +505,7 @@ pub enum CqgMessage {
     CqgTrades(Vec<CqgTrade>),
     CqgAccountSummary(CqgAccountSummary),
     CqgPositionStatus(CqgPositionStatus),
+    UpdateCqgAccountsFromDb,
 }
 
 impl TryInto<OrderflowMessage> for &CqgMessage {
@@ -522,6 +523,7 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
             CqgMessage::Fill(f) => Ok(OrderflowMessage::Fill(*f)),
             CqgMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             CqgMessage::CancelReject(_)
+            | CqgMessage::UpdateCqgAccountsFromDb
             | CqgMessage::UpdateCqgAccounts { .. }
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
