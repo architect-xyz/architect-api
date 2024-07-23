@@ -345,6 +345,9 @@ pub struct CqgPositionStatus {
     pub account: i32,
     pub market: MarketId,
     pub positions: Vec<CqgPosition>,
+    #[serde(default)]
+    #[pack(default)]
+    pub is_snapshot: bool,
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
@@ -528,7 +531,7 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)
-            | CqgMessage::CqgPositionStatus(_) => Err(()),
+            | CqgMessage::CqgPositionStatus(..) => Err(()),
         }
     }
 }
