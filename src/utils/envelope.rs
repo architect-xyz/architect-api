@@ -63,6 +63,13 @@ impl Address {
             _ => None,
         }
     }
+
+    pub fn user_id(&self) -> Option<UserId> {
+        match self {
+            Address::Channel(user_id, _) => Some(*user_id),
+            _ => None,
+        }
+    }
 }
 
 /// Architect components communicate with each other by sending `Envelope`s.
