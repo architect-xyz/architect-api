@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     algo::generic_container::AlgoContainerMessage, symbology::MarketId, DirPair,
-    HumanDuration, OrderId, Str,
+    HumanDuration, OrderId,
 };
 use anyhow::bail;
 use derive::FromValue;
@@ -48,16 +48,22 @@ pub struct MMAlgoOrder {
     pub order_lockout: HumanDuration,
     pub reject_lockout: HumanDuration,
     pub hedge_market: Option<HedgeMarket>,
+    pub parent_order_id: Option<OrderId>,
 }
 
 impl Into<AlgoOrder> for &MMAlgoOrder {
     fn into(self) -> AlgoOrder {
-        let algo = if self.hedge_market.is_some() { "Spread" } else { "MM" };
+        let algo = if self.hedge_market.is_some() {
+            AlgoKind::Spread
+        } else {
+            AlgoKind::MarketMaker
+        };
         AlgoOrder {
             order_id: self.order_id,
             trader: self.trader,
             account: self.account,
-            algo: Str::try_from(algo).unwrap(),
+            algo,
+            parent_order_id: self.parent_order_id,
         }
     }
 }

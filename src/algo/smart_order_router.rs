@@ -26,6 +26,7 @@ pub struct SmartOrderRouterOrder {
     pub limit_price: Decimal,
     pub target_size: Decimal,
     pub execution_time_limit: HumanDuration,
+    pub parent_order_id: Option<OrderId>,
 }
 
 impl Into<AlgoOrder> for &SmartOrderRouterOrder {
@@ -34,7 +35,8 @@ impl Into<AlgoOrder> for &SmartOrderRouterOrder {
             order_id: self.order_id,
             trader: self.trader,
             account: None,
-            algo: Str::try_from("SMART-ORDER-ROUTER").unwrap(), // won't panic
+            algo: AlgoKind::SmartOrderRouter,
+            parent_order_id: self.parent_order_id,
         }
     }
 }

@@ -1,6 +1,6 @@
 use super::*;
 use crate::{
-    algo::generic_container::AlgoContainerMessage, symbology::MarketId, Dir, OrderId, Str,
+    algo::generic_container::AlgoContainerMessage, symbology::MarketId, Dir, OrderId,
 };
 use anyhow::{bail, Result};
 use chrono::{DateTime, Utc};
@@ -25,6 +25,7 @@ pub struct TwapOrder {
     pub account: Option<AccountId>,
     pub reject_lockout: Duration,
     pub take_through_frac: Option<Decimal>,
+    pub parent_order_id: Option<OrderId>,
 }
 
 impl Into<AlgoOrder> for &TwapOrder {
@@ -33,7 +34,8 @@ impl Into<AlgoOrder> for &TwapOrder {
             order_id: self.order_id,
             trader: self.trader,
             account: self.account,
-            algo: Str::try_from("TWAP").unwrap(), // won't panic
+            algo: AlgoKind::Twap,
+            parent_order_id: self.parent_order_id,
         }
     }
 }

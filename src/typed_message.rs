@@ -49,7 +49,7 @@ use serde::{Deserialize, Serialize};
 #[transitive(Orderflow <- Algo)]
 #[transitive(Algo <-> TwapAlgo <- Orderflow)]
 #[transitive(Algo <-> SmartOrderRouterAlgo)]
-#[transitive(Algo <-> MMAlgo <- Orderflow)]
+#[transitive(Algo <-> MarketMakerAlgo <- Orderflow)]
 #[transitive(Algo <-> PovAlgo <- Orderflow)]
 #[rustfmt::skip]
 pub enum TypedMessage {
@@ -79,7 +79,7 @@ pub enum TypedMessage {
     #[pack(tag(113))] OkxCpty(cpty::okx::OkxMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
-    #[pack(tag(202))] MMAlgo(algo::mm::MMAlgoMessage),
+    #[pack(tag(202))] MarketMakerAlgo(algo::mm::MMAlgoMessage),
     #[pack(tag(203))] PovAlgo(algo::pov::PovAlgoMessage),
 }
 

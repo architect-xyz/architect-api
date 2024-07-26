@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     algo::generic_container::AlgoContainerMessage, symbology::MarketId, Dir,
-    HumanDuration, OrderId, Str,
+    HumanDuration, OrderId,
 };
 use anyhow::bail;
 use chrono::{DateTime, Utc};
@@ -27,6 +27,7 @@ pub struct PovAlgoOrder {
     pub account: Option<AccountId>,
     pub order_lockout: HumanDuration,
     pub take_through_frac: Option<Decimal>,
+    pub parent_order_id: Option<OrderId>,
 }
 
 impl Into<AlgoOrder> for &PovAlgoOrder {
@@ -35,7 +36,8 @@ impl Into<AlgoOrder> for &PovAlgoOrder {
             order_id: self.order_id,
             trader: self.trader,
             account: self.account,
-            algo: Str::try_from("POV").unwrap(), // won't panic
+            algo: AlgoKind::Pov,
+            parent_order_id: self.parent_order_id,
         }
     }
 }

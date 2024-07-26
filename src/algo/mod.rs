@@ -1,8 +1,6 @@
 #![cfg(feature = "netidx")]
 
-use crate::{
-    orderflow::*, utils::messaging::MaybeRequest, AccountId, OrderId, Str, UserId,
-};
+use crate::{orderflow::*, utils::messaging::MaybeRequest, AccountId, OrderId, UserId};
 use anyhow::Result;
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
@@ -28,6 +26,7 @@ pub enum AlgoMessage {
     AlgoAck(AlgoAck),
     AlgoReject(AlgoReject),
     AlgoStatus(AlgoStatus),
+    AlgoOut(AlgoOut),
     ChildAck(ChildAck),
     ChildReject(ChildReject),
     ChildFill(ChildFill),
@@ -64,7 +63,20 @@ pub struct AlgoOrder {
     pub order_id: OrderId,
     pub trader: UserId,
     pub account: Option<AccountId>,
-    pub algo: Str,
+    pub algo: AlgoKind,
+    pub parent_order_id: Option<OrderId>,
+}
+
+#[derive(
+    Debug, Clone, Copy, Hash, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq,
+)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+pub enum AlgoKind {
+    MarketMaker,
+    Pov,
+    SmartOrderRouter,
+    Twap,
+    Spread,
 }
 
 // CR-someday alee: use something more akin to the validator crate
@@ -104,6 +116,11 @@ pub enum AlgoControlCommand {
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub struct AlgoAck {
+    pub order_id: OrderId,
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub struct AlgoOut {
     pub order_id: OrderId,
 }
 

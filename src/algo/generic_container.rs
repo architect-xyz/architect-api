@@ -18,6 +18,7 @@ pub enum AlgoContainerMessage<
     AlgoAck(AlgoAck),
     AlgoReject(AlgoReject),
     AlgoStatus(AlgoStatus),
+    AlgoOut(AlgoOut),
     ChildAck(ChildAck),
     ChildReject(ChildReject),
     ChildFill(ChildFill),
@@ -26,6 +27,7 @@ pub enum AlgoContainerMessage<
     RetireStopped,
     Orderflow(OrderflowMessage),
     ChildOrderflow(OrderId, OrderflowMessage),
+    ChildAlgoOrderflow(OrderId, ChildAlgoOrderflow),
     UpdateState(OrderId, Box<Bytes>),
     PreviewAlgo(Uuid, AlgoOrder),
     PreviewAlgoResponse(Uuid, Option<AlgoPreview>),
@@ -35,6 +37,16 @@ pub enum AlgoContainerMessage<
     GetAlgoStatusResponse(Uuid, Arc<Vec<AlgoStatus>>),
     GetAlgoLog(Uuid, OrderId),
     GetAlgoLogResponse(Uuid, Option<AlgoLog>),
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub enum ChildAlgoOrderflow {
+    // CR-someday arao: When redesigning, make this not explicitly enumerated
+    ChildTwapOrder(twap::TwapOrder),
+    ChildSmartOrderRouterOrder(smart_order_router::SmartOrderRouterOrder),
+    ChildMarketMakerOrder(mm::MMAlgoOrder),
+    ChildPovOrder(pov::PovAlgoOrder),
+    ChildAlgoControl(AlgoControl),
 }
 
 macro_rules! time {
@@ -65,6 +77,7 @@ where
             ACM::AlgoOrder(o) => Ok(AM::AlgoOrder(time!(o)?)),
             ACM::AlgoControl(c) => Ok(AM::AlgoControl(*c)),
             ACM::AlgoAck(a) => Ok(AM::AlgoAck(*a)),
+            ACM::AlgoOut(o) => Ok(AM::AlgoOut(*o)),
             ACM::AlgoReject(r) => Ok(AM::AlgoReject(r.clone())),
             ACM::AlgoStatus(s) => Ok(AM::AlgoStatus(time!(s)?)),
             ACM::ChildAck(a) => Ok(AM::ChildAck(*a)),
@@ -75,6 +88,7 @@ where
             | ACM::RetireStopped
             | ACM::Orderflow(..)
             | ACM::ChildOrderflow(..)
+            | ACM::ChildAlgoOrderflow(..)
             | ACM::UpdateState(..) => Err(()),
             ACM::PreviewAlgo(id, o) => Ok(AM::PreviewAlgo(*id, time!(o)?)),
             ACM::PreviewAlgoResponse(id, p) => {
@@ -109,6 +123,7 @@ impl<O, P, S, L> TryInto<AlgoContainerMessage<O, P, S, L>> for &AlgoMessage {
             AM::AlgoOrder(..) => Err(()),
             AM::AlgoControl(c) => Ok(ACM::AlgoControl(*c)),
             AM::AlgoAck(a) => Ok(ACM::AlgoAck(*a)),
+            AM::AlgoOut(o) => Ok(ACM::AlgoOut(*o)),
             AM::AlgoReject(r) => Ok(ACM::AlgoReject(r.clone())),
             AM::AlgoStatus(..) => Err(()),
             AM::ChildAck(a) => Ok(ACM::ChildAck(*a)),
