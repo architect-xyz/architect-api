@@ -2,6 +2,9 @@
 #[macro_export]
 macro_rules! uuid_val {
     ($name:ident, $ns:ident) => {
+        uuid_val!($name, $ns, {});
+    };
+    ($name:ident, $ns:ident, { $($key:expr => $value:expr),* $(,)? }) => {
         /// Wrapper type around a UUIDv5 for a given namespace.  These types are
         /// parseable from either the UUIDv5 string representation, or from the
         /// name itself, as they are 1-1.
@@ -32,6 +35,11 @@ macro_rules! uuid_val {
             type Err = std::convert::Infallible;
 
             fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+                $(
+                    if s == $key {
+                        return Ok($value);
+                    }
+                )*
                 match s.parse::<uuid::Uuid>() {
                     Ok(uuid) => Ok(Self(uuid)),
                     Err(_) => Ok(Self::from(s)),

@@ -54,6 +54,13 @@ pub enum OmsMessage {
     GetOrderResponse(Uuid, Option<OrderLog>),
     GetFills(Uuid, OrderId),
     GetFillsResponse(Uuid, Result<GetFillsResponse, GetFillsError>),
+    ReconcileOrders(Arc<Vec<ReconcileOrder>>),
+}
+
+#[derive(Debug, Copy, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub struct ReconcileOrder {
+    pub order: Order,
+    pub order_state: OrderState,
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
@@ -204,6 +211,7 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
             OmsMessage::OrderUpdate(..)
             | OmsMessage::Initialize(..)
             | OmsMessage::RetireOutedOrdersAndUnknownFills
+            | OmsMessage::ReconcileOrders(..)
             | OmsMessage::FillWarning(..)
             | OmsMessage::GetOpenOrders(_)
             | OmsMessage::GetOpenOrdersResponse(..)

@@ -3,8 +3,8 @@
 use crate::{
     folio::FolioMessage,
     orderflow::{
-        AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderflowMessage, Out, Reject,
-        RejectReason,
+        AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderStateFlags,
+        OrderflowMessage, Out, Reject, RejectReason,
     },
     symbology::{market::NormalizedMarketInfo, MarketId},
     AccountPermissions, OrderId, UserId,
@@ -12,6 +12,7 @@ use crate::{
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
+use enumflags2::BitFlags;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
@@ -509,6 +510,7 @@ pub enum CqgMessage {
     CqgAccountSummary(CqgAccountSummary),
     CqgPositionStatus(CqgPositionStatus),
     UpdateCqgAccountsFromDb,
+    CqgOrderSnapshot(Arc<Vec<(i32, BitFlags<OrderStateFlags, u8>, Order)>>),
 }
 
 impl TryInto<OrderflowMessage> for &CqgMessage {
@@ -531,7 +533,8 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)
-            | CqgMessage::CqgPositionStatus(..) => Err(()),
+            | CqgMessage::CqgOrderSnapshot(..)
+            | CqgMessage::CqgPositionStatus(_) => Err(()),
         }
     }
 }
