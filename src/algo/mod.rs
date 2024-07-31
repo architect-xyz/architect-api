@@ -225,6 +225,7 @@ impl MaybeRequest for AlgoMessage {
         match self {
             AlgoMessage::PreviewAlgo(uuid, _)
             | AlgoMessage::GetAlgoStatus(uuid, _)
+            | AlgoMessage::GetAlgoOrder(uuid, _)
             | AlgoMessage::GetAlgoLog(uuid, _) => Some(*uuid),
             _ => None,
         }
@@ -234,6 +235,7 @@ impl MaybeRequest for AlgoMessage {
         match self {
             AlgoMessage::PreviewAlgoResponse(uuid, _)
             | AlgoMessage::GetAlgoStatusResponse(uuid, _)
+            | AlgoMessage::GetAlgoOrderResponse(uuid, _)
             | AlgoMessage::GetAlgoLogResponse(uuid, _) => Some(*uuid),
             _ => None,
         }
