@@ -91,6 +91,14 @@ pub struct Config {
 
 impl Config {
     pub fn default_path() -> Result<PathBuf> {
+        if let Some(path) = std::env::var_os("ARCHITECT_CFG") {
+            let cfg_path = PathBuf::from(path);
+            if cfg_path.is_file() {
+                return Ok(cfg_path);
+            } else {
+                log::error!("env var path was not a file, using default");
+            }
+        }
         match dirs::config_dir() {
             None => bail!("no default config dir could be found"),
             Some(mut path) => {
