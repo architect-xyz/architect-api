@@ -59,6 +59,7 @@ pub enum OrderSource {
     Algo,
     External,
     CLI,
+    Telegram,
     #[serde(other)]
     #[cfg_attr(feature = "netidx", pack(other))]
     Other,
