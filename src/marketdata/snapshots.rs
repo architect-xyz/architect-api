@@ -5,7 +5,7 @@ use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
 pub struct MarketSnapshot {
     pub market: MarketId,
     pub snapshot_ts: DateTime<Utc>,
@@ -18,7 +18,7 @@ pub struct MarketSnapshot {
     pub volume_24h: Option<Decimal>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
 pub struct OptionsMarketSnapshot {
     pub market: MarketId,
     pub underlying: ProductId,
