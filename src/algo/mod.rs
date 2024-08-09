@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use uuid::Uuid;
 
+pub mod chaser;
 pub mod generic_container;
 pub mod mm;
 pub mod pov;
@@ -77,6 +78,7 @@ pub enum AlgoKind {
     SmartOrderRouter,
     Twap,
     Spread,
+    Chaser,
 }
 
 // CR-someday alee: use something more akin to the validator crate

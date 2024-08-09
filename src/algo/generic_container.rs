@@ -47,6 +47,7 @@ pub enum ChildAlgoOrderflow {
     ChildMarketMakerOrder(mm::MMAlgoOrder),
     ChildPovOrder(pov::PovAlgoOrder),
     ChildAlgoControl(AlgoControl),
+    ChildChaserOrder(chaser::ChaserOrder),
 }
 
 macro_rules! time {

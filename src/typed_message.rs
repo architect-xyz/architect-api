@@ -48,6 +48,7 @@ use serde::{Deserialize, Serialize};
 #[transitive(Orderflow <-> Oms)]
 #[transitive(Orderflow <- Algo)]
 #[transitive(Algo <-> TwapAlgo <- Orderflow)]
+#[transitive(Algo <-> ChaserAlgo <- Orderflow)]
 #[transitive(Algo <-> SmartOrderRouterAlgo)]
 #[transitive(Algo <-> MarketMakerAlgo <- Orderflow)]
 #[transitive(Algo <-> PovAlgo <- Orderflow)]
@@ -81,6 +82,7 @@ pub enum TypedMessage {
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
     #[pack(tag(202))] MarketMakerAlgo(algo::mm::MMAlgoMessage),
     #[pack(tag(203))] PovAlgo(algo::pov::PovAlgoMessage),
+    #[pack(tag(204))] ChaserAlgo(algo::chaser::ChaserAlgoMessage),
 }
 
 impl TypedMessage {
