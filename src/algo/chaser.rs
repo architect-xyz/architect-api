@@ -36,6 +36,7 @@ impl Into<AlgoOrder> for &ChaserOrder {
             account: self.account,
             algo: AlgoKind::Chaser,
             parent_order_id: self.parent_order_id,
+            markets: Arc::new(vec![self.market]),
         }
     }
 }
