@@ -38,6 +38,7 @@ impl Into<AlgoOrder> for &PovAlgoOrder {
             account: self.account,
             algo: AlgoKind::Pov,
             parent_order_id: self.parent_order_id,
+            markets: Arc::new(vec![self.market]),
         }
     }
 }

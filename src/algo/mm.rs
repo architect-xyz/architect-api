@@ -64,6 +64,7 @@ impl Into<AlgoOrder> for &MMAlgoOrder {
             account: self.account,
             algo,
             parent_order_id: self.parent_order_id,
+            markets: Arc::new(vec![self.market]),
         }
     }
 }

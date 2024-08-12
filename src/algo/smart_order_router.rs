@@ -37,6 +37,7 @@ impl Into<AlgoOrder> for &SmartOrderRouterOrder {
             account: None,
             algo: AlgoKind::SmartOrderRouter,
             parent_order_id: self.parent_order_id,
+            markets: self.markets.clone(),
         }
     }
 }

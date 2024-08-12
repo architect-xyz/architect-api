@@ -1,6 +1,9 @@
 #![cfg(feature = "netidx")]
 
-use crate::{orderflow::*, utils::messaging::MaybeRequest, AccountId, OrderId, UserId};
+use crate::{
+    orderflow::*, symbology::MarketId, utils::messaging::MaybeRequest, AccountId,
+    OrderId, UserId,
+};
 use anyhow::Result;
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
@@ -58,7 +61,7 @@ impl TryInto<OrderflowMessage> for &AlgoMessage {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct AlgoOrder {
     pub order_id: OrderId,
@@ -66,6 +69,7 @@ pub struct AlgoOrder {
     pub account: Option<AccountId>,
     pub algo: AlgoKind,
     pub parent_order_id: Option<OrderId>,
+    pub markets: Arc<Vec<MarketId>>,
 }
 
 #[derive(
@@ -200,7 +204,7 @@ pub struct AlgoPreview {
 
 impl Into<AlgoOrder> for &AlgoOrder {
     fn into(self) -> AlgoOrder {
-        *self
+        self.clone()
     }
 }
 

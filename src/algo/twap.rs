@@ -36,6 +36,7 @@ impl Into<AlgoOrder> for &TwapOrder {
             account: self.account,
             algo: AlgoKind::Twap,
             parent_order_id: self.parent_order_id,
+            markets: Arc::new(vec![self.market]),
         }
     }
 }
