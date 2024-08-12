@@ -200,6 +200,8 @@ pub trait NormalizedMarketInfo {
     /// Return if the market is delisted
     fn is_delisted(&self) -> bool;
 
+    // CR alee: these should maybe be more marketdata-like
+    // esp. for exchanges where it's calculated live and not daily
     fn initial_margin(&self) -> Option<Decimal> {
         return None;
     }
