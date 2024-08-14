@@ -104,6 +104,15 @@ impl Validate for MMAlgoOrder {
         {
             bail!("fill_lockout must be between 0.5 seconds and 300 seconds");
         }
+        match self.hedge_market {
+            Some(hedge_market) => {
+                if hedge_market.hedge_frac.is_sign_negative() {
+                    bail!("hedge_frac must be non-negative");
+                }
+            }
+            None => {}
+        }
+
         Ok(())
     }
 }
@@ -116,6 +125,13 @@ pub struct MMAlgoStatus {
     pub hedge_position: Decimal,
     pub sides: DirPair<Side>,
     pub kind: MMAlgoKind,
+    // CR arao: Remove these defaults once 2024-09 rolls around and old versions of architect are gone
+    #[serde(default)]
+    #[pack(default)]
+    pub miss_ratio: Decimal,
+    #[serde(default)]
+    #[pack(default)]
+    pub effective_spread: Option<Decimal>,
 }
 
 impl TryInto<AlgoStatus> for &MMAlgoStatus {
