@@ -447,13 +447,14 @@ pub enum AccountProxySelector {
     AllAccountsForFCMs { clearing_venues: Vec<String> },
 }
 
-#[derive(Debug, postgres_types::FromSql)]
+#[derive(Debug, postgres_types::FromSql, sqlx::Type)]
 #[postgres(name = "Selector")]
+#[sqlx(type_name = "Selector", rename_all = "UPPERCASE")]
 pub enum AccountProxySelectorType {
     #[postgres(name = "ACCOUNTS")]
-    Account,
+    Accounts,
     #[postgres(name = "TRADERS")]
-    Trader,
+    Traders,
     #[postgres(name = "ALL")]
     All,
     #[postgres(name = "FCM")]

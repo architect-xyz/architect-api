@@ -18,6 +18,7 @@ use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use sqlx::Postgres;
 use std::{error::Error, fmt::Display, str::FromStr};
 use uuid::Uuid;
 
@@ -49,6 +50,14 @@ impl FillId {
 
     pub fn nil() -> Self {
         FillId(Uuid::nil())
+    }
+}
+
+impl<'r> sqlx::Decode<'r, Postgres> for FillId {
+    fn decode(
+        value: <Postgres as sqlx::Database>::ValueRef<'r>,
+    ) -> Result<Self, sqlx::error::BoxDynError> {
+        Ok(FillId(Uuid::decode(value)?))
     }
 }
 

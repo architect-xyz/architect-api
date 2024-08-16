@@ -68,6 +68,30 @@ macro_rules! uuid_val {
             }
         }
 
+        impl<'q> sqlx::Encode<'q, sqlx::Postgres> for $name {
+            fn encode_by_ref(
+                &self,
+                buf: &mut <sqlx::Postgres as sqlx::Database>::ArgumentBuffer<'q>,
+            ) -> Result<sqlx::encode::IsNull, sqlx::error::BoxDynError> {
+                self.0.encode(buf)
+            }
+        }
+
+        impl<'r> sqlx::Decode<'r, sqlx::Postgres> for $name {
+            fn decode(
+                value: <sqlx::Postgres as sqlx::Database>::ValueRef<'r>,
+            ) -> Result<Self, sqlx::error::BoxDynError> {
+                let value: String = sqlx::Decode::<'r, sqlx::Postgres>::decode(value)?;
+                Ok($name::from(&value))
+            }
+        }
+
+        impl sqlx::Type<sqlx::Postgres> for $name {
+            fn type_info() -> <sqlx::Postgres as sqlx::Database>::TypeInfo {
+                Uuid::type_info()
+            }
+        }
+
         #[cfg(feature = "juniper")]
         impl $name {
             fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
