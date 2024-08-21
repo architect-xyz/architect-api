@@ -11,6 +11,7 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+use strum_macros::EnumIter;
 use uuid::Uuid;
 
 pub mod chaser;
@@ -73,7 +74,17 @@ pub struct AlgoOrder {
 }
 
 #[derive(
-    Debug, Clone, Copy, Hash, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq,
+    Debug,
+    Clone,
+    Copy,
+    Hash,
+    Pack,
+    FromValue,
+    Serialize,
+    Deserialize,
+    PartialEq,
+    Eq,
+    EnumIter,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum AlgoKind {
