@@ -61,6 +61,7 @@ pub enum InstrumentType {
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum ProductKind {
+    // CR alee: deprecate in favor of Coin, Token without params
     Coin {
         token_info: BTreeMap<VenueId, TokenInfo>,
     },
@@ -93,7 +94,24 @@ pub enum ProductKind {
     },
     Index,
     Commodity,
+    /// A group of event contracts or event contract groups.
+    /// For example, FED-DECISION-2024-SEP-CUT-25-YES and
+    /// its pair FED-DECISION-2024-SEP-CUT-25-NO would be the
+    /// EventContract's, whose parent EventGroup would be
+    /// FED-DECISION-2024-SEP-CUT-25.
+    ///
+    /// In turn, FED-DECISION-2024-SEP-CUT-25, along with
+    /// EventGroups FED-DECISION-2024-SEP-CUT-ABOVE-25 and
+    /// FED-DECISION-2024-SEP-HIKE-0 would have the ultimate
+    /// parent EventGroup of FED-DECISION-2024-SEP.
+    EventGroup {
+        event_group: Option<ProductId>,
+    },
+    EventContract {
+        event_group: Option<ProductId>,
+    },
     #[cfg_attr(feature = "netidx", pack(other))]
+    #[serde(other)]
     Unknown,
 }
 

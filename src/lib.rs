@@ -4,6 +4,7 @@ pub mod auth;
 pub mod channel_control;
 pub mod config;
 pub mod cpty;
+pub mod external;
 pub mod folio;
 pub mod marketdata;
 pub mod misc;

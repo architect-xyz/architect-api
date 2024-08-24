@@ -87,6 +87,14 @@ pub struct Config {
     /// Sync with a remote core at the given base path
     #[serde(default)]
     pub rsync: Option<Path>,
+    /// Don't connect to any symbology--overrides all but [external_marketdata]
+    #[serde(default)]
+    pub no_symbology: bool,
+    // TODO: CptyIdFromStr should just be more ergonomic...parse either id or name
+    // and write back name or id whichever is at hand
+    /// External plugin marketdata; cpty name => connection string
+    #[serde(default)]
+    pub external_marketdata: HashMap<String, String>,
 }
 
 impl Config {

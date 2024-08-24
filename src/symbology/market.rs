@@ -162,6 +162,7 @@ pub enum MarketInfo {
 #[rustfmt::skip]
 pub enum MarketInfo {
     #[pack(tag(  0))] Test(TestMarketInfo),
+    #[pack(tag(  1))] External(ExternalMarketInfo),
     #[pack(tag(106))] B2C2(cpty::b2c2::B2C2MarketInfo),
     #[pack(tag(114))] Binance(cpty::binance::BinanceMarketInfo),
     #[pack(tag(116))] Bybit(cpty::bybit::BybitMarketInfo),
@@ -203,11 +204,46 @@ pub trait NormalizedMarketInfo {
     // CR alee: these should maybe be more marketdata-like
     // esp. for exchanges where it's calculated live and not daily
     fn initial_margin(&self) -> Option<Decimal> {
-        return None;
+        None
     }
 
     fn maintenance_margin(&self) -> Option<Decimal> {
-        return None;
+        None
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+pub struct ExternalMarketInfo {
+    pub tick_size: Decimal,
+    pub step_size: Decimal,
+    pub min_order_quantity: Decimal,
+    pub min_order_quantity_unit: MinOrderQuantityUnit,
+    pub is_delisted: bool,
+}
+
+impl std::fmt::Display for ExternalMarketInfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap())?;
+        Ok(())
+    }
+}
+
+impl NormalizedMarketInfo for ExternalMarketInfo {
+    fn tick_size(&self) -> Decimal {
+        self.tick_size
+    }
+
+    fn step_size(&self) -> Decimal {
+        self.step_size
+    }
+
+    fn min_order_quantity(&self) -> Amount<Decimal, MinOrderQuantityUnit> {
+        Amount::new(self.min_order_quantity, self.min_order_quantity_unit)
+    }
+
+    fn is_delisted(&self) -> bool {
+        self.is_delisted
     }
 }
 
