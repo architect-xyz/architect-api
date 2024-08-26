@@ -241,6 +241,7 @@ impl DeribitExternalOrderAck {
             time_in_force: self.time_in_force,
             quote_id: None,
             source: OrderSource::External,
+            parent_order: None,
         };
         Ok(DeribitOrder { order })
     }

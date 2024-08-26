@@ -35,6 +35,8 @@ pub struct Order {
     #[builder(setter(strip_option), default)]
     pub quote_id: Option<Str>,
     pub source: OrderSource,
+    #[builder(setter(strip_option), default)]
+    pub parent_order: Option<ParentOrder>,
 }
 
 #[cfg(feature = "netidx")]
@@ -65,6 +67,29 @@ pub enum OrderSource {
     #[serde(other)]
     #[cfg_attr(feature = "netidx", pack(other))]
     Other,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[repr(u8)]
+pub enum ParentOrderKind {
+    Algo,
+    Order,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+pub struct ParentOrder {
+    pub kind: ParentOrderKind,
+    pub id: OrderId,
+}
+
+impl ParentOrder {
+    pub fn new(kind: ParentOrderKind, id: OrderId) -> Self {
+        Self { kind, id }
+    }
 }
 
 #[cfg(feature = "netidx")]
