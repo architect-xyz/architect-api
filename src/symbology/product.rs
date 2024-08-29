@@ -105,14 +105,20 @@ pub enum ProductKind {
     /// FED-DECISION-2024-SEP-HIKE-0 would have the ultimate
     /// parent EventGroup of FED-DECISION-2024-SEP.
     EventGroup {
-        event_group: Option<ProductId>,
+        event_contract_groups: Vec<ProductId>,
     },
-    EventContract {
-        event_group: Option<ProductId>,
-    },
+    EventContractGroup(EventContractGroupKind),
+    EventContract,
     #[cfg_attr(feature = "netidx", pack(other))]
     #[serde(other)]
     Unknown,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+pub enum EventContractGroupKind {
+    Single { yes: ProductId, yes_alias: Option<Str> },
+    Dual { yes: ProductId, yes_alias: Option<Str>, no: ProductId, no_alias: Option<Str> },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
