@@ -20,7 +20,7 @@ pub use cpty::CptyId;
 pub use market::{
     ExchangeMarketKind, Market, MarketId, MarketInfo, MarketKind, PoolMarketKind,
 };
-pub use product::{EventContractGroupKind, Product, ProductId, ProductKind};
+pub use product::{EventContracts, Product, ProductId, ProductKind};
 #[cfg(feature = "netidx")]
 pub use protocol::{SymbologyUpdate, SymbologyUpdateKind};
 pub use route::{Route, RouteId};

@@ -94,21 +94,50 @@ pub enum ProductKind {
     },
     Index,
     Commodity,
-    /// A group of event contracts or event contract groups.
-    /// For example, FED-DECISION-2024-SEP-CUT-25-YES and
-    /// its pair FED-DECISION-2024-SEP-CUT-25-NO would be the
-    /// EventContract's, whose parent EventGroup would be
-    /// FED-DECISION-2024-SEP-CUT-25.
+    /// Event contracts are products akin to binary options
+    /// which settle to an outcome of a future event.
     ///
-    /// In turn, FED-DECISION-2024-SEP-CUT-25, along with
-    /// EventGroups FED-DECISION-2024-SEP-CUT-ABOVE-25 and
-    /// FED-DECISION-2024-SEP-HIKE-0 would have the ultimate
-    /// parent EventGroup of FED-DECISION-2024-SEP.
-    EventGroup {
-        event_contract_groups: Vec<ProductId>,
+    /// Specific tradable event contracts are represented by
+    /// the EventContract variant, e.g. FED-2024-SEP-CUT-25-YES
+    /// and/or FED-2024-SEP-CUT-25-NO. for the YES
+    /// and NO contracts of the "Fed to cut 25 bps" outcome.
+    /// EventContract's are grouped into EventOutcome's,
+    /// which pair the YES and NO contracts of an outcome
+    /// together.  There are venues like KALSHI which have
+    /// only one YES contract per outcome (the NO contract
+    /// is implicit via short-selling the YES contract).
+    ///
+    /// EventOutcomes are grouped into Events, e.g.
+    /// FED-2024-SEP is an Event with the following mutually
+    /// exclusive outcomes:
+    ///
+    /// - FED-2024-SEP-HIKE
+    /// - FED-2024-SEP-CUT-0
+    /// - FED-2024-SEP-CUT-25
+    /// - FED-2024-SEP-CUT-ABOVE-25
+    ///
+    /// Events _may_ be grouped into EventSeries, e.g. all
+    /// FED events belong to the same series of events.
+    ///
+    /// The grouping of EventContracts into outcomes,
+    /// events, and event series are indicative and mostly
+    /// for display purposes, and don't necessarily imply
+    /// anything about the settlement of individual
+    /// event contracts.
+    EventSeries,
+    Event {
+        series: Option<ProductId>,
+        outcomes: Vec<ProductId>,
+        mutually_exclusive: Option<bool>,
+        expiration: Option<DateTime<Utc>>,
     },
-    EventContractGroup(EventContractGroupKind),
-    EventContract,
+    EventOutcome {
+        display_order: Option<u32>,
+        contracts: EventContracts,
+    },
+    EventContract {
+        expiration: Option<DateTime<Utc>>,
+    },
     #[cfg_attr(feature = "netidx", pack(other))]
     #[serde(other)]
     Unknown,
@@ -116,7 +145,7 @@ pub enum ProductKind {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
-pub enum EventContractGroupKind {
+pub enum EventContracts {
     Single { yes: ProductId, yes_alias: Option<Str> },
     Dual { yes: ProductId, yes_alias: Option<Str>, no: ProductId, no_alias: Option<Str> },
 }
