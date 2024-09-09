@@ -1,50 +1,39 @@
-use anyhow::{bail, Result};
-use base64::Engine;
+use anyhow::Result;
 use bytes::BytesMut;
-use compact_str::CompactString;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::{error::Error, fmt, str::FromStr};
+use uuid::Uuid;
 
 /// System-unique, persistent order identifiers
 #[derive(
-    Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, JsonSchema,
+    Debug,
+    Clone,
+    Copy,
+    Hash,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Serialize,
+    Deserialize,
+    JsonSchema,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", pack(unwrapped))]
-pub struct OrderId(pub(crate) u64);
+pub struct OrderId {
+    pub seqid: Uuid,
+    pub seqno: u64,
+}
 
 impl OrderId {
-    /// Can use this for debugging, tests; not recommended for
-    /// production, ask for an allocation from OrderAuthority
-    /// component and use an OrderIdAllocator instead.
-    pub fn new_unchecked(id: u64) -> Self {
-        Self(id)
-    }
-
-    pub fn to_u64(&self) -> u64 {
-        self.0
-    }
-
-    pub fn encode_base64(&self) -> Result<CompactString> {
-        let base64 = base64::engine::general_purpose::STANDARD;
-        let bytes = self.0.to_be_bytes();
-        let mut output_buf: [u8; 12] = [0; 12];
-        let size = base64.encode_slice(&bytes, &mut output_buf)?;
-        let cs = CompactString::from_utf8_lossy(&output_buf[0..size]);
-        Ok(cs)
-    }
-
-    pub fn decode_base64(input: impl AsRef<[u8]>) -> Result<Self> {
-        let bytes = base64::engine::general_purpose::STANDARD.decode(input)?;
-        if bytes.len() != 8 {
-            bail!("incorrect number of bytes to decode OrderId from base64");
-        }
-        let oid = u64::from_be_bytes(bytes.as_slice().try_into().unwrap()); // can't fail
-        Ok(Self(oid))
+    /// For use in tests and non-effecting operations only!
+    /// For production use, use an OrderIdAllocator from the `sdk` crate.
+    pub fn nil(seqno: u64) -> Self {
+        Self { seqid: Uuid::nil(), seqno }
     }
 }
 
@@ -52,19 +41,24 @@ impl FromStr for OrderId {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self(u64::from_str(s)?))
-    }
-}
-
-impl fmt::Debug for OrderId {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0)
+        match s.split_once(':') {
+            Some((seqid_s, seqno_s)) => {
+                let seqid = Uuid::from_str(seqid_s)?;
+                let seqno = u64::from_str(seqno_s)?;
+                Ok(Self { seqid, seqno })
+            }
+            None => Ok(Self { seqid: Uuid::nil(), seqno: u64::from_str(s)? }),
+        }
     }
 }
 
 impl fmt::Display for OrderId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0)
+        if self.seqid.is_nil() {
+            write!(f, "{}", self.seqno)
+        } else {
+            write!(f, "{}:{}", self.seqid, self.seqno)
+        }
     }
 }
 
@@ -72,7 +66,7 @@ impl fmt::Display for OrderId {
 impl rusqlite::ToSql for OrderId {
     fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
         use rusqlite::types::{ToSqlOutput, Value};
-        let val = Value::Integer(self.0 as i64);
+        let val = Value::Text(self.to_string());
         Ok(ToSqlOutput::Owned(val))
     }
 }
@@ -86,18 +80,55 @@ impl tokio_postgres::types::ToSql for OrderId {
         out: &mut BytesMut,
     ) -> std::result::Result<tokio_postgres::types::IsNull, Box<dyn Error + Sync + Send>>
     {
-        (self.0 as i64).to_sql(ty, out)
+        self.to_string().to_sql(ty, out)
     }
 
     fn accepts(ty: &tokio_postgres::types::Type) -> bool {
-        i64::accepts(ty)
+        String::accepts(ty)
+    }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'a, DB: sqlx::Database> sqlx::Encode<'a, DB> for OrderId
+where
+    String: sqlx::Encode<'a, DB>,
+{
+    fn encode_by_ref(
+        &self,
+        buf: &mut <DB as sqlx::Database>::ArgumentBuffer<'a>,
+    ) -> Result<sqlx::encode::IsNull, sqlx::error::BoxDynError> {
+        let value = self.to_string();
+        <String as sqlx::Encode<DB>>::encode(value, buf)
+    }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'a, DB: sqlx::Database> sqlx::Decode<'a, DB> for OrderId
+where
+    &'a str: sqlx::Decode<'a, DB>,
+{
+    fn decode(
+        value: <DB as sqlx::Database>::ValueRef<'a>,
+    ) -> Result<Self, sqlx::error::BoxDynError> {
+        let value = <&str as sqlx::Decode<DB>>::decode(value)?;
+        Ok(value.parse()?)
+    }
+}
+
+#[cfg(feature = "sqlx")]
+impl<DB: sqlx::Database> sqlx::Type<DB> for OrderId
+where
+    for<'a> &'a str: sqlx::Type<DB>,
+{
+    fn type_info() -> <DB as sqlx::Database>::TypeInfo {
+        <&str as sqlx::Type<DB>>::type_info()
     }
 }
 
 #[cfg(feature = "juniper")]
 impl OrderId {
     fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
-        juniper::Value::scalar(self.0.to_string())
+        juniper::Value::scalar(self.to_string())
     }
 
     fn from_input<S>(v: &juniper::InputValue<S>) -> Result<Self, String>
@@ -105,9 +136,8 @@ impl OrderId {
         S: juniper::ScalarValue,
     {
         v.as_string_value()
-            .map(|s| u64::from_str(s))
+            .map(|s| Self::from_str(s))
             .ok_or_else(|| format!("Expected `String`, found: {v}"))?
-            .map(|oid| Self(oid))
             .map_err(|e| e.to_string())
     }
 

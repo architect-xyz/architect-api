@@ -75,7 +75,6 @@ pub enum CoinbaseMessage {
     CancelAll(CancelAll),
     Out(Out),
     Folio(FolioMessage),
-    OrderIdAllocation(OrderIdAllocation),
     ExchangeOrderUpdate(CoinbaseExchangeOrderUpdate),
     ExchangeAck(OrderId, Uuid),
     ExchangeFills(Vec<CoinbaseFill>),
@@ -99,7 +98,6 @@ impl TryInto<OrderflowMessage> for &CoinbaseMessage {
             CoinbaseMessage::Fill(f) => Ok(OrderflowMessage::Fill(**f)),
             CoinbaseMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             CoinbaseMessage::Folio(..)
-            | CoinbaseMessage::OrderIdAllocation(..)
             | CoinbaseMessage::ExchangeOrderUpdate(..)
             | CoinbaseMessage::ExchangeAck(..)
             | CoinbaseMessage::ExchangeFills(..)

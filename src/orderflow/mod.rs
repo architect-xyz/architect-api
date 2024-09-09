@@ -11,13 +11,10 @@ use serde::{Deserialize, Serialize};
 pub mod fill;
 pub mod order;
 pub mod order_id;
-pub mod order_id_authority;
 
 pub use fill::*;
 pub use order::*;
 pub use order_id::*;
-#[cfg(feature = "netidx")]
-pub use order_id_authority::*;
 
 #[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]

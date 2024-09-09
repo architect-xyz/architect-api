@@ -56,7 +56,6 @@ use serde::{Deserialize, Serialize};
 pub enum TypedMessage {
     #[pack(tag(  0))] SystemControl(system_control::SystemControlMessage),
     #[pack(tag(  1))] Symbology(symbology::SymbologyUpdate),
-    #[pack(tag(  2))] OrderAuthority(orderflow::OrderAuthorityMessage),
     #[pack(tag(  3))] Orderflow(orderflow::OrderflowMessage),
     #[pack(tag(  4))] Oms(oms::OmsMessage),
     #[pack(tag(  5))] Algo(algo::AlgoMessage),
@@ -173,7 +172,7 @@ mod test {
         use crate::orderflow::OrderflowMessage;
         let m = TypedMessage::Orderflow(OrderflowMessage::Order(
             OrderBuilder::new(
-                OrderId::new_unchecked(123),
+                OrderId::nil(123),
                 OrderSource::API,
                 MarketId::try_from("BTC Crypto/USD*COINBASE/DIRECT")?,
             )
@@ -190,9 +189,8 @@ mod test {
     #[test]
     fn test_try_into_any_variant_3() -> Result<()> {
         use crate::{algo::twap::TwapMessage, cpty::b2c2::B2C2Message};
-        let src = TypedMessage::B2C2Cpty(B2C2Message::Out(Out {
-            order_id: OrderId::new_unchecked(123),
-        }));
+        let src =
+            TypedMessage::B2C2Cpty(B2C2Message::Out(Out { order_id: OrderId::nil(123) }));
         let dst: std::result::Result<MaybeSplit<TypedMessage, TwapMessage>, _> =
             src.try_into();
         assert_eq!(dst.is_ok(), true);

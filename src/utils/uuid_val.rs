@@ -68,6 +68,7 @@ macro_rules! uuid_val {
             }
         }
 
+        #[cfg(feature = "sqlx")]
         impl<'q> sqlx::Encode<'q, sqlx::Postgres> for $name {
             fn encode_by_ref(
                 &self,
@@ -77,6 +78,7 @@ macro_rules! uuid_val {
             }
         }
 
+        #[cfg(feature = "sqlx")]
         impl<'r> sqlx::Decode<'r, sqlx::Postgres> for $name {
             fn decode(
                 value: <sqlx::Postgres as sqlx::Database>::ValueRef<'r>,
@@ -86,6 +88,7 @@ macro_rules! uuid_val {
             }
         }
 
+        #[cfg(feature = "sqlx")]
         impl sqlx::Type<sqlx::Postgres> for $name {
             fn type_info() -> <sqlx::Postgres as sqlx::Database>::TypeInfo {
                 Uuid::type_info()

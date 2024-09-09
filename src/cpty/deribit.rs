@@ -3,8 +3,8 @@
 use crate::{
     folio::FolioMessage,
     orderflow::{
-        self, AberrantFill, Ack, Cancel, Fill, Order, OrderIdAllocation, OrderSource,
-        OrderStateFlags, OrderType, OrderflowMessage, Out, Reject, TimeInForce,
+        self, AberrantFill, Ack, Cancel, Fill, Order, OrderSource, OrderStateFlags,
+        OrderType, OrderflowMessage, Out, Reject, TimeInForce,
     },
     symbology::{market::NormalizedMarketInfo, CptyId, MarketId},
     Address, Dir, HalfOpenRange, OrderId, Str, UserId,
@@ -55,7 +55,6 @@ pub enum DeribitMessage {
     Fill(DeribitFill),
     Out(Out),
     Folio(FolioMessage),
-    OrderIdAllocation(OrderIdAllocation),
     ExchangeOrderUpdate(DeribitExternalOrderAck),
     ExchangeAck(OrderId, DeribitExchangeId),
     ExchangeFill(DeribitExternalFill),
@@ -126,7 +125,6 @@ impl TryInto<OrderflowMessage> for &DeribitMessage {
             | DeribitMessage::BalanceRequest(..)
             | DeribitMessage::TradeQueryRequest(..)
             | DeribitMessage::ExchangeOrderUpdate(..)
-            | DeribitMessage::OrderIdAllocation(..)
             | DeribitMessage::ExchangeAck(..)
             | DeribitMessage::ExchangeFill(..)
             | DeribitMessage::ExchangeOrderOut(..) => Err(()),
