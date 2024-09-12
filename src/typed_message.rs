@@ -35,6 +35,8 @@ use serde::{Deserialize, Serialize};
 #[transitive(FalconXCpty <-> Folio)]
 #[transitive(FalconXCpty <-> Orderflow)]
 #[transitive(GalaxyCpty <-> Orderflow)]
+#[transitive(KalshiCpty <-> Folio)]
+#[transitive(KalshiCpty <-> Orderflow)]
 #[transitive(KrakenCpty <-> Folio)]
 #[transitive(KrakenCpty <-> Orderflow)]
 #[transitive(OkxCpty <-> Folio)]
@@ -77,6 +79,7 @@ pub enum TypedMessage {
     #[pack(tag(111))] BinanceCpty(cpty::binance::BinanceMessage),
     #[pack(tag(112))] CqgCpty(cpty::cqg::CqgMessage),
     #[pack(tag(113))] OkxCpty(cpty::okx::OkxMessage),
+    #[pack(tag(114))] KalshiCpty(cpty::kalshi::KalshiMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
     #[pack(tag(202))] MarketMakerAlgo(algo::mm::MMAlgoMessage),
