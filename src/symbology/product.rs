@@ -124,7 +124,9 @@ pub enum ProductKind {
     /// for display purposes, and don't necessarily imply
     /// anything about the settlement of individual
     /// event contracts.
-    EventSeries,
+    EventSeries {
+        display_name: String,
+    },
     Event {
         series: Option<ProductId>,
         outcomes: Vec<ProductId>,
@@ -134,6 +136,7 @@ pub enum ProductKind {
     EventOutcome {
         display_order: Option<u32>,
         contracts: EventContracts,
+        display_name: String,
     },
     EventContract {
         expiration: Option<DateTime<Utc>>,
