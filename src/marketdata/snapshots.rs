@@ -16,6 +16,9 @@ pub struct MarketSnapshot {
     pub high_24h: Option<Decimal>,
     pub low_24h: Option<Decimal>,
     pub volume_24h: Option<Decimal>,
+    #[serde(default)]
+    #[pack(default)]
+    pub open_interest: Option<Decimal>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
@@ -23,7 +26,6 @@ pub struct OptionsMarketSnapshot {
     pub market: MarketId,
     pub underlying: ProductId,
     pub snapshot_ts: DateTime<Utc>,
-    pub open_interest: Option<Decimal>,
     pub delta: Option<Decimal>,
     pub gamma: Option<Decimal>,
     pub theta: Option<Decimal>,

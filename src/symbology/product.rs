@@ -125,18 +125,20 @@ pub enum ProductKind {
     /// anything about the settlement of individual
     /// event contracts.
     EventSeries {
-        display_name: String,
+        display_name: Option<String>,
     },
     Event {
         series: Option<ProductId>,
         outcomes: Vec<ProductId>,
         mutually_exclusive: Option<bool>,
         expiration: Option<DateTime<Utc>>,
+        display_category: Option<String>,
+        display_name: Option<String>,
     },
     EventOutcome {
-        display_order: Option<u32>,
         contracts: EventContracts,
-        display_name: String,
+        display_order: Option<u32>,
+        display_name: Option<String>,
     },
     EventContract {
         expiration: Option<DateTime<Utc>>,
