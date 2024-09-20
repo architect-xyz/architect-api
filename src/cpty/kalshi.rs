@@ -1,18 +1,20 @@
 #![cfg(feature = "netidx")]
 
-use crate::{
-    folio::FolioMessage,
-    orderflow::{
-        AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderflowMessage, Out, Reject,
-    },
-    OrderId,
-};
+use crate::{folio::FolioMessage, orderflow::*, MaybeSecret, OrderId};
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 use std::ops::Deref;
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct KalshiCredentials {
+    /// API key UUID from Kalshi
+    pub api_key: String,
+    /// PEM encoded RSA private key from Kalshi
+    pub api_private_key: MaybeSecret<String>,
+}
 
 #[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
 pub struct KalshiOrder {
