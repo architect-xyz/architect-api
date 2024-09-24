@@ -141,6 +141,7 @@ pub enum ProductKind {
         display_name: Option<String>,
     },
     EventContract {
+        underlying: Option<ProductId>,
         expiration: Option<DateTime<Utc>>,
     },
     #[cfg_attr(feature = "netidx", pack(other))]
