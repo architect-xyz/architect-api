@@ -57,6 +57,7 @@ strum = { workspace = true }
 strum_macros = { workspace = true }
 tokio = { workspace = true }
 tokio-postgres = { workspace = true }
+tonic = { workspace = true, optional = true }
 uuid = { workspace = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }
 
@@ -64,6 +65,9 @@ zeroize = { workspace = true, features = ["zeroize_derive"] }
 criterion = { version = "0.5", features = ["html_reports"] }
 serde_yaml = { workspace = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }
+
+[build-dependencies]
+tonic-build = { workspace = true }
 
 [[bench]]
 name = "order_id_benchmark"

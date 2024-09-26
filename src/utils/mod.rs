@@ -8,6 +8,8 @@ pub mod envelope;
 #[cfg(feature = "juniper")]
 pub mod graphql_scalars;
 pub mod half_open_range;
+#[cfg(feature = "tonic")]
+pub mod json_codec;
 pub mod maybe_file;
 pub mod messaging;
 pub mod option_type;
