@@ -72,14 +72,11 @@ impl L1BookSnapshot {
     }
 
     pub fn timestamp(&self) -> Option<DateTime<Utc>> {
-        Some(
-            chrono::NaiveDateTime::from_timestamp_opt(self.timestamp, self.timestamp_ns)?
-                .and_utc(),
-        )
+        chrono::DateTime::from_timestamp(self.timestamp, self.timestamp_ns)
     }
 
     pub fn epoch(&self) -> Option<DateTime<Utc>> {
-        Some(chrono::NaiveDateTime::from_timestamp_opt(self.epoch?, 0)?.and_utc())
+        chrono::DateTime::from_timestamp(self.epoch?, 0)
     }
 }
 
