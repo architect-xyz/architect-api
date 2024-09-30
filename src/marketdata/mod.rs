@@ -174,6 +174,78 @@ pub struct CandleV1 {
     pub volume: Decimal,
     pub buy_volume: Decimal,
     pub sell_volume: Decimal,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mid_open: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mid_close: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mid_high: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mid_low: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bid_open: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bid_close: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bid_high: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bid_low: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ask_open: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ask_close: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ask_high: Option<Decimal>,
+    #[pack(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ask_low: Option<Decimal>,
+}
+
+impl CandleV1 {
+    pub fn ohlcv(
+        time: DateTime<Utc>,
+        open: Decimal,
+        high: Decimal,
+        low: Decimal,
+        close: Decimal,
+        volume: Decimal,
+        buy_volume: Decimal,
+        sell_volume: Decimal,
+    ) -> Self {
+        Self {
+            time,
+            open,
+            high,
+            low,
+            close,
+            volume,
+            buy_volume,
+            sell_volume,
+            mid_open: None,
+            mid_close: None,
+            mid_high: None,
+            mid_low: None,
+            bid_open: None,
+            bid_close: None,
+            bid_high: None,
+            bid_low: None,
+            ask_open: None,
+            ask_close: None,
+            ask_high: None,
+            ask_low: None,
+        }
+    }
 }
 
 impl TryInto<CandleV1> for Row {
@@ -189,6 +261,18 @@ impl TryInto<CandleV1> for Row {
             volume: self.try_get("volume")?,
             buy_volume: self.try_get("buy_volume")?,
             sell_volume: self.try_get("sell_volume")?,
+            mid_open: self.try_get("mid_open_price")?,
+            mid_close: self.try_get("mid_close_price")?,
+            mid_high: self.try_get("mid_high_price")?,
+            mid_low: self.try_get("mid_low_price")?,
+            bid_open: self.try_get("bid_open_price")?,
+            bid_close: self.try_get("bid_close_price")?,
+            bid_high: self.try_get("bid_high_price")?,
+            bid_low: self.try_get("bid_low_price")?,
+            ask_open: self.try_get("ask_open_price")?,
+            ask_close: self.try_get("ask_close_price")?,
+            ask_high: self.try_get("ask_high_price")?,
+            ask_low: self.try_get("ask_low_price")?,
         })
     }
 }
