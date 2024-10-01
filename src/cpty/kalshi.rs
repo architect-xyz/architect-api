@@ -1,10 +1,6 @@
 #![cfg(feature = "netidx")]
-use rust_decimal_macros::dec;
-use crate::{
-    MaybeSecret, folio::FolioMessage, orderflow::{
-        AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderflowMessage, Out, Reject,
-    }, symbology::market::NormalizedMarketInfo, OrderId
-};
+
+use crate::{folio::FolioMessage, orderflow::*, MaybeSecret, OrderId};
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
@@ -24,60 +20,6 @@ pub struct KalshiCredentials {
 pub struct KalshiOrder {
     #[serde(flatten)]
     pub order: Order,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
-pub struct KalshiMarketInfo {
-    pub is_delisted: bool,
-    pub risk_limit_cents: i64,
-    pub can_close_early: bool,
-    pub series_ticker: String,
-    pub strike_type: KalshiStrikeType,
-    pub cap_strike: Option<Decimal>,
-    pub floor_strike: Option<Decimal>,
-    pub series: Option<KalshiSeries>,
-}
-
-
-impl NormalizedMarketInfo for KalshiMarketInfo {
-    fn tick_size(&self) -> Decimal {
-        dec!(0.01)
-    }
-
-    fn step_size(&self) -> Decimal {
-        dec!(0.01)
-    }
-
-    fn is_delisted(&self) -> bool {
-        self.is_delisted
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
-pub struct KalshiSeries {
-    pub category: String,
-    pub contract_url: String,
-    pub frequency: String,
-    pub settlement_source: Vec<KalshiSettlementSource>,
-    pub tags: Vec<String>,
-    pub ticker: String,
-    pub title: String,
-}
-
-
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
-pub struct KalshiSettlementSource {
-    pub name: String,
-    pub url: String,
-}
-
-
-
-impl std::fmt::Display for KalshiMarketInfo{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", serde_json::to_string_pretty(self).unwrap())?;
-        Ok(())
-    }
 }
 
 impl Deref for KalshiOrder {
@@ -103,17 +45,6 @@ pub enum KalshiOrderStatus {
     Executed,
     Resting,
     Pending,
-}
-
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
-pub enum KalshiStrikeType {
-    Greater,
-    GreaterOrEqual,
-    Less,
-    LessOrEqual,
-    Between,
-    Functional,
-    Custom
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize)]
