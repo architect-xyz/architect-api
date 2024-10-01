@@ -177,7 +177,6 @@ pub enum MarketInfo {
     #[pack(tag(101))] Deribit(cpty::deribit::DeribitMarketInfo),
     #[pack(tag(109))] FalconX(cpty::falconx::FalconXMarketInfo),
     #[pack(tag(108))] Galaxy(cpty::galaxy::GalaxyMarketInfo),
-    #[pack(tag(117))] Kalshi(cpty::kalshi::KalshiMarketInfo),
     #[pack(tag(102))] Kraken(cpty::kraken::KrakenMarketInfo),
     #[pack(tag(103))] Okx(cpty::okx::OkxMarketInfo),
     #[pack(tag(107))] Wintermute(cpty::wintermute::WintermuteMarketInfo),
