@@ -1,13 +1,18 @@
 use crate::symbology::MarketId;
 use chrono::{DateTime, Utc};
+use derive::grpc;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "l1_book_snapshot", response = "L1BookSnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct L1BookSnapshotRequest {
     pub market_id: MarketId,
 }
 
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "l1_book_snapshots", response = "L1BookSnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct L1BookSnapshotsRequest {
     pub market_ids: Vec<MarketId>,
@@ -15,6 +20,13 @@ pub struct L1BookSnapshotsRequest {
 
 pub type L1BookSnapshots = Vec<L1BookSnapshot>;
 
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_l1_book_snapshots",
+    response = "L1BookSnapshot",
+    server_streaming
+)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SubscribeL1BookSnapshotsRequest {
     /// If None, subscribe from all symbols on the feed
@@ -101,9 +113,4 @@ pub struct L3BookSnapshot {
     pub seqno: u64,
     pub bids: Vec<(u64, Decimal, Decimal)>,
     pub asks: Vec<(u64, Decimal, Decimal)>,
-}
-
-#[cfg(feature = "tonic")]
-pub mod json_service {
-    include!(concat!(env!("OUT_DIR"), "/json.marketdata.Marketdata.rs"));
 }

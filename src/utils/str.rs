@@ -21,7 +21,13 @@ use parking_lot::Mutex;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::{
-    borrow::Borrow, collections::HashSet, fmt, hash::Hash, mem, ops::Deref, slice, str,
+    borrow::{Borrow, Cow},
+    collections::HashSet,
+    fmt,
+    hash::Hash,
+    mem,
+    ops::Deref,
+    slice, str,
 };
 
 const TAG_MASK: usize = 0x8000_0000_0000_0000;
@@ -110,7 +116,7 @@ struct AsStr(&'static str);
 /// global lock must be taken to hashcons the string and, if it isn't
 /// already present, insert it in the packed allocation.
 #[derive(Clone, Copy, Deserialize, JsonSchema)]
-#[serde(try_from = "&str")]
+#[serde(try_from = "Cow<str>")]
 #[serde(into = "&str")]
 #[repr(transparent)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
@@ -341,6 +347,17 @@ impl TryFrom<&str> for Str {
                     }
                 }
             }
+        }
+    }
+}
+
+impl TryFrom<Cow<'_, str>> for Str {
+    type Error = anyhow::Error;
+
+    fn try_from(s: Cow<str>) -> Result<Self, Self::Error> {
+        match s {
+            Cow::Borrowed(s) => Str::try_from(s),
+            Cow::Owned(s) => Str::try_from(s.as_str()),
         }
     }
 }

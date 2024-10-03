@@ -6,6 +6,8 @@ pub mod config;
 pub mod cpty;
 pub mod external;
 pub mod folio;
+#[cfg(feature = "tonic")]
+pub mod grpc;
 pub mod marketdata;
 pub mod misc;
 pub mod oms;

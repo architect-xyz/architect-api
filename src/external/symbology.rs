@@ -1,6 +1,16 @@
 pub use crate::symbology::*;
 use chrono::{DateTime, Utc};
+use derive::grpc;
 use serde::{Deserialize, Serialize};
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Symbology",
+    name = "symbology_snapshot",
+    response = "SymbologySnapshot"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SymbologySnapshotRequest {}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SymbologySnapshot {
@@ -11,6 +21,16 @@ pub struct SymbologySnapshot {
     pub products: Vec<Product>,
     pub markets: Vec<Market>,
 }
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Symbology",
+    name = "subscribe_symbology_updates",
+    response = "SymbologyUpdate",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubscribeSymbologyUpdatesRequest {}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SymbologyUpdate {

@@ -1,8 +1,33 @@
 fn main() {
-    let json_codec = "crate::utils::json_codec::JsonCodec";
+    let json_codec = "crate::utils::grpc::json_codec::JsonCodec";
+    let json_symbology_service = tonic_build::manual::Service::builder()
+        .name("Symbology")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("symbology_snapshot")
+                .route_name("SymbologySnapshot")
+                .input_type("crate::external::symbology::SymbologySnapshotRequest")
+                .output_type("crate::external::symbology::SymbologySnapshot")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("subscribe_symbology_updates")
+                .route_name("SubscribeSymbologyUpdates")
+                .input_type(
+                    "crate::external::symbology::SubscribeSymbologyUpdatesRequest",
+                )
+                .output_type("crate::external::symbology::SymbologyUpdate")
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let json_marketdata_service = tonic_build::manual::Service::builder()
         .name("Marketdata")
-        .package("json.marketdata")
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("l1_book_snapshot")
@@ -34,5 +59,6 @@ fn main() {
                 .build(),
         )
         .build();
-    tonic_build::manual::Builder::new().compile(&[json_marketdata_service]);
+    tonic_build::manual::Builder::new()
+        .compile(&[json_symbology_service, json_marketdata_service]);
 }
