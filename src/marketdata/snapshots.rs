@@ -1,11 +1,14 @@
 use crate::symbology::{MarketId, ProductId};
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct MarketSnapshot {
     pub market: MarketId,
     pub snapshot_ts: DateTime<Utc>,
@@ -17,11 +20,12 @@ pub struct MarketSnapshot {
     pub low_24h: Option<Decimal>,
     pub volume_24h: Option<Decimal>,
     #[serde(default)]
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     pub open_interest: Option<Decimal>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct OptionsMarketSnapshot {
     pub market: MarketId,
     pub underlying: ProductId,

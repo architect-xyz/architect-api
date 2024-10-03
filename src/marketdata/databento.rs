@@ -1,10 +1,12 @@
 use crate::symbology::market::NormalizedMarketInfo;
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DatabentoMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,

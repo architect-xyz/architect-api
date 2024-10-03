@@ -1,14 +1,15 @@
-#![cfg(feature = "netidx")]
-
 use crate::{
     symbology::{MarketId, ProductId},
     Dir, DirPair,
 };
 use anyhow::anyhow;
 use chrono::{DateTime, TimeDelta, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
 use enumflags2::bitflags;
+#[cfg(feature = "netidx")]
 use netidx::{path::Path, pool::Pooled};
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -20,6 +21,7 @@ pub mod snapshots;
 
 // CR alee: deprecate this in favor of [Symbolic]; would need to adjust how blockchain QFs work
 /// Quotefeed path definitions for symbolics
+#[cfg(feature = "netidx")]
 pub trait NetidxFeedPaths {
     fn path_by_id(&self, base: &Path) -> Path;
     fn path_by_name(&self, base: &Path) -> Path;
@@ -27,6 +29,7 @@ pub trait NetidxFeedPaths {
 }
 
 /// Book snapshot
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, PartialEq, Eq, Pack)]
 pub struct Snapshot {
     pub book: DirPair<Pooled<Vec<(Decimal, Decimal)>>>,
@@ -35,6 +38,7 @@ pub struct Snapshot {
 }
 
 /// Book update
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, PartialEq, Eq, Pack)]
 #[pack(unwrapped)]
 pub enum Update {
@@ -43,6 +47,7 @@ pub enum Update {
 }
 
 /// Book updates
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, PartialEq, Eq, Pack)]
 pub struct Updates {
     pub book: DirPair<Pooled<Vec<Update>>>,
@@ -50,6 +55,7 @@ pub struct Updates {
     pub timestamp: DateTime<Utc>,
 }
 
+#[cfg(feature = "netidx")]
 impl Default for Updates {
     fn default() -> Self {
         Self {
@@ -59,6 +65,7 @@ impl Default for Updates {
     }
 }
 
+#[cfg(feature = "netidx")]
 impl Updates {
     pub fn len(&self) -> usize {
         self.book.buy.len() + self.book.sell.len()
@@ -70,6 +77,7 @@ impl Updates {
     }
 }
 
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, PartialEq, Eq, Pack)]
 #[pack(unwrapped)]
 pub enum MessageHeader {
@@ -77,9 +85,8 @@ pub enum MessageHeader {
     Snapshot,
 }
 
-#[derive(
-    Debug, Clone, Copy, Deserialize, PartialEq, Eq, Hash, Serialize, Pack, FromValue,
-)]
+#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq, Hash, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[bitflags]
 #[repr(u8)]
@@ -151,19 +158,8 @@ impl Into<TimeDelta> for CandleWidth {
 
 /// NB: buy_volume + sell_volume <> volume; volume may count trades
 /// that don't have a discernible direction.
-#[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    Ord,
-    PartialOrd,
-    Deserialize,
-    Serialize,
-    Pack,
-    FromValue,
-)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Deserialize, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CandleV1 {
     pub time: DateTime<Utc>,
@@ -174,40 +170,40 @@ pub struct CandleV1 {
     pub volume: Decimal,
     pub buy_volume: Decimal,
     pub sell_volume: Decimal,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mid_open: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mid_close: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mid_high: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mid_low: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bid_open: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bid_close: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bid_high: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bid_low: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ask_open: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ask_close: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ask_high: Option<Decimal>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ask_low: Option<Decimal>,
 }
@@ -277,12 +273,14 @@ impl TryInto<CandleV1> for Row {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct HistoricalCandlesV1 {
     pub candles: Vec<CandleV1>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct TradeV0 {
     pub time: Option<DateTime<Utc>>,
@@ -302,7 +300,8 @@ impl Into<TradeV1> for TradeV0 {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct TradeV1 {
     pub time: Option<DateTime<Utc>>,
@@ -311,7 +310,8 @@ pub struct TradeV1 {
     pub size: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct TradeGlobalV1 {
     pub market: MarketId,
     pub time: Option<DateTime<Utc>>,
@@ -320,7 +320,8 @@ pub struct TradeGlobalV1 {
     pub size: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct LiquidationV1 {
     pub time: DateTime<Utc>,
     pub direction: Dir,
@@ -328,7 +329,8 @@ pub struct LiquidationV1 {
     pub size: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct LiquidationGlobalV1 {
     pub market: MarketId,
     pub time: DateTime<Utc>,
@@ -337,22 +339,23 @@ pub struct LiquidationGlobalV1 {
     pub size: Decimal,
 }
 
-#[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize, Pack, FromValue,
-)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct RfqRequest {
     pub base: ProductId,
     pub quote: ProductId,
     pub quantity: Decimal,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct RfqResponse {
     pub market: MarketId,
     pub sides: DirPair<Result<RfqResponseSide, String>>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, Pack, FromValue)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct RfqResponseSide {
     pub price: Decimal,
