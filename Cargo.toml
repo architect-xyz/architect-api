@@ -12,7 +12,9 @@ version = "2.0.27"
 
 [features]
 graphql = ["juniper"]
+grpc = ["tonic", "tonic-build"]
 netidx = ["dep:netidx", "netidx-core", "netidx-derive"]
+postgres = ["postgres-types", "tokio-postgres"]
 
 [dependencies]
 anyhow = { workspace = true }
@@ -40,7 +42,7 @@ once_cell = { workspace = true }
 parking_lot = { workspace = true }
 pest = { workspace = true }
 pest_derive = { workspace = true }
-postgres-types = { workspace = true }
+postgres-types = { workspace = true, optional = true }
 rand = { workspace = true }
 rusqlite = { workspace = true, optional = true }
 rust_decimal = { workspace = true }
@@ -55,8 +57,8 @@ smallvec = { workspace = true }
 sqlx = { workspace = true, optional = true }
 strum = { workspace = true }
 strum_macros = { workspace = true }
-tokio = { workspace = true }
-tokio-postgres = { workspace = true }
+tokio = { workspace = true, optional = true }
+tokio-postgres = { workspace = true, optional = true }
 tonic = { workspace = true, optional = true }
 uuid = { workspace = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }
@@ -67,7 +69,7 @@ serde_yaml = { workspace = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }
 
 [build-dependencies]
-tonic-build = { workspace = true }
+tonic-build = { workspace = true, optional = true }
 
 [[bench]]
 name = "order_id_benchmark"

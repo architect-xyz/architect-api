@@ -6,6 +6,7 @@ use crate::{
 };
 #[cfg(feature = "netidx")]
 use anyhow::anyhow;
+#[cfg(feature = "tokio-postgres")]
 use bytes::BytesMut;
 #[cfg(feature = "netidx")]
 use chrono::{DateTime, Utc};
@@ -18,7 +19,9 @@ use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::{error::Error, fmt::Display, str::FromStr};
+#[cfg(feature = "tokio-postgres")]
+use std::error::Error;
+use std::{fmt::Display, str::FromStr};
 use uuid::Uuid;
 
 /// The ID of a fill
@@ -89,6 +92,7 @@ impl rusqlite::ToSql for FillId {
     }
 }
 
+#[cfg(feature = "tokio-postgres")]
 impl tokio_postgres::types::ToSql for FillId {
     tokio_postgres::types::to_sql_checked!();
 
@@ -105,6 +109,7 @@ impl tokio_postgres::types::ToSql for FillId {
     }
 }
 
+#[cfg(feature = "tokio-postgres")]
 impl<'a> tokio_postgres::types::FromSql<'a> for FillId {
     fn from_sql(
         ty: &tokio_postgres::types::Type,

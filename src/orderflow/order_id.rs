@@ -1,10 +1,13 @@
 use anyhow::Result;
+#[cfg(feature = "tokio-postgres")]
 use bytes::BytesMut;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use std::{error::Error, fmt, str::FromStr};
+#[cfg(feature = "tokio-postgres")]
+use std::error::Error;
+use std::{fmt, str::FromStr};
 use uuid::Uuid;
 
 /// System-unique, persistent order identifiers
@@ -71,6 +74,7 @@ impl rusqlite::ToSql for OrderId {
     }
 }
 
+#[cfg(feature = "tokio-postgres")]
 impl tokio_postgres::types::ToSql for OrderId {
     tokio_postgres::types::to_sql_checked!();
 

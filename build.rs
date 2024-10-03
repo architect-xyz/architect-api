@@ -1,4 +1,5 @@
-fn main() {
+#[cfg(feature = "tonic")]
+fn build_grpc_stubs() {
     let json_codec = "crate::utils::grpc::json_codec::JsonCodec";
     let json_symbology_service = tonic_build::manual::Service::builder()
         .name("Symbology")
@@ -61,4 +62,9 @@ fn main() {
         .build();
     tonic_build::manual::Builder::new()
         .compile(&[json_symbology_service, json_marketdata_service]);
+}
+
+fn main() {
+    #[cfg(feature = "tonic")]
+    build_grpc_stubs();
 }

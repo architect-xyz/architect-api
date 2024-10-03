@@ -14,7 +14,6 @@ use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
-use tokio_postgres::Row;
 
 pub mod databento;
 pub mod snapshots;
@@ -244,7 +243,8 @@ impl CandleV1 {
     }
 }
 
-impl TryInto<CandleV1> for Row {
+#[cfg(feature = "tokio-postgres")]
+impl TryInto<CandleV1> for tokio_postgres::Row {
     type Error = anyhow::Error;
 
     fn try_into(self) -> Result<CandleV1, Self::Error> {

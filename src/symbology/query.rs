@@ -92,6 +92,7 @@ fn parse_expr(pairs: Pairs<Rule>) -> Query {
 }
 
 impl Query {
+    #[cfg(feature = "tokio")]
     pub async fn parse_file_or_query(filename_or_query: &str) -> Result<Self> {
         if tokio::fs::try_exists(filename_or_query).await? {
             let query = tokio::fs::read_to_string(filename_or_query).await?;

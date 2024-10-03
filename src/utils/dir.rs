@@ -1,4 +1,5 @@
 use anyhow::{bail, Result};
+#[cfg(feature = "tokio-postgres")]
 use bytes::BytesMut;
 #[cfg(feature = "netidx")]
 use derive::FromValue;
@@ -7,7 +8,9 @@ use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
-use std::{error::Error, str::FromStr};
+#[cfg(feature = "tokio-postgres")]
+use std::error::Error;
+use std::str::FromStr;
 
 /// An order side/direction or a trade execution side/direction.
 /// In GraphQL these are serialized as "buy" or "sell".
@@ -33,6 +36,7 @@ impl rusqlite::ToSql for Dir {
     }
 }
 
+#[cfg(feature = "tokio-postgres")]
 impl tokio_postgres::types::ToSql for Dir {
     tokio_postgres::types::to_sql_checked!();
 

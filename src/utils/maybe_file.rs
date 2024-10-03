@@ -1,6 +1,8 @@
-use anyhow::{bail, Result};
+#[cfg(feature = "tokio")]
+use anyhow::bail;
+use anyhow::Result;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
-use std::{ffi::OsStr, fmt::Display, path::PathBuf};
+use std::{fmt::Display, path::PathBuf};
 
 /// A type that is either a file containing the value or the value itself.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -19,12 +21,13 @@ impl<T: Display> Display for MaybeFile<T> {
 }
 
 impl<T: Clone + DeserializeOwned> MaybeFile<T> {
+    #[cfg(feature = "tokio")]
     pub async fn load(&self) -> Result<T> {
         match self {
             MaybeFile::Value(v) => Ok(v.clone()),
             MaybeFile::File(p) => {
                 let contents = tokio::fs::read_to_string(p).await?;
-                let t = match p.extension().and_then(OsStr::to_str) {
+                let t = match p.extension().and_then(std::ffi::OsStr::to_str) {
                     Some("json") => serde_json::from_str(&contents)?,
                     Some("yml") | Some("yaml") => serde_yaml::from_str(&contents)?,
                     Some(other) => bail!("unknown file extension: {}", other),

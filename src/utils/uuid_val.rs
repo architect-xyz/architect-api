@@ -142,6 +142,7 @@ macro_rules! uuid_val {
             }
         }
 
+        #[cfg(feature = "tokio-postgres")]
         impl tokio_postgres::types::ToSql for $name {
             tokio_postgres::types::to_sql_checked!();
 
@@ -161,6 +162,7 @@ macro_rules! uuid_val {
             }
         }
 
+        #[cfg(feature = "tokio-postgres")]
         impl<'a> tokio_postgres::types::FromSql<'a> for $name {
             fn from_sql(
                 ty: &tokio_postgres::types::Type,
