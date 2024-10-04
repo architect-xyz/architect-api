@@ -140,6 +140,9 @@ pub enum ProductKind {
         display_order: Option<u32>,
         display_name: Option<String>,
     },
+    // CR alee: consider making Event/EventOutcome/EventSeries
+    // first-class symbology objects, and then only have up pointers
+    // from there...would make query logic more rational
     EventContract {
         underlying: Option<ProductId>,
         expiration: Option<DateTime<Utc>>,
