@@ -48,7 +48,7 @@ impl Symbolic for Product {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Copy)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Copy)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum InstrumentType {
@@ -61,6 +61,7 @@ pub enum InstrumentType {
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum ProductKind {
+    // CR alee: deprecate in favor of Coin, Token without params
     Coin {
         token_info: BTreeMap<VenueId, TokenInfo>,
     },
@@ -93,8 +94,69 @@ pub enum ProductKind {
     },
     Index,
     Commodity,
+    /// Event contracts are products akin to binary options
+    /// which settle to an outcome of a future event.
+    ///
+    /// Specific tradable event contracts are represented by
+    /// the EventContract variant, e.g. FED-2024-SEP-CUT-25-YES
+    /// and/or FED-2024-SEP-CUT-25-NO. for the YES
+    /// and NO contracts of the "Fed to cut 25 bps" outcome.
+    /// EventContract's are grouped into EventOutcome's,
+    /// which pair the YES and NO contracts of an outcome
+    /// together.  There are venues like KALSHI which have
+    /// only one YES contract per outcome (the NO contract
+    /// is implicit via short-selling the YES contract).
+    ///
+    /// EventOutcomes are grouped into Events, e.g.
+    /// FED-2024-SEP is an Event with the following mutually
+    /// exclusive outcomes:
+    ///
+    /// - FED-2024-SEP-HIKE
+    /// - FED-2024-SEP-CUT-0
+    /// - FED-2024-SEP-CUT-25
+    /// - FED-2024-SEP-CUT-ABOVE-25
+    ///
+    /// Events _may_ be grouped into EventSeries, e.g. all
+    /// FED events belong to the same series of events.
+    ///
+    /// The grouping of EventContracts into outcomes,
+    /// events, and event series are indicative and mostly
+    /// for display purposes, and don't necessarily imply
+    /// anything about the settlement of individual
+    /// event contracts.
+    EventSeries {
+        display_name: Option<String>,
+    },
+    Event {
+        series: Option<ProductId>,
+        outcomes: Vec<ProductId>,
+        mutually_exclusive: Option<bool>,
+        expiration: Option<DateTime<Utc>>,
+        display_category: Option<String>,
+        display_name: Option<String>,
+    },
+    EventOutcome {
+        contracts: EventContracts,
+        display_order: Option<u32>,
+        display_name: Option<String>,
+    },
+    // CR alee: consider making Event/EventOutcome/EventSeries
+    // first-class symbology objects, and then only have up pointers
+    // from there...would make query logic more rational
+    EventContract {
+        underlying: Option<ProductId>,
+        expiration: Option<DateTime<Utc>>,
+    },
     #[cfg_attr(feature = "netidx", pack(other))]
+    #[serde(other)]
     Unknown,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+pub enum EventContracts {
+    Single { yes: ProductId, yes_alias: Option<Str> },
+    Dual { yes: ProductId, yes_alias: Option<Str>, no: ProductId, no_alias: Option<Str> },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

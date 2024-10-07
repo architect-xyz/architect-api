@@ -1,5 +1,9 @@
 //! Types for working with the secret store
 
+#[cfg(feature = "netidx")]
+use bytes::{Buf, BufMut};
+#[cfg(feature = "netidx")]
+use netidx::pack::{Pack, PackError};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{fmt::Display, str::FromStr};
 use zeroize::{Zeroize, Zeroizing};
@@ -65,14 +69,14 @@ impl<T: Display + Serialize + Zeroize> Display for MaybeSecret<T> {
     }
 }
 
-impl<T: FromStr + DeserializeOwned + Zeroize> FromStr for MaybeSecret<T> {
-    type Err = serde_json::Error;
+impl<T: FromStr + Zeroize> FromStr for MaybeSecret<T> {
+    type Err = <T as FromStr>::Err;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if s.starts_with("secrets://") {
             Ok(MaybeSecret::Secret(s[10..].to_string()))
         } else {
-            Ok(MaybeSecret::Plain(Zeroizing::new(serde_json::from_str(s)?)))
+            Ok(MaybeSecret::Plain(Zeroizing::new(s.parse()?)))
         }
     }
 }
@@ -123,6 +127,44 @@ impl<'de, T: DeserializeOwned + FromStr + Zeroize> Deserialize<'de> for MaybeSec
     }
 }
 
+#[cfg(feature = "netidx")]
+impl<T: Zeroize + Pack> Pack for MaybeSecret<T> {
+    fn encoded_len(&self) -> usize {
+        const TAG_LEN: usize = 1;
+        let clen = match self {
+            MaybeSecret::Secret(s) => s.encoded_len(),
+            MaybeSecret::Plain(t) => t.encoded_len(),
+        };
+        TAG_LEN + clen
+    }
+
+    fn encode(&self, buf: &mut impl BufMut) -> Result<(), PackError> {
+        match self {
+            MaybeSecret::Secret(s) => {
+                buf.put_u8(0);
+                s.encode(buf)?;
+            }
+            MaybeSecret::Plain(t) => {
+                buf.put_u8(1);
+                t.encode(buf)?;
+            }
+        }
+        Ok(())
+    }
+
+    fn decode(buf: &mut impl Buf) -> Result<Self, PackError>
+    where
+        Self: Sized,
+    {
+        let tag = buf.get_u8();
+        match tag {
+            0 => Ok(MaybeSecret::Secret(String::decode(buf)?)),
+            1 => Ok(MaybeSecret::Plain(Zeroizing::new(T::decode(buf)?))),
+            _ => Err(PackError::UnknownTag),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -134,6 +176,8 @@ mod tests {
         assert_eq!(x, MaybeSecret::secret("foo"));
         let y: MaybeSecret<u64> = "42".parse().unwrap();
         assert_eq!(y, MaybeSecret::plain(42u64));
+        let z: MaybeSecret<String> = "asdf".parse().unwrap();
+        assert_eq!(z, MaybeSecret::plain("asdf".to_string()));
     }
 
     #[test]

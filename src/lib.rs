@@ -1,9 +1,13 @@
 pub mod account_manager;
 pub mod algo;
 pub mod auth;
+pub mod channel_control;
 pub mod config;
 pub mod cpty;
+pub mod external;
 pub mod folio;
+#[cfg(feature = "tonic")]
+pub mod grpc;
 pub mod marketdata;
 pub mod misc;
 pub mod oms;
@@ -33,5 +37,6 @@ pub use utils::{
 pub use utils::{
     component_id::ComponentId,
     envelope::{Address, Envelope, Sequence, Stamp},
+    maybe_file::MaybeFile,
     secrets::MaybeSecret,
 };

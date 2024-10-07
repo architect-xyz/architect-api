@@ -3,8 +3,8 @@
 use crate::{
     folio::FolioMessage,
     orderflow::{
-        self, AberrantFill, Ack, Cancel, Fill, Order, OrderIdAllocation, OrderSource,
-        OrderStateFlags, OrderType, OrderflowMessage, Out, Reject, TimeInForce,
+        self, AberrantFill, Ack, Cancel, Fill, Order, OrderSource, OrderStateFlags,
+        OrderType, OrderflowMessage, Out, Reject, TimeInForce,
     },
     symbology::{market::NormalizedMarketInfo, CptyId, MarketId},
     Address, Dir, HalfOpenRange, OrderId, Str, UserId,
@@ -55,7 +55,6 @@ pub enum DeribitMessage {
     Fill(DeribitFill),
     Out(Out),
     Folio(FolioMessage),
-    OrderIdAllocation(OrderIdAllocation),
     ExchangeOrderUpdate(DeribitExternalOrderAck),
     ExchangeAck(OrderId, DeribitExchangeId),
     ExchangeFill(DeribitExternalFill),
@@ -126,7 +125,6 @@ impl TryInto<OrderflowMessage> for &DeribitMessage {
             | DeribitMessage::BalanceRequest(..)
             | DeribitMessage::TradeQueryRequest(..)
             | DeribitMessage::ExchangeOrderUpdate(..)
-            | DeribitMessage::OrderIdAllocation(..)
             | DeribitMessage::ExchangeAck(..)
             | DeribitMessage::ExchangeFill(..)
             | DeribitMessage::ExchangeOrderOut(..) => Err(()),
@@ -241,6 +239,7 @@ impl DeribitExternalOrderAck {
             time_in_force: self.time_in_force,
             quote_id: None,
             source: OrderSource::External,
+            parent_order: None,
         };
         Ok(DeribitOrder { order })
     }
@@ -257,6 +256,10 @@ pub struct DeribitExternalFill {
     pub dir: Dir,
     pub status: FillOrderStatus,
     pub unique_fill_id: String,
+    pub fee: Option<Decimal>,
+    pub fee_currency: Option<String>,
+    pub exchange_symbol: Option<String>,
+    pub is_maker: Option<bool>,
 }
 
 #[derive(Debug, Clone, Pack, Serialize, Deserialize, PartialEq, Eq)]

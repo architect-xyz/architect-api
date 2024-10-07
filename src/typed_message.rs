@@ -35,8 +35,12 @@ use serde::{Deserialize, Serialize};
 #[transitive(FalconXCpty <-> Folio)]
 #[transitive(FalconXCpty <-> Orderflow)]
 #[transitive(GalaxyCpty <-> Orderflow)]
+#[transitive(KalshiCpty <-> Folio)]
+#[transitive(KalshiCpty <-> Orderflow)]
 #[transitive(KrakenCpty <-> Folio)]
 #[transitive(KrakenCpty <-> Orderflow)]
+#[transitive(OkxCpty <-> Folio)]
+#[transitive(OkxCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
 #[transitive(ExternalCpty <-> Folio)]
@@ -46,19 +50,20 @@ use serde::{Deserialize, Serialize};
 #[transitive(Orderflow <-> Oms)]
 #[transitive(Orderflow <- Algo)]
 #[transitive(Algo <-> TwapAlgo <- Orderflow)]
+#[transitive(Algo <-> ChaserAlgo <- Orderflow)]
 #[transitive(Algo <-> SmartOrderRouterAlgo)]
-#[transitive(Algo <-> MMAlgo <- Orderflow)]
+#[transitive(Algo <-> MarketMakerAlgo <- Orderflow)]
 #[transitive(Algo <-> PovAlgo <- Orderflow)]
 #[rustfmt::skip]
 pub enum TypedMessage {
     #[pack(tag(  0))] SystemControl(system_control::SystemControlMessage),
     #[pack(tag(  1))] Symbology(symbology::SymbologyUpdate),
-    #[pack(tag(  2))] OrderAuthority(orderflow::OrderAuthorityMessage),
     #[pack(tag(  3))] Orderflow(orderflow::OrderflowMessage),
     #[pack(tag(  4))] Oms(oms::OmsMessage),
     #[pack(tag(  5))] Algo(algo::AlgoMessage),
     #[pack(tag(  6))] Folio(folio::FolioMessage),
     #[pack(tag(  7))] AccountManager(account_manager::AccountMessage),
+    #[pack(tag( 10))] ChannelControl(channel_control::ChannelControlMessage),
     #[pack(tag( 98))] ExternalCpty(cpty::generic_external::ExternalCptyMessage),
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
     #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
@@ -73,10 +78,13 @@ pub enum TypedMessage {
     #[pack(tag(110))] CboeDigitalCpty(cpty::cboe_digital::CboeDigitalMessage),
     #[pack(tag(111))] BinanceCpty(cpty::binance::BinanceMessage),
     #[pack(tag(112))] CqgCpty(cpty::cqg::CqgMessage),
+    #[pack(tag(113))] OkxCpty(cpty::okx::OkxMessage),
+    #[pack(tag(114))] KalshiCpty(cpty::kalshi::KalshiMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
-    #[pack(tag(202))] MMAlgo(algo::mm::MMAlgoMessage),
+    #[pack(tag(202))] MarketMakerAlgo(algo::mm::MMAlgoMessage),
     #[pack(tag(203))] PovAlgo(algo::pov::PovAlgoMessage),
+    #[pack(tag(204))] ChaserAlgo(algo::chaser::ChaserAlgoMessage),
 }
 
 impl TypedMessage {
@@ -100,6 +108,22 @@ impl TypedMessage {
     pub fn topics(&self) -> BitFlags<MessageTopic> {
         match self {
             TypedMessage::Orderflow(_) => MessageTopic::Orderflow.into(),
+            // CR alee: would be easier to determine in common+ext data format
+            TypedMessage::Oms(om) => {
+                use oms::OmsMessage;
+                match om {
+                    OmsMessage::Order(..)
+                    | OmsMessage::OrderUpdate(..)
+                    | OmsMessage::Cancel(..)
+                    | OmsMessage::CancelAll(..)
+                    | OmsMessage::Reject(..)
+                    | OmsMessage::Ack(..)
+                    | OmsMessage::Fill(..)
+                    | OmsMessage::FillWarning(..)
+                    | OmsMessage::Out(..) => MessageTopic::Orderflow.into(),
+                    _ => BitFlags::empty(),
+                }
+            }
             TypedMessage::AccountManager(am) => {
                 use account_manager::AccountMessage;
                 match am {
@@ -151,7 +175,7 @@ mod test {
         use crate::orderflow::OrderflowMessage;
         let m = TypedMessage::Orderflow(OrderflowMessage::Order(
             OrderBuilder::new(
-                OrderId::new_unchecked(123),
+                OrderId::nil(123),
                 OrderSource::API,
                 MarketId::try_from("BTC Crypto/USD*COINBASE/DIRECT")?,
             )
@@ -168,9 +192,8 @@ mod test {
     #[test]
     fn test_try_into_any_variant_3() -> Result<()> {
         use crate::{algo::twap::TwapMessage, cpty::b2c2::B2C2Message};
-        let src = TypedMessage::B2C2Cpty(B2C2Message::Out(Out {
-            order_id: OrderId::new_unchecked(123),
-        }));
+        let src =
+            TypedMessage::B2C2Cpty(B2C2Message::Out(Out { order_id: OrderId::nil(123) }));
         let dst: std::result::Result<MaybeSplit<TypedMessage, TwapMessage>, _> =
             src.try_into();
         assert_eq!(dst.is_ok(), true);

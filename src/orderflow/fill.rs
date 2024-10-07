@@ -1,8 +1,12 @@
 use crate::symbology::VenueId;
 #[cfg(feature = "netidx")]
-use crate::{symbology::MarketId, AccountId, Dir, OrderId, UserId};
+use crate::{
+    symbology::{MarketId, ProductId},
+    AccountId, Dir, OrderId, UserId,
+};
 #[cfg(feature = "netidx")]
 use anyhow::anyhow;
+#[cfg(feature = "tokio-postgres")]
 use bytes::BytesMut;
 #[cfg(feature = "netidx")]
 use chrono::{DateTime, Utc};
@@ -15,7 +19,9 @@ use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::{error::Error, fmt::Display, str::FromStr};
+#[cfg(feature = "tokio-postgres")]
+use std::error::Error;
+use std::{fmt::Display, str::FromStr};
 use uuid::Uuid;
 
 /// The ID of a fill
@@ -49,6 +55,15 @@ impl FillId {
     }
 }
 
+#[cfg(feature = "sqlx")]
+impl<'a> sqlx::Decode<'a, sqlx::Postgres> for FillId {
+    fn decode(
+        value: <sqlx::Postgres as sqlx::Database>::ValueRef<'a>,
+    ) -> Result<Self, sqlx::error::BoxDynError> {
+        Ok(FillId(Uuid::decode(value)?))
+    }
+}
+
 impl Default for FillId {
     fn default() -> Self {
         FillId(Uuid::new_v4())
@@ -77,6 +92,7 @@ impl rusqlite::ToSql for FillId {
     }
 }
 
+#[cfg(feature = "tokio-postgres")]
 impl tokio_postgres::types::ToSql for FillId {
     tokio_postgres::types::to_sql_checked!();
 
@@ -93,6 +109,7 @@ impl tokio_postgres::types::ToSql for FillId {
     }
 }
 
+#[cfg(feature = "tokio-postgres")]
 impl<'a> tokio_postgres::types::FromSql<'a> for FillId {
     fn from_sql(
         ty: &tokio_postgres::types::Type,
@@ -104,6 +121,14 @@ impl<'a> tokio_postgres::types::FromSql<'a> for FillId {
     fn accepts(ty: &tokio_postgres::types::Type) -> bool {
         Uuid::accepts(ty)
     }
+}
+
+#[cfg(feature = "netidx")]
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct Fee {
+    pub amount: Decimal,
+    pub fee_currency: ProductId,
 }
 
 #[cfg(feature = "netidx")]
@@ -126,6 +151,7 @@ pub struct Fill {
     #[serde(default)]
     #[pack(default)]
     pub trader: Option<UserId>,
+    pub fee: Option<Fee>,
 }
 
 #[cfg(feature = "netidx")]
@@ -144,6 +170,7 @@ impl Fill {
             recv_time: self.recv_time,
             trade_time: Some(self.trade_time),
             trader: self.trader,
+            fee: self.fee,
         }
     }
 }
@@ -191,6 +218,7 @@ pub struct AberrantFill {
     pub recv_time: Option<DateTime<Utc>>,
     pub trade_time: Option<DateTime<Utc>>,
     pub trader: Option<UserId>,
+    pub fee: Option<Fee>,
 }
 
 #[cfg(feature = "netidx")]
@@ -212,6 +240,7 @@ impl AberrantFill {
                 .trade_time
                 .ok_or_else(|| anyhow!("trade_time is required"))?,
             trader: self.trader,
+            fee: self.fee,
         })
     }
 }

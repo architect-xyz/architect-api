@@ -2,6 +2,9 @@
 #[macro_export]
 macro_rules! uuid_val {
     ($name:ident, $ns:ident) => {
+        uuid_val!($name, $ns, {});
+    };
+    ($name:ident, $ns:ident, { $($key:expr => $value:expr),* $(,)? }) => {
         /// Wrapper type around a UUIDv5 for a given namespace.  These types are
         /// parseable from either the UUIDv5 string representation, or from the
         /// name itself, as they are 1-1.
@@ -15,7 +18,7 @@ macro_rules! uuid_val {
             PartialOrd,
             Ord,
             serde::Serialize,
-            serde::Deserialize,
+            serde_with::DeserializeFromStr,
         )]
         #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
         #[cfg_attr(feature = "netidx", derive(netidx_derive::Pack))]
@@ -29,9 +32,14 @@ macro_rules! uuid_val {
         }
 
         impl std::str::FromStr for $name {
-            type Err = anyhow::Error;
+            type Err = std::convert::Infallible;
 
             fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+                $(
+                    if s == $key {
+                        return Ok($value);
+                    }
+                )*
                 match s.parse::<uuid::Uuid>() {
                     Ok(uuid) => Ok(Self(uuid)),
                     Err(_) => Ok(Self::from(s)),
@@ -57,6 +65,33 @@ macro_rules! uuid_val {
         impl std::borrow::Borrow<uuid::Uuid> for $name {
             fn borrow(&self) -> &uuid::Uuid {
                 &self.0
+            }
+        }
+
+        #[cfg(feature = "sqlx")]
+        impl<'q> sqlx::Encode<'q, sqlx::Postgres> for $name {
+            fn encode_by_ref(
+                &self,
+                buf: &mut <sqlx::Postgres as sqlx::Database>::ArgumentBuffer<'q>,
+            ) -> Result<sqlx::encode::IsNull, sqlx::error::BoxDynError> {
+                self.0.encode(buf)
+            }
+        }
+
+        #[cfg(feature = "sqlx")]
+        impl<'r> sqlx::Decode<'r, sqlx::Postgres> for $name {
+            fn decode(
+                value: <sqlx::Postgres as sqlx::Database>::ValueRef<'r>,
+            ) -> Result<Self, sqlx::error::BoxDynError> {
+                let value: String = sqlx::Decode::<'r, sqlx::Postgres>::decode(value)?;
+                Ok($name::from(&value))
+            }
+        }
+
+        #[cfg(feature = "sqlx")]
+        impl sqlx::Type<sqlx::Postgres> for $name {
+            fn type_info() -> <sqlx::Postgres as sqlx::Database>::TypeInfo {
+                Uuid::type_info()
             }
         }
 
@@ -107,6 +142,7 @@ macro_rules! uuid_val {
             }
         }
 
+        #[cfg(feature = "tokio-postgres")]
         impl tokio_postgres::types::ToSql for $name {
             tokio_postgres::types::to_sql_checked!();
 
@@ -126,6 +162,7 @@ macro_rules! uuid_val {
             }
         }
 
+        #[cfg(feature = "tokio-postgres")]
         impl<'a> tokio_postgres::types::FromSql<'a> for $name {
             fn from_sql(
                 ty: &tokio_postgres::types::Type,

@@ -30,7 +30,6 @@ pub enum Query {
     Route(Str),
     ExchangeSymbol(Str),
     Underlying(Str),
-    Expired,
     Expiration(DateQ),
     And(Vec<Query>),
     Or(Vec<Query>),
@@ -93,6 +92,7 @@ fn parse_expr(pairs: Pairs<Rule>) -> Query {
 }
 
 impl Query {
+    #[cfg(feature = "tokio")]
     pub async fn parse_file_or_query(filename_or_query: &str) -> Result<Self> {
         if tokio::fs::try_exists(filename_or_query).await? {
             let query = tokio::fs::read_to_string(filename_or_query).await?;
@@ -128,7 +128,7 @@ impl Query {
 //         )?;
 //         txn.add_product("USD", &ProductClass::Fiat, CfiCode::default(), dec!(1))?;
 //         txn.add_product("EUR", &ProductClass::Fiat, CfiCode::default(), dec!(1))?;
-//         txn.commit();
+//         txn.commit()?;
 //         Ok(())
 //     }
 //

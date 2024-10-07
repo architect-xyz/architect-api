@@ -7,7 +7,10 @@ use crate::ComponentId;
 use anyhow::{bail, Result};
 use netidx::{path::Path, subscriber::DesiredAuth};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, path::PathBuf};
+use std::{
+    collections::{BTreeMap, HashMap},
+    path::PathBuf,
+};
 
 /// Component location--local to the installation, or hosted by Architect
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -49,6 +52,10 @@ pub struct Config {
     /// marketdata only.  Live marketdata will use new-style paths.
     #[serde(default)]
     pub use_legacy_hist_marketdata: Vec<String>,
+    /// Use the given components for ExternalCpty marketdata;
+    /// mapping of cpty name e.g. PHOENIX/DIRECT -> component ID
+    #[serde(default)]
+    pub use_external_cpty_marketdata: BTreeMap<String, ComponentId>,
     #[serde(default)]
     pub secrets_path_override: Option<String>,
     /// In addition to netidx-based licensedb authentication, restrict users to
@@ -73,13 +80,33 @@ pub struct Config {
     /// if not set, all components are allowed
     #[serde(default)]
     pub expose_components: Option<Vec<ComponentId>>,
+    // CR alee: deprecate this once core+ext format lands
+    /// Allow unchecked orderflow subscriptions--for Platform use only
+    #[serde(default)]
+    pub allow_unchecked_subscriptions: bool,
     /// Sync with a remote core at the given base path
     #[serde(default)]
     pub rsync: Option<Path>,
+    /// Don't connect to any symbology--overrides all but [external_marketdata]
+    #[serde(default)]
+    pub no_symbology: bool,
+    // TODO: CptyIdFromStr should just be more ergonomic...parse either id or name
+    // and write back name or id whichever is at hand
+    /// External plugin marketdata; cpty name => connection string
+    #[serde(default)]
+    pub external_marketdata: HashMap<String, String>,
 }
 
 impl Config {
     pub fn default_path() -> Result<PathBuf> {
+        if let Some(path) = std::env::var_os("ARCHITECT_CFG") {
+            let cfg_path = PathBuf::from(path);
+            if cfg_path.is_file() {
+                return Ok(cfg_path);
+            } else {
+                log::error!("env var path was not a file, using default");
+            }
+        }
         match dirs::config_dir() {
             None => bail!("no default config dir could be found"),
             Some(mut path) => {

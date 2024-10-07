@@ -2,16 +2,25 @@
 
 use crate::{
     folio::FolioMessage,
-    orderflow::{AberrantFill, Ack, Cancel, Fill, Order, OrderflowMessage, Out, Reject},
+    orderflow::{
+        AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderStateFlags,
+        OrderflowMessage, Out, Reject, RejectReason,
+    },
     symbology::{market::NormalizedMarketInfo, MarketId},
-    OrderId, UserId,
+    AccountPermissions, OrderId, UserId,
 };
+use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
+use enumflags2::BitFlags;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
-use std::{ops::Deref, sync::Arc};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    ops::Deref,
+    sync::Arc,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Pack)]
 pub struct CqgMarketInfo {
@@ -30,6 +39,8 @@ pub struct CqgMarketInfo {
     pub market_data_delay_ms: i64,
     pub initial_margin: Option<Decimal>,
     pub maintenance_margin: Option<Decimal>,
+    pub last_trading_date: DateTime<Utc>,
+    pub first_notice_date: Option<DateTime<Utc>>,
 }
 
 impl NormalizedMarketInfo for CqgMarketInfo {
@@ -335,9 +346,12 @@ pub struct CqgPositionStatus {
     pub account: i32,
     pub market: MarketId,
     pub positions: Vec<CqgPosition>,
+    #[serde(default)]
+    #[pack(default)]
+    pub is_snapshot: bool,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CqgPosition {
     /// Surrogate id as a key for updates.
     pub id: i32,
@@ -349,7 +363,7 @@ pub struct CqgPosition {
 
     /// Position average price.
     /// NOTE: Since it could be an aggregated position price is sent in correct format directly.
-    pub price_correct: f64,
+    pub price_correct: Decimal,
 
     /// Exchange specific trade date when the position was open or last changed (date only value).
     pub trade_date: i64,
@@ -381,7 +395,38 @@ pub struct CqgPosition {
     pub speculation_type: Option<u32>,
 }
 
-#[derive(Clone, Debug, FromValue, Serialize, Deserialize, Pack)]
+impl PartialOrd for CqgPosition {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.id.partial_cmp(&other.id)
+    }
+}
+
+impl Ord for CqgPosition {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.id.cmp(&other.id)
+    }
+}
+
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+pub struct CancelReject {
+    pub cancel_id: ArcStr,
+    pub order_id: OrderId,
+    pub reason: RejectReason,
+}
+
+#[derive(
+    Clone,
+    Debug,
+    FromValue,
+    Serialize,
+    Deserialize,
+    Pack,
+    PartialEq,
+    Eq,
+    Hash,
+    PartialOrd,
+    Ord,
+)]
 pub struct CqgAccount {
     pub user_id: UserId,
     pub user_email: String,
@@ -390,19 +435,84 @@ pub struct CqgAccount {
     pub cqg_trader_id: String,
 }
 
+pub type AccountProxyConfig = BTreeMap<UserId, AccountProxy>;
+#[derive(Deserialize, Serialize, Clone, Pack, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum AccountProxySelector {
+    AccountId { cqg_account_id: i32 },
+    AccountIds { cqg_account_ids: Vec<i32> },
+    TraderId { cqg_trader_id: String },
+    TraderIds { cqg_trader_ids: Vec<String> },
+    AllAccounts,
+    AllAccountsForFCMs { clearing_venues: Vec<String> },
+}
+
+#[derive(Debug, postgres_types::FromSql)]
+#[postgres(name = "Selector")]
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx", sqlx(type_name = "Selector", rename_all = "UPPERCASE"))]
+pub enum AccountProxySelectorType {
+    #[postgres(name = "ACCOUNTS")]
+    Accounts,
+    #[postgres(name = "TRADERS")]
+    Traders,
+    #[postgres(name = "ALL")]
+    All,
+    #[postgres(name = "FCM")]
+    Fcm,
+}
+
+impl AccountProxySelector {
+    pub fn selects(&self, cqg_account: &CqgAccount) -> bool {
+        match self {
+            AccountProxySelector::AccountId { cqg_account_id } => {
+                cqg_account.cqg_account_id == *cqg_account_id
+            }
+            AccountProxySelector::AccountIds { cqg_account_ids } => {
+                cqg_account_ids.contains(&cqg_account.cqg_account_id)
+            }
+            AccountProxySelector::TraderId { cqg_trader_id } => {
+                &cqg_account.cqg_trader_id == cqg_trader_id
+            }
+            AccountProxySelector::TraderIds { cqg_trader_ids } => {
+                cqg_trader_ids.contains(&cqg_account.cqg_trader_id)
+            }
+            AccountProxySelector::AllAccounts => true,
+            AccountProxySelector::AllAccountsForFCMs { clearing_venues } => {
+                clearing_venues.contains(&cqg_account.clearing_venue)
+            }
+        }
+    }
+}
+
+#[derive(Deserialize, Serialize, Clone, Pack, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct AccountProxy {
+    pub selector: AccountProxySelector,
+    #[serde(flatten)]
+    pub permissions: AccountPermissions,
+}
+
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum CqgMessage {
     Order(CqgOrder),
     Cancel(Cancel),
+    CancelAll,
     Ack(Ack),
     Out(Out),
     Fill(Result<Fill, AberrantFill>),
     Reject(Reject),
+    CancelReject(CancelReject),
     Folio(FolioMessage),
-    UpdateCqgAccounts { accounts: Arc<Vec<CqgAccount>>, is_snapshot: bool },
+    UpdateCqgAccounts {
+        accounts: Arc<BTreeSet<CqgAccount>>,
+        account_proxies: Arc<AccountProxyConfig>,
+        is_snapshot: bool,
+    },
     CqgTrades(Vec<CqgTrade>),
     CqgAccountSummary(CqgAccountSummary),
     CqgPositionStatus(CqgPositionStatus),
+    UpdateCqgAccountsFromDb,
+    CqgOrderSnapshot(Arc<Vec<(i32, BitFlags<OrderStateFlags, u8>, Order)>>),
 }
 
 impl TryInto<OrderflowMessage> for &CqgMessage {
@@ -412,14 +522,20 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
         match self {
             CqgMessage::Order(o) => Ok(OrderflowMessage::Order(**o)),
             CqgMessage::Cancel(c) => Ok(OrderflowMessage::Cancel(*c)),
+            CqgMessage::CancelAll => {
+                Ok(OrderflowMessage::CancelAll(CancelAll { venue_id: None }))
+            }
             CqgMessage::Ack(a) => Ok(OrderflowMessage::Ack(*a)),
             CqgMessage::Out(o) => Ok(OrderflowMessage::Out(*o)),
             CqgMessage::Fill(f) => Ok(OrderflowMessage::Fill(*f)),
             CqgMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
-            CqgMessage::UpdateCqgAccounts { .. }
+            CqgMessage::CancelReject(_)
+            | CqgMessage::UpdateCqgAccountsFromDb
+            | CqgMessage::UpdateCqgAccounts { .. }
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)
+            | CqgMessage::CqgOrderSnapshot(..)
             | CqgMessage::CqgPositionStatus(_) => Err(()),
         }
     }
@@ -432,11 +548,11 @@ impl TryInto<CqgMessage> for &OrderflowMessage {
         match self {
             OrderflowMessage::Order(o) => Ok(CqgMessage::Order(CqgOrder { order: *o })),
             OrderflowMessage::Cancel(c) => Ok(CqgMessage::Cancel(*c)),
+            OrderflowMessage::CancelAll(_) => Ok(CqgMessage::CancelAll),
             OrderflowMessage::Ack(a) => Ok(CqgMessage::Ack(*a)),
             OrderflowMessage::Out(o) => Ok(CqgMessage::Out(*o)),
             OrderflowMessage::Reject(r) => Ok(CqgMessage::Reject(r.clone())),
             OrderflowMessage::Fill(f) => Ok(CqgMessage::Fill(*f)),
-            _ => Err(()),
         }
     }
 }

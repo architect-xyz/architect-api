@@ -105,6 +105,7 @@ pub struct AccountSummary {
     // so this is not a BTreeMap like [balances].
     pub positions: Vec<Position>,
     pub profit_loss: Option<Decimal>,
+    pub clearing_venue: Option<VenueId>,
 }
 
 impl AccountSummary {

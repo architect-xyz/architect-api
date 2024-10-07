@@ -1,7 +1,8 @@
 #![cfg(feature = "netidx")]
 
 use crate::{
-    orderflow::*, utils::messaging::MaybeRequest, AccountId, OrderId, Str, UserId,
+    orderflow::*, symbology::MarketId, utils::messaging::MaybeRequest, AccountId,
+    OrderId, UserId,
 };
 use anyhow::Result;
 use arcstr::ArcStr;
@@ -10,8 +11,10 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+use strum_macros::EnumIter;
 use uuid::Uuid;
 
+pub mod chaser;
 pub mod generic_container;
 pub mod mm;
 pub mod pov;
@@ -28,6 +31,7 @@ pub enum AlgoMessage {
     AlgoAck(AlgoAck),
     AlgoReject(AlgoReject),
     AlgoStatus(AlgoStatus),
+    AlgoOut(AlgoOut),
     ChildAck(ChildAck),
     ChildReject(ChildReject),
     ChildFill(ChildFill),
@@ -58,13 +62,38 @@ impl TryInto<OrderflowMessage> for &AlgoMessage {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct AlgoOrder {
     pub order_id: OrderId,
     pub trader: UserId,
     pub account: Option<AccountId>,
-    pub algo: Str,
+    pub algo: AlgoKind,
+    pub parent_order_id: Option<OrderId>,
+    pub markets: Arc<Vec<MarketId>>,
+}
+
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    Hash,
+    Pack,
+    FromValue,
+    Serialize,
+    Deserialize,
+    PartialEq,
+    Eq,
+    EnumIter,
+)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+pub enum AlgoKind {
+    MarketMaker,
+    Pov,
+    SmartOrderRouter,
+    Twap,
+    Spread,
+    Chaser,
 }
 
 // CR-someday alee: use something more akin to the validator crate
@@ -104,6 +133,11 @@ pub enum AlgoControlCommand {
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub struct AlgoAck {
+    pub order_id: OrderId,
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub struct AlgoOut {
     pub order_id: OrderId,
 }
 
@@ -181,7 +215,7 @@ pub struct AlgoPreview {
 
 impl Into<AlgoOrder> for &AlgoOrder {
     fn into(self) -> AlgoOrder {
-        *self
+        self.clone()
     }
 }
 
@@ -208,6 +242,7 @@ impl MaybeRequest for AlgoMessage {
         match self {
             AlgoMessage::PreviewAlgo(uuid, _)
             | AlgoMessage::GetAlgoStatus(uuid, _)
+            | AlgoMessage::GetAlgoOrder(uuid, _)
             | AlgoMessage::GetAlgoLog(uuid, _) => Some(*uuid),
             _ => None,
         }
@@ -217,6 +252,7 @@ impl MaybeRequest for AlgoMessage {
         match self {
             AlgoMessage::PreviewAlgoResponse(uuid, _)
             | AlgoMessage::GetAlgoStatusResponse(uuid, _)
+            | AlgoMessage::GetAlgoOrderResponse(uuid, _)
             | AlgoMessage::GetAlgoLogResponse(uuid, _) => Some(*uuid),
             _ => None,
         }
