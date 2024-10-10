@@ -40,7 +40,7 @@ use uuid::Uuid;
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar), graphql(transparent))]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub struct FillId(Uuid);
+pub struct FillId(pub Uuid);
 
 impl FillId {
     /// This function will always generate the same UUID for the

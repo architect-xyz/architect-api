@@ -170,6 +170,35 @@ pub enum OrderType {
     TakeProfitLimit(TakeProfitLimitOrderType),
 }
 
+impl OrderType {
+    pub fn limit_price(&self) -> Decimal {
+        match self {
+            OrderType::Limit(limit_order_type) => limit_order_type.limit_price,
+            OrderType::StopLossLimit(stop_loss_limit_order_type) => {
+                stop_loss_limit_order_type.limit_price
+            }
+            OrderType::TakeProfitLimit(take_profit_limit_order_type) => {
+                take_profit_limit_order_type.limit_price
+            }
+        }
+    }
+
+    pub fn post_only(&self) -> Option<bool> {
+        match self {
+            OrderType::Limit(limit_order_type) => Some(limit_order_type.post_only),
+            OrderType::StopLossLimit(_) | OrderType::TakeProfitLimit(_) => None,
+        }
+    }
+
+    pub fn trigger_price(&self) -> Option<Decimal> {
+        match self {
+            OrderType::StopLossLimit(sllot) => Some(sllot.trigger_price),
+            OrderType::TakeProfitLimit(tplot) => Some(tplot.trigger_price),
+            OrderType::Limit(_) => None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
@@ -227,7 +256,7 @@ impl TimeInForce {
 #[cfg(feature = "juniper")]
 #[cfg_attr(feature = "juniper", juniper::graphql_object)]
 impl TimeInForce {
-    fn instruction(&self) -> &'static str {
+    pub fn instruction(&self) -> &'static str {
         match self {
             Self::GoodTilCancel => "GTC",
             Self::GoodTilDate(_) => "GTD",
@@ -237,7 +266,7 @@ impl TimeInForce {
         }
     }
 
-    fn good_til_date(&self) -> Option<DateTime<Utc>> {
+    pub fn good_til_date(&self) -> Option<DateTime<Utc>> {
         match self {
             Self::GoodTilDate(d) => Some(*d),
             _ => None,

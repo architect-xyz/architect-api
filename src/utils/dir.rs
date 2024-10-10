@@ -17,9 +17,13 @@ use std::str::FromStr;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx", sqlx(type_name = "orderflow.dir"))]
 pub enum Dir {
+    #[cfg_attr(feature = "sqlx", sqlx(rename = "Buy"))]
     #[serde(alias = "Buy", alias = "buy", alias = "BUY")]
     Buy,
+    #[cfg_attr(feature = "sqlx", sqlx(rename = "Sell"))]
     #[serde(alias = "Sell", alias = "sell", alias = "SELL")]
     Sell,
 }

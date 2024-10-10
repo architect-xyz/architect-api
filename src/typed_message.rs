@@ -54,6 +54,7 @@ use serde::{Deserialize, Serialize};
 #[transitive(Algo <-> SmartOrderRouterAlgo)]
 #[transitive(Algo <-> MarketMakerAlgo <- Orderflow)]
 #[transitive(Algo <-> PovAlgo <- Orderflow)]
+#[transitive(TradingActivity <- Orderflow)]
 #[rustfmt::skip]
 pub enum TypedMessage {
     #[pack(tag(  0))] SystemControl(system_control::SystemControlMessage),
@@ -85,6 +86,7 @@ pub enum TypedMessage {
     #[pack(tag(202))] MarketMakerAlgo(algo::mm::MMAlgoMessage),
     #[pack(tag(203))] PovAlgo(algo::pov::PovAlgoMessage),
     #[pack(tag(204))] ChaserAlgo(algo::chaser::ChaserAlgoMessage),
+    #[pack(tag(205))] TradingActivity(trading_activity::TradingActivityMessage)
 }
 
 impl TypedMessage {

@@ -72,5 +72,5 @@ zeroize = { workspace = true, features = ["zeroize_derive"] }
 tonic-build = { workspace = true, optional = true }
 
 [[bench]]
-name = "order_id_benchmark"
 harness = false
+name = "order_id_benchmark"
