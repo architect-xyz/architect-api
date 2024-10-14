@@ -20,7 +20,19 @@ pub enum Location {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TlsConfig {
+    /// Certificate authority trust chain for mTLS
+    pub trusted: PathBuf,
+    /// X509 certificate file
+    pub certificate: PathBuf,
+    /// X509 certificate key file
+    pub private_key: PathBuf,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
+    #[serde(default)]
+    pub tls_config: Option<TlsConfig>,
     #[serde(default)]
     pub netidx_config: Option<PathBuf>,
     #[serde(default)]
