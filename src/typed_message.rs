@@ -43,6 +43,8 @@ use serde::{Deserialize, Serialize};
 #[transitive(OkxCpty <-> Orderflow)]
 #[transitive(MockCpty <-> Folio)]
 #[transitive(MockCpty <-> Orderflow)]
+#[transitive(SimCpty <-> Folio)]
+#[transitive(SimCpty <-> Orderflow)]
 #[transitive(ExternalCpty <-> Folio)]
 #[transitive(ExternalCpty <-> Orderflow)]
 #[transitive(WintermuteCpty <-> Folio)]
@@ -81,6 +83,7 @@ pub enum TypedMessage {
     #[pack(tag(112))] CqgCpty(cpty::cqg::CqgMessage),
     #[pack(tag(113))] OkxCpty(cpty::okx::OkxMessage),
     #[pack(tag(114))] KalshiCpty(cpty::kalshi::KalshiMessage),
+    #[pack(tag(115))] SimCpty(cpty::sim::SimCptyMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
     #[pack(tag(202))] MarketMakerAlgo(algo::mm::MMAlgoMessage),

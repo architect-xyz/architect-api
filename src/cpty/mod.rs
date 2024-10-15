@@ -15,5 +15,6 @@ pub mod generic_external;
 pub mod kalshi;
 pub mod kraken;
 pub mod mock;
+pub mod sim;
 pub mod okx;
 pub mod wintermute;
