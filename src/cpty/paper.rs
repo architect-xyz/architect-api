@@ -12,45 +12,45 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
-pub enum SimCptyMessage {
+pub enum PaperCptyMessage {
     Init,
     Orderflow(OrderflowMessage),
     Folio(FolioMessage),
     Bbo(Bbo),
-    SimBalanceChange(SimBalanceChange),
+    PaperBalanceChange(PaperBalanceChange),
 }
 
-impl TryInto<OrderflowMessage> for &SimCptyMessage {
+impl TryInto<OrderflowMessage> for &PaperCptyMessage {
     type Error = ();
 
     fn try_into(self) -> Result<OrderflowMessage, ()> {
         match self {
-            SimCptyMessage::Orderflow(o) => Ok(o.clone()),
+            PaperCptyMessage::Orderflow(o) => Ok(o.clone()),
             _ => Err(()),
         }
     }
 }
 
-impl Into<SimCptyMessage> for &OrderflowMessage {
-    fn into(self) -> SimCptyMessage {
-        SimCptyMessage::Orderflow(self.clone())
+impl Into<PaperCptyMessage> for &OrderflowMessage {
+    fn into(self) -> PaperCptyMessage {
+        PaperCptyMessage::Orderflow(self.clone())
     }
 }
 
-impl TryInto<FolioMessage> for &SimCptyMessage {
+impl TryInto<FolioMessage> for &PaperCptyMessage {
     type Error = ();
 
     fn try_into(self) -> Result<FolioMessage, ()> {
         match self {
-            SimCptyMessage::Folio(f) => Ok(f.clone()),
+            PaperCptyMessage::Folio(f) => Ok(f.clone()),
             _ => Err(()),
         }
     }
 }
 
-impl Into<SimCptyMessage> for &FolioMessage {
-    fn into(self) -> SimCptyMessage {
-        SimCptyMessage::Folio(self.clone())
+impl Into<PaperCptyMessage> for &FolioMessage {
+    fn into(self) -> PaperCptyMessage {
+        PaperCptyMessage::Folio(self.clone())
     }
 }
 
@@ -68,7 +68,7 @@ impl Bbo {
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
-pub struct SimBalanceChange {
+pub struct PaperBalanceChange {
     pub product: ProductId,
     pub user: UserId,
     pub amount: Decimal,
