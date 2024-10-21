@@ -12,7 +12,14 @@ version = "2.2.5"
 
 [features]
 graphql = ["juniper"]
-grpc = ["http", "tonic", "tonic-build", "tower-layer", "tower-service", "x509-parser"]
+grpc = [
+    "http",
+    "tonic",
+    "tonic-build",
+    "tower-layer",
+    "tower-service",
+    "x509-parser",
+]
 netidx = ["dep:netidx", "netidx-core", "netidx-derive"]
 postgres = ["postgres-types", "tokio-postgres"]
 
@@ -20,6 +27,7 @@ postgres = ["postgres-types", "tokio-postgres"]
 anyhow = { workspace = true }
 arcstr = { workspace = true }
 base64 = { workspace = true }
+bytemuck = { workspace = true }
 bytes = { workspace = true }
 chrono = { workspace = true }
 clap = { workspace = true, optional = true }

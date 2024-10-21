@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{bail, Result};
 #[cfg(feature = "tokio-postgres")]
 use bytes::BytesMut;
 #[cfg(feature = "netidx")]
@@ -23,10 +23,13 @@ use uuid::Uuid;
     Serialize,
     Deserialize,
     JsonSchema,
+    bytemuck::Pod,
+    bytemuck::Zeroable,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", pack(unwrapped))]
+#[repr(C)]
 pub struct OrderId {
     pub seqid: Uuid,
     pub seqno: u64,
@@ -37,6 +40,17 @@ impl OrderId {
     /// For production use, use an OrderIdAllocator from the `sdk` crate.
     pub fn nil(seqno: u64) -> Self {
         Self { seqid: Uuid::nil(), seqno }
+    }
+
+    pub fn as_bytes(&self) -> &[u8] {
+        bytemuck::bytes_of(self)
+    }
+
+    pub fn try_from_bytes(bytes: impl AsRef<[u8]>) -> Result<Self> {
+        match bytemuck::try_from_bytes(bytes.as_ref()) {
+            Ok(oid) => Ok(*oid),
+            Err(e) => bail!("casting bytes to OrderId: {e}"),
+        }
     }
 }
 
