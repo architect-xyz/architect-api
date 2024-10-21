@@ -166,3 +166,9 @@ impl OrderId {
         <String as juniper::ParseScalarValue<S>>::from_str(value)
     }
 }
+
+impl rand::distributions::Distribution<OrderId> for rand::distributions::Standard {
+    fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> OrderId {
+        OrderId { seqid: Uuid::new_v4(), seqno: rng.gen() }
+    }
+}
