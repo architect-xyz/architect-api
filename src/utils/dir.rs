@@ -10,7 +10,7 @@ use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "tokio-postgres")]
 use std::error::Error;
-use std::str::FromStr;
+use std::{ops::Deref, str::FromStr};
 
 /// An order side/direction or a trade execution side/direction.
 /// In GraphQL these are serialized as "buy" or "sell".
@@ -142,5 +142,60 @@ impl Dir {
             Self::Buy => dec!(1),
             Self::Sell => dec!(-1),
         }
+    }
+}
+
+/// Wrapper around `Dir` that serializes to a single uppercase character.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct DirAsCharUpper(Dir);
+
+impl Deref for DirAsCharUpper {
+    type Target = Dir;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl From<Dir> for DirAsCharUpper {
+    fn from(dir: Dir) -> Self {
+        Self(dir)
+    }
+}
+
+impl Into<Dir> for DirAsCharUpper {
+    fn into(self) -> Dir {
+        self.0
+    }
+}
+
+impl Serialize for DirAsCharUpper {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_char(match **self {
+            Dir::Buy => 'B',
+            Dir::Sell => 'S',
+        })
+    }
+}
+
+struct DirAsCharUpperVisitor;
+
+impl<'de> serde::de::Visitor<'de> for DirAsCharUpperVisitor {
+    type Value = DirAsCharUpper;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a single uppercase character")
+    }
+}
+
+impl<'de> Deserialize<'de> for DirAsCharUpper {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        deserializer.deserialize_char(DirAsCharUpperVisitor)
     }
 }
