@@ -1,4 +1,4 @@
-use crate::{symbology::MarketId, utils::dir::DirAsCharUpper, Dir};
+use crate::symbology::MarketId;
 use chrono::{DateTime, Utc};
 use derive::grpc;
 use rust_decimal::Decimal;
@@ -121,6 +121,10 @@ impl SequenceIdAndNumber {
         self.sequence_id == previous.sequence_id
             && self.sequence_number == previous.sequence_number + 1
     }
+
+    pub fn advance(&mut self) {
+        self.sequence_number += 1;
+    }
 }
 
 impl PartialOrd for SequenceIdAndNumber {
@@ -177,30 +181,29 @@ pub struct L2BookDiff {
     pub timestamp_ns: u32,
     #[serde(flatten)]
     pub sequence: SequenceIdAndNumber,
-    #[serde(rename = "s")]
-    pub side: DirAsCharUpper,
-    #[serde(rename = "p")]
-    pub price: Decimal,
-    /// If zero, the price level has been removed from the book
-    #[serde(rename = "q")]
-    pub quantity: Decimal,
+    /// Set of (price, level) updates. If zero, the price level
+    /// has been removed from the book.
+    #[serde(rename = "b")]
+    pub bids: Vec<(Decimal, Decimal)>,
+    /// Set of (price, level) updates. If zero, the price level
+    /// has been removed from the book.
+    #[serde(rename = "a")]
+    pub asks: Vec<(Decimal, Decimal)>,
 }
 
 impl L2BookDiff {
     pub fn new(
         timestamp: DateTime<Utc>,
         sequence: SequenceIdAndNumber,
-        side: Dir,
-        price: Decimal,
-        quantity: Decimal,
+        bids: Vec<(Decimal, Decimal)>,
+        asks: Vec<(Decimal, Decimal)>,
     ) -> Self {
         Self {
             timestamp: timestamp.timestamp(),
             timestamp_ns: timestamp.timestamp_subsec_nanos(),
             sequence,
-            side: side.into(),
-            price,
-            quantity,
+            bids,
+            asks,
         }
     }
 
@@ -210,13 +213,21 @@ impl L2BookDiff {
 }
 
 /// To build a book from a stream of updates, the client should first subscribe to
-/// this update stream, then request a snapshot from the same server. Book updates
-/// should be applied consecutively to the snapshot in order to reconstruct the
-/// state of the book.
+/// this update stream, which then returns a stream starting with a snapshot and
+/// following with diffs.
+///
+/// Diffs should be applied consecutively to the snapshot in order to reconstruct
+/// the state of the book.
 ///
 /// ```rust
+/// # use architect_api::external::marketdata::*;
+/// # use std::collections::BTreeMap;
+/// # use rust_decimal::Decimal;
+/// # use rust_decimal_macros::dec;
+///
 /// /// Suppose we receive this snapshot from the server:
-/// let snapshot: L2BookSnapshot = serde_json::from_str(r#"{
+/// let snapshot: L2BookUpdate = serde_json::from_str(r#"{
+///     "t": "s",
 ///     "ts": 1729700837,
 ///     "tn": 0,
 ///     "sid": 123,
@@ -227,56 +238,58 @@ impl L2BookDiff {
 ///
 /// /// It corresponds to the following book:
 /// let mut book = BTreeMap::new();
-/// book.insert(99.00, 3);
-/// book.insert(98.78, 2);
-/// book.insert(100.00, 1);
-/// book.insert(100.10, 2);
+/// book.insert(dec!(99.00), 3);
+/// book.insert(dec!(98.78), 2);
+/// book.insert(dec!(100.00), 1);
+/// book.insert(dec!(100.10), 2);
 ///
 /// /// Then we receive this update:
-/// let update: L2BookUpdate = serde_json::from_str(r#"{
+/// let diff: L2BookUpdate = serde_json::from_str(r#"{
+///     "t": "d",
 ///     "ts": 1729700839,
 ///     "tn": 0,
 ///     "sid": 123,
 ///     "sn": 9000,
-///     "s": "B",
-///     "p": "99.00",
-///     "q": "1"
+///     "b": [["99.00", "1"]],
+///     "a": []
 /// }"#)?;
 ///
 /// /// Verify that the sequence number is correct
-/// assert!(update.sequence.is_next_in_sequence(&snapshot.sequence));
+/// assert!(diff.sequence().is_next_in_sequence(&snapshot.sequence()));
 ///
 /// /// Apply the update to our book
-/// book.insert(99.00, 1);
+/// book.insert(dec!(99.00), 1);
 ///
 /// // Suppose we then receive this update:
-/// let update: L2BookUpdate = serde_json::from_str(r#"{
+/// let diff: L2BookUpdate = serde_json::from_str(r#"{
+///     "t": "d",
 ///     "ts": 1729700841,
 ///     "tn": 0,
 ///     "sid": 123,
 ///     "sn": 9005,
-///     "s": "S",
-///     "p": "103.00",
-///     "q": "1"
+///     "b": [],
+///     "a": [["103.00", "1"]]
 /// }"#)?;
 ///
 /// /// We shouldn't apply this update because it's not next in sequence!
-/// assert_eq!(update.sequence.is_next_in_sequence(&snapshot.sequence), false);
+/// assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);
 ///
 /// /// Or if we had received this update:
-/// let update: L2BookUpdate = serde_json::from_str(r#"{
+/// let diff: L2BookUpdate = serde_json::from_str(r#"{
+///     "t": "d",
 ///     "ts": 1729700841,
 ///     "tn": 0,
 ///     "sid": 170,
 ///     "sn": 9001,
-///     "s": "S",
-///     "p": "103.00",
-///     "q": "1"
+///     "b": [],
+///     "a": [["103.00", "1"]]
 /// }"#)?;
 ///
 /// /// It appears that the sequence id is changed, signalling a new sequence.
 /// /// In this case, we should re-request the snapshot from the server.
-/// assert_eq!(update.sequence.is_next_in_sequence(&snapshot.sequence), false);
+/// assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);
+///
+/// # Ok::<(), anyhow::Error>(())
 /// ```
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "t")]
@@ -285,6 +298,22 @@ pub enum L2BookUpdate {
     Snapshot(L2BookSnapshot),
     #[serde(rename = "d")]
     Diff(L2BookDiff),
+}
+
+impl L2BookUpdate {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        match self {
+            Self::Snapshot(snapshot) => snapshot.timestamp(),
+            Self::Diff(diff) => diff.timestamp(),
+        }
+    }
+
+    pub fn sequence(&self) -> SequenceIdAndNumber {
+        match self {
+            Self::Snapshot(snapshot) => snapshot.sequence,
+            Self::Diff(diff) => diff.sequence,
+        }
+    }
 }
 
 #[grpc(package = "json.architect")]

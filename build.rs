@@ -59,6 +59,25 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("subscribe_l2_book_updates")
+                .route_name("SubscribeL2BookUpdates")
+                .input_type("crate::external::marketdata::SubscribeL2BookUpdatesRequest")
+                .output_type("crate::external::marketdata::L2BookUpdate")
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("l2_book_snapshot")
+                .route_name("L2BookSnapshot")
+                .input_type("crate::external::marketdata::L2BookSnapshotRequest")
+                .output_type("crate::external::marketdata::L2BookSnapshot")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     tonic_build::manual::Builder::new()
         .compile(&[json_symbology_service, json_marketdata_service]);
