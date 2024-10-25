@@ -314,6 +314,13 @@ impl L2BookUpdate {
             Self::Diff(diff) => diff.sequence,
         }
     }
+
+    pub fn is_snapshot(&self) -> bool {
+        match self {
+            Self::Snapshot(_) => true,
+            Self::Diff(_) => false,
+        }
+    }
 }
 
 #[grpc(package = "json.architect")]
