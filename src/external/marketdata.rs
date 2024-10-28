@@ -1,4 +1,8 @@
-use crate::symbology::MarketId;
+use crate::{
+    marketdata::{CandleV1, CandleWidth},
+    symbology::MarketId,
+    Dir,
+};
 use chrono::{DateTime, Utc};
 use derive::grpc;
 use rust_decimal::Decimal;
@@ -368,4 +372,166 @@ pub struct L3BookSnapshot {
     pub bids: Vec<(u64, Decimal, Decimal)>,
     #[serde(rename = "a")]
     pub asks: Vec<(u64, Decimal, Decimal)>,
+}
+
+// Subscribe to candles for a single market.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_candles",
+    response = "Candle",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubscribeCandlesRequest {
+    pub market_id: MarketId,
+    /// If None, subscribe from all candle widths on the feed
+    pub candle_width: Option<Vec<CandleWidth>>,
+}
+
+// Subscribe to a single candle width across many markets.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_many_candles",
+    response = "Candle",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubscribeManyCandlesRequest {
+    /// If None, subscribe from all symbols on the feed
+    pub market_ids: Option<Vec<MarketId>>,
+    pub candle_width: CandleWidth,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_trades",
+    response = "Trade",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubscribeTradesRequest {
+    /// If None, subscribe from all symbols on the feed
+    pub market_id: Option<MarketId>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Candle {
+    #[serde(rename = "m")]
+    pub market_id: MarketId,
+    #[serde(rename = "ts")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "w")]
+    pub width: CandleWidth,
+    #[serde(rename = "o")]
+    pub open: Decimal,
+    #[serde(rename = "h")]
+    pub high: Decimal,
+    #[serde(rename = "l")]
+    pub low: Decimal,
+    #[serde(rename = "c")]
+    pub close: Decimal,
+    #[serde(rename = "v")]
+    pub volume: Decimal,
+    #[serde(rename = "bv")]
+    pub buy_volume: Decimal,
+    #[serde(rename = "sv")]
+    pub sell_volume: Decimal,
+    #[serde(rename = "mo", skip_serializing_if = "Option::is_none")]
+    pub mid_open: Option<Decimal>,
+    #[serde(rename = "mc", skip_serializing_if = "Option::is_none")]
+    pub mid_close: Option<Decimal>,
+    #[serde(rename = "mh", skip_serializing_if = "Option::is_none")]
+    pub mid_high: Option<Decimal>,
+    #[serde(rename = "ml", skip_serializing_if = "Option::is_none")]
+    pub mid_low: Option<Decimal>,
+    #[serde(rename = "bo", skip_serializing_if = "Option::is_none")]
+    pub bid_open: Option<Decimal>,
+    #[serde(rename = "bc", skip_serializing_if = "Option::is_none")]
+    pub bid_close: Option<Decimal>,
+    #[serde(rename = "bh", skip_serializing_if = "Option::is_none")]
+    pub bid_high: Option<Decimal>,
+    #[serde(rename = "bl", skip_serializing_if = "Option::is_none")]
+    pub bid_low: Option<Decimal>,
+    #[serde(rename = "ao", skip_serializing_if = "Option::is_none")]
+    pub ask_open: Option<Decimal>,
+    #[serde(rename = "ac", skip_serializing_if = "Option::is_none")]
+    pub ask_close: Option<Decimal>,
+    #[serde(rename = "ah", skip_serializing_if = "Option::is_none")]
+    pub ask_high: Option<Decimal>,
+    #[serde(rename = "al", skip_serializing_if = "Option::is_none")]
+    pub ask_low: Option<Decimal>,
+}
+
+impl Candle {
+    pub fn from_candle_v1(
+        market_id: MarketId,
+        candle: CandleV1,
+        width: CandleWidth,
+    ) -> Self {
+        Self {
+            market_id,
+            timestamp: candle.time.timestamp(),
+            timestamp_ns: candle.time.timestamp_subsec_nanos(),
+            width,
+            open: candle.open,
+            high: candle.high,
+            low: candle.low,
+            close: candle.close,
+            volume: candle.volume,
+            buy_volume: candle.buy_volume,
+            sell_volume: candle.sell_volume,
+            mid_open: candle.mid_open,
+            mid_close: candle.mid_close,
+            mid_high: candle.mid_high,
+            mid_low: candle.mid_low,
+            bid_open: candle.bid_open,
+            bid_close: candle.bid_close,
+            bid_high: candle.bid_high,
+            bid_low: candle.bid_low,
+            ask_open: candle.ask_open,
+            ask_close: candle.ask_close,
+            ask_high: candle.ask_high,
+            ask_low: candle.ask_low,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Trade {
+    #[serde(rename = "m")]
+    pub market_id: MarketId,
+    #[serde(rename = "ts")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "d")]
+    pub direction: Option<Dir>, // maker dir
+    #[serde(rename = "p")]
+    pub price: Decimal,
+    #[serde(rename = "s")]
+    pub size: Decimal,
+}
+
+impl Trade {
+    pub fn new(
+        market_id: MarketId,
+        price: Decimal,
+        size: Decimal,
+        direction: Option<Dir>,
+        timestamp: DateTime<Utc>,
+    ) -> Self {
+        Self {
+            market_id,
+            timestamp: timestamp.timestamp(),
+            timestamp_ns: timestamp.timestamp_subsec_nanos(),
+            direction,
+            price,
+            size,
+        }
+    }
 }

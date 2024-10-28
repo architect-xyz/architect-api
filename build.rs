@@ -78,6 +78,36 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("subscribe_candles")
+                .route_name("SubscribeCandles")
+                .input_type("crate::external::marketdata::SubscribeCandlesRequest")
+                .output_type("crate::external::marketdata::Candle")
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("subscribe_many_candles")
+                .route_name("SubscribeManyCandles")
+                .input_type("crate::external::marketdata::SubscribeManyCandlesRequest")
+                .output_type("crate::external::marketdata::Candle")
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("subscribe_trades")
+                .route_name("SubscribeTrades")
+                .input_type("crate::external::marketdata::SubscribeTradesRequest")
+                .output_type("crate::external::marketdata::Trade")
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     tonic_build::manual::Builder::new()
         .compile(&[json_symbology_service, json_marketdata_service]);
