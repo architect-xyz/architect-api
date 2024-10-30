@@ -33,6 +33,7 @@ pub use utils::{
     dir_pair::DirPair,
     duration::HumanDuration,
     half_open_range::HalfOpenRange,
+    secrets::MaybeSecret,
     str::Str,
 };
 #[cfg(feature = "netidx")]
@@ -40,5 +41,4 @@ pub use utils::{
     component_id::ComponentId,
     envelope::{Address, Envelope, Sequence, Stamp},
     maybe_file::MaybeFile,
-    secrets::MaybeSecret,
 };

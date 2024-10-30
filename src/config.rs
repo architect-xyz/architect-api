@@ -50,9 +50,12 @@ pub struct Config {
     /// Use local symbology instead of centralized symbology
     #[serde(default)]
     pub use_local_symbology: bool,
-    /// Use local license server instead of centralized (for debugging)
+    /// Architect license server and certificate authority URL
+    #[serde(default = "Config::default_licensedb")]
+    pub licensedb: Option<String>,
+    /// Architect license server admin URI (unix domain socket)
     #[serde(default)]
-    pub use_local_licensedb: bool,
+    pub licensedb_admin: Option<String>,
     /// Use local marketdata paths for the specified cptys
     #[serde(default)]
     pub use_local_marketdata: Vec<String>,
@@ -146,5 +149,9 @@ impl Config {
 
     fn default_local_base() -> Path {
         Path::from("/local/architect")
+    }
+
+    fn default_licensedb() -> Option<String> {
+        Some("https://ca.architect.com".to_string())
     }
 }

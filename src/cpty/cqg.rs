@@ -447,18 +447,19 @@ pub enum AccountProxySelector {
     AllAccountsForFCMs { clearing_venues: Vec<String> },
 }
 
-#[derive(Debug, postgres_types::FromSql)]
-#[postgres(name = "Selector")]
+#[derive(Debug)]
+#[cfg_attr(feature = "postgres", derive(postgres_types::FromSql))]
+#[cfg_attr(feature = "postgres", postgres(name = "Selector"))]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[cfg_attr(feature = "sqlx", sqlx(type_name = "Selector", rename_all = "UPPERCASE"))]
 pub enum AccountProxySelectorType {
-    #[postgres(name = "ACCOUNTS")]
+    #[cfg_attr(feature = "postgres", postgres(name = "ACCOUNTS"))]
     Accounts,
-    #[postgres(name = "TRADERS")]
+    #[cfg_attr(feature = "postgres", postgres(name = "TRADERS"))]
     Traders,
-    #[postgres(name = "ALL")]
+    #[cfg_attr(feature = "postgres", postgres(name = "ALL"))]
     All,
-    #[postgres(name = "FCM")]
+    #[cfg_attr(feature = "postgres", postgres(name = "FCM"))]
     Fcm,
 }
 
