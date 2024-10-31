@@ -142,6 +142,12 @@ impl PartialOrd for SequenceIdAndNumber {
     }
 }
 
+impl std::fmt::Display for SequenceIdAndNumber {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}:{}", self.sequence_id, self.sequence_number)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct L2BookSnapshot {
     #[serde(rename = "ts")]
