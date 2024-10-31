@@ -7,13 +7,38 @@ use tonic::transport::server::{TcpConnectInfo, TlsConnectInfo};
 use tower_layer::Layer;
 use tower_service::Service;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum AuthInfo {
-    Anonymous,
-    Tls { email: ArcStr, user_id: UserId },
+    Tls { subject: ArcStr, user_id: UserId },
+}
+
+impl AuthInfo {
+    pub fn subject(&self) -> Option<&ArcStr> {
+        match self {
+            Self::Tls { subject, .. } => Some(subject),
+        }
+    }
 }
 
 /// Read the TLS certificate attached to a request, and forward it's subject onto the wrapped services
+///
+/// To use this, add a layer to your tonic server as follows:
+///
+/// ```ignore
+/// let mut server = Server::builder();
+/// server.layer(AuthInfoLayer);
+/// ```
+///
+/// Make sure to serve TLS and validate the certificate against the Architect CA as well.
+///
+/// ```ignore
+/// let tls_config = ServerTlsConfig::new();
+/// server.identity(tls.identity)
+///       .client_ca_root(tls.trusted)
+///       .client_auth_optional(false);
+/// ```
+///
+/// To access to resulting `AuthInfo` object on the request, call `request.extensions::<AuthInfo>()`
 #[derive(Copy, Clone)]
 pub struct AuthInfoLayer;
 
@@ -48,19 +73,15 @@ where
         match request
             .extensions()
             .get::<TlsConnectInfo<TcpConnectInfo>>()
-            .and_then(|i| i.peer_certs()) // >>=
-            .and_then(|peer_certs| peer_certs.first().map(|cert| cert.to_owned())) // >>=
-            .and_then(|end_cert| extract_subject(&end_cert)) // return
+            .and_then(|i| i.peer_certs())
+            .and_then(|peer_certs| peer_certs.first().and_then(extract_subject))
         {
-            None => {
-                request.extensions_mut().insert(AuthInfo::Anonymous);
-            }
+            None => {}
             Some(tls_subject) => {
                 let user_id = UserId::from(&tls_subject);
-                request.extensions_mut().insert(AuthInfo::Tls {
-                    email: tls_subject,
-                    user_id,
-                });
+                request
+                    .extensions_mut()
+                    .insert(AuthInfo::Tls { subject: tls_subject, user_id });
             }
         }
         self.inner.call(request)
