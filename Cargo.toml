@@ -32,6 +32,7 @@ bytes = { workspace = true }
 chrono = { workspace = true }
 clap = { workspace = true, optional = true }
 compact_str = { workspace = true }
+crossbeam = { workspace = true }
 derive = { package = "architect-derive", version = "0.4.0", path = "../derive" }
 derive_builder = { workspace = true }
 derive_more = { workspace = true }
@@ -42,6 +43,7 @@ futures = { workspace = true }
 fxhash = { workspace = true }
 governor = { workspace = true }
 http = { workspace = true, optional = true }
+indexmap = { workspace = true }
 juniper = { workspace = true, optional = true }
 log = { workspace = true }
 netidx = { workspace = true, optional = true }
@@ -72,6 +74,7 @@ tokio-postgres = { workspace = true, optional = true }
 tonic = { workspace = true, optional = true }
 tower-layer = { workspace = true, optional = true }
 tower-service = { workspace = true, optional = true }
+triomphe = { workspace = true }
 uuid = { workspace = true }
 x509-parser = { workspace = true, optional = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }

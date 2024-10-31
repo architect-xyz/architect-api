@@ -1,3 +1,5 @@
+#[cfg(feature = "netidx")]
+use crate::utils::pool::Pooled;
 use crate::{
     symbology::{MarketId, ProductId},
     Dir, DirPair,
@@ -8,7 +10,7 @@ use chrono::{DateTime, TimeDelta, Utc};
 use derive::FromValue;
 use enumflags2::bitflags;
 #[cfg(feature = "netidx")]
-use netidx::{path::Path, pool::Pooled};
+use netidx::path::Path;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;

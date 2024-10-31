@@ -1,11 +1,14 @@
 #![cfg(feature = "netidx")]
 
-use crate::{orderflow::*, utils::messaging::MaybeRequest, ComponentId, HalfOpenRange};
+use crate::{
+    orderflow::*,
+    utils::{messaging::MaybeRequest, pool::Pooled},
+    ComponentId, HalfOpenRange,
+};
 use arcstr::{literal, ArcStr};
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use enumflags2::{bitflags, BitFlags};
-use netidx::pool::Pooled;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use schemars::JsonSchema_repr;
