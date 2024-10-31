@@ -21,7 +21,6 @@ pub use market::{
     ExchangeMarketKind, Market, MarketId, MarketInfo, MarketKind, PoolMarketKind,
 };
 pub use product::{EventContracts, Product, ProductId, ProductKind};
-#[cfg(feature = "netidx")]
 pub use protocol::{SymbologyUpdate, SymbologyUpdateKind};
 pub use route::{Route, RouteId};
 use std::{fmt::Display, str::FromStr};

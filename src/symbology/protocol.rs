@@ -1,23 +1,25 @@
 //! Symbology netidx client/server protocol
 
-#![cfg(feature = "netidx")]
-
 use crate::symbology::{
     Market, MarketId, Product, ProductId, Route, RouteId, Venue, VenueId,
 };
 use bytes::Bytes;
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde_derive::{Deserialize, Serialize};
 
 /// Symbology server/client wire type
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct SymbologyUpdate {
     pub sequence_number: u64,
     pub kind: SymbologyUpdateKind,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack, FromValue)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub enum SymbologyUpdateKind {
     AddRoute(Route),
     RemoveRoute(RouteId),
@@ -35,6 +37,6 @@ pub enum SymbologyUpdateKind {
     /// elided version of [Snapshot] for no-op squashes--never stored in history,
     /// only used for synced clients
     SnapshotUnchanged(Bytes),
-    #[pack(other)]
+    #[cfg_attr(feature = "netidx", pack(other))]
     Unknown,
 }

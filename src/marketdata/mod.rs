@@ -1,7 +1,6 @@
-#[cfg(feature = "netidx")]
-use crate::utils::pool::Pooled;
 use crate::{
     symbology::{MarketId, ProductId},
+    utils::pool::Pooled,
     Dir, DirPair,
 };
 use anyhow::anyhow;
@@ -30,33 +29,32 @@ pub trait NetidxFeedPaths {
 }
 
 /// Book snapshot
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, PartialEq, Eq, Pack)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Snapshot {
     pub book: DirPair<Pooled<Vec<(Decimal, Decimal)>>>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     pub timestamp: DateTime<Utc>,
 }
 
 /// Book update
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, PartialEq, Eq, Pack)]
-#[pack(unwrapped)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", pack(unwrapped))]
 pub enum Update {
     Remove { price: Decimal },
     Change { price: Decimal, size: Decimal },
 }
 
 /// Book updates
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, PartialEq, Eq, Pack)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Updates {
     pub book: DirPair<Pooled<Vec<Update>>>,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     pub timestamp: DateTime<Utc>,
 }
 
-#[cfg(feature = "netidx")]
 impl Default for Updates {
     fn default() -> Self {
         Self {
@@ -66,7 +64,6 @@ impl Default for Updates {
     }
 }
 
-#[cfg(feature = "netidx")]
 impl Updates {
     pub fn len(&self) -> usize {
         self.book.buy.len() + self.book.sell.len()
