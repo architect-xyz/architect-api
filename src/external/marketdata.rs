@@ -100,7 +100,7 @@ impl L1BookSnapshot {
 type SequenceId = u64;
 
 /// Unique sequence id and number.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SequenceIdAndNumber {
     #[serde(rename = "sid")]
     pub sequence_id: SequenceId,
