@@ -5,8 +5,10 @@ use crate::{
 };
 use chrono::{DateTime, Utc};
 use derive::grpc;
+use derive_more::{Deref, DerefMut};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "l1_book_snapshot", response = "L1BookSnapshot")]
@@ -541,3 +543,146 @@ impl Trade {
         }
     }
 }
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "market_status", response = "MarketStatus")]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct MarketStatusRequest {
+    pub market_id: MarketId,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct MarketStatus {
+    #[serde(rename = "m")]
+    pub market_id: MarketId,
+    pub is_trading: Option<bool>,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "ticker", response = "Ticker")]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct TickerRequest {
+    pub market_id: MarketId,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "ticker", response = "Ticker")]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubscribeTickersRequest {
+    /// If None, subscribe from all symbols on the feed
+    pub market_ids: Option<Vec<MarketId>>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct Ticker {
+    #[serde(rename = "m")]
+    pub market_id: MarketId,
+    #[serde(rename = "ts")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "o")]
+    pub open_24h: Option<Decimal>,
+    #[serde(rename = "v")]
+    pub volume_24h: Option<Decimal>,
+    #[serde(rename = "l")]
+    pub low_24h: Option<Decimal>,
+    #[serde(rename = "h")]
+    pub high_24h: Option<Decimal>,
+    #[serde(rename = "vm")]
+    pub volume_30d: Option<Decimal>,
+    #[serde(rename = "oi")]
+    pub open_interest: Option<Decimal>,
+}
+
+impl Ticker {
+    pub fn empty(market_id: MarketId, timestamp: DateTime<Utc>) -> Self {
+        Self {
+            market_id,
+            timestamp: timestamp.timestamp(),
+            timestamp_ns: timestamp.timestamp_subsec_nanos(),
+            open_24h: None,
+            volume_24h: None,
+            low_24h: None,
+            high_24h: None,
+            volume_30d: None,
+            open_interest: None,
+        }
+    }
+
+    pub fn update(
+        &mut self,
+        timestamp: DateTime<Utc>,
+        open_24h: Option<Decimal>,
+        volume_24h: Option<Decimal>,
+        low_24h: Option<Decimal>,
+        high_24h: Option<Decimal>,
+        volume_30d: Option<Decimal>,
+        open_interest: Option<Decimal>,
+    ) {
+        self.timestamp = timestamp.timestamp();
+        self.timestamp_ns = timestamp.timestamp_subsec_nanos();
+        if let Some(open_24h) = open_24h {
+            self.open_24h = Some(open_24h);
+        }
+        if let Some(volume_24h) = volume_24h {
+            self.volume_24h = Some(volume_24h);
+        }
+        if let Some(low_24h) = low_24h {
+            self.low_24h = Some(low_24h);
+        }
+        if let Some(high_24h) = high_24h {
+            self.high_24h = Some(high_24h);
+        }
+        if let Some(volume_30d) = volume_30d {
+            self.volume_30d = Some(volume_30d);
+        }
+        if let Some(open_interest) = open_interest {
+            self.open_interest = Some(open_interest);
+        }
+    }
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "subscribe_liquidations", response = "Liquidation")]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
+pub struct SubscribeLiquidationsRequest {
+    /// If None, subscribe from all symbols on the feed
+    pub market_ids: Option<Vec<MarketId>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+pub struct Liquidation {
+    #[serde(rename = "m")]
+    pub market_id: MarketId,
+    #[serde(rename = "ts")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "d")]
+    pub direction: Dir,
+    #[serde(rename = "p")]
+    pub price: Decimal,
+    #[serde(rename = "s")]
+    pub size: Decimal,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "exchange_specific_fields",
+    response = "ExchangeSpecificFields"
+)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
+pub struct ExchangeSpecificFieldsRequest {
+    pub market_id: MarketId,
+    /// If None, subscribe from all exchange-specific fields on the feed
+    pub fields: Option<Vec<String>>,
+}
+
+// CR alee: we are a somewhat locked to JSON here
+#[derive(
+    Default, Debug, Deref, DerefMut, Clone, PartialEq, Eq, Deserialize, Serialize,
+)]
+#[serde(transparent)]
+pub struct ExchangeSpecificFields(pub BTreeMap<String, serde_json::Value>);

@@ -108,6 +108,53 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("market_status")
+                .route_name("MarketStatus")
+                .input_type("crate::external::marketdata::MarketStatusRequest")
+                .output_type("crate::external::marketdata::MarketStatus")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("ticker")
+                .route_name("Ticker")
+                .input_type("crate::external::marketdata::TickerRequest")
+                .output_type("crate::external::marketdata::Ticker")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("subscribe_tickers")
+                .route_name("SubscribeTickers")
+                .input_type("crate::external::marketdata::SubscribeTickersRequest")
+                .output_type("crate::external::marketdata::Ticker")
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("subscribe_liquidations")
+                .route_name("SubscribeLiquidations")
+                .input_type("crate::external::marketdata::SubscribeLiquidationsRequest")
+                .output_type("crate::external::marketdata::Liquidation")
+                .codec_path(json_codec)
+                .server_streaming()
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("exchange_specific_fields")
+                .route_name("ExchangeSpecificFields")
+                .input_type("crate::external::marketdata::ExchangeSpecificFieldsRequest")
+                .output_type("crate::external::marketdata::ExchangeSpecificFields")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     tonic_build::manual::Builder::new()
         .compile(&[json_symbology_service, json_marketdata_service]);
