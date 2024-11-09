@@ -1,28 +1,33 @@
-#![cfg(feature = "netidx")]
-
+#[cfg(feature = "netidx")]
 use crate::{
     folio::FolioMessage,
     orderflow::{
         AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderStateFlags,
         OrderflowMessage, Out, Reject, RejectReason,
     },
-    symbology::{market::NormalizedMarketInfo, MarketId},
-    AccountPermissions, OrderId, UserId,
+    OrderId,
 };
+use crate::{
+    symbology::{market::NormalizedMarketInfo, MarketId},
+    AccountPermissions, UserId,
+};
+#[cfg(feature = "netidx")]
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use enumflags2::BitFlags;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
-use std::{
-    collections::{BTreeMap, BTreeSet},
-    ops::Deref,
-    sync::Arc,
-};
+use std::collections::BTreeMap;
+#[cfg(feature = "netidx")]
+use std::{collections::BTreeSet, ops::Deref, sync::Arc};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgMarketInfo {
     pub deleted: bool,
     // Don't store contract_id because it's session-specific
@@ -72,12 +77,15 @@ impl std::fmt::Display for CqgMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[cfg(feature = "netidx")]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgOrder {
     #[serde(flatten)]
     pub order: Order,
 }
 
+#[cfg(feature = "netidx")]
 impl Deref for CqgOrder {
     type Target = Order;
 
@@ -86,7 +94,9 @@ impl Deref for CqgOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[cfg(feature = "netidx")]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgTrade {
     pub order_id: OrderId,
     pub exec_id: String,
@@ -95,7 +105,8 @@ pub struct CqgTrade {
     pub time: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CqgAccountSummary {
     /// True if this is a snapshot related message.
     /// Since snapshot might be sent in several messages (including none), client should use
@@ -341,17 +352,19 @@ impl CqgAccountSummary {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CqgPositionStatus {
     pub account: i32,
     pub market: MarketId,
     pub positions: Vec<CqgPosition>,
     #[serde(default)]
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     pub is_snapshot: bool,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CqgPosition {
     /// Surrogate id as a key for updates.
     pub id: i32,
@@ -407,26 +420,17 @@ impl Ord for CqgPosition {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[cfg(feature = "netidx")]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CancelReject {
     pub cancel_id: ArcStr,
     pub order_id: OrderId,
     pub reason: RejectReason,
 }
 
-#[derive(
-    Clone,
-    Debug,
-    FromValue,
-    Serialize,
-    Deserialize,
-    Pack,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CqgAccount {
     pub user_id: UserId,
     pub user_email: String,
@@ -436,7 +440,8 @@ pub struct CqgAccount {
 }
 
 pub type AccountProxyConfig = BTreeMap<UserId, AccountProxy>;
-#[derive(Deserialize, Serialize, Clone, Pack, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Deserialize, Serialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum AccountProxySelector {
     AccountId { cqg_account_id: i32 },
@@ -486,14 +491,17 @@ impl AccountProxySelector {
     }
 }
 
-#[derive(Deserialize, Serialize, Clone, Pack, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Deserialize, Serialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct AccountProxy {
     pub selector: AccountProxySelector,
     #[serde(flatten)]
     pub permissions: AccountPermissions,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[cfg(feature = "netidx")]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub enum CqgMessage {
     Order(CqgOrder),
     Cancel(Cancel),
@@ -516,6 +524,7 @@ pub enum CqgMessage {
     CqgOrderSnapshot(Arc<Vec<(i32, BitFlags<OrderStateFlags, u8>, Order)>>),
 }
 
+#[cfg(feature = "netidx")]
 impl TryInto<OrderflowMessage> for &CqgMessage {
     type Error = ();
 
@@ -542,6 +551,7 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
     }
 }
 
+#[cfg(feature = "netidx")]
 impl TryInto<CqgMessage> for &OrderflowMessage {
     type Error = ();
 
@@ -558,6 +568,7 @@ impl TryInto<CqgMessage> for &OrderflowMessage {
     }
 }
 
+#[cfg(feature = "netidx")]
 impl TryInto<FolioMessage> for &CqgMessage {
     type Error = ();
 
@@ -569,6 +580,7 @@ impl TryInto<FolioMessage> for &CqgMessage {
     }
 }
 
+#[cfg(feature = "netidx")]
 impl TryFrom<&FolioMessage> for CqgMessage {
     type Error = ();
 
