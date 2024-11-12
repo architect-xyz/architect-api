@@ -32,7 +32,7 @@ pub struct TlsConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
     #[serde(default)]
-    pub tls_config: Option<TlsConfig>,
+    pub tls: Option<TlsConfig>,
     #[serde(default)]
     pub netidx_config: Option<PathBuf>,
     #[serde(default)]

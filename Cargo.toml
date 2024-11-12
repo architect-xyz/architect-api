@@ -12,14 +12,7 @@ version = "2.9.1"
 
 [features]
 graphql = ["juniper"]
-grpc = [
-    "http",
-    "tonic",
-    "tonic-build",
-    "tower-layer",
-    "tower-service",
-    "x509-parser",
-]
+grpc = ["tonic", "tonic-build"]
 netidx = ["dep:netidx", "netidx-core", "netidx-derive"]
 postgres = ["postgres-types", "tokio-postgres"]
 
@@ -42,7 +35,6 @@ enumflags2 = { workspace = true }
 futures = { workspace = true }
 fxhash = { workspace = true }
 governor = { workspace = true }
-http = { workspace = true, optional = true }
 indexmap = { workspace = true }
 juniper = { workspace = true, optional = true }
 log = { workspace = true }
@@ -72,11 +64,8 @@ strum_macros = { workspace = true }
 tokio = { workspace = true, optional = true }
 tokio-postgres = { workspace = true, optional = true }
 tonic = { workspace = true, optional = true }
-tower-layer = { workspace = true, optional = true }
-tower-service = { workspace = true, optional = true }
 triomphe = { workspace = true }
 uuid = { workspace = true }
-x509-parser = { workspace = true, optional = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }
 
 [dev-dependencies]
