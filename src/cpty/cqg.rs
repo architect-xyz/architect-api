@@ -1,30 +1,26 @@
-#[cfg(feature = "netidx")]
 use crate::{
     folio::FolioMessage,
     orderflow::{
         AberrantFill, Ack, Cancel, CancelAll, Fill, Order, OrderStateFlags,
         OrderflowMessage, Out, Reject, RejectReason,
     },
-    OrderId,
-};
-use crate::{
     symbology::{market::NormalizedMarketInfo, MarketId},
-    AccountPermissions, UserId,
+    AccountPermissions, OrderId, UserId,
 };
-#[cfg(feature = "netidx")]
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 #[cfg(feature = "netidx")]
 use derive::FromValue;
-#[cfg(feature = "netidx")]
 use enumflags2::BitFlags;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
-use std::collections::BTreeMap;
-#[cfg(feature = "netidx")]
-use std::{collections::BTreeSet, ops::Deref, sync::Arc};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    ops::Deref,
+    sync::Arc,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
@@ -77,7 +73,6 @@ impl std::fmt::Display for CqgMarketInfo {
     }
 }
 
-#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgOrder {
@@ -85,7 +80,6 @@ pub struct CqgOrder {
     pub order: Order,
 }
 
-#[cfg(feature = "netidx")]
 impl Deref for CqgOrder {
     type Target = Order;
 
@@ -94,7 +88,6 @@ impl Deref for CqgOrder {
     }
 }
 
-#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgTrade {
@@ -420,7 +413,6 @@ impl Ord for CqgPosition {
     }
 }
 
-#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CancelReject {
@@ -499,7 +491,6 @@ pub struct AccountProxy {
     pub permissions: AccountPermissions,
 }
 
-#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub enum CqgMessage {
@@ -524,7 +515,6 @@ pub enum CqgMessage {
     CqgOrderSnapshot(Arc<Vec<(i32, BitFlags<OrderStateFlags, u8>, Order)>>),
 }
 
-#[cfg(feature = "netidx")]
 impl TryInto<OrderflowMessage> for &CqgMessage {
     type Error = ();
 
@@ -551,7 +541,6 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
     }
 }
 
-#[cfg(feature = "netidx")]
 impl TryInto<CqgMessage> for &OrderflowMessage {
     type Error = ();
 
@@ -568,7 +557,6 @@ impl TryInto<CqgMessage> for &OrderflowMessage {
     }
 }
 
-#[cfg(feature = "netidx")]
 impl TryInto<FolioMessage> for &CqgMessage {
     type Error = ();
 
@@ -580,7 +568,6 @@ impl TryInto<FolioMessage> for &CqgMessage {
     }
 }
 
-#[cfg(feature = "netidx")]
 impl TryFrom<&FolioMessage> for CqgMessage {
     type Error = ();
 

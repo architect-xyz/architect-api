@@ -1,13 +1,14 @@
-#![cfg(feature = "netidx")]
-
 use crate::{orderflow::*, symbology::market::NormalizedMarketInfo};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct B2C2MarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,
@@ -35,7 +36,9 @@ impl std::fmt::Display for B2C2MarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum B2C2Message {
     Order(B2C2Order),
     Reject(Reject),
@@ -74,7 +77,8 @@ impl TryInto<OrderflowMessage> for &B2C2Message {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct B2C2Order {
     #[serde(flatten)]
     pub order: Order,
@@ -100,7 +104,8 @@ impl DerefMut for B2C2Order {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct B2C2Fill {
     #[serde(flatten)]
     pub fill: Result<Fill, AberrantFill>,

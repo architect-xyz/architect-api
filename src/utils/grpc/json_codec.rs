@@ -1,4 +1,5 @@
 use bytes::{Buf, BufMut};
+use log::trace;
 use std::marker::PhantomData;
 use tonic::{
     codec::{Codec, DecodeBuf, Decoder, EncodeBuf, Encoder},
@@ -36,8 +37,11 @@ impl<U: serde::de::DeserializeOwned> Decoder for JsonDecoder<U> {
         if !buf.has_remaining() {
             return Ok(None);
         }
-
-        let item: Self::Item = serde_json::from_reader(buf.reader())
+        // does not allocate
+        let bytes = buf.copy_to_bytes(buf.remaining());
+        // does not evaluate args unless log level is enabled
+        trace!("grpc+json: {}", std::str::from_utf8(&bytes).unwrap_or("not valid utf-8"));
+        let item: Self::Item = serde_json::from_slice(&bytes)
             .map_err(|e| Status::internal(e.to_string()))?;
         Ok(Some(item))
     }

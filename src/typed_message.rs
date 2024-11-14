@@ -1,9 +1,13 @@
-#![cfg(feature = "netidx")]
-
+#[cfg(feature = "netidx")]
 use super::*;
+#[cfg(feature = "netidx")]
 use derive::{FromInner, FromValue, TryIntoAnyInner};
-use enumflags2::{bitflags, BitFlags};
+use enumflags2::bitflags;
+#[cfg(feature = "netidx")]
+use enumflags2::BitFlags;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+#[cfg(feature = "netidx")]
 use serde::{Deserialize, Serialize};
 
 /// TypedMessage is a wrapper enum for component messages, for all components that
@@ -17,6 +21,7 @@ use serde::{Deserialize, Serialize};
 /// TypedMessage should follow sensible rules for versioning and cross-
 /// compatibility, such as explicit tagging of variants, and avoiding breaking 
 /// changes to the component message types.
+#[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, FromInner, TryIntoAnyInner)]
 #[transitive(B2C2Cpty <-> Orderflow)]
 #[transitive(BinanceCpty <-> Orderflow)]
@@ -92,6 +97,7 @@ pub enum TypedMessage {
     #[pack(tag(205))] TradingActivity(trading_activity::TradingActivityMessage)
 }
 
+#[cfg(feature = "netidx")]
 impl TypedMessage {
     pub fn is_system_control(&self) -> bool {
         matches!(self, TypedMessage::SystemControl(..))

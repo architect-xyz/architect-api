@@ -5,7 +5,6 @@
 use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
-#[cfg(feature = "netidx")]
 use serde::{Deserialize, Serialize};
 
 pub mod fill;
@@ -16,8 +15,9 @@ pub use fill::*;
 pub use order::*;
 pub use order_id::*;
 
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum OrderflowMessage {
     Order(Order),
     Cancel(Cancel),

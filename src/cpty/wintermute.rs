@@ -1,5 +1,3 @@
-#![cfg(feature = "netidx")]
-
 use crate::{
     folio::FolioMessage,
     orderflow::*,
@@ -8,14 +6,17 @@ use crate::{
 };
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
 use log::error;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct WintermuteMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,
@@ -43,7 +44,9 @@ impl std::fmt::Display for WintermuteMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum WintermuteMessage {
     Order(WintermuteOrder),
     Ack(Ack),
@@ -113,7 +116,9 @@ impl TryFrom<&FolioMessage> for WintermuteMessage {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromValue, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct ExecutionReport {
     pub client_order_id: Str,
     pub order_id: Str,
@@ -133,7 +138,9 @@ pub struct ExecutionReport {
     pub text: Option<ArcStr>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, FromValue, Pack)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum ExecType {
     Canceled,
     Rejected,
@@ -141,7 +148,8 @@ pub enum ExecType {
     Trade,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct WintermuteOrder {
     #[serde(flatten)]
     pub order: Order,
@@ -167,7 +175,8 @@ impl DerefMut for WintermuteOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct WintermuteFill {
     #[serde(flatten)]
     pub fill: Result<Fill, AberrantFill>,

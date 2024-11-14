@@ -1,17 +1,19 @@
-#![cfg(feature = "netidx")]
-
 use crate::{
     folio::FolioMessage,
     orderflow::{Fill, Order, OrderflowMessage, Out, Reject},
     symbology::market::NormalizedMarketInfo,
 };
+#[cfg(feature = "netidx")]
 use derive::FromValue;
 use log::error;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum CumberlandMessage {
     Order(Order),
     Reject(Reject),
@@ -75,7 +77,8 @@ impl TryInto<CumberlandMessage> for &FolioMessage {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CumberlandMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,

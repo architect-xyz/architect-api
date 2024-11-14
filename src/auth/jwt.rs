@@ -9,7 +9,6 @@ pub struct Claims<'a> {
     pub exp: i64,
     pub iat: i64,
     pub iss: Cow<'a, str>,
-    pub kid: Cow<'a, str>,
     pub nbf: i64,
     pub sub: Cow<'a, str>,
 }

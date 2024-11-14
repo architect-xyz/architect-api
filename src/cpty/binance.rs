@@ -1,5 +1,3 @@
-#![cfg(feature = "netidx")]
-
 use crate::{
     folio::FolioMessage,
     orderflow::{
@@ -8,18 +6,21 @@ use crate::{
     symbology::market::{MinOrderQuantityUnit, NormalizedMarketInfo},
     Amount, OrderId,
 };
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::{ops::Deref, sync::Arc};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,
     pub is_delisted: bool,
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     pub min_order_quantity: Amount<Decimal, MinOrderQuantityUnit>,
 }
 
@@ -48,7 +49,9 @@ impl std::fmt::Display for BinanceMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum BinanceMessage {
     Order(BinanceOrder),
     Cancel(Cancel),
@@ -61,7 +64,8 @@ pub enum BinanceMessage {
     ExchangeAccountSnapshot(Arc<BinanceSnapshot>),
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceOrder {
     #[serde(flatten)]
     pub order: Order,
@@ -76,7 +80,8 @@ impl Deref for BinanceOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceAck {
     pub ack: Ack,
     pub exchange_order_id: u64,
@@ -90,10 +95,12 @@ impl Deref for BinanceAck {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceCancelAll {}
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceSnapshot {
     pub open_oids: Vec<OrderId>,
 }

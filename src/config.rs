@@ -21,8 +21,6 @@ pub enum Location {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TlsConfig {
-    /// Certificate authority trust chain for mTLS
-    pub trusted: PathBuf,
     /// X509 certificate file
     pub certificate: PathBuf,
     /// X509 certificate key file
@@ -31,6 +29,9 @@ pub struct TlsConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
+    /// Certificate authority trust chain for Architect services
+    #[serde(default)]
+    pub ca: Option<PathBuf>,
     #[serde(default)]
     pub tls: Option<TlsConfig>,
     #[serde(default)]

@@ -1,17 +1,18 @@
-#![cfg(feature = "netidx")]
-
 use crate::{
     folio::FolioMessage, orderflow::*, symbology::market::NormalizedMarketInfo, Dir, Str,
 };
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
 use log::error;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CoinbasePrimeMarketInfo {
     pub base_increment: Decimal,
     pub quote_increment: Decimal,
@@ -42,7 +43,9 @@ impl std::fmt::Display for CoinbasePrimeMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum CoinbasePrimeMessage {
     Order(CoinbasePrimeOrder),
     Cancel(Cancel),
@@ -112,7 +115,9 @@ impl TryFrom<&FolioMessage> for CoinbasePrimeMessage {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromValue, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum ExchangeExecType {
     NewOrder,
     PartialFill,
@@ -127,7 +132,9 @@ pub enum ExchangeExecType {
     OrderStatus,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromValue, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct ExchangeExecutionReport {
     pub order_average_price: Decimal,
     pub client_order_id: Str,
@@ -150,7 +157,9 @@ pub struct ExchangeExecutionReport {
     pub transact_time: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, FromValue, Deserialize, Serialize, Pack)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum ExchangeOrderRejectReason {
     BrokerOption,
     UnknownSymbol,
@@ -161,7 +170,9 @@ pub enum ExchangeOrderRejectReason {
     DuplicateOrder,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct CoinbasePrimeOrder {
     #[serde(flatten)]
     pub order: Order,
@@ -187,7 +198,8 @@ impl DerefMut for CoinbasePrimeOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CoinbasePrimeFill {
     #[serde(flatten)]
     pub fill: Result<Fill, AberrantFill>,

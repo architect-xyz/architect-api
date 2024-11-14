@@ -1,19 +1,23 @@
-#![cfg(feature = "netidx")]
-
 use crate::{folio::FolioMessage, symbology::market::NormalizedMarketInfo};
-use derive::{FromStrJson, FromValue};
+use derive::FromStrJson;
+#[cfg(feature = "netidx")]
+use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 use zeroize::Zeroize;
 
-#[derive(Debug, Clone, Pack, FromValue, FromStrJson, Serialize, Deserialize, Zeroize)]
+#[derive(Debug, Clone, FromStrJson, Serialize, Deserialize, Zeroize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct CboeDigitalCreds {
     pub api_key: String,
     pub api_secret: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CboeDigitalMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,
@@ -40,7 +44,9 @@ impl std::fmt::Display for CboeDigitalMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum CboeDigitalMessage {
     Folio(FolioMessage),
 }

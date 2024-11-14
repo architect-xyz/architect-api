@@ -1,6 +1,6 @@
-#![cfg(feature = "netidx")]
-
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use std::{error::Error as StdError, fmt, str::FromStr};
@@ -15,21 +15,12 @@ use std::{error::Error as StdError, fmt, str::FromStr};
 /// * `0x0` -- None/executor/broadcast
 /// * `0xFFFF` -- Self/loopback
 #[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    PartialOrd,
-    Ord,
-    Hash,
-    Pack,
-    FromValue,
-    Serialize,
-    Deserialize,
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
-#[pack(unwrapped)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
+#[cfg_attr(feature = "netidx", pack(unwrapped))]
 #[repr(transparent)]
 pub struct ComponentId(pub(crate) u16);
 

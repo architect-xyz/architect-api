@@ -1,11 +1,11 @@
-#![cfg(feature = "netidx")]
-
 use crate::symbology::market::NormalizedMarketInfo;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq, Hash, Pack)]
+#[derive(Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "clap", derive(clap::ValueEnum))]
 #[serde(rename_all = "lowercase")]
 pub enum ProductType {
@@ -15,7 +15,8 @@ pub enum ProductType {
     Option,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BybitMarketInfo {
     pub tick_size: Decimal,
     pub step_size: Decimal,

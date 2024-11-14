@@ -1,5 +1,3 @@
-#![cfg(feature = "netidx")]
-
 use crate::{
     folio::FolioMessage,
     orderflow::{
@@ -10,14 +8,18 @@ use crate::{
     Amount, Dir, OrderId,
 };
 use chrono::{DateTime, Utc};
-use derive::{FromStrJson, FromValue};
+use derive::FromStrJson;
+#[cfg(feature = "netidx")]
+use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::{prelude::FromPrimitive, Decimal};
 use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 use zeroize::Zeroize;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum Status {
     #[serde(alias = "online")]
     Online,
@@ -31,7 +33,8 @@ pub enum Status {
     ReduceOnly,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenMarketInfo {
     pub altname: String,
     pub wsname: String,
@@ -80,7 +83,9 @@ impl std::fmt::Display for KrakenMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum KrakenMessage {
     Initialize,
     Order(KrakenOrder),
@@ -168,7 +173,8 @@ impl TryFrom<&FolioMessage> for KrakenMessage {
 pub type KrakenExchangeId = String;
 pub type KrakenUserRef = i32;
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenOrder {
     #[serde(flatten)]
     pub order: Order,
@@ -194,7 +200,8 @@ impl DerefMut for KrakenOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenFill {
     #[serde(flatten)]
     pub fill: Result<Fill, AberrantFill>,
@@ -210,7 +217,8 @@ impl Deref for KrakenFill {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenExternalOrder {
     pub exchange_symbol: String,
     pub exchange_order_id: KrakenExchangeId,
@@ -223,7 +231,8 @@ pub struct KrakenExternalOrder {
     pub time_in_force: TimeInForce,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenExternalFill {
     pub exchange_order_id: KrakenExchangeId,
     pub exchange_trade_id: KrakenExchangeId,
@@ -234,7 +243,9 @@ pub struct KrakenExternalFill {
     pub dir: Dir,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, FromStrJson, Serialize, Deserialize, Zeroize)]
+#[derive(Debug, Clone, FromStrJson, Serialize, Deserialize, Zeroize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct KrakenCredentials {
     /// Account name for the API key--must be user generated since there's
     /// no way to programmatically determine this.  If not provided, the

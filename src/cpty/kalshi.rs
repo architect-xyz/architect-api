@@ -1,8 +1,8 @@
-#![cfg(feature = "netidx")]
-
 use crate::{folio::FolioMessage, orderflow::*, MaybeSecret, OrderId};
 use chrono::{DateTime, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
@@ -16,7 +16,8 @@ pub struct KalshiCredentials {
     pub api_private_key: MaybeSecret<String>,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KalshiOrder {
     #[serde(flatten)]
     pub order: Order,
@@ -30,7 +31,8 @@ impl Deref for KalshiOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KalshiTrade {
     pub order_id: OrderId,
     pub exec_id: String,
@@ -39,7 +41,8 @@ pub struct KalshiTrade {
     pub time: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum KalshiOrderStatus {
     Canceled,
     Executed,
@@ -47,7 +50,8 @@ pub enum KalshiOrderStatus {
     Pending,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KalshiOrderState {
     pub internal_order_id: OrderId,
     pub last_update_time: Option<DateTime<Utc>>,
@@ -55,7 +59,9 @@ pub struct KalshiOrderState {
     pub fills: Vec<Result<Fill, AberrantFill>>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum KalshiMessage {
     Order(KalshiOrder),
     Cancel(Cancel),

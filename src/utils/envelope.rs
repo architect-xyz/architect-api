@@ -1,16 +1,18 @@
-#![cfg(feature = "netidx")]
-
-use crate::{ComponentId, MessageTopic, TypedMessage, UserId};
+#[cfg(feature = "netidx")]
+use crate::TypedMessage;
+use crate::{ComponentId, MessageTopic, UserId};
 use anyhow::Result;
+#[cfg(feature = "netidx")]
 use derive::FromValue;
 use enumflags2::BitFlags;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, Pack, FromValue, Serialize, Deserialize,
-)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum Address {
     Component(ComponentId),
     Channel(UserId, u32),
@@ -73,7 +75,9 @@ impl Address {
 }
 
 /// Architect components communicate with each other by sending `Envelope`s.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Envelope<M: 'static> {
     pub src: Address,
     pub dst: Address,
@@ -92,13 +96,16 @@ impl<M> Envelope<M> {
     }
 }
 
+#[cfg(feature = "netidx")]
 impl Envelope<TypedMessage> {
     pub fn topics(&self) -> BitFlags<MessageTopic> {
         self.msg.topics() | self.stamp.additional_topics
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Stamp {
     pub user_id: Option<UserId>,
     pub sequence: Option<Sequence>,
@@ -117,7 +124,9 @@ impl Stamp {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum Sequence {
     Local(u64),
     Remote { core_id: Uuid, last_seqno: Option<u64>, seqno: u64 },

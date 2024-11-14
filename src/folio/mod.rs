@@ -1,5 +1,3 @@
-#![cfg(feature = "netidx")]
-
 use crate::{
     orderflow::{AberrantFill, Fill},
     symbology::*,
@@ -7,7 +5,9 @@ use crate::{
     AccountId, Dir, HalfOpenRange,
 };
 use chrono::{DateTime, NaiveDate, Utc};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -24,7 +24,9 @@ pub static SCHEMA: &'static str = include_str!("schema.sql");
 /// - GetFills/Fills
 /// - GetAccountSummaries/AccountSummaries
 /// - Fills (realtime unsolicited fill dropcopy)
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum FolioMessage {
     GetFillsQuery(MarketFilter, HalfOpenRange<Option<DateTime<Utc>>>),
     GetFillsQueryResponse(
@@ -67,7 +69,9 @@ pub enum FolioMessage {
     SnapshotBalances,
 }
 
-#[derive(Copy, Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Copy, Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct MarketFilter {
     pub venue: Option<VenueId>,
     pub route: Option<RouteId>,
@@ -75,7 +79,9 @@ pub struct MarketFilter {
     pub quote: Option<ProductId>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct AccountSummaries {
     pub snapshot_ts: DateTime<Utc>,
     pub by_account: BTreeMap<AccountId, AccountSummary>,
@@ -98,7 +104,9 @@ impl AccountSummaries {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct AccountSummary {
     pub balances: BTreeMap<ProductId, Balance>,
     // There could be multiple open positions for a particular Market,
@@ -123,7 +131,9 @@ impl AccountSummary {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Balance {
     /// The total amount of this asset held in the account by the
     /// venue/broker.
@@ -145,7 +155,9 @@ pub struct Balance {
     pub yesterday_balance: Option<Decimal>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Position {
     pub market_id: MarketId,
 
@@ -173,27 +185,35 @@ pub struct Position {
 /// for whatever reason (don't want to paginate, API limit)...
 /// the clamp_sign tells you which side of the range should be
 /// moved when shirking the range.
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct GetFills {
     pub cpty: CptyId,
     pub range: HalfOpenRange<Option<DateTime<Utc>>>,
     pub clamp_sign: ClampSign,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum GetFillsError {
     #[serde(other)]
-    #[pack(other)]
+    #[cfg_attr(feature = "netidx", pack(other))]
     Unknown,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Fills {
     pub range: HalfOpenRange<Option<DateTime<Utc>>>,
     pub fills: Arc<Vec<Result<Fill, AberrantFill>>>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct FolioSyncStatus {
     pub accounts_advertised: Arc<Vec<AccountId>>,
     pub synced_range: Option<HalfOpenRange<DateTime<Utc>>>,

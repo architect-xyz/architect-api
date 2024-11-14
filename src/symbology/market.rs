@@ -3,9 +3,7 @@
 //! market connection to Coinbase's BTC/USD market.
 
 use super::{Product, ProductId, Route, RouteId, Symbolic, Venue, VenueId};
-#[cfg(feature = "netidx")]
-use crate::{cpty, marketdata};
-use crate::{uuid_val, Amount, Str};
+use crate::{cpty, marketdata, uuid_val, Amount, Str};
 use anyhow::Result;
 #[cfg(feature = "netidx")]
 use derive::FromValue;
@@ -147,39 +145,32 @@ impl PoolMarketKind {
     }
 }
 
-#[cfg(not(feature = "netidx"))]
-#[derive(Debug, Display, Clone, Serialize, Deserialize)]
-#[serde(tag = "type", content = "value")]
-pub enum MarketInfo {
-    Test(TestMarketInfo),
-}
-
 /// Cpty-specific info about a market
-#[cfg(feature = "netidx")]
-#[derive(Debug, Display, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Display, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[enum_dispatch(NormalizedMarketInfo)]
 #[serde(tag = "type", content = "value")]
 #[rustfmt::skip]
 pub enum MarketInfo {
-    #[pack(tag(  0))] Test(TestMarketInfo),
-    #[pack(tag(  1))] External(ExternalMarketInfo),
-    #[pack(tag(106))] B2C2(cpty::b2c2::B2C2MarketInfo),
-    #[pack(tag(114))] Binance(cpty::binance::BinanceMarketInfo),
-    #[pack(tag(116))] Bybit(cpty::bybit::BybitMarketInfo),
-    #[pack(tag(112))] CboeDigital(cpty::cboe_digital::CboeDigitalMarketInfo),
-    #[pack(tag(100))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
-    #[pack(tag(111))] CoinbasePrime(cpty::coinbase_prime::CoinbasePrimeMarketInfo),
-    #[pack(tag(104))] Cqg(cpty::cqg::CqgMarketInfo),
-    #[pack(tag(113))] Cumberland(cpty::cumberland::CumberlandMarketInfo),
-    #[pack(tag(110))] DYDX(cpty::dydx::DYDXMarketInfo),
-    #[pack(tag(105))] Databento(marketdata::databento::DatabentoMarketInfo),
-    #[pack(tag(115))] Deltix(cpty::deltix::DeltixMarketInfo),
-    #[pack(tag(101))] Deribit(cpty::deribit::DeribitMarketInfo),
-    #[pack(tag(109))] FalconX(cpty::falconx::FalconXMarketInfo),
-    #[pack(tag(108))] Galaxy(cpty::galaxy::GalaxyMarketInfo),
-    #[pack(tag(102))] Kraken(cpty::kraken::KrakenMarketInfo),
-    #[pack(tag(103))] Okx(cpty::okx::OkxMarketInfo),
-    #[pack(tag(107))] Wintermute(cpty::wintermute::WintermuteMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(  0)))] Test(TestMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(  1)))] External(ExternalMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(106)))] B2C2(cpty::b2c2::B2C2MarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(114)))] Binance(cpty::binance::BinanceMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(116)))] Bybit(cpty::bybit::BybitMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(112)))] CboeDigital(cpty::cboe_digital::CboeDigitalMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(100)))] Coinbase(cpty::coinbase::CoinbaseMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(111)))] CoinbasePrime(cpty::coinbase_prime::CoinbasePrimeMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(104)))] Cqg(cpty::cqg::CqgMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(113)))] Cumberland(cpty::cumberland::CumberlandMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(110)))] DYDX(cpty::dydx::DYDXMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(105)))] Databento(marketdata::databento::DatabentoMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(115)))] Deltix(cpty::deltix::DeltixMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(101)))] Deribit(cpty::deribit::DeribitMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(109)))] FalconX(cpty::falconx::FalconXMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(108)))] Galaxy(cpty::galaxy::GalaxyMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(102)))] Kraken(cpty::kraken::KrakenMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(103)))] Okx(cpty::okx::OkxMarketInfo),
+    #[cfg_attr(feature = "netidx", pack(tag(107)))] Wintermute(cpty::wintermute::WintermuteMarketInfo),
 }
 
 #[enum_dispatch]

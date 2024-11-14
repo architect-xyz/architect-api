@@ -1,14 +1,10 @@
-use crate::OrderId;
-#[cfg(feature = "netidx")]
 use crate::{
     symbology::{MarketId, VenueId},
-    AccountId, Dir, Str, UserId,
+    AccountId, Dir, OrderId, Str, UserId,
 };
 use anyhow::{anyhow, Result};
-#[cfg(feature = "netidx")]
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
-#[cfg(feature = "netidx")]
 use derive_builder::Builder;
 use enumflags2::{bitflags, BitFlags};
 #[cfg(feature = "netidx")]
@@ -18,8 +14,8 @@ use schemars::JsonSchema_repr;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-#[cfg(feature = "netidx")]
-#[derive(Builder, Debug, Clone, Copy, Pack, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Builder, Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Order {
     pub id: OrderId,
     pub market: MarketId,
@@ -39,14 +35,12 @@ pub struct Order {
     pub parent_order: Option<ParentOrder>,
 }
 
-#[cfg(feature = "netidx")]
 impl PartialOrd for Order {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         self.id.partial_cmp(&other.id)
     }
 }
 
-#[cfg(feature = "netidx")]
 impl Ord for Order {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.id.cmp(&other.id)
@@ -337,20 +331,19 @@ pub struct Cancel {
     pub order_id: OrderId,
 }
 
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Default)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CancelAll {
     pub venue_id: Option<VenueId>,
 }
 
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Reject {
     pub order_id: OrderId,
     pub reason: RejectReason,
 }
 
-#[cfg(feature = "netidx")]
 impl Reject {
     pub fn new(order_id: OrderId, reason: RejectReason) -> Self {
         Self { order_id, reason }
@@ -368,8 +361,8 @@ impl Reject {
 /// Reject reason, includes common reasons as unit enum variants,
 /// but leaves room for custom reasons if needed; although, performance
 /// sensitive components should still supertype their own rejects.
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum RejectReason {
     // custom message...can be slow b/c sending the whole string
     Literal(ArcStr),
@@ -382,12 +375,11 @@ pub enum RejectReason {
     NoAccount,
     NotAuthorized,
     NotAuthorizedForAccount,
-    #[pack(other)]
+    #[cfg_attr(feature = "netidx", pack(other))]
     #[serde(other)]
     Unknown,
 }
 
-#[cfg(feature = "netidx")]
 impl std::fmt::Display for RejectReason {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use RejectReason::*;

@@ -1,15 +1,16 @@
-#![cfg(feature = "netidx")]
-
 use crate::{folio::FolioMessage, orderflow::*, symbology::market::NormalizedMarketInfo};
+#[cfg(feature = "netidx")]
 use derive::FromValue;
 use log::error;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct FalconXMarketInfo {}
 
 impl NormalizedMarketInfo for FalconXMarketInfo {
@@ -33,7 +34,9 @@ impl std::fmt::Display for FalconXMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum FalconXMessage {
     Order(FalconXOrder),
     Reject(Reject),
@@ -99,7 +102,8 @@ impl TryFrom<&FolioMessage> for FalconXMessage {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct FalconXOrder {
     #[serde(flatten)]
     pub order: Order,
@@ -125,7 +129,8 @@ impl DerefMut for FalconXOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct FalconXFill {
     #[serde(flatten)]
     pub fill: Result<Fill, AberrantFill>,

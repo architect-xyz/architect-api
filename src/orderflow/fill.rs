@@ -1,20 +1,15 @@
-use crate::symbology::VenueId;
-#[cfg(feature = "netidx")]
 use crate::{
-    symbology::{MarketId, ProductId},
+    symbology::{MarketId, ProductId, VenueId},
     AccountId, Dir, OrderId, UserId,
 };
-#[cfg(feature = "netidx")]
 use anyhow::anyhow;
 #[cfg(feature = "tokio-postgres")]
 use bytes::BytesMut;
-#[cfg(feature = "netidx")]
 use chrono::{DateTime, Utc};
 #[cfg(feature = "netidx")]
 use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
-#[cfg(feature = "netidx")]
 use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
@@ -123,16 +118,16 @@ impl<'a> tokio_postgres::types::FromSql<'a> for FillId {
     }
 }
 
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Fee {
     pub amount: Decimal,
     pub fee_currency: ProductId,
 }
 
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Fill {
     pub kind: FillKind,
     pub fill_id: FillId,
@@ -149,7 +144,7 @@ pub struct Fill {
     /// When the cpty claims the trade happened
     pub trade_time: DateTime<Utc>,
     #[serde(default)]
-    #[pack(default)]
+    #[cfg_attr(feature = "netidx", pack(default))]
     pub trader: Option<UserId>,
     pub fee: Option<Fee>,
 }
@@ -202,9 +197,9 @@ impl rusqlite::ToSql for FillKind {
 
 /// Fills which we received but couldn't parse fully, return details
 /// best effort
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct AberrantFill {
     pub kind: Option<FillKind>,
     pub fill_id: FillId,
@@ -221,7 +216,6 @@ pub struct AberrantFill {
     pub fee: Option<Fee>,
 }
 
-#[cfg(feature = "netidx")]
 impl AberrantFill {
     /// If sufficient fields on AberrantFill, upgrade it into a Fill
     pub fn try_into_fill(self) -> anyhow::Result<Fill> {

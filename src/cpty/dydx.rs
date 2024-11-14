@@ -1,11 +1,11 @@
-#![cfg(feature = "netidx")]
-
 use crate::symbology::market::NormalizedMarketInfo;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DYDXMarketInfo {
     pub step_size: Decimal,
     pub tick_size: Decimal,

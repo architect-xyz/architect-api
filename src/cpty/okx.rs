@@ -1,5 +1,3 @@
-#![cfg(feature = "netidx")]
-
 use crate::{
     folio::FolioMessage,
     orderflow::{
@@ -11,14 +9,18 @@ use crate::{
 };
 use chrono::{DateTime, Utc};
 use compact_str::CompactString;
+#[cfg(feature = "netidx")]
 use derive::FromValue;
+#[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
 use std::{ops::Deref, sync::Arc};
 
 const LIVE: CompactString = CompactString::new_inline("live");
-#[derive(Debug, Clone, Serialize, Deserialize, Pack)]
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxMarketInfo {
     pub tick_sz: Decimal,
     pub min_sz: Decimal,
@@ -50,7 +52,9 @@ impl std::fmt::Display for OkxMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum OkxMessage {
     Order(OkxOrder),
     Cancel(Cancel),
@@ -67,7 +71,9 @@ pub enum OkxMessage {
 }
 
 // Copied from AccountLevel, just making sure we're clear about which types are internal and which are external
-#[derive(Debug, Copy, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum OkxAccountLevel {
     Simple,
     SingleCurrencyMargin,
@@ -75,18 +81,23 @@ pub enum OkxAccountLevel {
     PortfolioMargin,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum OkxMarginMode {
     Cross,
     Isolated,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct OkxAccountConfig {
     pub account_level: OkxAccountLevel,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxOrder {
     #[serde(flatten)]
     pub order: Order,
@@ -101,7 +112,8 @@ impl Deref for OkxOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxAck {
     #[serde(flatten)]
     pub ack: Ack,
@@ -115,10 +127,12 @@ impl Deref for OkxAck {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxCancelAll {}
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxExchangeOrderUpdate {
     pub order_id: OrderId,
     pub exchange_order_id: CompactString,
@@ -126,7 +140,8 @@ pub struct OkxExchangeOrderUpdate {
     pub fill: Option<OkxFill>,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxFill {
     pub order_id: OrderId,
     pub exchange_order_id: CompactString,
@@ -141,7 +156,8 @@ pub struct OkxFill {
     pub fee_ccy: Option<CompactString>,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum OkxExchangeState {
     Live,
     Rejected(RejectReason),
@@ -150,7 +166,8 @@ pub enum OkxExchangeState {
     PartiallyFilled,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxSnapshot {
     pub open_order_ids: Vec<OrderId>,
 }
