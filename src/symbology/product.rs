@@ -57,6 +57,14 @@ pub enum InstrumentType {
     Quanto,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Copy)]
+#[cfg_attr(feature = "netidx", derive(Pack))]
+#[serde(tag = "type", content = "value")]
+pub enum SpreadKind {
+    Intercommodity,
+    Calendar,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]

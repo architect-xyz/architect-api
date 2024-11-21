@@ -22,6 +22,18 @@ use std::{
     sync::Arc,
 };
 
+#[derive(Clone, Debug, Deserialize)]
+pub struct CqgIcsFileRow {
+    #[serde(rename = "Exchange")]
+    pub exchange: String,
+    #[serde(rename = "CQG Instrument Group Symbol")]
+    pub cqg_instrument_group_symbol: String,
+    #[serde(rename = "SSL Underlying Group Symbol")]
+    pub ssl_underlying_group_symbol: String,
+    #[serde(rename = "OSL Underlying Group Symbol")]
+    pub osl_underlying_group_symbol: String,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgMarketInfo {
