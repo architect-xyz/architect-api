@@ -13,6 +13,7 @@ pub mod misc;
 pub mod oms;
 pub mod orderflow;
 pub mod symbology;
+pub mod symbology_v2;
 pub mod system_control;
 #[cfg(feature = "netidx")]
 pub mod trading_activity;

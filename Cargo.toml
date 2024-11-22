@@ -46,6 +46,7 @@ pest = { workspace = true }
 pest_derive = { workspace = true }
 postgres-types = { workspace = true, optional = true }
 rand = { workspace = true }
+regex = { workspace = true }
 rusqlite = { workspace = true, optional = true }
 rust_decimal = { workspace = true }
 rust_decimal_macros = { workspace = true }

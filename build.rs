@@ -26,6 +26,39 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let json_symbology_v2_service = tonic_build::manual::Service::builder()
+        .name("SymbologyV2")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("subscribe_symbology_v2")
+                .route_name("SubscribeSymbologyV2")
+                .input_type("crate::external::symbology_v2::SubscribeSymbologyV2")
+                .output_type("crate::external::symbology_v2::SymbologyTransaction")
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("upload_symbology_v2")
+                .route_name("UploadSymbologyV2")
+                .input_type("crate::external::symbology_v2::SymbologyTransaction")
+                .output_type("crate::external::symbology_v2::UploadSymbologyV2Response")
+                .client_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("prune_expired_symbols")
+                .route_name("PruneExpiredSymbols")
+                .input_type("crate::external::symbology_v2::PruneExpiredSymbolsRequest")
+                .output_type("crate::external::symbology_v2::PruneExpiredSymbolsResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let json_marketdata_service = tonic_build::manual::Service::builder()
         .name("Marketdata")
         .package("json.architect")
@@ -156,8 +189,11 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
-    tonic_build::manual::Builder::new()
-        .compile(&[json_symbology_service, json_marketdata_service]);
+    tonic_build::manual::Builder::new().compile(&[
+        json_symbology_service,
+        json_symbology_v2_service,
+        json_marketdata_service,
+    ]);
 }
 
 fn main() {
