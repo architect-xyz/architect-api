@@ -1,6 +1,6 @@
 use super::{DerivativeKind, Product, TradableProduct};
 use anyhow::{anyhow, bail, Result};
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use derive_more::Display;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -20,7 +20,7 @@ pub struct OptionsSeries(String);
 pub struct OptionsSeriesInfo {
     pub options_series: OptionsSeries,
     pub venue_discriminant: Option<String>,
-    pub quote_currency: Product,
+    pub quote_symbol: Product,
     pub underlying: Product,
     pub multiplier: Decimal,
     pub strikes: OptionsStrikes,
@@ -60,7 +60,7 @@ impl OptionsSeriesInfo {
         instance: &OptionsSeriesInstance,
     ) -> Result<TradableProduct> {
         let base = self.get_product(instance)?;
-        Ok(TradableProduct::new(&base, &self.quote_currency))
+        TradableProduct::try_new(&base, Some(&self.quote_symbol))
     }
 
     pub fn parse_instance(
@@ -80,13 +80,13 @@ impl OptionsSeriesInfo {
 
         let expiration_str = &caps[2];
         let expiration_date = NaiveDate::parse_from_str(expiration_str, "%Y%m%d")?;
-        // TODO: might be easier to split exp date and time in Info
-        let expiration = DateTime::from_naive_utc_and_offset(
-            expiration_date
-                .and_hms_opt(0, 0, 0)
-                .ok_or_else(|| anyhow!("invalid time"))?,
-            Utc,
-        );
+        // TODO: check expiration date
+        let expiration = expiration_date
+            .and_time(self.expiration.time_of_day)
+            .and_local_timezone(self.expiration.time_zone)
+            .single()
+            .ok_or_else(|| anyhow!("expiration time ambiguous with given time zone"))?
+            .to_utc();
 
         let strike = caps[3].parse::<Decimal>()?;
         let put_or_call = caps[4].parse::<PutOrCall>()?;
@@ -120,11 +120,13 @@ pub struct OptionsStrikes {
     pub stride: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct OptionsExpirations {
-    pub start: DateTime<Utc>,
-    pub end: DateTime<Utc>,
+    pub start: NaiveDate,
+    pub end: NaiveDate,
     pub stride_days: u32,
+    pub time_of_day: NaiveTime,
+    pub time_zone: chrono_tz::Tz,
 }
 
 #[derive(Debug, Clone, Copy, Deserialize, Serialize)]

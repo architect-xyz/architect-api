@@ -30,7 +30,7 @@
 //! ```no_run
 //! client.send_order(Order {
 //!     tradable_product: "BTC Crypto/USD".into(),
-//!     execution_venue: "BINANCE".into(),
+//!     execution_venue: Some("BINANCE".into()),
 //!     // ...
 //! });
 //! ```
@@ -52,7 +52,7 @@
 //!
 //! client.send_order(Order {
 //!     tradable_product: tradable_option,
-//!     execution_venue: "MIAX-PEARL".into(),
+//!     execution_venue: None, // use Architect default routing
 //!     // ...
 //! });
 //! ```

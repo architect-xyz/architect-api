@@ -50,7 +50,7 @@
 //! ```
 
 use super::{OptionsExpirations, OptionsStrikes, Product};
-use anyhow::{bail, Result};
+use anyhow::Result;
 use chrono::{DateTime, Utc};
 use derive_more::Display;
 use rust_decimal::Decimal;
@@ -74,7 +74,7 @@ pub struct EventContractSeriesInfo {
 }
 
 impl EventContractSeriesInfo {
-    pub fn get_product(&self, instance: EventContractSeriesInstance) -> Result<Product> {
+    pub fn get_product(&self, _instance: EventContractSeriesInstance) -> Result<Product> {
         todo!()
     }
 
@@ -84,7 +84,7 @@ impl EventContractSeriesInfo {
 
     pub fn parse_instance(
         &self,
-        symbol: impl AsRef<str>,
+        _symbol: impl AsRef<str>,
     ) -> Result<EventContractSeriesInstance> {
         todo!()
     }

@@ -22,6 +22,7 @@ arcstr = { workspace = true }
 bytemuck = { workspace = true }
 bytes = { workspace = true }
 chrono = { workspace = true }
+chrono-tz = { workspace = true, features = ["serde"] }
 clap = { workspace = true, optional = true }
 compact_str = { workspace = true }
 crossbeam = { workspace = true }

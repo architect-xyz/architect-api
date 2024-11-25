@@ -103,6 +103,7 @@ pub struct ExecutionInfo {
     pub execution_venue: ExecutionVenue,
     // NB: for series products, interpretation of `venue_raw_symbol` is venue-specific
     pub venue_raw_symbol: String,
+    pub only_possible_quote_symbol: Option<Product>,
     pub tick_size: Vec<TickSize>,
     pub step_size: Decimal,
     pub min_order_quantity: Decimal,
@@ -115,7 +116,7 @@ pub struct ExecutionInfo {
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum TickSize {
     Simple(Decimal),
-    SubpennyRule { thresholds: Vec<(Decimal, Decimal)> },
+    Varying { thresholds: Vec<(Decimal, Decimal)> },
 }
 
 impl TickSize {

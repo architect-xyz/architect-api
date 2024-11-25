@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
     Debug, Display, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize, Serialize,
 )]
 #[serde(transparent)]
-pub struct Product(String);
+pub struct Product(pub(crate) String);
 
 impl Product {
     fn try_new(
@@ -35,6 +35,10 @@ impl Product {
             None => format!("{} {}", name, product_kind),
         };
         Ok(Self(inner))
+    }
+
+    pub(crate) fn new_unchecked(name: impl AsRef<str>) -> Self {
+        Self(name.as_ref().to_string())
     }
 
     pub fn fiat(name: &str) -> Result<Self> {
