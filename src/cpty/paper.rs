@@ -1,11 +1,6 @@
 #![cfg(feature = "netidx")]
 
-use crate::{
-    folio::FolioMessage,
-    orderflow::*,
-    symbology::{MarketId, ProductId},
-    UserId,
-};
+use crate::{folio::FolioMessage, orderflow::*, symbology::ProductId, UserId};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
@@ -16,7 +11,7 @@ pub enum PaperCptyMessage {
     Init,
     Orderflow(OrderflowMessage),
     Folio(FolioMessage),
-    Bbo(Bbo),
+    ProposeFill(OrderId, Decimal),
     PaperBalanceChange(PaperBalanceChange),
 }
 
@@ -51,19 +46,6 @@ impl TryInto<FolioMessage> for &PaperCptyMessage {
 impl Into<PaperCptyMessage> for &FolioMessage {
     fn into(self) -> PaperCptyMessage {
         PaperCptyMessage::Folio(self.clone())
-    }
-}
-
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
-pub struct Bbo {
-    pub market_id: MarketId,
-    pub bid: Option<Decimal>,
-    pub ask: Option<Decimal>,
-}
-
-impl Bbo {
-    pub fn default(market_id: MarketId) -> Self {
-        Self { market_id, bid: None, ask: None }
     }
 }
 
