@@ -42,6 +42,12 @@ pub enum ProductInfo {
     Unknown,
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub struct TradableProductInfo {
+    pub quote: Product,
+}
+
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DerivativeKind {

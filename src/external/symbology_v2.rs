@@ -22,7 +22,7 @@ pub enum AddOrRemoveVenue<Symbol, Venue, Metadata> {
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum SymbologyUpdate {
     Product(AddOrRemove<Product, ProductInfo>),
-    ProductMarketdata(AddOrRemoveVenue<Product, MarketdataVenue, MarketdataInfo>),
+    TradableProduct(AddOrRemove<TradableProduct, TradableProductInfo>),
     TradableProductMarketdata(
         AddOrRemoveVenue<TradableProduct, MarketdataVenue, MarketdataInfo>,
     ),
