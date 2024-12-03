@@ -15,10 +15,24 @@ pub fn is_more_agg_than(price: Decimal, than: Decimal, dir: Dir) -> bool {
     }
 }
 
+pub fn is_equal_or_more_agg_than(price: Decimal, than: Decimal, dir: Dir) -> bool {
+    match dir {
+        Dir::Buy => price >= than,
+        Dir::Sell => price <= than,
+    }
+}
+
 pub fn is_less_agg_than(price: Decimal, than: Decimal, dir: Dir) -> bool {
     match dir {
         Dir::Buy => price < than,
         Dir::Sell => price > than,
+    }
+}
+
+pub fn is_equal_or_less_agg_than(price: Decimal, than: Decimal, dir: Dir) -> bool {
+    match dir {
+        Dir::Buy => price <= than,
+        Dir::Sell => price >= than,
     }
 }
 
