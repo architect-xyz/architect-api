@@ -24,6 +24,8 @@ use std::{
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct CqgIcsFileRow {
+    #[serde(rename = "CQG Contract Symbol")]
+    pub contract_symbol: String,
     #[serde(rename = "Exchange")]
     pub exchange: String,
     #[serde(rename = "CQG Instrument Group Symbol")]
