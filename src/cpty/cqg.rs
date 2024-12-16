@@ -5,7 +5,7 @@ use crate::{
         OrderflowMessage, Out, Reject, RejectReason,
     },
     symbology::{market::NormalizedMarketInfo, MarketId},
-    AccountPermissions, OrderId, UserId,
+    AccountPermissions, Dir, OrderId, UserId,
 };
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
@@ -106,10 +106,12 @@ impl Deref for CqgOrder {
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgTrade {
     pub order_id: OrderId,
+    pub contract_symbol: Option<String>,
     pub exec_id: String,
     pub scaled_price: i64,
     pub qty: Decimal,
     pub time: DateTime<Utc>,
+    pub side: Dir,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
