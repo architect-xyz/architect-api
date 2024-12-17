@@ -11,7 +11,8 @@ use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
-pub type TwapMessage = AlgoContainerMessage<TwapOrder, AlgoPreview, TwapStatus, AlgoLog>;
+pub type TwapMessage =
+    AlgoContainerMessage<TwapOrder, NoModification, AlgoPreview, TwapStatus, AlgoLog>;
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub struct TwapOrder {

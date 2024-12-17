@@ -11,8 +11,13 @@ use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 
-pub type PovAlgoMessage =
-    AlgoContainerMessage<PovAlgoOrder, AlgoPreview, PovAlgoStatus, AlgoLog>;
+pub type PovAlgoMessage = AlgoContainerMessage<
+    PovAlgoOrder,
+    NoModification,
+    AlgoPreview,
+    PovAlgoStatus,
+    AlgoLog,
+>;
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub struct PovAlgoOrder {

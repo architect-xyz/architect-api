@@ -11,7 +11,7 @@ use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 
 pub type MMAlgoMessage =
-    AlgoContainerMessage<MMAlgoOrder, AlgoPreview, MMAlgoStatus, AlgoLog>;
+    AlgoContainerMessage<MMAlgoOrder, NoModification, AlgoPreview, MMAlgoStatus, AlgoLog>;
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]

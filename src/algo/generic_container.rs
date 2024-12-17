@@ -9,6 +9,7 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub enum AlgoContainerMessage<
     AlgoOrder: 'static,
+    AlgoModify: 'static,
     AlgoPreview: 'static,
     AlgoStatus: 'static,
     AlgoLog: 'static,
@@ -37,6 +38,9 @@ pub enum AlgoContainerMessage<
     GetAlgoStatusResponse(Uuid, Arc<Vec<AlgoStatus>>),
     GetAlgoLog(Uuid, OrderId),
     GetAlgoLogResponse(Uuid, Option<AlgoLog>),
+    AlgoModify(Uuid, AlgoModify),
+    AlgoModifyAccept(Uuid, AlgoModify),
+    AlgoModifyReject(Uuid),
 }
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
@@ -62,9 +66,10 @@ macro_rules! time_opt {
     };
 }
 
-impl<O, P, S, L> TryInto<AlgoMessage> for &AlgoContainerMessage<O, P, S, L>
+impl<O, M, P, S, L> TryInto<AlgoMessage> for &AlgoContainerMessage<O, M, P, S, L>
 where
     for<'a> &'a O: TryInto<AlgoOrder>,
+    for<'a> &'a M: TryInto<AlgoModify>,
     for<'a> &'a P: TryInto<AlgoPreview>,
     for<'a> &'a S: TryInto<AlgoStatus>,
     for<'a> &'a L: TryInto<AlgoLog>,
@@ -81,6 +86,9 @@ where
             ACM::AlgoOut(o) => Ok(AM::AlgoOut(*o)),
             ACM::AlgoReject(r) => Ok(AM::AlgoReject(r.clone())),
             ACM::AlgoStatus(s) => Ok(AM::AlgoStatus(time!(s)?)),
+            ACM::AlgoModify(id, a) => Ok(AM::AlgoModify(*id, time!(a)?)),
+            ACM::AlgoModifyAccept(id, a) => Ok(AM::AlgoModifyAccept(*id, time!(a)?)),
+            ACM::AlgoModifyReject(id) => Ok(AM::AlgoModifyReject(*id)),
             ACM::ChildAck(a) => Ok(AM::ChildAck(*a)),
             ACM::ChildReject(r) => Ok(AM::ChildReject(r.clone())),
             ACM::ChildFill(f) => Ok(AM::ChildFill(*f)),
@@ -114,14 +122,17 @@ where
     }
 }
 
-impl<O, P, S, L> TryInto<AlgoContainerMessage<O, P, S, L>> for &AlgoMessage {
+impl<O, M, P, S, L> TryInto<AlgoContainerMessage<O, M, P, S, L>> for &AlgoMessage {
     type Error = ();
 
-    fn try_into(self) -> Result<AlgoContainerMessage<O, P, S, L>, ()> {
+    fn try_into(self) -> Result<AlgoContainerMessage<O, M, P, S, L>, ()> {
         use AlgoContainerMessage as ACM;
         use AlgoMessage as AM;
         match self {
-            AM::AlgoOrder(..) => Err(()),
+            AM::AlgoOrder(..)
+            | AM::AlgoModify(_, _)
+            | AM::AlgoModifyAccept(_, _)
+            | AM::AlgoModifyReject(_) => Err(()),
             AM::AlgoControl(c) => Ok(ACM::AlgoControl(*c)),
             AM::AlgoAck(a) => Ok(ACM::AlgoAck(*a)),
             AM::AlgoOut(o) => Ok(ACM::AlgoOut(*o)),
@@ -142,13 +153,13 @@ impl<O, P, S, L> TryInto<AlgoContainerMessage<O, P, S, L>> for &AlgoMessage {
     }
 }
 
-impl<O, P, S, L> Into<AlgoContainerMessage<O, P, S, L>> for &OrderflowMessage {
-    fn into(self) -> AlgoContainerMessage<O, P, S, L> {
+impl<O, M, P, S, L> Into<AlgoContainerMessage<O, M, P, S, L>> for &OrderflowMessage {
+    fn into(self) -> AlgoContainerMessage<O, M, P, S, L> {
         AlgoContainerMessage::Orderflow(self.clone())
     }
 }
 
-impl<O, P, S, L> MaybeRequest for AlgoContainerMessage<O, P, S, L> {
+impl<O, M, P, S, L> MaybeRequest for AlgoContainerMessage<O, M, P, S, L> {
     fn request_id(&self) -> Option<Uuid> {
         use AlgoContainerMessage as ACM;
         match self {

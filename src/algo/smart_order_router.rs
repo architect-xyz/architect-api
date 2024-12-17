@@ -11,8 +11,13 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-pub type SmartOrderRouterMessage =
-    AlgoContainerMessage<SmartOrderRouterOrder, AlgoPreview, AlgoStatus, AlgoLog>;
+pub type SmartOrderRouterMessage = AlgoContainerMessage<
+    SmartOrderRouterOrder,
+    NoModification,
+    AlgoPreview,
+    AlgoStatus,
+    AlgoLog,
+>;
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
 pub struct SmartOrderRouterOrder {

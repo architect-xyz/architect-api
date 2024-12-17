@@ -44,6 +44,9 @@ pub enum AlgoMessage {
     GetAlgoStatusResponse(Uuid, Arc<Vec<AlgoStatus>>),
     GetAlgoLog(Uuid, OrderId),
     GetAlgoLogResponse(Uuid, Option<AlgoLog>),
+    AlgoModify(Uuid, AlgoModify),
+    AlgoModifyAccept(Uuid, AlgoModify),
+    AlgoModifyReject(Uuid),
 }
 
 impl TryInto<OrderflowMessage> for &AlgoMessage {
@@ -145,6 +148,11 @@ pub struct AlgoOut {
 pub struct AlgoReject {
     pub order_id: OrderId,
     pub reason: ArcStr,
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub struct AlgoModify {
+    pub order_id: OrderId,
 }
 
 #[derive(
@@ -256,5 +264,15 @@ impl MaybeRequest for AlgoMessage {
             | AlgoMessage::GetAlgoLogResponse(uuid, _) => Some(*uuid),
             _ => None,
         }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+pub struct NoModification {
+    pub order_id: OrderId,
+}
+impl Into<AlgoModify> for &NoModification {
+    fn into(self) -> AlgoModify {
+        AlgoModify { order_id: self.order_id }
     }
 }

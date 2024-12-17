@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
 pub type ChaserAlgoMessage =
-    AlgoContainerMessage<ChaserOrder, AlgoPreview, ChaserStatus, AlgoLog>;
+    AlgoContainerMessage<ChaserOrder, NoModification, AlgoPreview, ChaserStatus, AlgoLog>;
 
 #[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
 pub struct ChaserOrder {
