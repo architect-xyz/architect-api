@@ -11,6 +11,7 @@ use std::{
     collections::{BTreeMap, HashMap},
     path::PathBuf,
 };
+use url::Url;
 
 /// Component location--local to the installation, or hosted by Architect
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -111,6 +112,9 @@ pub struct Config {
     /// External plugin marketdata; cpty name => connection string
     #[serde(default)]
     pub external_marketdata: HashMap<String, String>,
+    /// Connect to the specified userdb; if None, starts a mock userdb
+    /// in process, bound to the same port.
+    pub userdb: Option<Url>,
 }
 
 impl Config {

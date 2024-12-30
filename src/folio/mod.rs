@@ -61,8 +61,6 @@ pub enum FolioMessage {
     SyncFillsBackward(CptyId),
     InvalidateSyncBefore(CptyId, DateTime<Utc>),
     InvalidateSyncAfter(CptyId, DateTime<Utc>),
-    /// Account advertising
-    AdvertiseAccounts(CptyId, Arc<Vec<AccountId>>),
     GetSyncStatus(Uuid, CptyId),
     GetSyncStatusResponse(Uuid, FolioSyncStatus),
     /// Take a snapshot of balances and upsert
@@ -215,7 +213,6 @@ pub struct Fills {
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct FolioSyncStatus {
-    pub accounts_advertised: Arc<Vec<AccountId>>,
     pub synced_range: Option<HalfOpenRange<DateTime<Utc>>>,
     pub beginning_of_time: DateTime<Utc>,
     pub forward_sync_backoff: Option<DateTime<Utc>>,

@@ -11,6 +11,8 @@ name = "architect-api"
 version = "2.19.1"
 
 [features]
+all = ["btreemapped", "graphql", "grpc", "netidx", "postgres"]
+btreemapped = ["dep:btreemapped", "pg_replicate", "postgres-types"]
 graphql = ["juniper"]
 grpc = ["tonic", "tonic-build"]
 netidx = ["dep:netidx", "netidx-core", "netidx-derive"]
@@ -19,6 +21,7 @@ postgres = ["postgres-types", "tokio-postgres"]
 [dependencies]
 anyhow = { workspace = true }
 arcstr = { workspace = true }
+btreemapped = { workspace = true, optional = true }
 bytemuck = { workspace = true }
 bytes = { workspace = true }
 chrono = { workspace = true }
@@ -45,6 +48,7 @@ once_cell = { workspace = true }
 parking_lot = { workspace = true }
 pest = { workspace = true }
 pest_derive = { workspace = true }
+pg_replicate = { workspace = true, optional = true }
 postgres-types = { workspace = true, optional = true }
 rand = { workspace = true }
 regex = { workspace = true }
@@ -65,6 +69,7 @@ tokio = { workspace = true, optional = true }
 tokio-postgres = { workspace = true, optional = true }
 tonic = { workspace = true, optional = true }
 triomphe = { workspace = true }
+url = { workspace = true }
 uuid = { workspace = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }
 

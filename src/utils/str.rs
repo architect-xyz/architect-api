@@ -302,6 +302,14 @@ impl Ord for Str {
     }
 }
 
+impl TryFrom<String> for Str {
+    type Error = anyhow::Error;
+
+    fn try_from(s: String) -> Result<Self, Self::Error> {
+        s.as_str().try_into()
+    }
+}
+
 impl TryFrom<&str> for Str {
     type Error = anyhow::Error;
 
@@ -383,6 +391,23 @@ impl Str {
         S: juniper::ScalarValue,
     {
         <String as juniper::ParseScalarValue<S>>::from_str(value)
+    }
+}
+
+#[cfg(feature = "postgres-types")]
+impl postgres_types::ToSql for Str {
+    postgres_types::to_sql_checked!();
+
+    fn to_sql(
+        &self,
+        ty: &postgres_types::Type,
+        out: &mut bytes::BytesMut,
+    ) -> Result<postgres_types::IsNull, Box<dyn std::error::Error + Sync + Send>> {
+        self.as_str().to_sql(ty, out)
+    }
+
+    fn accepts(ty: &postgres_types::Type) -> bool {
+        String::accepts(ty)
     }
 }
 

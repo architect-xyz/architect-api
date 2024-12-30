@@ -19,6 +19,7 @@ pub use order_id::*;
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum OrderflowMessage {
+    // OrderRequest(OrderRequest),
     Order(Order),
     Cancel(Cancel),
     CancelAll(CancelAll),

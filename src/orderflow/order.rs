@@ -14,7 +14,28 @@ use schemars::JsonSchema_repr;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-#[derive(Builder, Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+// #[derive(Builder, Debug, Clone, Copy, Serialize, Deserialize)]
+// #[cfg_attr(feature = "netidx", derive(Pack))]
+// pub struct OrderRequest {
+//     pub id: Option<OrderId>,
+//     pub market: MarketId,
+//     pub dir: Dir,
+//     pub quantity: Decimal,
+//     #[builder(setter(strip_option), default)]
+//     pub trader: Option<UserId>,
+//     #[builder(setter(strip_option), default)]
+//     pub account: AccountSpecifier,
+//     pub order_type: OrderType,
+//     #[builder(default = "TimeInForce::GoodTilCancel")]
+//     pub time_in_force: TimeInForce,
+//     #[builder(setter(strip_option), default)]
+//     pub quote_id: Option<Str>,
+//     pub source: OrderSource,
+//     #[builder(setter(strip_option), default)]
+//     pub parent_order: Option<ParentOrder>,
+// }
+
+#[derive(Builder, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Order {
     pub id: OrderId,
@@ -33,6 +54,7 @@ pub struct Order {
     pub source: OrderSource,
     #[builder(setter(strip_option), default)]
     pub parent_order: Option<ParentOrder>,
+    // pub recv_time: DateTime<Utc>,
 }
 
 impl PartialOrd for Order {
@@ -88,9 +110,9 @@ impl ParentOrder {
 
 #[cfg(feature = "netidx")]
 impl OrderBuilder {
-    pub fn new(id: OrderId, source: OrderSource, market: MarketId) -> Self {
+    pub fn new(order_id: OrderId, source: OrderSource, market: MarketId) -> Self {
         let mut t = Self::default();
-        t.id(id);
+        t.id(order_id);
         t.source(source);
         t.market(market);
         t
@@ -247,7 +269,6 @@ impl TimeInForce {
     }
 }
 
-#[cfg(feature = "juniper")]
 #[cfg_attr(feature = "juniper", juniper::graphql_object)]
 impl TimeInForce {
     pub fn instruction(&self) -> &'static str {

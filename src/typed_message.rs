@@ -70,7 +70,6 @@ pub enum TypedMessage {
     #[pack(tag(  4))] Oms(oms::OmsMessage),
     #[pack(tag(  5))] Algo(algo::AlgoMessage),
     #[pack(tag(  6))] Folio(folio::FolioMessage),
-    #[pack(tag(  7))] AccountManager(account_manager::AccountMessage),
     #[pack(tag( 10))] ChannelControl(channel_control::ChannelControlMessage),
     #[pack(tag( 98))] ExternalCpty(cpty::generic_external::ExternalCptyMessage),
     #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
@@ -135,14 +134,6 @@ impl TypedMessage {
                     _ => BitFlags::empty(),
                 }
             }
-            TypedMessage::AccountManager(am) => {
-                use account_manager::AccountMessage;
-                match am {
-                    AccountMessage::MapAccounts(..)
-                    | AccountMessage::Accounts(None, _) => MessageTopic::Accounts.into(),
-                    _ => BitFlags::empty(),
-                }
-            }
             _ => BitFlags::empty(),
         }
     }
@@ -154,7 +145,6 @@ impl TypedMessage {
 pub enum MessageTopic {
     Orderflow,
     ExternalOrderflow,
-    Accounts,
 }
 
 pub enum MaybeSplit<A, B> {

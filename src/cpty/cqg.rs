@@ -16,11 +16,7 @@ use enumflags2::BitFlags;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
-use std::{
-    collections::{BTreeMap, BTreeSet},
-    ops::Deref,
-    sync::Arc,
-};
+use std::{collections::BTreeMap, ops::Deref, sync::Arc};
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct CqgIcsFileRow {
@@ -519,15 +515,9 @@ pub enum CqgMessage {
     Reject(Reject),
     CancelReject(CancelReject),
     Folio(FolioMessage),
-    UpdateCqgAccounts {
-        accounts: Arc<BTreeSet<CqgAccount>>,
-        account_proxies: Arc<AccountProxyConfig>,
-        is_snapshot: bool,
-    },
     CqgTrades(Vec<CqgTrade>),
     CqgAccountSummary(CqgAccountSummary),
     CqgPositionStatus(CqgPositionStatus),
-    UpdateCqgAccountsFromDb,
     CqgOrderSnapshot(Arc<Vec<(i32, BitFlags<OrderStateFlags, u8>, Order)>>),
 }
 
@@ -546,8 +536,6 @@ impl TryInto<OrderflowMessage> for &CqgMessage {
             CqgMessage::Fill(f) => Ok(OrderflowMessage::Fill(*f)),
             CqgMessage::Reject(r) => Ok(OrderflowMessage::Reject(r.clone())),
             CqgMessage::CancelReject(_)
-            | CqgMessage::UpdateCqgAccountsFromDb
-            | CqgMessage::UpdateCqgAccounts { .. }
             | CqgMessage::Folio(_)
             | CqgMessage::CqgTrades(_)
             | CqgMessage::CqgAccountSummary(_)

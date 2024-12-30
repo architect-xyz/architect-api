@@ -5,7 +5,7 @@ use crate::{
         OrderType, OrderflowMessage, Out, Reject, TimeInForce,
     },
     symbology::{market::NormalizedMarketInfo, CptyId, MarketId},
-    Address, Dir, HalfOpenRange, OrderId, Str, UserId,
+    AccountId, Address, Dir, HalfOpenRange, OrderId, Str, UserId,
 };
 use anyhow::Result;
 use chrono::{DateTime, Utc};
@@ -235,6 +235,8 @@ impl DeribitExternalOrderAck {
         oid: OrderId,
         mid: MarketId,
         trader: Option<UserId>,
+        account: Option<AccountId>,
+        // recv_time: DateTime<Utc>,
     ) -> Result<DeribitOrder> {
         let order = Order {
             id: oid,
@@ -242,12 +244,13 @@ impl DeribitExternalOrderAck {
             dir: self.dir,
             quantity: self.quantity,
             trader,
-            account: None,
+            account,
             order_type: self.order_type,
             time_in_force: self.time_in_force,
             quote_id: None,
             source: OrderSource::External,
             parent_order: None,
+            // recv_time,
         };
         Ok(DeribitOrder { order })
     }

@@ -1,5 +1,5 @@
-pub mod account;
 pub mod amount;
+pub mod bimap;
 pub mod component_id;
 pub mod dir;
 pub mod dir_pair;
