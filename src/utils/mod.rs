@@ -7,8 +7,6 @@ pub mod duration;
 pub mod envelope;
 #[cfg(feature = "juniper")]
 pub mod graphql_scalars;
-#[cfg(feature = "tonic")]
-pub mod grpc;
 pub mod half_open_range;
 pub mod maybe_file;
 pub mod messaging;

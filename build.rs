@@ -1,6 +1,19 @@
 #[cfg(feature = "tonic")]
 fn build_grpc_stubs() {
-    let json_codec = "crate::utils::grpc::json_codec::JsonCodec";
+    let json_codec = "crate::grpc::json_codec::JsonCodec";
+    let json_health_service = tonic_build::manual::Service::builder()
+        .name("Health")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("check")
+                .route_name("Check")
+                .input_type("crate::grpc::health::HealthCheckRequest")
+                .output_type("crate::grpc::health::HealthCheckResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let json_symbology_service = tonic_build::manual::Service::builder()
         .name("Symbology")
         .package("json.architect")
@@ -190,6 +203,7 @@ fn build_grpc_stubs() {
         )
         .build();
     tonic_build::manual::Builder::new().compile(&[
+        json_health_service,
         json_symbology_service,
         json_symbology_v2_service,
         json_marketdata_service,
