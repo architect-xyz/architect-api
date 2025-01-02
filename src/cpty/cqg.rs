@@ -5,7 +5,7 @@ use crate::{
         OrderflowMessage, Out, Reject, RejectReason,
     },
     symbology::{market::NormalizedMarketInfo, MarketId},
-    AccountPermissions, Dir, OrderId, UserId,
+    Dir, OrderId,
 };
 use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
@@ -16,7 +16,7 @@ use enumflags2::BitFlags;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde_derive::{Deserialize, Serialize};
-use std::{collections::BTreeMap, ops::Deref, sync::Arc};
+use std::{ops::Deref, sync::Arc};
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct CqgIcsFileRow {
@@ -431,76 +431,6 @@ pub struct CancelReject {
     pub cancel_id: ArcStr,
     pub order_id: OrderId,
     pub reason: RejectReason,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash, PartialOrd, Ord)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub struct CqgAccount {
-    pub user_id: UserId,
-    pub user_email: String,
-    pub clearing_venue: String,
-    pub cqg_account_id: i32,
-    pub cqg_trader_id: String,
-}
-
-pub type AccountProxyConfig = BTreeMap<UserId, AccountProxy>;
-#[derive(Deserialize, Serialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[serde(tag = "type", rename_all = "snake_case")]
-pub enum AccountProxySelector {
-    AccountId { cqg_account_id: i32 },
-    AccountIds { cqg_account_ids: Vec<i32> },
-    TraderId { cqg_trader_id: String },
-    TraderIds { cqg_trader_ids: Vec<String> },
-    AllAccounts,
-    AllAccountsForFCMs { clearing_venues: Vec<String> },
-}
-
-#[derive(Debug)]
-#[cfg_attr(feature = "postgres", derive(postgres_types::FromSql))]
-#[cfg_attr(feature = "postgres", postgres(name = "Selector"))]
-#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
-#[cfg_attr(feature = "sqlx", sqlx(type_name = "Selector", rename_all = "UPPERCASE"))]
-pub enum AccountProxySelectorType {
-    #[cfg_attr(feature = "postgres", postgres(name = "ACCOUNTS"))]
-    Accounts,
-    #[cfg_attr(feature = "postgres", postgres(name = "TRADERS"))]
-    Traders,
-    #[cfg_attr(feature = "postgres", postgres(name = "ALL"))]
-    All,
-    #[cfg_attr(feature = "postgres", postgres(name = "FCM"))]
-    Fcm,
-}
-
-impl AccountProxySelector {
-    pub fn selects(&self, cqg_account: &CqgAccount) -> bool {
-        match self {
-            AccountProxySelector::AccountId { cqg_account_id } => {
-                cqg_account.cqg_account_id == *cqg_account_id
-            }
-            AccountProxySelector::AccountIds { cqg_account_ids } => {
-                cqg_account_ids.contains(&cqg_account.cqg_account_id)
-            }
-            AccountProxySelector::TraderId { cqg_trader_id } => {
-                &cqg_account.cqg_trader_id == cqg_trader_id
-            }
-            AccountProxySelector::TraderIds { cqg_trader_ids } => {
-                cqg_trader_ids.contains(&cqg_account.cqg_trader_id)
-            }
-            AccountProxySelector::AllAccounts => true,
-            AccountProxySelector::AllAccountsForFCMs { clearing_venues } => {
-                clearing_venues.contains(&cqg_account.clearing_venue)
-            }
-        }
-    }
-}
-
-#[derive(Deserialize, Serialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-pub struct AccountProxy {
-    pub selector: AccountProxySelector,
-    #[serde(flatten)]
-    pub permissions: AccountPermissions,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
