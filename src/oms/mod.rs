@@ -104,6 +104,7 @@ pub enum OmsRejectReason {
     Literal(ArcStr),
     NotAuthorized,
     NotAuthorizedForAccount,
+    NoDefaultAccount,
     #[pack(other)]
     #[serde(other)]
     Unknown,
@@ -115,6 +116,7 @@ const WOULD_EXCEED_OPEN_BUY_QTY: ArcStr = literal!("would exceed open buy qty li
 const WOULD_EXCEED_OPEN_SELL_QTY: ArcStr = literal!("would exceed open sell qty limit");
 const WOULD_EXCEED_OPEN_QTY: ArcStr = literal!("would exceed open qty limit");
 const WOULD_EXCEED_POS_LIMIT: ArcStr = literal!("would exceed position limit if filled");
+const NO_DEFAULT_ACCOUNT: ArcStr = literal!("no default account for venue for trader");
 
 impl Into<RejectReason> for OmsRejectReason {
     fn into(self) -> RejectReason {
@@ -133,6 +135,7 @@ impl Into<RejectReason> for OmsRejectReason {
             Literal(s) => R::Literal(s),
             NotAuthorized => R::NotAuthorized,
             NotAuthorizedForAccount => R::NotAuthorizedForAccount,
+            NoDefaultAccount => R::Literal(NO_DEFAULT_ACCOUNT),
             Unknown => R::Unknown,
         }
     }
@@ -154,6 +157,7 @@ impl Into<OmsRejectReason> for &RejectReason {
             R::Literal(s) if s == &WOULD_EXCEED_OPEN_SELL_QTY => WouldExceedOpenSellQty,
             R::Literal(s) if s == &WOULD_EXCEED_OPEN_QTY => WouldExceedOpenQty,
             R::Literal(s) if s == &WOULD_EXCEED_POS_LIMIT => WouldExceedPosLimit,
+            R::Literal(s) if s == &NO_DEFAULT_ACCOUNT => NoDefaultAccount,
             R::Literal(s) => Literal(s.clone()),
             _ => Unknown,
         }
