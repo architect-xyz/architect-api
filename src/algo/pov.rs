@@ -9,6 +9,7 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 pub type PovAlgoMessage = AlgoContainerMessage<
@@ -19,7 +20,7 @@ pub type PovAlgoMessage = AlgoContainerMessage<
     AlgoLog,
 >;
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct PovAlgoOrder {
     pub order_id: OrderId,
     pub market: MarketId,
@@ -74,7 +75,7 @@ impl Validate for PovAlgoOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct PovAlgoStatus {
     #[serde(flatten)]
     pub algo_status: AlgoStatus,

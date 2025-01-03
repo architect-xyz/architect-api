@@ -2,6 +2,7 @@
 use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::{error::Error as StdError, fmt, str::FromStr};
 
@@ -15,7 +16,17 @@ use std::{error::Error as StdError, fmt, str::FromStr};
 /// * `0x0` -- None/executor/broadcast
 /// * `0xFFFF` -- Self/loopback
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    JsonSchema,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[cfg_attr(feature = "netidx", derive(Pack))]

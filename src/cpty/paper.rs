@@ -4,9 +4,10 @@ use crate::{folio::FolioMessage, orderflow::*, symbology::ProductId, UserId};
 use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub enum PaperCptyMessage {
     Init,
     Orderflow(OrderflowMessage),
@@ -49,7 +50,7 @@ impl Into<PaperCptyMessage> for &FolioMessage {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct PaperBalanceChange {
     pub product: ProductId,
     pub user: UserId,

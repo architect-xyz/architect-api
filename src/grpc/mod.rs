@@ -10,6 +10,7 @@ pub mod json_codec;
 /// Commonly used type for gRPC server-streaming implementations
 pub type SubscriptionStream<T> = Pin<Box<dyn Stream<Item = Result<T, Status>> + Send>>;
 
+// If adding new services, ensure you also add reference to `.sdk.rs` file in `./codegen.rs`
 pub mod json_service {
     include!(concat!(env!("OUT_DIR"), "/json.architect.Health.rs"));
     include!(concat!(env!("OUT_DIR"), "/json.architect.Symbology.rs"));

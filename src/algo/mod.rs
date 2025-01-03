@@ -9,6 +9,7 @@ use arcstr::ArcStr;
 use chrono::{DateTime, Utc};
 use derive::FromValue;
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use strum_macros::EnumIter;
@@ -21,7 +22,7 @@ pub mod pov;
 pub mod smart_order_router;
 pub mod twap;
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub enum AlgoMessage {
     /// Generally convertible from a specific algo's Order, but not vice versa;
     /// the former conversion is given for AlgoManager to understand the existence
@@ -65,7 +66,7 @@ impl TryInto<OrderflowMessage> for &AlgoMessage {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct AlgoOrder {
     pub order_id: OrderId,
@@ -88,6 +89,7 @@ pub struct AlgoOrder {
     PartialEq,
     Eq,
     EnumIter,
+    JsonSchema,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum AlgoKind {
@@ -106,7 +108,7 @@ pub trait Validate {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct AlgoControl {
     pub order_id: OrderId,
     pub command: AlgoControlCommand,
@@ -126,7 +128,9 @@ impl AlgoControl {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Pack, FromValue, Serialize, Deserialize, JsonSchema,
+)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum AlgoControlCommand {
     Start,
@@ -134,23 +138,23 @@ pub enum AlgoControlCommand {
     Stop,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct AlgoAck {
     pub order_id: OrderId,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct AlgoOut {
     pub order_id: OrderId,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct AlgoReject {
     pub order_id: OrderId,
     pub reason: ArcStr,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct AlgoModify {
     pub order_id: OrderId,
 }
@@ -167,6 +171,7 @@ pub struct AlgoModify {
     Eq,
     PartialOrd,
     Ord,
+    JsonSchema,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum AlgoRunningStatus {
@@ -175,7 +180,7 @@ pub enum AlgoRunningStatus {
     Done,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct AlgoStatus {
     pub order_id: OrderId,
     pub creation_time: DateTime<Utc>,
@@ -183,38 +188,38 @@ pub struct AlgoStatus {
     pub fraction_complete: Option<f64>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct AlgoLog {
     pub order_id: OrderId,
     pub fills: Arc<Vec<Result<Fill, AberrantFill>>>,
     pub rejects: Arc<Vec<Reject>>,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct ChildAck {
     pub algo_order_id: OrderId,
     pub ack: Ack,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct ChildOut {
     pub algo_order_id: OrderId,
     pub out: Out,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct ChildReject {
     pub algo_order_id: OrderId,
     pub reject: Reject,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct ChildFill {
     pub algo_order_id: OrderId,
     pub fill: Result<Fill, AberrantFill>,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct AlgoPreview {
     pub orders: Arc<Vec<(DateTime<Utc>, Order)>>,
 }
@@ -267,7 +272,7 @@ impl MaybeRequest for AlgoMessage {
     }
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct NoModification {
     pub order_id: OrderId,
 }

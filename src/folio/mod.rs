@@ -10,6 +10,7 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -24,7 +25,7 @@ pub static SCHEMA: &'static str = include_str!("schema.sql");
 /// - GetFills/Fills
 /// - GetAccountSummaries/AccountSummaries
 /// - Fills (realtime unsolicited fill dropcopy)
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum FolioMessage {
@@ -67,7 +68,7 @@ pub enum FolioMessage {
     SnapshotBalances,
 }
 
-#[derive(Copy, Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Copy, Debug, Clone, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct MarketFilter {
@@ -77,7 +78,7 @@ pub struct MarketFilter {
     pub quote: Option<ProductId>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct AccountSummaries {
@@ -102,7 +103,7 @@ impl AccountSummaries {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct AccountSummary {
@@ -129,7 +130,7 @@ impl AccountSummary {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Balance {
@@ -153,7 +154,7 @@ pub struct Balance {
     pub yesterday_balance: Option<Decimal>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Position {
@@ -183,7 +184,7 @@ pub struct Position {
 /// for whatever reason (don't want to paginate, API limit)...
 /// the clamp_sign tells you which side of the range should be
 /// moved when shirking the range.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct GetFills {
@@ -192,7 +193,7 @@ pub struct GetFills {
     pub clamp_sign: ClampSign,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum GetFillsError {
@@ -201,7 +202,7 @@ pub enum GetFillsError {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Fills {
@@ -209,7 +210,7 @@ pub struct Fills {
     pub fills: Arc<Vec<Result<Fill, AberrantFill>>>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct FolioSyncStatus {

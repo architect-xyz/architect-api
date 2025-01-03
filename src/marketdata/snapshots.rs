@@ -5,9 +5,10 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct MarketSnapshot {
     pub market: MarketId,
@@ -24,7 +25,7 @@ pub struct MarketSnapshot {
     pub open_interest: Option<Decimal>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct OptionsMarketSnapshot {
     pub market: MarketId,

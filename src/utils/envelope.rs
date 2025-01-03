@@ -7,10 +7,11 @@ use derive::FromValue;
 use enumflags2::BitFlags;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum Address {
@@ -75,7 +76,7 @@ impl Address {
 }
 
 /// Architect components communicate with each other by sending `Envelope`s.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Envelope<M: 'static> {
@@ -103,7 +104,7 @@ impl Envelope<TypedMessage> {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct Stamp {
@@ -124,7 +125,7 @@ impl Stamp {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum Sequence {

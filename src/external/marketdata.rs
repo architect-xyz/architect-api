@@ -7,19 +7,20 @@ use chrono::{DateTime, Utc};
 use derive::grpc;
 use derive_more::{Deref, DerefMut};
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "l1_book_snapshot", response = "L1BookSnapshot")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L1BookSnapshotRequest {
     pub market_id: MarketId,
 }
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "l1_book_snapshots", response = "L1BookSnapshot")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L1BookSnapshotsRequest {
     pub market_ids: Vec<MarketId>,
 }
@@ -33,7 +34,7 @@ pub type L1BookSnapshots = Vec<L1BookSnapshot>;
     response = "L1BookSnapshot",
     server_streaming
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeL1BookSnapshotsRequest {
     /// If None, subscribe from all symbols on the feed
     pub market_ids: Option<Vec<MarketId>>,
@@ -51,7 +52,7 @@ impl From<Option<MarketId>> for SubscribeL1BookSnapshotsRequest {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L1BookSnapshot {
     #[serde(rename = "m")]
     pub market_id: MarketId,
@@ -102,7 +103,9 @@ impl L1BookSnapshot {
 type SequenceId = u64;
 
 /// Unique sequence id and number.
-#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(
+    Default, Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema,
+)]
 pub struct SequenceIdAndNumber {
     #[serde(rename = "sid")]
     pub sequence_id: SequenceId,
@@ -150,7 +153,7 @@ impl std::fmt::Display for SequenceIdAndNumber {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L2BookSnapshot {
     #[serde(rename = "ts")]
     pub timestamp: i64,
@@ -185,7 +188,7 @@ impl L2BookSnapshot {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L2BookDiff {
     #[serde(rename = "ts")]
     pub timestamp: i64,
@@ -303,7 +306,7 @@ impl L2BookDiff {
 ///
 /// # Ok::<(), anyhow::Error>(())
 /// ```
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
 pub enum L2BookUpdate {
     #[serde(rename = "s")]
@@ -337,7 +340,7 @@ impl L2BookUpdate {
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "l2_book_snapshot", response = "L2BookSnapshot")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L2BookSnapshotRequest {
     pub market_id: MarketId,
 }
@@ -349,12 +352,12 @@ pub struct L2BookSnapshotRequest {
     response = "L2BookUpdate",
     server_streaming
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeL2BookUpdatesRequest {
     pub market_id: MarketId,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct ExternalL2BookSnapshot {
     pub timestamp: DateTime<Utc>,
     pub epoch: DateTime<Utc>,
@@ -363,12 +366,12 @@ pub struct ExternalL2BookSnapshot {
     pub asks: Vec<(Decimal, Decimal)>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct QueryExternalL2BookSnapshot {
     pub market_id: MarketId,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L3BookSnapshot {
     #[serde(rename = "ts")]
     pub timestamp: i64,
@@ -390,7 +393,7 @@ pub struct L3BookSnapshot {
     response = "Candle",
     server_streaming
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeCandlesRequest {
     pub market_id: MarketId,
     /// If None, subscribe from all candle widths on the feed
@@ -405,7 +408,7 @@ pub struct SubscribeCandlesRequest {
     response = "Candle",
     server_streaming
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeManyCandlesRequest {
     /// If None, subscribe from all symbols on the feed
     pub market_ids: Option<Vec<MarketId>>,
@@ -419,13 +422,13 @@ pub struct SubscribeManyCandlesRequest {
     response = "Trade",
     server_streaming
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeTradesRequest {
     /// If None, subscribe from all symbols on the feed
     pub market_id: Option<MarketId>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Candle {
     #[serde(rename = "m")]
     pub market_id: MarketId,
@@ -509,7 +512,7 @@ impl Candle {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Trade {
     #[serde(rename = "m")]
     pub market_id: MarketId,
@@ -546,12 +549,12 @@ impl Trade {
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "market_status", response = "MarketStatus")]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 pub struct MarketStatusRequest {
     pub market_id: MarketId,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 pub struct MarketStatus {
     #[serde(rename = "m")]
     pub market_id: MarketId,
@@ -560,20 +563,20 @@ pub struct MarketStatus {
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "ticker", response = "Ticker")]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 pub struct TickerRequest {
     pub market_id: MarketId,
 }
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "ticker", response = "Ticker")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeTickersRequest {
     /// If None, subscribe from all symbols on the feed
     pub market_ids: Option<Vec<MarketId>>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 pub struct Ticker {
     #[serde(rename = "m")]
     pub market_id: MarketId,
@@ -645,13 +648,13 @@ impl Ticker {
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "subscribe_liquidations", response = "Liquidation")]
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
 pub struct SubscribeLiquidationsRequest {
     /// If None, subscribe from all symbols on the feed
     pub market_ids: Option<Vec<MarketId>>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
 pub struct Liquidation {
     #[serde(rename = "m")]
     pub market_id: MarketId,
@@ -673,7 +676,7 @@ pub struct Liquidation {
     name = "exchange_specific_fields",
     response = "ExchangeSpecificFields"
 )]
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
 pub struct ExchangeSpecificFieldsRequest {
     pub market_id: MarketId,
     /// If None, subscribe from all exchange-specific fields on the feed
@@ -682,7 +685,16 @@ pub struct ExchangeSpecificFieldsRequest {
 
 // CR alee: we are a somewhat locked to JSON here
 #[derive(
-    Default, Debug, Deref, DerefMut, Clone, PartialEq, Eq, Deserialize, Serialize,
+    Default,
+    Debug,
+    Deref,
+    DerefMut,
+    Clone,
+    PartialEq,
+    Eq,
+    Deserialize,
+    Serialize,
+    JsonSchema,
 )]
 #[serde(transparent)]
 pub struct ExchangeSpecificFields(pub BTreeMap<String, serde_json::Value>);

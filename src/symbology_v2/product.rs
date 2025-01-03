@@ -5,10 +5,21 @@ use anyhow::{bail, Result};
 use chrono::NaiveDate;
 use derive_more::Display;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 #[derive(
-    Debug, Display, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize, Serialize,
+    Debug,
+    Display,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Deserialize,
+    Serialize,
+    JsonSchema,
 )]
 #[serde(transparent)]
 pub struct Product(pub(crate) String);

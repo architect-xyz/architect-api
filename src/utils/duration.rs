@@ -5,6 +5,11 @@ use chrono::{DateTime, Duration, Utc};
 use derive::Newtype;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+use schemars::{
+    gen::SchemaGenerator,
+    schema::{InstanceType, Schema, SchemaObject},
+    JsonSchema,
+};
 use serde::{Deserialize, Serialize};
 use std::{num::NonZeroU32, str::FromStr};
 
@@ -31,7 +36,27 @@ impl FromStr for HumanDuration {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+impl JsonSchema for HumanDuration {
+    fn schema_name() -> String {
+        // Exclude the module path to make the name in generated schemas clearer.
+        "HumanDuration".to_owned()
+    }
+
+    fn json_schema(_gen: &mut SchemaGenerator) -> Schema {
+        // FIXME probably
+        SchemaObject {
+            instance_type: Some(InstanceType::String.into()),
+            ..Default::default()
+        }
+        .into()
+    }
+
+    fn is_referenceable() -> bool {
+        true
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct RateLimit {
     pub max: NonZeroU32,
     pub per: HumanDuration,

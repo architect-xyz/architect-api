@@ -9,9 +9,10 @@ use log::error;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum CumberlandMessage {
@@ -77,7 +78,7 @@ impl TryInto<CumberlandMessage> for &FolioMessage {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CumberlandMarketInfo {
     pub tick_size: Decimal,

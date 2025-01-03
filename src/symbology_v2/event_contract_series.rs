@@ -54,15 +54,26 @@ use anyhow::Result;
 use chrono::{DateTime, Utc};
 use derive_more::Display;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 #[derive(
-    Debug, Display, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize,
+    Debug,
+    Display,
+    Clone,
+    Hash,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Deserialize,
+    Serialize,
+    JsonSchema,
 )]
 #[serde(transparent)]
 pub struct EventContractSeries(String);
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct EventContractSeriesInfo {
     pub event_contract_series: EventContractSeries,
     pub quote_currency: Product,
@@ -90,7 +101,7 @@ impl EventContractSeriesInfo {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub enum EventContractSeriesInstance {
     Enumerated { outcome: Outcome },
     OptionLike { strike: Decimal, expiration: Option<DateTime<Utc>> },
@@ -105,7 +116,7 @@ impl EventContractSeriesInstance {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum EventContractOutcomes {
     Enumerated { outcomes: Vec<Outcome> },
@@ -122,12 +133,12 @@ impl EventContractOutcomes {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Outcome {
     pub name: String,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, Deserialize, Serialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum YesOrNo {
     Yes,

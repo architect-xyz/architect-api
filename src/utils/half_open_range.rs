@@ -3,9 +3,10 @@ use chrono::{DateTime, Utc};
 use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct HalfOpenRange<T: 'static> {
     pub from_inclusive: T,
@@ -30,7 +31,7 @@ impl<T: Ord> HalfOpenRange<T> {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub enum ClampSign {
     Forwards,  // fix [from_inclusive], clamp by reducing [to_exclusive]

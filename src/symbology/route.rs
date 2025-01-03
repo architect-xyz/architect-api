@@ -10,13 +10,14 @@ use anyhow::Result;
 use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use uuid::{uuid, Uuid};
 
 static ROUTE_NS: Uuid = uuid!("0cadbcc5-98bc-4888-94ba-fbbcb6f39132");
 uuid_val!(RouteId, ROUTE_NS);
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Route {

@@ -10,7 +10,7 @@ use enumflags2::{bitflags, BitFlags};
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
-use schemars::JsonSchema_repr;
+use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
@@ -35,7 +35,9 @@ use serde_json::json;
 //     pub parent_order: Option<ParentOrder>,
 // }
 
-#[derive(Builder, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(
+    Builder, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema,
+)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Order {
     pub id: OrderId,
@@ -69,7 +71,7 @@ impl Ord for Order {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema_repr)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[repr(u8)]
@@ -85,7 +87,7 @@ pub enum OrderSource {
     Other,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema_repr)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[repr(u8)]
@@ -94,7 +96,7 @@ pub enum ParentOrderKind {
     Order,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct ParentOrder {
@@ -176,7 +178,7 @@ impl OrderBuilder {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLUnion))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type")]
@@ -215,7 +217,7 @@ impl OrderType {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct LimitOrderType {
@@ -223,7 +225,7 @@ pub struct LimitOrderType {
     pub post_only: bool,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct StopLossLimitOrderType {
@@ -231,7 +233,7 @@ pub struct StopLossLimitOrderType {
     pub trigger_price: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct TakeProfitLimitOrderType {
@@ -239,7 +241,7 @@ pub struct TakeProfitLimitOrderType {
     pub trigger_price: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum TimeInForce {
@@ -345,20 +347,20 @@ pub enum OrderStateFlags {
 
 pub type OrderState = BitFlags<OrderStateFlags>;
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Cancel {
     pub order_id: OrderId,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Default, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CancelAll {
     pub venue_id: Option<VenueId>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Reject {
     pub order_id: OrderId,
@@ -382,7 +384,7 @@ impl Reject {
 /// Reject reason, includes common reasons as unit enum variants,
 /// but leaves room for custom reasons if needed; although, performance
 /// sensitive components should still supertype their own rejects.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum RejectReason {
     // custom message...can be slow b/c sending the whole string
@@ -420,7 +422,7 @@ impl std::fmt::Display for RejectReason {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Ack {
@@ -433,7 +435,7 @@ impl Ack {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Out {

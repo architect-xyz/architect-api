@@ -3,9 +3,10 @@ use chrono::{DateTime, Utc};
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DatabentoMarketInfo {
     pub tick_size: Decimal,

@@ -8,17 +8,18 @@ use bytes::Bytes;
 use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 
 /// Symbology server/client wire type
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct SymbologyUpdate {
     pub sequence_number: u64,
     pub kind: SymbologyUpdateKind,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub enum SymbologyUpdateKind {
     AddRoute(Route),

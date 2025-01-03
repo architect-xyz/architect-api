@@ -14,7 +14,7 @@ use std::time::Duration;
 pub type TwapMessage =
     AlgoContainerMessage<TwapOrder, NoModification, AlgoPreview, TwapStatus, AlgoLog>;
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct TwapOrder {
     pub order_id: OrderId,
     pub market: MarketId,
@@ -62,7 +62,7 @@ impl Validate for TwapOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct TwapStatus {
     #[serde(flatten)]
     pub algo_status: AlgoStatus,

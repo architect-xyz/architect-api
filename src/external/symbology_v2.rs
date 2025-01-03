@@ -1,9 +1,10 @@
 use crate::symbology_v2::*;
 use chrono::{DateTime, Utc};
 use derive::grpc;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum AddOrRemove<Symbol, Metadata> {
     Add { symbol: Symbol, metadata: Metadata },
@@ -11,14 +12,14 @@ pub enum AddOrRemove<Symbol, Metadata> {
 }
 
 // TODO: maybe too obtuse?
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum AddOrRemoveVenue<Symbol, Venue, Metadata> {
     Add { symbol: Symbol, venue: Venue, metadata: Metadata },
     Remove { symbol: Symbol, venue: Venue },
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum SymbologyUpdate {
     Product(AddOrRemove<Product, ProductInfo>),
@@ -45,7 +46,7 @@ pub enum SymbologyUpdate {
     ),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub enum SymbologyTransaction {
     Begin,
     Update(Vec<SymbologyUpdate>),
@@ -59,7 +60,7 @@ pub enum SymbologyTransaction {
     response = "SymbologyTransaction",
     server_streaming
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeSymbologyV2 {}
 
 #[grpc(package = "json.architect")]
@@ -69,7 +70,7 @@ pub struct SubscribeSymbologyV2 {}
     request = "SymbologyTransaction",
     client_streaming
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct UploadSymbologyV2Response {}
 
 // One-shot RPC to the symbol store to make it expire symbols
@@ -79,7 +80,7 @@ pub struct UploadSymbologyV2Response {}
     name = "prune_expired_symbols",
     response = "PruneExpiredSymbolsResponse"
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct PruneExpiredSymbolsRequest {
     /// If None then it will just use server current time;
     /// otherwise, specify a unix timestamp in seconds
@@ -92,5 +93,5 @@ impl PruneExpiredSymbolsRequest {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct PruneExpiredSymbolsResponse {}

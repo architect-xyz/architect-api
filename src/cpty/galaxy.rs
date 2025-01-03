@@ -7,10 +7,11 @@ use log::error;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct GalaxyMarketInfo {
     pub tick_size: Decimal,
@@ -47,7 +48,7 @@ impl Default for GalaxyMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum GalaxyMessage {
@@ -96,7 +97,7 @@ impl TryInto<OrderflowMessage> for &GalaxyMessage {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct GalaxyOrder {
     #[serde(flatten)]
@@ -117,7 +118,7 @@ impl DerefMut for GalaxyOrder {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct GalaxyAck {
     #[serde(flatten)]
@@ -133,7 +134,7 @@ impl Deref for GalaxyAck {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct GalaxyFill {
     #[serde(flatten)]

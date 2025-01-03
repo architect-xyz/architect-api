@@ -1,5 +1,6 @@
 #[cfg(feature = "tonic")]
 fn build_grpc_stubs() {
+    use std::path::PathBuf;
     let json_codec = "crate::grpc::json_codec::JsonCodec";
     let json_health_service = tonic_build::manual::Service::builder()
         .name("Health")
@@ -202,6 +203,17 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let mut schema_gen_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+    schema_gen_dir.push("schema/generated");
+    schema_builder::manual::Builder::new()
+        .rewrite_crate("architect_api")
+        .out_dir(schema_gen_dir)
+        .compile(&[
+            &json_health_service,
+            &json_symbology_service,
+            &json_symbology_v2_service,
+            &json_marketdata_service,
+        ]);
     tonic_build::manual::Builder::new().compile(&[
         json_health_service,
         json_symbology_service,

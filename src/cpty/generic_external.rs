@@ -9,13 +9,14 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use uuid::Uuid;
 
 /// Protocol for ExternalCpty component to talk to the external cpty;
 /// Ser/de is optimized for JSON communication.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[serde(tag = "type")]
 pub enum ExternalCptyProtocol {
@@ -54,19 +55,19 @@ pub enum ExternalCptyProtocol {
     },
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalSymbology {
     pub markets: Vec<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalBalances {
     pub balances: Vec<(String, Decimal)>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalOrder {
     pub id: OrderId,
@@ -77,14 +78,14 @@ pub struct ExternalOrder {
     pub time_in_force: TimeInForce,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalReject {
     pub order_id: OrderId,
     pub reason: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalFill {
     pub kind: FillKind,
@@ -99,7 +100,7 @@ pub struct ExternalFill {
     pub trade_time: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct ExternalBookSnapshot {
     pub book: DirPair<Arc<Vec<(Decimal, Decimal)>>>, // (price, size)
@@ -108,7 +109,7 @@ pub struct ExternalBookSnapshot {
 
 /// Internal core message type for the ExternalCpty component.
 #[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub enum ExternalCptyMessage {
     Orderflow(OrderflowMessage),
     Folio(FolioMessage),

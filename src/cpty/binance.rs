@@ -11,10 +11,11 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::{ops::Deref, sync::Arc};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceMarketInfo {
     pub tick_size: Decimal,
@@ -49,7 +50,7 @@ impl std::fmt::Display for BinanceMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum BinanceMessage {
@@ -64,7 +65,7 @@ pub enum BinanceMessage {
     ExchangeAccountSnapshot(Arc<BinanceSnapshot>),
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceOrder {
     #[serde(flatten)]
@@ -80,7 +81,7 @@ impl Deref for BinanceOrder {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceAck {
     pub ack: Ack,
@@ -95,11 +96,11 @@ impl Deref for BinanceAck {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceCancelAll {}
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct BinanceSnapshot {
     pub open_oids: Vec<OrderId>,

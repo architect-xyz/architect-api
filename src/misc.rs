@@ -1,7 +1,8 @@
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CoinInfo {
     pub name: String,
@@ -24,7 +25,9 @@ pub struct CoinInfo {
     pub tags: Vec<String>,
 }
 
-#[derive(Clone, Debug, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Clone, Debug, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize, JsonSchema,
+)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum CmeSecurityType {
     CASH,
@@ -39,7 +42,7 @@ pub enum CmeSecurityType {
     OOF,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CmeProductGroupInfo {

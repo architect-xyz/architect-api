@@ -8,13 +8,14 @@ use anyhow::Result;
 use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use uuid::{uuid, Uuid};
 
 static VENUE_NS: Uuid = uuid!("dd85a6c5-b45f-46d1-bf50-793dacb1e51a");
 uuid_val!(VenueId, VENUE_NS);
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Venue {

@@ -14,12 +14,13 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 use std::{ops::Deref, sync::Arc};
 
 const LIVE: CompactString = CompactString::new_inline("live");
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxMarketInfo {
     pub tick_sz: Decimal,
@@ -52,7 +53,7 @@ impl std::fmt::Display for OkxMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum OkxMessage {
@@ -71,7 +72,7 @@ pub enum OkxMessage {
 }
 
 // Copied from AccountLevel, just making sure we're clear about which types are internal and which are external
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum OkxAccountLevel {
@@ -81,7 +82,7 @@ pub enum OkxAccountLevel {
     PortfolioMargin,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum OkxMarginMode {
@@ -89,14 +90,14 @@ pub enum OkxMarginMode {
     Isolated,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct OkxAccountConfig {
     pub account_level: OkxAccountLevel,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxOrder {
     #[serde(flatten)]
@@ -112,7 +113,7 @@ impl Deref for OkxOrder {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxAck {
     #[serde(flatten)]
@@ -127,11 +128,11 @@ impl Deref for OkxAck {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxCancelAll {}
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxExchangeOrderUpdate {
     pub order_id: OrderId,
@@ -140,7 +141,7 @@ pub struct OkxExchangeOrderUpdate {
     pub fill: Option<OkxFill>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxFill {
     pub order_id: OrderId,
@@ -156,7 +157,7 @@ pub struct OkxFill {
     pub fee_ccy: Option<CompactString>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum OkxExchangeState {
     Live,
@@ -166,7 +167,7 @@ pub enum OkxExchangeState {
     PartiallyFilled,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct OkxSnapshot {
     pub open_order_ids: Vec<OrderId>,

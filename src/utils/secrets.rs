@@ -4,6 +4,11 @@
 use bytes::{Buf, BufMut};
 #[cfg(feature = "netidx")]
 use netidx::pack::{Pack, PackError};
+use schemars::{
+    gen::SchemaGenerator,
+    schema::{InstanceType, Schema, SchemaObject},
+    JsonSchema,
+};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{fmt::Display, str::FromStr};
 use zeroize::{Zeroize, Zeroizing};
@@ -56,6 +61,25 @@ macro_rules! from_str_json {
             }
         }
     };
+}
+
+impl<T: Serialize + Zeroize + JsonSchema> JsonSchema for MaybeSecret<T> {
+    fn schema_name() -> String {
+        // Exclude the module path to make the name in generated schemas clearer.
+        "MaybeSecret".to_owned()
+    }
+
+    fn json_schema(_gen: &mut SchemaGenerator) -> Schema {
+        SchemaObject {
+            instance_type: Some(InstanceType::String.into()),
+            ..Default::default()
+        }
+        .into()
+    }
+
+    fn is_referenceable() -> bool {
+        true
+    }
 }
 
 impl<T: Display + Serialize + Zeroize> Display for MaybeSecret<T> {

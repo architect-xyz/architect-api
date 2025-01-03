@@ -5,10 +5,11 @@ use super::{
 use crate::symbology::market::MinOrderQuantityUnit;
 use chrono::{DateTime, Utc};
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ProductInfo {
     Crypto,
@@ -42,13 +43,13 @@ pub enum ProductInfo {
     Unknown,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub struct TradableProductInfo {
     pub quote: Product,
 }
 
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum DerivativeKind {
     /// Normal futures
@@ -59,7 +60,7 @@ pub enum DerivativeKind {
     Quanto,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct SpreadLeg {
     pub product: Product,
     /// Some spreads have different ratios for their legs, like buy 1 A, sell 2 B, buy 1 C;
@@ -97,14 +98,14 @@ impl ProductInfo {
 }
 
 /// Information about a symbol related to its marketdata source.
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
 pub struct MarketdataInfo {
     pub marketdata_venue: MarketdataVenue,
     pub source_raw_symbol: String,
 }
 
 /// Information about a symbol related to its execution route.
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
 pub struct ExecutionInfo {
     pub execution_venue: ExecutionVenue,
     // NB: for series products, interpretation of `venue_raw_symbol` is venue-specific
@@ -118,7 +119,7 @@ pub struct ExecutionInfo {
     pub additional_info: Option<HashMap<String, String>>,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum TickSize {
     Simple(Decimal),

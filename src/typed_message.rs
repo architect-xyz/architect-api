@@ -8,7 +8,11 @@ use enumflags2::BitFlags;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 #[cfg(feature = "netidx")]
+use schemars::JsonSchema;
+use schemars::JsonSchema_repr;
+#[cfg(feature = "netidx")]
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 
 /// TypedMessage is a wrapper enum for component messages, for all components that
 /// this version of Architect is compiled with and supports.  This lets components
@@ -22,7 +26,7 @@ use serde::{Deserialize, Serialize};
 /// compatibility, such as explicit tagging of variants, and avoiding breaking 
 /// changes to the component message types.
 #[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, FromInner, TryIntoAnyInner)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, FromInner, TryIntoAnyInner, JsonSchema)]
 #[transitive(B2C2Cpty <-> Orderflow)]
 #[transitive(BinanceCpty <-> Orderflow)]
 #[transitive(BinanceCpty <-> Folio)]
@@ -141,7 +145,7 @@ impl TypedMessage {
 
 #[bitflags]
 #[repr(u64)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, JsonSchema_repr)]
 pub enum MessageTopic {
     Orderflow,
     ExternalOrderflow,

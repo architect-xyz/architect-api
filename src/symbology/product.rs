@@ -11,6 +11,7 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use uuid::{uuid, Uuid};
@@ -18,7 +19,7 @@ use uuid::{uuid, Uuid};
 static PRODUCT_NS: Uuid = uuid!("bb25a7a7-a61c-485a-ac29-1de369a6a043");
 uuid_val!(ProductId, PRODUCT_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Product {
     pub id: ProductId,
@@ -48,7 +49,7 @@ impl Symbolic for Product {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Copy)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Copy, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum InstrumentType {
@@ -57,7 +58,7 @@ pub enum InstrumentType {
     Quanto,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum ProductKind {
@@ -152,21 +153,21 @@ pub enum ProductKind {
     Unknown,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum EventContracts {
     Single { yes: ProductId, yes_alias: Option<Str> },
     Dual { yes: ProductId, yes_alias: Option<Str>, no: ProductId, no_alias: Option<Str> },
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLUnion))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum TokenInfo {
     ERC20(ERC20TokenInfo),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct ERC20TokenInfo {
     // CR alee: don't use bytes, just use the packed ethers type

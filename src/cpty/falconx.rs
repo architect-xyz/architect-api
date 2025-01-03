@@ -6,10 +6,11 @@ use log::error;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct FalconXMarketInfo {}
 
@@ -34,7 +35,7 @@ impl std::fmt::Display for FalconXMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum FalconXMessage {
@@ -102,7 +103,7 @@ impl TryFrom<&FolioMessage> for FalconXMessage {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct FalconXOrder {
     #[serde(flatten)]
@@ -129,7 +130,7 @@ impl DerefMut for FalconXOrder {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct FalconXFill {
     #[serde(flatten)]

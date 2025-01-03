@@ -79,6 +79,7 @@ serde_yaml = { workspace = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }
 
 [build-dependencies]
+schema_builder = { package = "architect-api-schema-builder", path = "./schema/builder" }
 tonic-build = { workspace = true, optional = true }
 
 [[bench]]

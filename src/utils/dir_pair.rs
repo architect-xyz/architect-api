@@ -5,12 +5,13 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// A dirpair is a structure for holding things that depend on trading direction.
 ///
 /// For example one might hold one's position in a particular coin in a `DirPair<Decimal>`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct DirPair<T: 'static> {
     pub buy: T,

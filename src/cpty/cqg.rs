@@ -15,6 +15,7 @@ use enumflags2::BitFlags;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 use std::{ops::Deref, sync::Arc};
 
@@ -32,7 +33,7 @@ pub struct CqgIcsFileRow {
     pub osl_underlying_group_symbol: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgMarketInfo {
     pub deleted: bool,
@@ -83,7 +84,7 @@ impl std::fmt::Display for CqgMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgOrder {
     #[serde(flatten)]
@@ -98,7 +99,7 @@ impl Deref for CqgOrder {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CqgTrade {
     pub order_id: OrderId,
@@ -110,7 +111,7 @@ pub struct CqgTrade {
     pub side: Dir,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CqgAccountSummary {
     /// True if this is a snapshot related message.
@@ -357,7 +358,7 @@ impl CqgAccountSummary {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CqgPositionStatus {
     pub account: i32,
@@ -368,7 +369,7 @@ pub struct CqgPositionStatus {
     pub is_snapshot: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CqgPosition {
     /// Surrogate id as a key for updates.
@@ -425,7 +426,7 @@ impl Ord for CqgPosition {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CancelReject {
     pub cancel_id: ArcStr,
@@ -433,7 +434,7 @@ pub struct CancelReject {
     pub reason: RejectReason,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub enum CqgMessage {
     Order(CqgOrder),

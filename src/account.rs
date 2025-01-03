@@ -15,6 +15,7 @@ use derive::FromValue;
 use derive_more::{Deref, Display};
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use uuid::Uuid;
@@ -107,7 +108,17 @@ pub enum AccountSpecifier {
 
 /// Set of flags for account permissions
 #[derive(
-    Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord,
+    Debug,
+    Default,
+    Clone,
+    Copy,
+    Serialize,
+    Deserialize,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    JsonSchema,
 )]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct AccountPermissions {

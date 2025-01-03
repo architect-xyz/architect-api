@@ -2,11 +2,12 @@ use crate::{algo::*, utils::messaging::MaybeRequest, OrderId};
 use bytes::Bytes;
 use derive::FromValue;
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub enum AlgoContainerMessage<
     AlgoOrder: 'static,
     AlgoModify: 'static,
@@ -43,7 +44,7 @@ pub enum AlgoContainerMessage<
     AlgoModifyReject(Uuid),
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub enum ChildAlgoOrderflow {
     // CR-someday arao: When redesigning, make this not explicitly enumerated
     ChildTwapOrder(twap::TwapOrder),

@@ -7,6 +7,7 @@ use indexmap::{IndexMap, IndexSet};
 use netidx::pack::{Pack, PackError};
 use once_cell::sync::Lazy;
 use parking_lot::Mutex;
+use schemars::{schema::InstanceType, JsonSchema};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{
     any::{Any, TypeId},
@@ -425,7 +426,6 @@ impl<'de, T: Poolable + Send + 'static + DeserializeOwned> Deserialize<'de>
         <T as Deserialize>::deserialize_in_place(deserializer, place.get_mut())
     }
 }
-
 thread_local! {
     static POOLS_S: RefCell<FxHashMap<TypeId, Box<dyn Any>>> =
         RefCell::new(HashMap::default());
@@ -445,6 +445,28 @@ pub fn take_t<T: Any + Poolable + Send + 'static>(size: usize, max: usize) -> Po
             .unwrap();
         pool.take()
     })
+}
+
+impl<T: Poolable + Send + 'static + JsonSchema> JsonSchema for Pooled<T> {
+    fn schema_name() -> String {
+        // Exclude the module path to make the name in generated schemas clearer.
+        "Pooled".to_owned()
+    }
+
+    fn json_schema(
+        _gen: &mut schemars::gen::SchemaGenerator,
+    ) -> schemars::schema::Schema {
+        // FIXME probably
+        schemars::schema::SchemaObject {
+            instance_type: Some(InstanceType::Array.into()),
+            ..Default::default()
+        }
+        .into()
+    }
+
+    fn is_referenceable() -> bool {
+        true
+    }
 }
 
 #[cfg(feature = "netidx")]

@@ -12,6 +12,7 @@ use enum_dispatch::enum_dispatch;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
 use uuid::{uuid, Uuid};
@@ -19,7 +20,7 @@ use uuid::{uuid, Uuid};
 static MARKET_NS: Uuid = uuid!("0bfe858c-a749-43a9-a99e-6d1f31a760ad");
 uuid_val!(MarketId, MARKET_NS);
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Market {
     pub id: MarketId,
@@ -111,7 +112,7 @@ impl Symbolic for Market {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[serde(tag = "type", content = "value")]
 pub enum MarketKind {
@@ -124,7 +125,7 @@ pub enum MarketKind {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct ExchangeMarketKind {
@@ -132,7 +133,7 @@ pub struct ExchangeMarketKind {
     pub quote: ProductId,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct PoolMarketKind {
     pub products: SmallVec<[ProductId; 2]>,
@@ -146,7 +147,7 @@ impl PoolMarketKind {
 }
 
 /// Cpty-specific info about a market
-#[derive(Debug, Display, Clone, Serialize, Deserialize)]
+#[derive(Debug, Display, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[enum_dispatch(NormalizedMarketInfo)]
 #[serde(tag = "type", content = "value")]
@@ -203,7 +204,7 @@ pub trait NormalizedMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct ExternalMarketInfo {
     pub tick_size: Decimal,
@@ -238,7 +239,7 @@ impl NormalizedMarketInfo for ExternalMarketInfo {
     }
 }
 
-#[derive(Default, Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum MinOrderQuantityUnit {
@@ -247,7 +248,7 @@ pub enum MinOrderQuantityUnit {
     Quote,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct TestMarketInfo {
     pub tick_size: Decimal,

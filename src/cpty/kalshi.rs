@@ -5,10 +5,11 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 use std::ops::Deref;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct KalshiCredentials {
     /// API key UUID from Kalshi
     pub api_key: String,
@@ -16,7 +17,7 @@ pub struct KalshiCredentials {
     pub api_private_key: MaybeSecret<String>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KalshiOrder {
     #[serde(flatten)]
@@ -31,7 +32,7 @@ impl Deref for KalshiOrder {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KalshiTrade {
     pub order_id: OrderId,
@@ -41,7 +42,7 @@ pub struct KalshiTrade {
     pub time: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum KalshiOrderStatus {
     Canceled,
@@ -50,7 +51,7 @@ pub enum KalshiOrderStatus {
     Pending,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KalshiOrderState {
     pub internal_order_id: OrderId,
@@ -59,7 +60,7 @@ pub struct KalshiOrderState {
     pub fills: Vec<Result<Fill, AberrantFill>>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum KalshiMessage {

@@ -1,6 +1,7 @@
 pub use crate::symbology::*;
 use chrono::{DateTime, Utc};
 use derive::grpc;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 #[grpc(package = "json.architect")]
@@ -9,10 +10,10 @@ use serde::{Deserialize, Serialize};
     name = "symbology_snapshot",
     response = "SymbologySnapshot"
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SymbologySnapshotRequest {}
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SymbologySnapshot {
     pub epoch: DateTime<Utc>,
     pub seqno: u64,
@@ -29,10 +30,10 @@ pub struct SymbologySnapshot {
     response = "SymbologyUpdate",
     server_streaming
 )]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeSymbologyUpdatesRequest {}
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SymbologyUpdate {
     pub epoch: DateTime<Utc>,
     pub seqno: u64,

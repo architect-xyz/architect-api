@@ -5,11 +5,22 @@ use derive::FromValue;
 use derive::Newtype;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 use serde_with::DeserializeFromStr;
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    JsonSchema,
 )]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct CptyId {
@@ -37,7 +48,7 @@ impl std::str::FromStr for CptyId {
     }
 }
 
-#[derive(Clone, Debug, DeserializeFromStr, Newtype)]
+#[derive(Clone, Debug, DeserializeFromStr, Newtype, JsonSchema)]
 #[newtype(Deref)]
 pub struct CptyIdFromStr(CptyId);
 

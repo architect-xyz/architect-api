@@ -3,9 +3,10 @@ use derive::FromValue;
 use fxhash::FxHashMap;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Default, Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct LimitsFile {
     #[serde(default)]
     pub max_open_qty: FxHashMap<ProductId, Decimal>,

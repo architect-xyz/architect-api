@@ -1,9 +1,20 @@
 use derive_more::Display;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// A venue that provides marketdata, e.g. COINBASE, DATABENTO, XIGNITE, etc.
 #[derive(
-    Debug, Display, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize,
+    Debug,
+    Display,
+    Clone,
+    Hash,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Serialize,
+    Deserialize,
+    JsonSchema,
 )]
 #[serde(transparent)]
 pub struct MarketdataVenue(String);
@@ -21,7 +32,9 @@ impl PartialEq<ExecutionVenue> for MarketdataVenue {
 }
 
 /// A venue that provides execution, e.g. CME, CBOE, NYSE, etc.
-#[derive(Debug, Display, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(
+    Debug, Display, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, JsonSchema,
+)]
 #[serde(transparent)]
 pub struct ExecutionVenue(String);
 

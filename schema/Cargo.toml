@@ -1,0 +1,9 @@
+[package]
+edition = "2021"
+name = "architect-api-schema"
+version = "0.1.0"
+
+[build-dependencies]
+architect-api = { package = "architect-api", path = "..", features = ["grpc"] }
+schema_builder = { package = "architect-api-schema-builder", path = "./builder" }
+schemars = { workspace = true }

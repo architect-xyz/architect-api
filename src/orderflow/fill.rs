@@ -118,7 +118,7 @@ impl<'a> tokio_postgres::types::FromSql<'a> for FillId {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct Fee {
@@ -126,7 +126,7 @@ pub struct Fee {
     pub fee_currency: ProductId,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct Fill {
     pub kind: FillKind,
@@ -197,7 +197,7 @@ impl rusqlite::ToSql for FillKind {
 
 /// Fills which we received but couldn't parse fully, return details
 /// best effort
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct AberrantFill {

@@ -14,10 +14,11 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DeribitMarketInfo {
     pub tick_size: Decimal,
@@ -46,7 +47,7 @@ impl std::fmt::Display for DeribitMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum DeribitMessage {
@@ -138,11 +139,11 @@ impl TryInto<OrderflowMessage> for &DeribitMessage {
 pub type DeribitExchangeId = String;
 pub type DeribitUserRef = u64;
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CancelAll {}
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DeribitOrder {
     #[serde(flatten)]
@@ -169,7 +170,7 @@ impl DerefMut for DeribitOrder {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DeribitCancel {
     #[serde(flatten)]
@@ -197,7 +198,7 @@ impl DerefMut for DeribitCancel {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DeribitFill {
     #[serde(flatten)]
@@ -214,7 +215,7 @@ impl Deref for DeribitFill {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DeribitExternalOrderAck {
     pub exchange_symbol: String,
@@ -256,7 +257,7 @@ impl DeribitExternalOrderAck {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DeribitExternalFill {
     pub exchange_order_id: DeribitExchangeId,
@@ -274,7 +275,7 @@ pub struct DeribitExternalFill {
     pub is_maker: Option<bool>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum FillOrderStatus {
     #[serde(alias = "open")]
@@ -292,14 +293,14 @@ pub enum FillOrderStatus {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DeribitBalanceQuery {
     pub cpty_id: CptyId,
     pub reply_to: Address,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct DeribitTradeQuery {
     pub cpty_id: CptyId,

@@ -11,7 +11,7 @@ use derive::FromValue;
 use enumflags2::{bitflags, BitFlags};
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
-use schemars::JsonSchema_repr;
+use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::sync::Arc;
@@ -19,19 +19,19 @@ use uuid::Uuid;
 
 pub mod limits_file;
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize, JsonSchema)]
 pub struct ForwardOrderflow {
     pub to: ComponentId,
     pub rule: ForwardOrderflowRule,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, Serialize, Deserialize, JsonSchema)]
 pub enum ForwardOrderflowRule {
     Always,
     OnlyIfNoCptyMatch,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub enum OmsMessage {
     Order(Order),
     OrderUpdate(OmsOrderUpdate),
@@ -60,13 +60,13 @@ pub enum OmsMessage {
     ReconcileOrders(Arc<Vec<ReconcileOrder>>),
 }
 
-#[derive(Debug, Copy, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct ReconcileOrder {
     pub order: Order,
     pub order_state: OrderState,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
 pub struct OmsReject {
     pub order_id: OrderId,
     pub reason: OmsRejectReason,
@@ -90,7 +90,7 @@ impl Into<OmsReject> for &Reject {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
 pub enum OmsRejectReason {
     NotInitialized,
     RateLimitExceeded,
@@ -229,7 +229,7 @@ impl TryInto<OrderflowMessage> for &OmsMessage {
     }
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
 pub struct OrderLog {
     pub timestamp: DateTime<Utc>,
     pub order: Order,
@@ -239,7 +239,7 @@ pub struct OrderLog {
     pub reject_reason: Option<OmsRejectReason>,
 }
 
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize, JsonSchema)]
 pub struct OmsOrderUpdate {
     pub order_id: OrderId,
     pub state: OrderState,
@@ -275,13 +275,13 @@ pub enum FillWarning {
     Overfilled,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
 pub struct GetFillsResponse {
     pub fills: Option<Pooled<Vec<Fill>>>,
     pub aberrant_fills: Option<Pooled<Vec<AberrantFill>>>,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
 pub enum GetFillsError {
     OrderNotFound,
 }
@@ -296,7 +296,7 @@ impl std::fmt::Display for GetFillsError {
 
 impl std::error::Error for GetFillsError {}
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
 pub enum GetOrderError {
     OrderNotFound,
 }

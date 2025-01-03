@@ -7,6 +7,7 @@ use derive::FromValue;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "tokio-postgres")]
 use std::error::Error;
@@ -14,7 +15,7 @@ use std::{ops::Deref, str::FromStr};
 
 /// An order side/direction or a trade execution side/direction.
 /// In GraphQL these are serialized as "buy" or "sell".
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
@@ -146,7 +147,7 @@ impl Dir {
 }
 
 /// Wrapper around `Dir` that serializes to a single uppercase character.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, JsonSchema)]
 pub struct DirAsCharUpper(Dir);
 
 impl Deref for DirAsCharUpper {

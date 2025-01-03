@@ -14,11 +14,12 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::{prelude::FromPrimitive, Decimal};
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 use zeroize::Zeroize;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub enum Status {
     #[serde(alias = "online")]
@@ -33,7 +34,7 @@ pub enum Status {
     ReduceOnly,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenMarketInfo {
     pub altname: String,
@@ -83,7 +84,7 @@ impl std::fmt::Display for KrakenMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum KrakenMessage {
@@ -173,7 +174,7 @@ impl TryFrom<&FolioMessage> for KrakenMessage {
 pub type KrakenExchangeId = String;
 pub type KrakenUserRef = i32;
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenOrder {
     #[serde(flatten)]
@@ -200,7 +201,7 @@ impl DerefMut for KrakenOrder {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenFill {
     #[serde(flatten)]
@@ -217,7 +218,7 @@ impl Deref for KrakenFill {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenExternalOrder {
     pub exchange_symbol: String,
@@ -231,7 +232,7 @@ pub struct KrakenExternalOrder {
     pub time_in_force: TimeInForce,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct KrakenExternalFill {
     pub exchange_order_id: KrakenExchangeId,
@@ -243,7 +244,7 @@ pub struct KrakenExternalFill {
     pub dir: Dir,
 }
 
-#[derive(Debug, Clone, FromStrJson, Serialize, Deserialize, Zeroize)]
+#[derive(Debug, Clone, FromStrJson, Serialize, Deserialize, Zeroize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct KrakenCredentials {

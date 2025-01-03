@@ -3,9 +3,10 @@
 use crate::{folio::FolioMessage, orderflow::*};
 use derive::FromValue;
 use netidx_derive::Pack;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub enum MockCptyMessage {
     Orderflow(OrderflowMessage),
     Folio(FolioMessage),

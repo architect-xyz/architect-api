@@ -19,7 +19,7 @@ pub type SmartOrderRouterMessage = AlgoContainerMessage<
     AlgoLog,
 >;
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct SmartOrderRouterOrder {
     pub order_id: OrderId,
     pub trader: UserId,

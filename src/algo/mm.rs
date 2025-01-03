@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 pub type MMAlgoMessage =
     AlgoContainerMessage<MMAlgoOrder, NoModification, AlgoPreview, MMAlgoStatus, AlgoLog>;
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum ReferencePrice {
     Mid,
@@ -21,7 +21,7 @@ pub enum ReferencePrice {
     HedgeMarketBidAsk,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct HedgeMarket {
     pub market: MarketId,
@@ -30,7 +30,7 @@ pub struct HedgeMarket {
     pub hedge_frac: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct MMAlgoOrder {
     pub order_id: OrderId,
     pub market: MarketId,
@@ -117,7 +117,7 @@ impl Validate for MMAlgoOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct MMAlgoStatus {
     #[serde(flatten)]
     pub algo_status: AlgoStatus,
@@ -142,21 +142,23 @@ impl TryInto<AlgoStatus> for &MMAlgoStatus {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(
+    Debug, Clone, Pack, FromValue, Serialize, Deserialize, PartialEq, Eq, JsonSchema,
+)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum MMAlgoKind {
     MM,
     Spread,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub enum Decision {
     DoNothing(Vec<Reason>),
     Cancel(OrderId, Vec<Reason>),
     Send { price: Decimal, quantity: Decimal },
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 pub enum Reason {
     AlgoPaused,
@@ -175,7 +177,7 @@ pub enum Reason {
     CancelPending,
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct Side {
     pub last_decision: Decision,
     pub last_order_time: DateTime<Utc>,
@@ -198,7 +200,7 @@ impl Side {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct OpenOrder {
     pub order_id: OrderId,
     pub price: Decimal,

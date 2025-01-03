@@ -5,10 +5,21 @@
 use super::Product;
 use anyhow::{bail, Result};
 use derive_more::Display;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 #[derive(
-    Debug, Display, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize, Serialize,
+    Debug,
+    Display,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Deserialize,
+    Serialize,
+    JsonSchema,
 )]
 #[serde(transparent)]
 pub struct TradableProduct(String);

@@ -13,7 +13,9 @@ use netidx::path::Path;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema_repr;
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use std::str::FromStr;
 
 pub mod databento;
@@ -83,7 +85,9 @@ pub enum MessageHeader {
     Snapshot,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq, Hash, Serialize)]
+#[derive(
+    Debug, Clone, Copy, Deserialize, PartialEq, Eq, Hash, Serialize, JsonSchema_repr,
+)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[bitflags]

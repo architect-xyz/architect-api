@@ -5,10 +5,11 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 use zeroize::Zeroize;
 
-#[derive(Debug, Clone, FromStrJson, Serialize, Deserialize, Zeroize)]
+#[derive(Debug, Clone, FromStrJson, Serialize, Deserialize, Zeroize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct CboeDigitalCreds {
@@ -16,7 +17,7 @@ pub struct CboeDigitalCreds {
     pub api_secret: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CboeDigitalMarketInfo {
     pub tick_size: Decimal,
@@ -44,7 +45,7 @@ impl std::fmt::Display for CboeDigitalMarketInfo {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum CboeDigitalMessage {

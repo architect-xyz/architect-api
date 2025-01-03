@@ -3,6 +3,7 @@ use anyhow::{anyhow, bail, Result};
 use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use derive_more::Display;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::{
     fmt,
@@ -11,12 +12,22 @@ use std::{
 };
 
 #[derive(
-    Debug, Display, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize,
+    Debug,
+    Display,
+    Clone,
+    Hash,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Deserialize,
+    Serialize,
+    JsonSchema,
 )]
 #[serde(transparent)]
 pub struct OptionsSeries(String);
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsSeriesInfo {
     pub options_series: OptionsSeries,
     pub venue_discriminant: Option<String>,
@@ -106,21 +117,21 @@ impl OptionsSeriesInfo {
 }
 
 /// A specific option from a series.
-#[derive(Debug, Clone, Copy, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsSeriesInstance {
     pub expiration: DateTime<Utc>,
     pub strike: Decimal,
     pub put_or_call: PutOrCall,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsStrikes {
     pub start: Decimal,
     pub end: Decimal,
     pub stride: Decimal,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsExpirations {
     pub start: NaiveDate,
     pub end: NaiveDate,
@@ -129,14 +140,14 @@ pub struct OptionsExpirations {
     pub time_zone: chrono_tz::Tz,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, Deserialize, Serialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum OptionsExerciseType {
     American,
     European,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
 pub enum PutOrCall {
     #[serde(rename = "P")]
     Put,

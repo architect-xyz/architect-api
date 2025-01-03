@@ -13,12 +13,13 @@ use derive::FromValue;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 use uuid::Uuid;
 use zeroize::Zeroize;
 
-#[derive(Debug, Clone, FromStrJson, Serialize, Deserialize, Zeroize)]
+#[derive(Debug, Clone, FromStrJson, Serialize, Deserialize, Zeroize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct CoinbaseCredentials {
@@ -32,7 +33,7 @@ pub struct CoinbaseCredentials {
     pub api_secret: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CoinbaseMarketInfo {
     pub min_market_funds: Decimal,
@@ -69,7 +70,7 @@ impl NormalizedMarketInfo for CoinbaseMarketInfo {
 }
 
 // CR alee: consider BatchCancel
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub enum CoinbaseMessage {
@@ -151,7 +152,7 @@ impl TryFrom<&FolioMessage> for CoinbaseMessage {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CoinbaseOrder {
     #[serde(flatten)]
@@ -178,7 +179,7 @@ impl DerefMut for CoinbaseOrder {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 pub struct CoinbaseFill {
     #[serde(flatten)]
@@ -195,7 +196,7 @@ impl Deref for CoinbaseFill {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", derive(FromValue))]
 pub struct CoinbaseExchangeOrderUpdate {

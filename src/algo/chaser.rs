@@ -14,7 +14,7 @@ use std::time::Duration;
 pub type ChaserAlgoMessage =
     AlgoContainerMessage<ChaserOrder, NoModification, AlgoPreview, ChaserStatus, AlgoLog>;
 
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct ChaserOrder {
     pub order_id: OrderId,
     pub market: MarketId,
@@ -55,7 +55,7 @@ impl Validate for ChaserOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize)]
+#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
 pub struct ChaserStatus {
     #[serde(flatten)]
     pub algo_status: AlgoStatus,
