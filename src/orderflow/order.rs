@@ -59,6 +59,12 @@ pub struct Order {
     // pub recv_time: DateTime<Utc>,
 }
 
+impl Order {
+    pub fn limit_price(&self) -> Decimal {
+        self.order_type.limit_price()
+    }
+}
+
 impl PartialOrd for Order {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         self.id.partial_cmp(&other.id)

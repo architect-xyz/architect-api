@@ -20,6 +20,7 @@ pub mod generic_container;
 pub mod mm;
 pub mod pov;
 pub mod smart_order_router;
+pub mod take_and_chase;
 pub mod twap;
 
 #[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
@@ -99,6 +100,7 @@ pub enum AlgoKind {
     Twap,
     Spread,
     Chaser,
+    TakeAndChase,
 }
 
 // CR-someday alee: use something more akin to the validator crate

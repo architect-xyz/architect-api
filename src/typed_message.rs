@@ -92,12 +92,13 @@ pub enum TypedMessage {
     #[pack(tag(113))] OkxCpty(cpty::okx::OkxMessage),
     #[pack(tag(114))] KalshiCpty(cpty::kalshi::KalshiMessage),
     #[pack(tag(115))] PaperCpty(cpty::paper::PaperCptyMessage),
-    #[pack(tag(200))] TwapAlgo(algo::twap::TwapMessage),
+    #[pack(tag(200))] TwapAlgo(algo::twap::TwapAlgoMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),
     #[pack(tag(202))] MarketMakerAlgo(algo::mm::MMAlgoMessage),
     #[pack(tag(203))] PovAlgo(algo::pov::PovAlgoMessage),
     #[pack(tag(204))] ChaserAlgo(algo::chaser::ChaserAlgoMessage),
-    #[pack(tag(205))] TradingActivity(trading_activity::TradingActivityMessage)
+    #[pack(tag(205))] TradingActivity(trading_activity::TradingActivityMessage),
+    #[pack(tag(206))] TakeAndChaseAlgo(algo::take_and_chase::TakeAndChaseAlgoMessage),
 }
 
 #[cfg(feature = "netidx")]
@@ -196,10 +197,10 @@ mod test {
     /// test transitive closure of length 3 (B2C2 -> Orderflow -> Algo -> TWAPAlgo)
     #[test]
     fn test_try_into_any_variant_3() -> Result<()> {
-        use crate::{algo::twap::TwapMessage, cpty::b2c2::B2C2Message};
+        use crate::{algo::twap::TwapAlgoMessage, cpty::b2c2::B2C2Message};
         let src =
             TypedMessage::B2C2Cpty(B2C2Message::Out(Out { order_id: OrderId::nil(123) }));
-        let dst: std::result::Result<MaybeSplit<TypedMessage, TwapMessage>, _> =
+        let dst: std::result::Result<MaybeSplit<TypedMessage, TwapAlgoMessage>, _> =
             src.try_into();
         assert_eq!(dst.is_ok(), true);
         Ok(())
