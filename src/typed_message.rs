@@ -99,6 +99,7 @@ pub enum TypedMessage {
     #[pack(tag(204))] ChaserAlgo(algo::chaser::ChaserAlgoMessage),
     #[pack(tag(205))] TradingActivity(trading_activity::TradingActivityMessage),
     #[pack(tag(206))] TakeAndChaseAlgo(algo::take_and_chase::TakeAndChaseAlgoMessage),
+    #[pack(tag(207))] QuoteOneSideAlgo(algo::quote_one_side::QuoteOneSideAlgoMessage),
 }
 
 #[cfg(feature = "netidx")]

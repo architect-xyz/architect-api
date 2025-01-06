@@ -19,6 +19,7 @@ pub mod chaser;
 pub mod generic_container;
 pub mod mm;
 pub mod pov;
+pub mod quote_one_side;
 pub mod smart_order_router;
 pub mod take_and_chase;
 pub mod twap;
@@ -101,6 +102,7 @@ pub enum AlgoKind {
     Spread,
     Chaser,
     TakeAndChase,
+    QuoteOneSide,
 }
 
 // CR-someday alee: use something more akin to the validator crate
