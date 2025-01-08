@@ -47,8 +47,8 @@ fn build_grpc_stubs() {
             tonic_build::manual::Method::builder()
                 .name("subscribe_symbology_v2")
                 .route_name("SubscribeSymbologyV2")
-                .input_type("crate::external::symbology_v2::SubscribeSymbologyV2")
-                .output_type("crate::external::symbology_v2::SymbologyTransaction")
+                .input_type("crate::symbology_v2::protocol::SubscribeSymbologyV2")
+                .output_type("crate::symbology_v2::protocol::SymbologyUpdate")
                 .server_streaming()
                 .codec_path(json_codec)
                 .build(),
@@ -57,9 +57,8 @@ fn build_grpc_stubs() {
             tonic_build::manual::Method::builder()
                 .name("upload_symbology_v2")
                 .route_name("UploadSymbologyV2")
-                .input_type("crate::external::symbology_v2::SymbologyTransaction")
-                .output_type("crate::external::symbology_v2::UploadSymbologyV2Response")
-                .client_streaming()
+                .input_type("crate::symbology_v2::protocol::UploadSymbologyV2Request")
+                .output_type("crate::symbology_v2::protocol::UploadSymbologyV2Response")
                 .codec_path(json_codec)
                 .build(),
         )
@@ -67,8 +66,8 @@ fn build_grpc_stubs() {
             tonic_build::manual::Method::builder()
                 .name("prune_expired_symbols")
                 .route_name("PruneExpiredSymbols")
-                .input_type("crate::external::symbology_v2::PruneExpiredSymbolsRequest")
-                .output_type("crate::external::symbology_v2::PruneExpiredSymbolsResponse")
+                .input_type("crate::symbology_v2::protocol::PruneExpiredSymbolsRequest")
+                .output_type("crate::symbology_v2::protocol::PruneExpiredSymbolsResponse")
                 .codec_path(json_codec)
                 .build(),
         )

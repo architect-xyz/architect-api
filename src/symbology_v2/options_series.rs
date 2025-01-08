@@ -6,11 +6,14 @@ use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::{
+    collections::{BTreeMap, BTreeSet},
     fmt,
     str::{self, FromStr},
     sync::LazyLock,
 };
+use strum_macros::{EnumString, IntoStaticStr};
 
+/// e.g. "AAPL US Options"
 #[derive(
     Debug,
     Display,
@@ -25,7 +28,24 @@ use std::{
     JsonSchema,
 )]
 #[serde(transparent)]
+#[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
+#[cfg_attr(feature = "postgres", postgres(transparent))]
 pub struct OptionsSeries(String);
+
+impl OptionsSeries {
+    pub(crate) fn new_unchecked(name: impl AsRef<str>) -> Self {
+        Self(name.as_ref().to_string())
+    }
+}
+
+impl FromStr for OptionsSeries {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        // CR arao: add validation
+        Ok(Self::new_unchecked(s))
+    }
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsSeriesInfo {
@@ -34,8 +54,9 @@ pub struct OptionsSeriesInfo {
     pub quote_symbol: Product,
     pub underlying: Product,
     pub multiplier: Decimal,
-    pub strikes: OptionsStrikes,
-    pub expiration: OptionsExpirations,
+    pub expiration_time_of_day: NaiveTime,
+    pub expiration_time_zone: chrono_tz::Tz,
+    pub strikes_by_expiration: BTreeMap<NaiveDate, BTreeSet<Decimal>>,
     pub derivative_kind: DerivativeKind,
     pub exercise_type: OptionsExerciseType,
     pub is_cash_settled: bool,
@@ -71,7 +92,7 @@ impl OptionsSeriesInfo {
         instance: &OptionsSeriesInstance,
     ) -> Result<TradableProduct> {
         let base = self.get_product(instance)?;
-        TradableProduct::try_new(&base, Some(&self.quote_symbol))
+        TradableProduct::new(&base, Some(&self.quote_symbol))
     }
 
     pub fn parse_instance(
@@ -83,7 +104,7 @@ impl OptionsSeriesInfo {
                 .unwrap()
         });
 
-        // TODO: check stem
+        // CR alee: check stem
         let symbol = symbol.as_ref();
         let caps = OPTION_SYMBOL_RE
             .captures(symbol)
@@ -91,10 +112,10 @@ impl OptionsSeriesInfo {
 
         let expiration_str = &caps[2];
         let expiration_date = NaiveDate::parse_from_str(expiration_str, "%Y%m%d")?;
-        // TODO: check expiration date
+        // CR alee: check expiration date
         let expiration = expiration_date
-            .and_time(self.expiration.time_of_day)
-            .and_local_timezone(self.expiration.time_zone)
+            .and_time(self.expiration_time_of_day)
+            .and_local_timezone(self.expiration_time_zone)
             .single()
             .ok_or_else(|| anyhow!("expiration time ambiguous with given time zone"))?
             .to_utc();
@@ -140,12 +161,20 @@ pub struct OptionsExpirations {
     pub time_zone: chrono_tz::Tz,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize, Serialize, JsonSchema)]
+#[derive(
+    Debug, Clone, Copy, EnumString, IntoStaticStr, Deserialize, Serialize, JsonSchema,
+)]
 #[serde(rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
 pub enum OptionsExerciseType {
     American,
     European,
+    #[serde(other)]
+    Unknown,
 }
+
+#[cfg(feature = "postgres")]
+crate::to_sql_str!(OptionsExerciseType);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
 pub enum PutOrCall {

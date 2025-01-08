@@ -172,7 +172,7 @@ macro_rules! uuid_val {
             }
 
             fn accepts(ty: &tokio_postgres::types::Type) -> bool {
-                Uuid::accepts(ty)
+                <Uuid as postgres_types::FromSql>::accepts(ty)
             }
         }
     };

@@ -12,7 +12,10 @@ pub mod maybe_file;
 pub mod messaging;
 pub mod option_type;
 pub mod pool;
+#[cfg(feature = "postgres")]
+pub mod postgres;
 pub mod price;
 pub mod secrets;
+pub mod sequence;
 pub mod str;
 pub mod uuid_val;

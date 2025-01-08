@@ -69,18 +69,21 @@
 //! })
 //! ```
 
-// TODO: make doc-comments compile
-// TODO: marketdata info examples, execution info examples
+// CR alee: make doc-comments compile
+// CR alee: marketdata info examples, execution info examples
 
 pub mod event_contract_series;
-pub mod metadata;
+pub mod execution_info;
+pub mod marketdata_info;
 pub mod options_series;
 pub mod product;
+pub mod protocol;
 pub mod tradable_product;
 pub mod venue;
 
 pub use event_contract_series::*;
-pub use metadata::*;
+pub use execution_info::*;
+pub use marketdata_info::*;
 pub use options_series::*;
 pub use product::*;
 pub use tradable_product::*;

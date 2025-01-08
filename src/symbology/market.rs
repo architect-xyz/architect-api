@@ -15,6 +15,7 @@ use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
+use strum_macros::{EnumString, IntoStaticStr};
 use uuid::{uuid, Uuid};
 
 static MARKET_NS: Uuid = uuid!("0bfe858c-a749-43a9-a99e-6d1f31a760ad");
@@ -239,14 +240,29 @@ impl NormalizedMarketInfo for ExternalMarketInfo {
     }
 }
 
-#[derive(Default, Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[derive(
+    Default,
+    Debug,
+    Clone,
+    Copy,
+    EnumString,
+    IntoStaticStr,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
+#[serde(tag = "unit", rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
 pub enum MinOrderQuantityUnit {
     #[default]
     Base,
     Quote,
 }
+
+#[cfg(feature = "postgres")]
+crate::to_sql_str!(MinOrderQuantityUnit);
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack))]

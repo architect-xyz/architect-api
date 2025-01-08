@@ -4,6 +4,7 @@ categories = ["finance", "cryptography::cryptocurrencies"]
 description = "Architect.xyz Trading Platform API"
 documentation = "https://docs.rs/architect-api"
 edition = "2021"
+exclude = ["schema.json"]
 homepage = "https://www.architect.xyz"
 keywords = ["crypto", "hft", "trading", "finance"]
 license = "AGPL-3.0-only"
@@ -11,8 +12,7 @@ name = "architect-api"
 version = "3.3.0"
 
 [features]
-all = ["btreemapped", "graphql", "grpc", "netidx", "postgres"]
-btreemapped = ["dep:btreemapped", "pg_replicate", "postgres-types"]
+all = ["graphql", "grpc", "netidx", "postgres"]
 graphql = ["juniper"]
 grpc = ["tonic", "tonic-build"]
 netidx = ["dep:netidx", "netidx-core", "netidx-derive"]
@@ -21,7 +21,6 @@ postgres = ["postgres-types", "tokio-postgres"]
 [dependencies]
 anyhow = { workspace = true }
 arcstr = { workspace = true }
-btreemapped = { workspace = true, optional = true }
 bytemuck = { workspace = true }
 bytes = { workspace = true }
 chrono = { workspace = true }
@@ -48,7 +47,6 @@ once_cell = { workspace = true }
 parking_lot = { workspace = true }
 pest = { workspace = true }
 pest_derive = { workspace = true }
-pg_replicate = { workspace = true, optional = true }
 postgres-types = { workspace = true, optional = true }
 rand = { workspace = true }
 regex = { workspace = true }

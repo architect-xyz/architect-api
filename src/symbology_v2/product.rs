@@ -1,12 +1,14 @@
 //! A product is a thing you can have a position in.
 
-use super::PutOrCall;
-use anyhow::{bail, Result};
-use chrono::NaiveDate;
+use super::*;
+use anyhow::{anyhow, bail, Result};
+use chrono::{DateTime, NaiveDate, Utc};
 use derive_more::Display;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
+use strum_macros::{EnumString, IntoStaticStr};
 
 #[derive(
     Debug,
@@ -22,65 +24,80 @@ use serde::{Deserialize, Serialize};
     JsonSchema,
 )]
 #[serde(transparent)]
+#[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
+#[cfg_attr(feature = "postgres", postgres(transparent))]
 pub struct Product(pub(crate) String);
 
 impl Product {
-    fn try_new(
-        name: &str,
+    fn new(
+        symbol: &str,
         venue_discriminant: Option<&str>,
         product_kind: &str,
     ) -> Result<Self> {
-        if name.contains('/')
+        if symbol.contains('/')
             || venue_discriminant.map_or(false, |v| v.contains('/'))
             || product_kind.contains('/')
         {
-            bail!("Product name cannot contain the forward slash character '/'");
+            bail!("product symbol cannot contain the forward slash character '/'");
         }
         let inner = match venue_discriminant {
             Some(venue_discriminant) => {
                 if venue_discriminant.is_empty() {
-                    bail!("Venue discriminant cannot be empty if provided");
+                    bail!("venue discriminant cannot be empty if provided");
                 }
-                format!("{} {} {}", name, venue_discriminant.to_uppercase(), product_kind)
+                format!(
+                    "{} {} {}",
+                    symbol,
+                    venue_discriminant.to_uppercase(),
+                    product_kind
+                )
             }
-            None => format!("{} {}", name, product_kind),
+            None => format!("{} {}", symbol, product_kind),
         };
         Ok(Self(inner))
     }
 
-    pub(crate) fn new_unchecked(name: impl AsRef<str>) -> Self {
-        Self(name.as_ref().to_string())
+    pub fn new_unchecked(symbol: String) -> Self {
+        Self(symbol)
     }
 
-    pub fn fiat(name: &str) -> Result<Self> {
-        if name.contains(char::is_whitespace) {
-            bail!("Fiat product name cannot contain whitespace");
+    pub fn fiat(symbol: &str) -> Result<Self> {
+        if symbol.contains(char::is_whitespace) {
+            bail!("fiat product symbol cannot contain whitespace");
         }
-        if name.contains('/') {
-            bail!("Fiat product name cannot contain the forward slash character '/'");
+        if symbol.contains('/') {
+            bail!("fiat product symbol cannot contain the forward slash character '/'");
         }
-        Ok(Self(name.to_string()))
+        Ok(Self(symbol.to_string()))
     }
 
-    pub fn crypto(name: &str) -> Result<Self> {
-        Self::try_new(name, None, "Crypto")
+    pub fn commodity(symbol: &str) -> Result<Self> {
+        Self::new(symbol, None, "Commodity")
+    }
+
+    pub fn crypto(symbol: &str) -> Result<Self> {
+        Self::new(symbol, None, "Crypto")
+    }
+
+    pub fn index(symbol: &str, venue_discriminant: Option<&str>) -> Result<Self> {
+        Self::new(symbol, venue_discriminant, "Index")
     }
 
     pub fn future(
-        name: &str,
+        symbol: &str,
         expiration: NaiveDate,
         venue_discriminant: Option<&str>,
     ) -> Result<Self> {
-        let name = format!("{name} {}", expiration.format("%Y%m%d"));
-        Self::try_new(&name, venue_discriminant, "Future")
+        let symbol = format!("{symbol} {}", expiration.format("%Y%m%d"));
+        Self::new(&symbol, venue_discriminant, "Future")
     }
 
-    pub fn perpetual(name: &str, venue_discriminant: Option<&str>) -> Result<Self> {
-        Self::try_new(name, venue_discriminant, "Perpetual")
+    pub fn future_spread(symbol: &str, venue_discriminant: Option<&str>) -> Result<Self> {
+        Self::new(symbol, venue_discriminant, "Future Spread")
     }
 
-    pub fn index(name: &str, venue_discriminant: Option<&str>) -> Result<Self> {
-        Self::try_new(name, venue_discriminant, "Index")
+    pub fn perpetual(symbol: &str, venue_discriminant: Option<&str>) -> Result<Self> {
+        Self::new(symbol, venue_discriminant, "Perpetual")
     }
 
     /// E.g. "AAPL US 20241227 300 C Option"
@@ -91,15 +108,178 @@ impl Product {
         put_or_call: PutOrCall,
         venue_discriminant: Option<&str>,
     ) -> Result<Self> {
-        let name = format!(
+        let symbol = format!(
             "{stem} {} {} {put_or_call}",
             expiration.format("%Y%m%d"),
             strike.normalize()
         );
-        Self::try_new(&name, venue_discriminant, "Option")
+        Self::new(&symbol, venue_discriminant, "Option")
     }
 
     // pub fn is_series(&self) -> bool {
     //     self.0.ends_with("Option") || self.0.ends_with("Event Contract")
     // }
+}
+
+impl std::borrow::Borrow<str> for Product {
+    fn borrow(&self) -> &str {
+        &self.0
+    }
+}
+
+impl FromStr for Product {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        if s.contains('/') {
+            bail!("product symbol cannot contain the forward slash character '/'");
+        }
+        Ok(Self(s.to_string()))
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
+#[serde(tag = "type")]
+pub enum ProductInfo {
+    Fiat,
+    Commodity,
+    Crypto,
+    Equity,
+    Index,
+    Future {
+        underlying: Product,
+        multiplier: Decimal,
+        expiration: DateTime<Utc>,
+        derivative_kind: DerivativeKind,
+    },
+    FutureSpread {
+        legs: Vec<SpreadLeg>,
+    },
+    Perpetual {
+        underlying: Product,
+        multiplier: Decimal,
+        derivative_kind: DerivativeKind,
+    },
+    Option {
+        series: OptionsSeries,
+        instance: OptionsSeriesInstance,
+    },
+    EventContract {
+        series: EventContractSeries,
+        instance: EventContractSeriesInstance,
+    },
+    #[serde(other)]
+    Unknown,
+}
+
+impl ProductInfo {
+    pub fn multiplier(&self) -> Option<Decimal> {
+        match self {
+            ProductInfo::Crypto
+            | ProductInfo::Fiat
+            | ProductInfo::Equity
+            | ProductInfo::Index
+            | ProductInfo::Commodity
+            | ProductInfo::Unknown
+            | ProductInfo::Option { .. }
+            | ProductInfo::EventContract { .. }
+            | ProductInfo::FutureSpread { .. } => None,
+            ProductInfo::Perpetual { multiplier, .. }
+            | ProductInfo::Future { multiplier, .. } => Some(*multiplier),
+        }
+    }
+
+    pub fn underlying(&self) -> Option<&Product> {
+        match self {
+            ProductInfo::Crypto
+            | ProductInfo::Fiat
+            | ProductInfo::Equity
+            | ProductInfo::Index
+            | ProductInfo::Commodity
+            | ProductInfo::Unknown
+            | ProductInfo::Option { .. }
+            | ProductInfo::EventContract { .. }
+            | ProductInfo::FutureSpread { .. } => None,
+            ProductInfo::Perpetual { underlying, .. }
+            | ProductInfo::Future { underlying, .. } => Some(underlying),
+        }
+    }
+
+    pub fn expiration(&self) -> Option<DateTime<Utc>> {
+        match self {
+            ProductInfo::Crypto
+            | ProductInfo::Fiat
+            | ProductInfo::Equity
+            | ProductInfo::Index
+            | ProductInfo::Commodity
+            | ProductInfo::Unknown
+            | ProductInfo::Perpetual { .. }
+            | ProductInfo::FutureSpread { .. } => None,
+            ProductInfo::Option {
+                instance: OptionsSeriesInstance { expiration, .. },
+                ..
+            } => Some(*expiration),
+            ProductInfo::EventContract { instance, .. } => instance.expiration(),
+            ProductInfo::Future { expiration, .. } => Some(*expiration),
+        }
+    }
+
+    pub fn is_expired(&self, cutoff: DateTime<Utc>) -> bool {
+        if let Some(expiration) = self.expiration() {
+            expiration <= cutoff
+        } else {
+            false
+        }
+    }
+
+    pub fn derivative_kind(&self) -> Option<DerivativeKind> {
+        match self {
+            ProductInfo::Future { derivative_kind, .. } => Some(*derivative_kind),
+            _ => None,
+        }
+    }
+}
+
+#[derive(
+    Debug, Copy, Clone, EnumString, IntoStaticStr, Serialize, Deserialize, JsonSchema,
+)]
+#[strum(ascii_case_insensitive)]
+pub enum DerivativeKind {
+    /// Normal futures
+    Linear,
+    /// Futures settled in the base currency
+    Inverse,
+    /// Quote currency different from settle currency
+    Quanto,
+}
+
+#[cfg(feature = "postgres")]
+crate::to_sql_str!(DerivativeKind);
+
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
+pub struct SpreadLeg {
+    pub product: Product,
+    /// Some spreads have different ratios for their legs, like buy 1 A, sell 2 B, buy 1 C;
+    /// We would represent that with quantities in the legs: 1, -2, 1
+    pub quantity: Decimal,
+}
+
+impl std::fmt::Display for SpreadLeg {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.quantity > Decimal::ZERO {
+            write!(f, "+{} {}", self.quantity, self.product)
+        } else {
+            write!(f, "{} {}", self.quantity, self.product)
+        }
+    }
+}
+
+impl std::str::FromStr for SpreadLeg {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        let (quantity, product) =
+            s.split_once(' ').ok_or_else(|| anyhow!("invalid leg format"))?;
+        Ok(Self { product: product.parse()?, quantity: quantity.parse()? })
+    }
 }

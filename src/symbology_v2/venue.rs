@@ -1,4 +1,4 @@
-use derive_more::Display;
+use derive_more::{Display, FromStr};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -12,11 +12,14 @@ use serde::{Deserialize, Serialize};
     Eq,
     PartialOrd,
     Ord,
+    FromStr,
     Serialize,
     Deserialize,
     JsonSchema,
 )]
 #[serde(transparent)]
+#[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
+#[cfg_attr(feature = "postgres", postgres(transparent))]
 pub struct MarketdataVenue(String);
 
 impl MarketdataVenue {
@@ -33,9 +36,22 @@ impl PartialEq<ExecutionVenue> for MarketdataVenue {
 
 /// A venue that provides execution, e.g. CME, CBOE, NYSE, etc.
 #[derive(
-    Debug, Display, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, JsonSchema,
+    Debug,
+    Display,
+    Clone,
+    Hash,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    FromStr,
+    Serialize,
+    Deserialize,
+    JsonSchema,
 )]
 #[serde(transparent)]
+#[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
+#[cfg_attr(feature = "postgres", postgres(transparent))]
 pub struct ExecutionVenue(String);
 
 impl ExecutionVenue {

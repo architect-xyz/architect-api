@@ -15,7 +15,7 @@
 //! ```
 //! let series = EventContractSeriesInfo {
 //!     event_contract_series: "ECES 20241227 CME Event Contracts".into(),
-//!     quote_currency: "USD".into(),
+//!     quote_symbol: "USD".into(),
 //!     underlying: Some("ES 20241227 Future".into()),
 //!     expiration: Some("2024-12-27T15:00:00Z".parse().unwrap()),
 //!     outcomes: EventContractOutcomes::OptionLike {
@@ -38,7 +38,7 @@
 //! ```
 //! let series = EventContractSeriesInfo {
 //!     event_contract_series: "2024 Presidential Election KALSHI Event Contracts".into(),
-//!     quote_currency: "USD".into(),
+//!     quote_symbol: "USD".into(),
 //!     underlying: None,
 //!     expiration: None,
 //!     outcomes: EventContractOutcomes::Enumerated {
@@ -49,13 +49,18 @@
 //! }
 //! ```
 
-use super::{OptionsExpirations, OptionsStrikes, Product};
-use anyhow::Result;
-use chrono::{DateTime, Utc};
+use super::Product;
+use anyhow::{bail, Result};
+use chrono::{DateTime, NaiveTime, Utc};
 use derive_more::Display;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    str::FromStr,
+};
+use strum_macros::{EnumString, IntoStaticStr};
 
 #[derive(
     Debug,
@@ -71,12 +76,49 @@ use serde::{Deserialize, Serialize};
     JsonSchema,
 )]
 #[serde(transparent)]
+#[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
+#[cfg_attr(feature = "postgres", postgres(transparent))]
 pub struct EventContractSeries(String);
+
+impl EventContractSeries {
+    pub(crate) fn new_unchecked(name: impl AsRef<str>) -> Self {
+        Self(name.as_ref().to_string())
+    }
+
+    pub fn new(name: &str, venue_discriminant: Option<&str>) -> Result<Self> {
+        if name.contains('/') || venue_discriminant.map_or(false, |v| v.contains('/')) {
+            bail!("Event contract series name cannot contain the forward slash character '/'");
+        }
+        let inner = match venue_discriminant {
+            Some(venue_discriminant) => {
+                if venue_discriminant.is_empty() {
+                    bail!("Venue discriminant cannot be empty if provided");
+                }
+                format!(
+                    "{} {} Event Contract Series",
+                    name,
+                    venue_discriminant.to_uppercase()
+                )
+            }
+            None => format!("{} Event Contract Series", name),
+        };
+        Ok(Self(inner))
+    }
+}
+
+impl FromStr for EventContractSeries {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        // CR arao: add validation
+        Ok(Self::new_unchecked(s))
+    }
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct EventContractSeriesInfo {
     pub event_contract_series: EventContractSeries,
-    pub quote_currency: Product,
+    pub quote_symbol: Product,
     pub underlying: Option<Product>,
     pub expiration: Option<DateTime<Utc>>,
     pub outcomes: EventContractOutcomes,
@@ -119,8 +161,14 @@ impl EventContractSeriesInstance {
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum EventContractOutcomes {
-    Enumerated { outcomes: Vec<Outcome> },
-    OptionLike { strikes: OptionsStrikes, expirations: Option<OptionsExpirations> },
+    Enumerated {
+        outcomes: Vec<Outcome>,
+    },
+    OptionLike {
+        expiration_time_of_day: NaiveTime,
+        expiration_time_zone: chrono_tz::Tz,
+        strikes_by_expiration: BTreeMap<DateTime<Utc>, BTreeSet<Decimal>>,
+    },
 }
 
 impl EventContractOutcomes {
@@ -138,9 +186,15 @@ pub struct Outcome {
     pub name: String,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize, Serialize, JsonSchema)]
+#[derive(
+    Debug, Clone, Copy, EnumString, IntoStaticStr, Deserialize, Serialize, JsonSchema,
+)]
 #[serde(rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
 pub enum YesOrNo {
     Yes,
     No,
 }
+
+#[cfg(feature = "postgres")]
+crate::to_sql_str!(YesOrNo);

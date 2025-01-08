@@ -1240,10 +1240,35 @@ symbology
             ]
           },
           "MinOrderQuantityUnit": {
-            "type": "string",
-            "enum": [
-              "Base",
-              "Quote"
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "base"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "quote"
+                    ]
+                  }
+                }
+              }
             ]
           },
           "OkxMarketInfo": {
@@ -3098,10 +3123,35 @@ symbology
             ]
           },
           "MinOrderQuantityUnit": {
-            "type": "string",
-            "enum": [
-              "Base",
-              "Quote"
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "base"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "quote"
+                    ]
+                  }
+                }
+              }
             ]
           },
           "OkxMarketInfo": {
@@ -3779,32 +3829,604 @@ symbologyv2
       },
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "SymbologyTransaction",
-        "oneOf": [
-          {
-            "type": "string",
-            "enum": [
-              "Begin",
-              "Commit"
+        "title": "SymbologyUpdate",
+        "description": "Unique sequence id and number.",
+        "type": "object",
+        "required": [
+          "sid",
+          "sn"
+        ],
+        "properties": {
+          "execution_info": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/SnapshotOrUpdate2_for_String_and_String_and_ExecutionInfo"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
-          {
-            "type": "object",
-            "required": [
-              "Update"
-            ],
-            "properties": {
-              "Update": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/SymbologyUpdate"
+          "marketdata_info": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/SnapshotOrUpdate2_for_String_and_String_and_MarketdataInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "options_series": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_OptionsSeriesInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "products": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_ProductInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sid": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "sn": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "tradable_products": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_TradableProductInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "definitions": {
+          "AddOrRemove2_for_String_and_String_and_ExecutionInfo": {
+            "oneOf": [
+              {
+                "description": "Information about a symbol related to its execution route.",
+                "type": "object",
+                "required": [
+                  "execution_venue",
+                  "is_delisted",
+                  "min_order_quantity",
+                  "min_order_quantity_unit",
+                  "step_size",
+                  "symbol",
+                  "tick_size",
+                  "type",
+                  "venue_raw_symbol"
+                ],
+                "properties": {
+                  "additional_info": {
+                    "type": [
+                      "object",
+                      "null"
+                    ],
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "execution_venue": {
+                    "type": "string"
+                  },
+                  "is_delisted": {
+                    "type": "boolean"
+                  },
+                  "min_order_quantity": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "min_order_quantity_unit": {
+                    "$ref": "#/definitions/MinOrderQuantityUnit"
+                  },
+                  "only_possible_quote_symbol": {
+                    "description": "For products or series, if there's only one possible quote symbol",
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "step_size": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "tick_size": {
+                    "$ref": "#/definitions/TickSize"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "add"
+                    ]
+                  },
+                  "venue_raw_symbol": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "symbol",
+                  "type",
+                  "venue"
+                ],
+                "properties": {
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "remove"
+                    ]
+                  },
+                  "venue": {
+                    "type": "string"
+                  }
                 }
               }
-            },
-            "additionalProperties": false
-          }
-        ],
-        "definitions": {
+            ]
+          },
+          "AddOrRemove2_for_String_and_String_and_MarketdataInfo": {
+            "oneOf": [
+              {
+                "description": "Information about a symbol related to its marketdata source.",
+                "type": "object",
+                "required": [
+                  "marketdata_venue",
+                  "symbol",
+                  "type",
+                  "venue_raw_symbol"
+                ],
+                "properties": {
+                  "marketdata_venue": {
+                    "type": "string"
+                  },
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "add"
+                    ]
+                  },
+                  "venue_raw_symbol": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "symbol",
+                  "type",
+                  "venue"
+                ],
+                "properties": {
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "remove"
+                    ]
+                  },
+                  "venue": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "AddOrRemove_for_String_and_OptionsSeriesInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "derivative_kind",
+                  "exercise_type",
+                  "expiration_time_of_day",
+                  "expiration_time_zone",
+                  "is_cash_settled",
+                  "multiplier",
+                  "options_series",
+                  "quote_symbol",
+                  "strikes_by_expiration",
+                  "symbol",
+                  "type",
+                  "underlying"
+                ],
+                "properties": {
+                  "derivative_kind": {
+                    "$ref": "#/definitions/DerivativeKind"
+                  },
+                  "exercise_type": {
+                    "$ref": "#/definitions/OptionsExerciseType"
+                  },
+                  "expiration_time_of_day": {
+                    "type": "string",
+                    "format": "partial-date-time"
+                  },
+                  "expiration_time_zone": {
+                    "$ref": "#/definitions/TimeZone"
+                  },
+                  "is_cash_settled": {
+                    "type": "boolean"
+                  },
+                  "multiplier": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "options_series": {
+                    "type": "string"
+                  },
+                  "quote_symbol": {
+                    "type": "string"
+                  },
+                  "strikes_by_expiration": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/Decimal"
+                      },
+                      "uniqueItems": true
+                    }
+                  },
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "add"
+                    ]
+                  },
+                  "underlying": {
+                    "type": "string"
+                  },
+                  "venue_discriminant": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "symbol",
+                  "type"
+                ],
+                "properties": {
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "remove"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "AddOrRemove_for_String_and_ProductInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Fiat"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Commodity"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Crypto"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Equity"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Index"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "derivative_kind",
+                      "expiration",
+                      "multiplier",
+                      "type",
+                      "underlying"
+                    ],
+                    "properties": {
+                      "derivative_kind": {
+                        "$ref": "#/definitions/DerivativeKind"
+                      },
+                      "expiration": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "multiplier": {
+                        "$ref": "#/definitions/Decimal"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Future"
+                        ]
+                      },
+                      "underlying": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "legs",
+                      "type"
+                    ],
+                    "properties": {
+                      "legs": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/definitions/SpreadLeg"
+                        }
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "FutureSpread"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "derivative_kind",
+                      "multiplier",
+                      "type",
+                      "underlying"
+                    ],
+                    "properties": {
+                      "derivative_kind": {
+                        "$ref": "#/definitions/DerivativeKind"
+                      },
+                      "multiplier": {
+                        "$ref": "#/definitions/Decimal"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Perpetual"
+                        ]
+                      },
+                      "underlying": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "instance",
+                      "series",
+                      "type"
+                    ],
+                    "properties": {
+                      "instance": {
+                        "$ref": "#/definitions/OptionsSeriesInstance"
+                      },
+                      "series": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Option"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "instance",
+                      "series",
+                      "type"
+                    ],
+                    "properties": {
+                      "instance": {
+                        "$ref": "#/definitions/EventContractSeriesInstance"
+                      },
+                      "series": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "EventContract"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Unknown"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "required": [
+                  "symbol",
+                  "type"
+                ],
+                "properties": {
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "add"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "symbol",
+                  "type"
+                ],
+                "properties": {
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "remove"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "AddOrRemove_for_String_and_TradableProductInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "quote",
+                  "symbol",
+                  "type"
+                ],
+                "properties": {
+                  "quote": {
+                    "type": "string"
+                  },
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "add"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "symbol",
+                  "type"
+                ],
+                "properties": {
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "remove"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
           "Decimal": {
             "type": "string"
           },
@@ -3814,123 +4436,24 @@ symbologyv2
                 "description": "Normal futures",
                 "type": "string",
                 "enum": [
-                  "linear"
+                  "Linear"
                 ]
               },
               {
                 "description": "Futures settled in the base currency",
                 "type": "string",
                 "enum": [
-                  "inverse"
+                  "Inverse"
                 ]
               },
               {
                 "description": "Quote currency different from settle currency",
                 "type": "string",
                 "enum": [
-                  "quanto"
+                  "Quanto"
                 ]
               }
             ]
-          },
-          "EventContractOutcomes": {
-            "oneOf": [
-              {
-                "type": "object",
-                "required": [
-                  "outcomes",
-                  "type"
-                ],
-                "properties": {
-                  "outcomes": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/Outcome"
-                    }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "enumerated"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "strikes",
-                  "type"
-                ],
-                "properties": {
-                  "expirations": {
-                    "anyOf": [
-                      {
-                        "$ref": "#/definitions/OptionsExpirations"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "strikes": {
-                    "$ref": "#/definitions/OptionsStrikes"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "option_like"
-                    ]
-                  }
-                }
-              }
-            ]
-          },
-          "EventContractSeriesInfo": {
-            "type": "object",
-            "required": [
-              "event_contract_series",
-              "outcomes",
-              "outcomes_are_mutually_exclusive",
-              "quote_currency"
-            ],
-            "properties": {
-              "event_contract_series": {
-                "type": "string"
-              },
-              "expiration": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "outcomes": {
-                "$ref": "#/definitions/EventContractOutcomes"
-              },
-              "outcomes_are_mutually_exclusive": {
-                "type": "boolean"
-              },
-              "outcomes_side": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/YesOrNo"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "quote_currency": {
-                "type": "string"
-              },
-              "underlying": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              }
-            }
           },
           "EventContractSeriesInstance": {
             "oneOf": [
@@ -4018,6 +4541,7 @@ symbologyv2
                 "$ref": "#/definitions/MinOrderQuantityUnit"
               },
               "only_possible_quote_symbol": {
+                "description": "For products or series, if there's only one possible quote symbol",
                 "type": [
                   "string",
                   "null"
@@ -4027,10 +4551,7 @@ symbologyv2
                 "$ref": "#/definitions/Decimal"
               },
               "tick_size": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/TickSize"
-                }
+                "$ref": "#/definitions/TickSize"
               },
               "venue_raw_symbol": {
                 "type": "string"
@@ -4042,74 +4563,69 @@ symbologyv2
             "type": "object",
             "required": [
               "marketdata_venue",
-              "source_raw_symbol"
+              "venue_raw_symbol"
             ],
             "properties": {
               "marketdata_venue": {
                 "type": "string"
               },
-              "source_raw_symbol": {
+              "venue_raw_symbol": {
                 "type": "string"
               }
             }
           },
           "MinOrderQuantityUnit": {
-            "type": "string",
-            "enum": [
-              "Base",
-              "Quote"
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "base"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "quote"
+                    ]
+                  }
+                }
+              }
             ]
           },
           "OptionsExerciseType": {
             "type": "string",
             "enum": [
               "american",
-              "european"
+              "european",
+              "unknown"
             ]
-          },
-          "OptionsExpirations": {
-            "type": "object",
-            "required": [
-              "end",
-              "start",
-              "stride_days",
-              "time_of_day",
-              "time_zone"
-            ],
-            "properties": {
-              "end": {
-                "type": "string",
-                "format": "date"
-              },
-              "start": {
-                "type": "string",
-                "format": "date"
-              },
-              "stride_days": {
-                "type": "integer",
-                "format": "uint32",
-                "minimum": 0.0
-              },
-              "time_of_day": {
-                "type": "string",
-                "format": "partial-date-time"
-              },
-              "time_zone": {
-                "$ref": "#/definitions/TimeZone"
-              }
-            }
           },
           "OptionsSeriesInfo": {
             "type": "object",
             "required": [
               "derivative_kind",
               "exercise_type",
-              "expiration",
+              "expiration_time_of_day",
+              "expiration_time_zone",
               "is_cash_settled",
               "multiplier",
               "options_series",
               "quote_symbol",
-              "strikes",
+              "strikes_by_expiration",
               "underlying"
             ],
             "properties": {
@@ -4119,8 +4635,12 @@ symbologyv2
               "exercise_type": {
                 "$ref": "#/definitions/OptionsExerciseType"
               },
-              "expiration": {
-                "$ref": "#/definitions/OptionsExpirations"
+              "expiration_time_of_day": {
+                "type": "string",
+                "format": "partial-date-time"
+              },
+              "expiration_time_zone": {
+                "$ref": "#/definitions/TimeZone"
               },
               "is_cash_settled": {
                 "type": "boolean"
@@ -4134,8 +4654,15 @@ symbologyv2
               "quote_symbol": {
                 "type": "string"
               },
-              "strikes": {
-                "$ref": "#/definitions/OptionsStrikes"
+              "strikes_by_expiration": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "uniqueItems": true
+                }
               },
               "underlying": {
                 "type": "string"
@@ -4169,25 +4696,6 @@ symbologyv2
               }
             }
           },
-          "OptionsStrikes": {
-            "type": "object",
-            "required": [
-              "end",
-              "start",
-              "stride"
-            ],
-            "properties": {
-              "end": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "start": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "stride": {
-                "$ref": "#/definitions/Decimal"
-              }
-            }
-          },
           "Outcome": {
             "type": "object",
             "required": [
@@ -4210,7 +4718,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "crypto"
+                      "Fiat"
                     ]
                   }
                 }
@@ -4224,7 +4732,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "fiat"
+                      "Commodity"
                     ]
                   }
                 }
@@ -4238,7 +4746,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "equity"
+                      "Crypto"
                     ]
                   }
                 }
@@ -4252,7 +4760,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "index"
+                      "Equity"
                     ]
                   }
                 }
@@ -4266,34 +4774,8 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "commodity"
+                      "Index"
                     ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "derivative_kind",
-                  "multiplier",
-                  "type",
-                  "underlying"
-                ],
-                "properties": {
-                  "derivative_kind": {
-                    "$ref": "#/definitions/DerivativeKind"
-                  },
-                  "multiplier": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "perpetual"
-                    ]
-                  },
-                  "underlying": {
-                    "type": "string"
                   }
                 }
               },
@@ -4320,7 +4802,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "future"
+                      "Future"
                     ]
                   },
                   "underlying": {
@@ -4344,8 +4826,34 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "future_spread"
+                      "FutureSpread"
                     ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "derivative_kind",
+                  "multiplier",
+                  "type",
+                  "underlying"
+                ],
+                "properties": {
+                  "derivative_kind": {
+                    "$ref": "#/definitions/DerivativeKind"
+                  },
+                  "multiplier": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "Perpetual"
+                    ]
+                  },
+                  "underlying": {
+                    "type": "string"
                   }
                 }
               },
@@ -4366,7 +4874,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "option"
+                      "Option"
                     ]
                   }
                 }
@@ -4388,7 +4896,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "event_contract"
+                      "EventContract"
                     ]
                   }
                 }
@@ -4402,7 +4910,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "unknown"
+                      "Unknown"
                     ]
                   }
                 }
@@ -4414,6 +4922,242 @@ symbologyv2
             "enum": [
               "P",
               "C"
+            ]
+          },
+          "SnapshotOrUpdate2_for_String_and_String_and_ExecutionInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot",
+                  "type"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/definitions/ExecutionInfo"
+                      }
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "snapshot"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type",
+                  "updates"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "update"
+                    ]
+                  },
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/AddOrRemove2_for_String_and_String_and_ExecutionInfo"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "SnapshotOrUpdate2_for_String_and_String_and_MarketdataInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot",
+                  "type"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/definitions/MarketdataInfo"
+                      }
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "snapshot"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type",
+                  "updates"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "update"
+                    ]
+                  },
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/AddOrRemove2_for_String_and_String_and_MarketdataInfo"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "SnapshotOrUpdate_for_String_and_OptionsSeriesInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot",
+                  "type"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/OptionsSeriesInfo"
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "snapshot"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type",
+                  "updates"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "update"
+                    ]
+                  },
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/AddOrRemove_for_String_and_OptionsSeriesInfo"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "SnapshotOrUpdate_for_String_and_ProductInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot",
+                  "type"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/ProductInfo"
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "snapshot"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type",
+                  "updates"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "update"
+                    ]
+                  },
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/AddOrRemove_for_String_and_ProductInfo"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "SnapshotOrUpdate_for_String_and_TradableProductInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot",
+                  "type"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/TradableProductInfo"
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "snapshot"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type",
+                  "updates"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "update"
+                    ]
+                  },
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/AddOrRemove_for_String_and_TradableProductInfo"
+                    }
+                  }
+                }
+              }
             ]
           },
           "SpreadLeg": {
@@ -4436,667 +5180,53 @@ symbologyv2
               }
             }
           },
-          "SymbologyUpdate": {
-            "oneOf": [
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/ProductInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "product"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/TradableProductInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "tradable_product"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/MarketdataInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "tradable_product_marketdata"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/ExecutionInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "tradable_product_execution"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/OptionsSeriesInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "options_series"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/MarketdataInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "options_series_marketdata"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/ExecutionInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "options_series_execution"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/EventContractSeriesInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "event_contract_series"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/MarketdataInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "event_contract_series_marketdata"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/ExecutionInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "event_contract_series_execution"
-                    ]
-                  }
-                }
-              }
-            ]
-          },
           "TickSize": {
             "oneOf": [
               {
-                "type": [
-                  "object",
-                  "string"
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "simple"
-                    ]
-                  }
-                }
-              },
-              {
                 "type": "object",
                 "required": [
-                  "thresholds",
-                  "type"
+                  "simple"
                 ],
                 "properties": {
-                  "thresholds": {
-                    "type": "array",
-                    "items": {
-                      "type": "array",
-                      "items": [
-                        {
-                          "$ref": "#/definitions/Decimal"
-                        },
-                        {
-                          "$ref": "#/definitions/Decimal"
-                        }
-                      ],
-                      "maxItems": 2,
-                      "minItems": 2
-                    }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "varying"
-                    ]
+                  "simple": {
+                    "$ref": "#/definitions/Decimal"
                   }
-                }
+                },
+                "additionalProperties": false
+              },
+              {
+                "description": "List of (threshold, tick_size) pairs.  For price greater than or equal to each threshold, the tick size is the corresponding value.",
+                "type": "object",
+                "required": [
+                  "varying"
+                ],
+                "properties": {
+                  "varying": {
+                    "type": "object",
+                    "required": [
+                      "thresholds"
+                    ],
+                    "properties": {
+                      "thresholds": {
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "$ref": "#/definitions/Decimal"
+                            },
+                            {
+                              "$ref": "#/definitions/Decimal"
+                            }
+                          ],
+                          "maxItems": 2,
+                          "minItems": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                "additionalProperties": false
               }
             ]
           },
@@ -5711,47 +5841,55 @@ symbologyv2
                 "type": "string"
               }
             }
-          },
-          "YesOrNo": {
-            "type": "string",
-            "enum": [
-              "yes",
-              "no"
-            ]
           }
         }
       }
     },
     {
-      "type": "client_stream",
+      "type": "unary",
       "route": "/json.architect.SymbologyV2/UploadSymbologyV2",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "SymbologyTransaction",
-        "oneOf": [
-          {
-            "type": "string",
-            "enum": [
-              "Begin",
-              "Commit"
-            ]
-          },
-          {
+        "title": "UploadSymbologyV2Request",
+        "type": "object",
+        "properties": {
+          "execution_info": {
             "type": "object",
-            "required": [
-              "Update"
-            ],
-            "properties": {
-              "Update": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/SymbologyUpdate"
-                }
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/ExecutionInfo"
               }
-            },
-            "additionalProperties": false
+            }
+          },
+          "marketdata_info": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/MarketdataInfo"
+              }
+            }
+          },
+          "options_series": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/definitions/OptionsSeriesInfo"
+            }
+          },
+          "products": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/definitions/ProductInfo"
+            }
+          },
+          "tradable_products": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/definitions/TradableProductInfo"
+            }
           }
-        ],
+        },
         "definitions": {
           "Decimal": {
             "type": "string"
@@ -5762,123 +5900,24 @@ symbologyv2
                 "description": "Normal futures",
                 "type": "string",
                 "enum": [
-                  "linear"
+                  "Linear"
                 ]
               },
               {
                 "description": "Futures settled in the base currency",
                 "type": "string",
                 "enum": [
-                  "inverse"
+                  "Inverse"
                 ]
               },
               {
                 "description": "Quote currency different from settle currency",
                 "type": "string",
                 "enum": [
-                  "quanto"
+                  "Quanto"
                 ]
               }
             ]
-          },
-          "EventContractOutcomes": {
-            "oneOf": [
-              {
-                "type": "object",
-                "required": [
-                  "outcomes",
-                  "type"
-                ],
-                "properties": {
-                  "outcomes": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/Outcome"
-                    }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "enumerated"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "strikes",
-                  "type"
-                ],
-                "properties": {
-                  "expirations": {
-                    "anyOf": [
-                      {
-                        "$ref": "#/definitions/OptionsExpirations"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "strikes": {
-                    "$ref": "#/definitions/OptionsStrikes"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "option_like"
-                    ]
-                  }
-                }
-              }
-            ]
-          },
-          "EventContractSeriesInfo": {
-            "type": "object",
-            "required": [
-              "event_contract_series",
-              "outcomes",
-              "outcomes_are_mutually_exclusive",
-              "quote_currency"
-            ],
-            "properties": {
-              "event_contract_series": {
-                "type": "string"
-              },
-              "expiration": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "outcomes": {
-                "$ref": "#/definitions/EventContractOutcomes"
-              },
-              "outcomes_are_mutually_exclusive": {
-                "type": "boolean"
-              },
-              "outcomes_side": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/YesOrNo"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "quote_currency": {
-                "type": "string"
-              },
-              "underlying": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              }
-            }
           },
           "EventContractSeriesInstance": {
             "oneOf": [
@@ -5966,6 +6005,7 @@ symbologyv2
                 "$ref": "#/definitions/MinOrderQuantityUnit"
               },
               "only_possible_quote_symbol": {
+                "description": "For products or series, if there's only one possible quote symbol",
                 "type": [
                   "string",
                   "null"
@@ -5975,10 +6015,7 @@ symbologyv2
                 "$ref": "#/definitions/Decimal"
               },
               "tick_size": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/TickSize"
-                }
+                "$ref": "#/definitions/TickSize"
               },
               "venue_raw_symbol": {
                 "type": "string"
@@ -5990,74 +6027,69 @@ symbologyv2
             "type": "object",
             "required": [
               "marketdata_venue",
-              "source_raw_symbol"
+              "venue_raw_symbol"
             ],
             "properties": {
               "marketdata_venue": {
                 "type": "string"
               },
-              "source_raw_symbol": {
+              "venue_raw_symbol": {
                 "type": "string"
               }
             }
           },
           "MinOrderQuantityUnit": {
-            "type": "string",
-            "enum": [
-              "Base",
-              "Quote"
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "base"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "quote"
+                    ]
+                  }
+                }
+              }
             ]
           },
           "OptionsExerciseType": {
             "type": "string",
             "enum": [
               "american",
-              "european"
+              "european",
+              "unknown"
             ]
-          },
-          "OptionsExpirations": {
-            "type": "object",
-            "required": [
-              "end",
-              "start",
-              "stride_days",
-              "time_of_day",
-              "time_zone"
-            ],
-            "properties": {
-              "end": {
-                "type": "string",
-                "format": "date"
-              },
-              "start": {
-                "type": "string",
-                "format": "date"
-              },
-              "stride_days": {
-                "type": "integer",
-                "format": "uint32",
-                "minimum": 0.0
-              },
-              "time_of_day": {
-                "type": "string",
-                "format": "partial-date-time"
-              },
-              "time_zone": {
-                "$ref": "#/definitions/TimeZone"
-              }
-            }
           },
           "OptionsSeriesInfo": {
             "type": "object",
             "required": [
               "derivative_kind",
               "exercise_type",
-              "expiration",
+              "expiration_time_of_day",
+              "expiration_time_zone",
               "is_cash_settled",
               "multiplier",
               "options_series",
               "quote_symbol",
-              "strikes",
+              "strikes_by_expiration",
               "underlying"
             ],
             "properties": {
@@ -6067,8 +6099,12 @@ symbologyv2
               "exercise_type": {
                 "$ref": "#/definitions/OptionsExerciseType"
               },
-              "expiration": {
-                "$ref": "#/definitions/OptionsExpirations"
+              "expiration_time_of_day": {
+                "type": "string",
+                "format": "partial-date-time"
+              },
+              "expiration_time_zone": {
+                "$ref": "#/definitions/TimeZone"
               },
               "is_cash_settled": {
                 "type": "boolean"
@@ -6082,8 +6118,15 @@ symbologyv2
               "quote_symbol": {
                 "type": "string"
               },
-              "strikes": {
-                "$ref": "#/definitions/OptionsStrikes"
+              "strikes_by_expiration": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "uniqueItems": true
+                }
               },
               "underlying": {
                 "type": "string"
@@ -6117,25 +6160,6 @@ symbologyv2
               }
             }
           },
-          "OptionsStrikes": {
-            "type": "object",
-            "required": [
-              "end",
-              "start",
-              "stride"
-            ],
-            "properties": {
-              "end": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "start": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "stride": {
-                "$ref": "#/definitions/Decimal"
-              }
-            }
-          },
           "Outcome": {
             "type": "object",
             "required": [
@@ -6158,7 +6182,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "crypto"
+                      "Fiat"
                     ]
                   }
                 }
@@ -6172,7 +6196,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "fiat"
+                      "Commodity"
                     ]
                   }
                 }
@@ -6186,7 +6210,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "equity"
+                      "Crypto"
                     ]
                   }
                 }
@@ -6200,7 +6224,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "index"
+                      "Equity"
                     ]
                   }
                 }
@@ -6214,34 +6238,8 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "commodity"
+                      "Index"
                     ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "derivative_kind",
-                  "multiplier",
-                  "type",
-                  "underlying"
-                ],
-                "properties": {
-                  "derivative_kind": {
-                    "$ref": "#/definitions/DerivativeKind"
-                  },
-                  "multiplier": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "perpetual"
-                    ]
-                  },
-                  "underlying": {
-                    "type": "string"
                   }
                 }
               },
@@ -6268,7 +6266,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "future"
+                      "Future"
                     ]
                   },
                   "underlying": {
@@ -6292,8 +6290,34 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "future_spread"
+                      "FutureSpread"
                     ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "derivative_kind",
+                  "multiplier",
+                  "type",
+                  "underlying"
+                ],
+                "properties": {
+                  "derivative_kind": {
+                    "$ref": "#/definitions/DerivativeKind"
+                  },
+                  "multiplier": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "Perpetual"
+                    ]
+                  },
+                  "underlying": {
+                    "type": "string"
                   }
                 }
               },
@@ -6314,7 +6338,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "option"
+                      "Option"
                     ]
                   }
                 }
@@ -6336,7 +6360,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "event_contract"
+                      "EventContract"
                     ]
                   }
                 }
@@ -6350,7 +6374,7 @@ symbologyv2
                   "type": {
                     "type": "string",
                     "enum": [
-                      "unknown"
+                      "Unknown"
                     ]
                   }
                 }
@@ -6384,667 +6408,53 @@ symbologyv2
               }
             }
           },
-          "SymbologyUpdate": {
-            "oneOf": [
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/ProductInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "product"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/TradableProductInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "tradable_product"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/MarketdataInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "tradable_product_marketdata"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/ExecutionInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "tradable_product_execution"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/OptionsSeriesInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "options_series"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/MarketdataInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "options_series_marketdata"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/ExecutionInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "options_series_execution"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/EventContractSeriesInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "event_contract_series"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/MarketdataInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "event_contract_series_marketdata"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "required": [
-                      "metadata",
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "metadata": {
-                        "$ref": "#/definitions/ExecutionInfo"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "add"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "required": [
-                      "symbol",
-                      "type",
-                      "venue"
-                    ],
-                    "properties": {
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "remove"
-                        ]
-                      },
-                      "venue": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "event_contract_series_execution"
-                    ]
-                  }
-                }
-              }
-            ]
-          },
           "TickSize": {
             "oneOf": [
               {
-                "type": [
-                  "object",
-                  "string"
-                ],
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "simple"
-                    ]
-                  }
-                }
-              },
-              {
                 "type": "object",
                 "required": [
-                  "thresholds",
-                  "type"
+                  "simple"
                 ],
                 "properties": {
-                  "thresholds": {
-                    "type": "array",
-                    "items": {
-                      "type": "array",
-                      "items": [
-                        {
-                          "$ref": "#/definitions/Decimal"
-                        },
-                        {
-                          "$ref": "#/definitions/Decimal"
-                        }
-                      ],
-                      "maxItems": 2,
-                      "minItems": 2
-                    }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "varying"
-                    ]
+                  "simple": {
+                    "$ref": "#/definitions/Decimal"
                   }
-                }
+                },
+                "additionalProperties": false
+              },
+              {
+                "description": "List of (threshold, tick_size) pairs.  For price greater than or equal to each threshold, the tick size is the corresponding value.",
+                "type": "object",
+                "required": [
+                  "varying"
+                ],
+                "properties": {
+                  "varying": {
+                    "type": "object",
+                    "required": [
+                      "thresholds"
+                    ],
+                    "properties": {
+                      "thresholds": {
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "$ref": "#/definitions/Decimal"
+                            },
+                            {
+                              "$ref": "#/definitions/Decimal"
+                            }
+                          ],
+                          "maxItems": 2,
+                          "minItems": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                "additionalProperties": false
               }
             ]
           },
@@ -7659,13 +7069,6 @@ symbologyv2
                 "type": "string"
               }
             }
-          },
-          "YesOrNo": {
-            "type": "string",
-            "enum": [
-              "yes",
-              "no"
-            ]
           }
         }
       },
