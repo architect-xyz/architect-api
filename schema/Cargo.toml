@@ -7,3 +7,10 @@ version = "0.1.0"
 architect-api = { package = "architect-api", path = "..", features = ["grpc"] }
 schema_builder = { package = "architect-api-schema-builder", path = "./builder" }
 schemars = { workspace = true }
+
+[package.metadata.cargo-machete]
+ignored = [
+    "architect_api", # PHONY 
+    "schema_builder", # build.rs
+    "schemars", # build.rs
+]

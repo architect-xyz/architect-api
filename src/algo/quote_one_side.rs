@@ -4,7 +4,6 @@ use crate::{
 };
 use anyhow::{bail, Result};
 use derive::FromValue;
-use juniper::GraphQLEnum;
 use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -84,9 +83,8 @@ impl Validate for QuoteOneSideOrder {
     }
 }
 
-#[derive(
-    Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema, GraphQLEnum,
-)]
+#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLEnum))]
 pub enum ImproveOrJoin {
     Improve,
     Join,

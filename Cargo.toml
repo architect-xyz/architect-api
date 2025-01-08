@@ -86,5 +86,8 @@ name = "order_id_benchmark"
 
 [package.metadata.cargo-machete]
 ignored = [
+    "netidx_core", # netidx_derive
+    "schema_builder", # build.rs
     "strum", # strum_macros
+    "tonic_build", # build.rs
 ]

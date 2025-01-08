@@ -11,5 +11,4 @@ schemars = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 syn = { workspace = true }
-tonic = { workspace = true }
 tonic-build = { workspace = true }
