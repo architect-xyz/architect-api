@@ -7117,12 +7117,22 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "L1BookSnapshotRequest",
         "type": "object",
-        "required": [
-          "market_id"
-        ],
         "properties": {
           "market_id": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {
@@ -7137,7 +7147,6 @@ marketdata
         "title": "L1BookSnapshot",
         "type": "object",
         "required": [
-          "m",
           "tn",
           "ts"
         ],
@@ -7182,7 +7191,14 @@ marketdata
             "format": "int64"
           },
           "m": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "n": {
             "type": [
@@ -7191,6 +7207,12 @@ marketdata
             ],
             "format": "uint64",
             "minimum": 0.0
+          },
+          "s": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "tn": {
             "type": "integer",
@@ -7220,14 +7242,23 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "L1BookSnapshotsRequest",
         "type": "object",
-        "required": [
-          "market_ids"
-        ],
         "properties": {
           "market_ids": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/definitions/MarketId"
+            }
+          },
+          "symbols": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
             }
           }
         },
@@ -7252,7 +7283,6 @@ marketdata
           "L1BookSnapshot": {
             "type": "object",
             "required": [
-              "m",
               "tn",
               "ts"
             ],
@@ -7297,7 +7327,14 @@ marketdata
                 "format": "int64"
               },
               "m": {
-                "$ref": "#/definitions/MarketId"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/MarketId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "n": {
                 "type": [
@@ -7306,6 +7343,12 @@ marketdata
                 ],
                 "format": "uint64",
                 "minimum": 0.0
+              },
+              "s": {
+                "type": [
+                  "string",
+                  "null"
+                ]
               },
               "tn": {
                 "type": "integer",
@@ -7342,6 +7385,16 @@ marketdata
             "items": {
               "$ref": "#/definitions/MarketId"
             }
+          },
+          "symbols": {
+            "description": "If None, subscribe from all symbols on the feed",
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
         },
         "definitions": {
@@ -7356,7 +7409,6 @@ marketdata
         "title": "L1BookSnapshot",
         "type": "object",
         "required": [
-          "m",
           "tn",
           "ts"
         ],
@@ -7401,7 +7453,14 @@ marketdata
             "format": "int64"
           },
           "m": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "n": {
             "type": [
@@ -7410,6 +7469,12 @@ marketdata
             ],
             "format": "uint64",
             "minimum": 0.0
+          },
+          "s": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "tn": {
             "type": "integer",
@@ -7439,12 +7504,22 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeL2BookUpdatesRequest",
         "type": "object",
-        "required": [
-          "market_id"
-        ],
         "properties": {
           "market_id": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {
@@ -7620,12 +7695,22 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "L2BookSnapshotRequest",
         "type": "object",
-        "required": [
-          "market_id"
-        ],
         "properties": {
           "market_id": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {
@@ -7715,9 +7800,6 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeCandlesRequest",
         "type": "object",
-        "required": [
-          "market_id"
-        ],
         "properties": {
           "candle_width": {
             "description": "If None, subscribe from all candle widths on the feed",
@@ -7730,7 +7812,20 @@ marketdata
             }
           },
           "market_id": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {
@@ -7764,13 +7859,12 @@ marketdata
         "title": "Candle",
         "type": "object",
         "required": [
+          "av",
           "bv",
           "c",
           "h",
           "l",
-          "m",
           "o",
-          "sv",
           "tn",
           "ts",
           "v",
@@ -7816,6 +7910,9 @@ marketdata
                 "type": "null"
               }
             ]
+          },
+          "av": {
+            "$ref": "#/definitions/Decimal"
           },
           "bc": {
             "anyOf": [
@@ -7870,7 +7967,14 @@ marketdata
             "$ref": "#/definitions/Decimal"
           },
           "m": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "mc": {
             "anyOf": [
@@ -7915,8 +8019,11 @@ marketdata
           "o": {
             "$ref": "#/definitions/Decimal"
           },
-          "sv": {
-            "$ref": "#/definitions/Decimal"
+          "s": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "tn": {
             "type": "integer",
@@ -7987,6 +8094,15 @@ marketdata
             "items": {
               "$ref": "#/definitions/MarketId"
             }
+          },
+          "symbols": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
         },
         "definitions": {
@@ -8020,13 +8136,12 @@ marketdata
         "title": "Candle",
         "type": "object",
         "required": [
+          "av",
           "bv",
           "c",
           "h",
           "l",
-          "m",
           "o",
-          "sv",
           "tn",
           "ts",
           "v",
@@ -8072,6 +8187,9 @@ marketdata
                 "type": "null"
               }
             ]
+          },
+          "av": {
+            "$ref": "#/definitions/Decimal"
           },
           "bc": {
             "anyOf": [
@@ -8126,7 +8244,14 @@ marketdata
             "$ref": "#/definitions/Decimal"
           },
           "m": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "mc": {
             "anyOf": [
@@ -8171,8 +8296,11 @@ marketdata
           "o": {
             "$ref": "#/definitions/Decimal"
           },
-          "sv": {
-            "$ref": "#/definitions/Decimal"
+          "s": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "tn": {
             "type": "integer",
@@ -8238,6 +8366,12 @@ marketdata
                 "type": "null"
               }
             ]
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {
@@ -8252,9 +8386,8 @@ marketdata
         "title": "Trade",
         "type": "object",
         "required": [
-          "m",
           "p",
-          "s",
+          "q",
           "tn",
           "ts"
         ],
@@ -8270,13 +8403,26 @@ marketdata
             ]
           },
           "m": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "p": {
             "$ref": "#/definitions/Decimal"
           },
-          "s": {
+          "q": {
             "$ref": "#/definitions/Decimal"
+          },
+          "s": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "tn": {
             "type": "integer",
@@ -8314,12 +8460,22 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "MarketStatusRequest",
         "type": "object",
-        "required": [
-          "market_id"
-        ],
         "properties": {
           "market_id": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {
@@ -8333,9 +8489,6 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "MarketStatus",
         "type": "object",
-        "required": [
-          "m"
-        ],
         "properties": {
           "is_trading": {
             "type": [
@@ -8344,7 +8497,20 @@ marketdata
             ]
           },
           "m": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "s": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {
@@ -8362,12 +8528,22 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "TickerRequest",
         "type": "object",
-        "required": [
-          "market_id"
-        ],
         "properties": {
           "market_id": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {
@@ -8382,7 +8558,6 @@ marketdata
         "title": "Ticker",
         "type": "object",
         "required": [
-          "m",
           "tn",
           "ts"
         ],
@@ -8408,7 +8583,14 @@ marketdata
             ]
           },
           "m": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "o": {
             "anyOf": [
@@ -8428,6 +8610,12 @@ marketdata
               {
                 "type": "null"
               }
+            ]
+          },
+          "s": {
+            "type": [
+              "string",
+              "null"
             ]
           },
           "tn": {
@@ -8488,6 +8676,15 @@ marketdata
             "items": {
               "$ref": "#/definitions/MarketId"
             }
+          },
+          "symbols": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
         },
         "definitions": {
@@ -8502,7 +8699,6 @@ marketdata
         "title": "Ticker",
         "type": "object",
         "required": [
-          "m",
           "tn",
           "ts"
         ],
@@ -8528,7 +8724,14 @@ marketdata
             ]
           },
           "m": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "o": {
             "anyOf": [
@@ -8548,6 +8751,12 @@ marketdata
               {
                 "type": "null"
               }
+            ]
+          },
+          "s": {
+            "type": [
+              "string",
+              "null"
             ]
           },
           "tn": {
@@ -8608,6 +8817,15 @@ marketdata
             "items": {
               "$ref": "#/definitions/MarketId"
             }
+          },
+          "symbols": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
         },
         "definitions": {
@@ -8623,9 +8841,8 @@ marketdata
         "type": "object",
         "required": [
           "d",
-          "m",
           "p",
-          "s",
+          "q",
           "tn",
           "ts"
         ],
@@ -8634,13 +8851,26 @@ marketdata
             "$ref": "#/definitions/Dir"
           },
           "m": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "p": {
             "$ref": "#/definitions/Decimal"
           },
-          "s": {
+          "q": {
             "$ref": "#/definitions/Decimal"
+          },
+          "s": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "tn": {
             "type": "integer",
@@ -8678,9 +8908,6 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "ExchangeSpecificFieldsRequest",
         "type": "object",
-        "required": [
-          "market_id"
-        ],
         "properties": {
           "fields": {
             "description": "If None, subscribe from all exchange-specific fields on the feed",
@@ -8693,7 +8920,20 @@ marketdata
             }
           },
           "market_id": {
-            "$ref": "#/definitions/MarketId"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {

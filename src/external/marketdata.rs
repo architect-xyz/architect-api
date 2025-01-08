@@ -16,14 +16,20 @@ use std::collections::BTreeMap;
 #[grpc(service = "Marketdata", name = "l1_book_snapshot", response = "L1BookSnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L1BookSnapshotRequest {
-    pub market_id: MarketId,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
 }
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "l1_book_snapshots", response = "L1BookSnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L1BookSnapshotsRequest {
-    pub market_ids: Vec<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market_ids: Option<Vec<MarketId>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
 }
 
 pub type L1BookSnapshots = Vec<L1BookSnapshot>;
@@ -38,25 +44,31 @@ pub type L1BookSnapshots = Vec<L1BookSnapshot>;
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeL1BookSnapshotsRequest {
     /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub market_ids: Option<Vec<MarketId>>,
+    /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
 }
 
 impl From<Vec<MarketId>> for SubscribeL1BookSnapshotsRequest {
     fn from(market_ids: Vec<MarketId>) -> Self {
-        Self { market_ids: Some(market_ids) }
+        Self { market_ids: Some(market_ids), symbols: None }
     }
 }
 
 impl From<Option<MarketId>> for SubscribeL1BookSnapshotsRequest {
     fn from(market_id: Option<MarketId>) -> Self {
-        Self { market_ids: market_id.map(|id| vec![id]) }
+        Self { market_ids: market_id.map(|id| vec![id]), symbols: None }
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L1BookSnapshot {
-    #[serde(rename = "m")]
-    pub market_id: MarketId,
+    #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
     #[serde(rename = "ts")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
@@ -73,7 +85,8 @@ pub struct L1BookSnapshot {
 
 impl L1BookSnapshot {
     pub fn new(
-        market_id: MarketId,
+        market_id: Option<MarketId>,
+        symbol: Option<String>,
         timestamp: DateTime<Utc>,
         epoch: Option<DateTime<Utc>>,
         seqno: Option<u64>,
@@ -82,6 +95,7 @@ impl L1BookSnapshot {
     ) -> Self {
         Self {
             market_id,
+            symbol,
             timestamp: timestamp.timestamp(),
             timestamp_ns: timestamp.timestamp_subsec_nanos(),
             epoch: epoch.map(|e| e.timestamp()),
@@ -289,7 +303,10 @@ impl L2BookUpdate {
 #[grpc(service = "Marketdata", name = "l2_book_snapshot", response = "L2BookSnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L2BookSnapshotRequest {
-    pub market_id: MarketId,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
 }
 
 #[grpc(package = "json.architect")]
@@ -301,7 +318,10 @@ pub struct L2BookSnapshotRequest {
 )]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeL2BookUpdatesRequest {
-    pub market_id: MarketId,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -342,7 +362,10 @@ pub struct L3BookSnapshot {
 )]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeCandlesRequest {
-    pub market_id: MarketId,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
     /// If None, subscribe from all candle widths on the feed
     pub candle_width: Option<Vec<CandleWidth>>,
 }
@@ -358,7 +381,10 @@ pub struct SubscribeCandlesRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeManyCandlesRequest {
     /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub market_ids: Option<Vec<MarketId>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
     pub candle_width: CandleWidth,
 }
 
@@ -372,13 +398,18 @@ pub struct SubscribeManyCandlesRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeTradesRequest {
     /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub market_id: Option<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Candle {
-    #[serde(rename = "m")]
-    pub market_id: MarketId,
+    #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
     #[serde(rename = "ts")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
@@ -397,7 +428,7 @@ pub struct Candle {
     pub volume: Decimal,
     #[serde(rename = "bv")]
     pub buy_volume: Decimal,
-    #[serde(rename = "sv")]
+    #[serde(rename = "av")]
     pub sell_volume: Decimal,
     #[serde(rename = "mo", skip_serializing_if = "Option::is_none")]
     pub mid_open: Option<Decimal>,
@@ -432,7 +463,8 @@ impl Candle {
         width: CandleWidth,
     ) -> Self {
         Self {
-            market_id,
+            market_id: Some(market_id),
+            symbol: None,
             timestamp: candle.time.timestamp(),
             timestamp_ns: candle.time.timestamp_subsec_nanos(),
             width,
@@ -461,8 +493,10 @@ impl Candle {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Trade {
-    #[serde(rename = "m")]
-    pub market_id: MarketId,
+    #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
     #[serde(rename = "ts")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
@@ -471,7 +505,7 @@ pub struct Trade {
     pub direction: Option<Dir>, // maker dir
     #[serde(rename = "p")]
     pub price: Decimal,
-    #[serde(rename = "s")]
+    #[serde(rename = "q")]
     pub size: Decimal,
 }
 
@@ -484,7 +518,8 @@ impl Trade {
         timestamp: DateTime<Utc>,
     ) -> Self {
         Self {
-            market_id,
+            market_id: Some(market_id),
+            symbol: None,
             timestamp: timestamp.timestamp(),
             timestamp_ns: timestamp.timestamp_subsec_nanos(),
             direction,
@@ -496,23 +531,31 @@ impl Trade {
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "market_status", response = "MarketStatus")]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct MarketStatusRequest {
-    pub market_id: MarketId,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct MarketStatus {
-    #[serde(rename = "m")]
-    pub market_id: MarketId,
+    #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
     pub is_trading: Option<bool>,
 }
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "ticker", response = "Ticker")]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct TickerRequest {
-    pub market_id: MarketId,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
 }
 
 #[grpc(package = "json.architect")]
@@ -520,13 +563,18 @@ pub struct TickerRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeTickersRequest {
     /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub market_ids: Option<Vec<MarketId>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Ticker {
-    #[serde(rename = "m")]
-    pub market_id: MarketId,
+    #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
     #[serde(rename = "ts")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
@@ -548,7 +596,8 @@ pub struct Ticker {
 impl Ticker {
     pub fn empty(market_id: MarketId, timestamp: DateTime<Utc>) -> Self {
         Self {
-            market_id,
+            market_id: Some(market_id),
+            symbol: None,
             timestamp: timestamp.timestamp(),
             timestamp_ns: timestamp.timestamp_subsec_nanos(),
             open_24h: None,
@@ -598,13 +647,18 @@ impl Ticker {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
 pub struct SubscribeLiquidationsRequest {
     /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub market_ids: Option<Vec<MarketId>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
 pub struct Liquidation {
-    #[serde(rename = "m")]
-    pub market_id: MarketId,
+    #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
     #[serde(rename = "ts")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
@@ -613,7 +667,7 @@ pub struct Liquidation {
     pub direction: Dir,
     #[serde(rename = "p")]
     pub price: Decimal,
-    #[serde(rename = "s")]
+    #[serde(rename = "q")]
     pub size: Decimal,
 }
 
@@ -625,7 +679,10 @@ pub struct Liquidation {
 )]
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
 pub struct ExchangeSpecificFieldsRequest {
-    pub market_id: MarketId,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market_id: Option<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
     /// If None, subscribe from all exchange-specific fields on the feed
     pub fields: Option<Vec<String>>,
 }
