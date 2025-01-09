@@ -3,7 +3,7 @@
 use super::*;
 use anyhow::{anyhow, bail, Result};
 use chrono::{DateTime, NaiveDate, Utc};
-use derive_more::Display;
+use derive_more::{AsRef, Display};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -13,6 +13,7 @@ use strum_macros::{EnumString, IntoStaticStr};
 #[derive(
     Debug,
     Display,
+    AsRef,
     Clone,
     PartialEq,
     Eq,
@@ -23,6 +24,7 @@ use strum_macros::{EnumString, IntoStaticStr};
     Serialize,
     JsonSchema,
 )]
+#[as_ref(forward)]
 #[serde(transparent)]
 #[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
 #[cfg_attr(feature = "postgres", postgres(transparent))]
@@ -151,6 +153,8 @@ pub enum ProductInfo {
         multiplier: Decimal,
         expiration: DateTime<Utc>,
         derivative_kind: DerivativeKind,
+        #[serde(default)]
+        first_notice_date: Option<NaiveDate>,
     },
     FutureSpread {
         legs: Vec<SpreadLeg>,
@@ -235,6 +239,13 @@ impl ProductInfo {
     pub fn derivative_kind(&self) -> Option<DerivativeKind> {
         match self {
             ProductInfo::Future { derivative_kind, .. } => Some(*derivative_kind),
+            _ => None,
+        }
+    }
+
+    pub fn first_notice_date(&self) -> Option<NaiveDate> {
+        match self {
+            ProductInfo::Future { first_notice_date, .. } => *first_notice_date,
             _ => None,
         }
     }

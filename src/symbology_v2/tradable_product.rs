@@ -4,7 +4,7 @@
 
 use super::Product;
 use anyhow::{bail, Result};
-use derive_more::Display;
+use derive_more::{AsRef, Display};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
@@ -12,6 +12,7 @@ use std::str::FromStr;
 #[derive(
     Debug,
     Display,
+    AsRef,
     Clone,
     PartialEq,
     Eq,
@@ -22,6 +23,7 @@ use std::str::FromStr;
     Serialize,
     JsonSchema,
 )]
+#[as_ref(forward)]
 #[serde(transparent)]
 #[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
 #[cfg_attr(feature = "postgres", postgres(transparent))]

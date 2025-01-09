@@ -3,7 +3,6 @@ use crate::symbology::market::MinOrderQuantityUnit;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 
 /// Information about a symbol related to its execution route.
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
@@ -18,7 +17,6 @@ pub struct ExecutionInfo {
     pub min_order_quantity: Decimal,
     pub min_order_quantity_unit: MinOrderQuantityUnit,
     pub is_delisted: bool,
-    pub additional_info: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]

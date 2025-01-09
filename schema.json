@@ -3916,15 +3916,6 @@ symbologyv2
                   "venue_raw_symbol"
                 ],
                 "properties": {
-                  "additional_info": {
-                    "type": [
-                      "object",
-                      "null"
-                    ],
-                    "additionalProperties": {
-                      "type": "string"
-                    }
-                  },
                   "execution_venue": {
                     "type": "string"
                   },
@@ -4227,6 +4218,14 @@ symbologyv2
                         "type": "string",
                         "format": "date-time"
                       },
+                      "first_notice_date": {
+                        "default": null,
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "date"
+                      },
                       "multiplier": {
                         "$ref": "#/definitions/Decimal"
                       },
@@ -4519,15 +4518,6 @@ symbologyv2
               "venue_raw_symbol"
             ],
             "properties": {
-              "additional_info": {
-                "type": [
-                  "object",
-                  "null"
-                ],
-                "additionalProperties": {
-                  "type": "string"
-                }
-              },
               "execution_venue": {
                 "type": "string"
               },
@@ -4795,6 +4785,14 @@ symbologyv2
                   "expiration": {
                     "type": "string",
                     "format": "date-time"
+                  },
+                  "first_notice_date": {
+                    "default": null,
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date"
                   },
                   "multiplier": {
                     "$ref": "#/definitions/Decimal"
@@ -5983,15 +5981,6 @@ symbologyv2
               "venue_raw_symbol"
             ],
             "properties": {
-              "additional_info": {
-                "type": [
-                  "object",
-                  "null"
-                ],
-                "additionalProperties": {
-                  "type": "string"
-                }
-              },
               "execution_venue": {
                 "type": "string"
               },
@@ -6259,6 +6248,14 @@ symbologyv2
                   "expiration": {
                     "type": "string",
                     "format": "date-time"
+                  },
+                  "first_notice_date": {
+                    "default": null,
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date"
                   },
                   "multiplier": {
                     "$ref": "#/definitions/Decimal"
