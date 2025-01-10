@@ -73,8 +73,10 @@ pub struct L1BookSnapshot {
     pub timestamp: i64,
     #[serde(rename = "tn")]
     pub timestamp_ns: u32,
+    // CR alee: deprecated
     #[serde(rename = "e", skip_serializing_if = "Option::is_none", default)]
     pub epoch: Option<i64>,
+    // CR alee: deprecated
     #[serde(rename = "n", skip_serializing_if = "Option::is_none", default)]
     pub seqno: Option<u64>,
     #[serde(rename = "b")]
@@ -511,15 +513,16 @@ pub struct Trade {
 
 impl Trade {
     pub fn new(
-        market_id: MarketId,
+        market_id: Option<MarketId>,
+        symbol: Option<String>,
         price: Decimal,
         size: Decimal,
         direction: Option<Dir>,
         timestamp: DateTime<Utc>,
     ) -> Self {
         Self {
-            market_id: Some(market_id),
-            symbol: None,
+            market_id,
+            symbol,
             timestamp: timestamp.timestamp(),
             timestamp_ns: timestamp.timestamp_subsec_nanos(),
             direction,
@@ -594,10 +597,14 @@ pub struct Ticker {
 }
 
 impl Ticker {
-    pub fn empty(market_id: MarketId, timestamp: DateTime<Utc>) -> Self {
+    pub fn empty(
+        market_id: Option<MarketId>,
+        symbol: Option<String>,
+        timestamp: DateTime<Utc>,
+    ) -> Self {
         Self {
-            market_id: Some(market_id),
-            symbol: None,
+            market_id,
+            symbol,
             timestamp: timestamp.timestamp(),
             timestamp_ns: timestamp.timestamp_subsec_nanos(),
             open_24h: None,

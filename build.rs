@@ -45,6 +45,15 @@ fn build_grpc_stubs() {
         .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
+                .name("symbology_v2")
+                .route_name("SymbologyV2")
+                .input_type("crate::symbology_v2::protocol::SymbologyV2Request")
+                .output_type("crate::symbology_v2::protocol::SymbologySnapshot")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
                 .name("subscribe_symbology_v2")
                 .route_name("SubscribeSymbologyV2")
                 .input_type("crate::symbology_v2::protocol::SubscribeSymbologyV2")

@@ -5,6 +5,22 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
+#[grpc(package = "json.architect")]
+#[grpc(service = "SymbologyV2", name = "symbology_v2", response = "SymbologySnapshot")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SymbologyV2Request {}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SymbologySnapshot {
+    #[serde(flatten)]
+    pub sequence: SequenceIdAndNumber,
+    pub products: BTreeMap<Product, ProductInfo>,
+    pub tradable_products: BTreeMap<TradableProduct, TradableProductInfo>,
+    pub options_series: BTreeMap<OptionsSeries, OptionsSeriesInfo>,
+    pub execution_info: BTreeMap<String, BTreeMap<ExecutionVenue, ExecutionInfo>>,
+    pub marketdata_info: BTreeMap<String, BTreeMap<MarketdataVenue, MarketdataInfo>>,
+}
+
 #[derive(Default, Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SymbologyUpdate {
     #[serde(flatten)]

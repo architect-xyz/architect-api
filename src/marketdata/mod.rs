@@ -86,7 +86,17 @@ pub enum MessageHeader {
 }
 
 #[derive(
-    Debug, Clone, Copy, Deserialize, PartialEq, Eq, Hash, Serialize, JsonSchema_repr,
+    Debug,
+    Clone,
+    Copy,
+    Deserialize,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    JsonSchema_repr,
 )]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
