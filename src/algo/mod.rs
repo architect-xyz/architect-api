@@ -21,6 +21,7 @@ pub mod mm;
 pub mod pov;
 pub mod quote_one_side;
 pub mod smart_order_router;
+pub mod spreader;
 pub mod take_and_chase;
 pub mod twap;
 
@@ -99,10 +100,11 @@ pub enum AlgoKind {
     Pov,
     SmartOrderRouter,
     Twap,
-    Spread,
+    Spread, // don't use this, use Spreader
     Chaser,
     TakeAndChase,
     QuoteOneSide,
+    Spreader,
 }
 
 // CR-someday alee: use something more akin to the validator crate

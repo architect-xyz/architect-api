@@ -66,6 +66,7 @@ use serde_json::json;
 #[transitive(Algo <-> MarketMakerAlgo <- Orderflow)]
 #[transitive(Algo <-> PovAlgo <- Orderflow)]
 #[transitive(TradingActivity <- Orderflow)]
+#[transitive(Algo <-> SpreaderAlgo <- Orderflow)]
 #[rustfmt::skip]
 pub enum TypedMessage {
     #[pack(tag(  0))] SystemControl(system_control::SystemControlMessage),
@@ -100,6 +101,7 @@ pub enum TypedMessage {
     #[pack(tag(205))] TradingActivity(trading_activity::TradingActivityMessage),
     #[pack(tag(206))] TakeAndChaseAlgo(algo::take_and_chase::TakeAndChaseAlgoMessage),
     #[pack(tag(207))] QuoteOneSideAlgo(algo::quote_one_side::QuoteOneSideAlgoMessage),
+    #[pack(tag(208))] SpreaderAlgo(algo::spreader::SpreaderAlgoMessage)
 }
 
 #[cfg(feature = "netidx")]

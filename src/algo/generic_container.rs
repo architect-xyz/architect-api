@@ -53,6 +53,8 @@ pub enum ChildAlgoOrderflow {
     ChildPovOrder(pov::PovAlgoOrder),
     ChildAlgoControl(AlgoControl),
     ChildChaserOrder(chaser::ChaserOrder),
+    ChildTakeAndChaseOrder(take_and_chase::TakeAndChaseOrder),
+    ChildQuoteOneSideOrder(quote_one_side::QuoteOneSideOrder),
 }
 
 macro_rules! time {
