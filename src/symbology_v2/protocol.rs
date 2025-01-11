@@ -3,6 +3,7 @@ use chrono::{DateTime, Utc};
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 use std::collections::BTreeMap;
 
 #[grpc(package = "json.architect")]
@@ -21,19 +22,20 @@ pub struct SymbologySnapshot {
     pub marketdata_info: BTreeMap<String, BTreeMap<MarketdataVenue, MarketdataInfo>>,
 }
 
+#[skip_serializing_none]
 #[derive(Default, Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SymbologyUpdate {
     #[serde(flatten)]
     pub sequence: SequenceIdAndNumber,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub products: Option<SnapshotOrUpdate<Product, ProductInfo>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub tradable_products: Option<SnapshotOrUpdate<TradableProduct, TradableProductInfo>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub options_series: Option<SnapshotOrUpdate<OptionsSeries, OptionsSeriesInfo>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub execution_info: Option<SnapshotOrUpdate2<String, ExecutionVenue, ExecutionInfo>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub marketdata_info:
         Option<SnapshotOrUpdate2<String, MarketdataVenue, MarketdataInfo>>,
 }
