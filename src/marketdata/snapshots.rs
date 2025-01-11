@@ -8,10 +8,13 @@ use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct MarketSnapshot {
-    pub market: MarketId,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market: Option<MarketId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
     pub snapshot_ts: DateTime<Utc>,
     pub bid_price: Option<Decimal>,
     pub ask_price: Option<Decimal>,

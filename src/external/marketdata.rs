@@ -10,6 +10,7 @@ use derive_more::{Deref, DerefMut};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 use std::collections::BTreeMap;
 
 #[grpc(package = "json.architect")]
@@ -561,27 +562,12 @@ pub struct TickerRequest {
     pub symbol: Option<String>,
 }
 
-#[grpc(package = "json.architect")]
-#[grpc(service = "Marketdata", name = "ticker", response = "Ticker")]
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct SubscribeTickersRequest {
-    /// If None, subscribe from all symbols on the feed
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub market_ids: Option<Vec<MarketId>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub symbols: Option<Vec<String>>,
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Ticker {
     #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
     pub market_id: Option<MarketId>,
     #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
     pub symbol: Option<String>,
-    #[serde(rename = "ts")]
-    pub timestamp: i64,
-    #[serde(rename = "tn")]
-    pub timestamp_ns: u32,
     #[serde(rename = "o")]
     pub open_24h: Option<Decimal>,
     #[serde(rename = "v")]
@@ -596,57 +582,56 @@ pub struct Ticker {
     pub open_interest: Option<Decimal>,
 }
 
-impl Ticker {
-    pub fn empty(
-        market_id: Option<MarketId>,
-        symbol: Option<String>,
-        timestamp: DateTime<Utc>,
-    ) -> Self {
-        Self {
-            market_id,
-            symbol,
-            timestamp: timestamp.timestamp(),
-            timestamp_ns: timestamp.timestamp_subsec_nanos(),
-            open_24h: None,
-            volume_24h: None,
-            low_24h: None,
-            high_24h: None,
-            volume_30d: None,
-            open_interest: None,
-        }
-    }
+/// Ticker updates are not strongly ordered because the data is considered
+/// more casual.  You may receive diffs or snapshots slightly out of order.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "ticker",
+    response = "TickerUpdate",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SubscribeTickersRequest {
+    /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market_ids: Option<Vec<MarketId>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
+}
 
-    pub fn update(
-        &mut self,
-        timestamp: DateTime<Utc>,
-        open_24h: Option<Decimal>,
-        volume_24h: Option<Decimal>,
-        low_24h: Option<Decimal>,
-        high_24h: Option<Decimal>,
-        volume_30d: Option<Decimal>,
-        open_interest: Option<Decimal>,
-    ) {
-        self.timestamp = timestamp.timestamp();
-        self.timestamp_ns = timestamp.timestamp_subsec_nanos();
-        if let Some(open_24h) = open_24h {
-            self.open_24h = Some(open_24h);
-        }
-        if let Some(volume_24h) = volume_24h {
-            self.volume_24h = Some(volume_24h);
-        }
-        if let Some(low_24h) = low_24h {
-            self.low_24h = Some(low_24h);
-        }
-        if let Some(high_24h) = high_24h {
-            self.high_24h = Some(high_24h);
-        }
-        if let Some(volume_30d) = volume_30d {
-            self.volume_30d = Some(volume_30d);
-        }
-        if let Some(open_interest) = open_interest {
-            self.open_interest = Some(open_interest);
-        }
-    }
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(tag = "t")]
+pub enum TickerUpdate {
+    #[serde(rename = "s")]
+    Snapshot(Ticker),
+    #[serde(rename = "d")]
+    Diff(TickerDiff),
+}
+
+#[skip_serializing_none]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct TickerDiff {
+    #[serde(rename = "m", default)]
+    pub market_id: Option<MarketId>,
+    #[serde(rename = "s", default)]
+    pub symbol: Option<String>,
+    #[serde(rename = "ts")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "o", default)]
+    pub open_24h: Option<Decimal>,
+    #[serde(rename = "v", default)]
+    pub volume_24h: Option<Decimal>,
+    #[serde(rename = "l", default)]
+    pub low_24h: Option<Decimal>,
+    #[serde(rename = "h", default)]
+    pub high_24h: Option<Decimal>,
+    #[serde(rename = "vm", default)]
+    pub volume_30d: Option<Decimal>,
+    #[serde(rename = "oi", default)]
+    pub open_interest: Option<Decimal>,
 }
 
 #[grpc(package = "json.architect")]

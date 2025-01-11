@@ -9806,10 +9806,6 @@ marketdata
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Ticker",
         "type": "object",
-        "required": [
-          "tn",
-          "ts"
-        ],
         "properties": {
           "h": {
             "anyOf": [
@@ -9866,15 +9862,6 @@ marketdata
               "string",
               "null"
             ]
-          },
-          "tn": {
-            "type": "integer",
-            "format": "uint32",
-            "minimum": 0.0
-          },
-          "ts": {
-            "type": "integer",
-            "format": "int64"
           },
           "v": {
             "anyOf": [
@@ -9914,6 +9901,7 @@ marketdata
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeTickersRequest",
+        "description": "Ticker updates are not strongly ordered because the data is considered more casual.  You may receive diffs or snapshots slightly out of order.",
         "type": "object",
         "properties": {
           "market_ids": {
@@ -9945,99 +9933,200 @@ marketdata
       },
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "Ticker",
-        "type": "object",
-        "required": [
-          "tn",
-          "ts"
-        ],
-        "properties": {
-          "h": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
+        "title": "TickerUpdate",
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "t"
+            ],
+            "properties": {
+              "h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "l": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
+              "l": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "m": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/MarketId"
+              "m": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/MarketId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "o": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
+              "o": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "oi": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
+              "oi": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "s": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "tn": {
-            "type": "integer",
-            "format": "uint32",
-            "minimum": 0.0
-          },
-          "ts": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "v": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
+              "s": {
+                "type": [
+                  "string",
+                  "null"
+                ]
               },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "vm": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
+              "t": {
+                "type": "string",
+                "enum": [
+                  "s"
+                ]
               },
-              {
-                "type": "null"
+              "v": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "vm": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
-            ]
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "t",
+              "tn",
+              "ts"
+            ],
+            "properties": {
+              "h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "l": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "m": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/MarketId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "o": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "oi": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "s": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "d"
+                ]
+              },
+              "tn": {
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "v": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "vm": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
           }
-        },
+        ],
         "definitions": {
           "Decimal": {
             "type": "string"

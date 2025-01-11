@@ -4,6 +4,7 @@
 use serde::{Deserialize, Serialize};
 
 pub mod marketdata;
+pub mod marketdata_snapshots;
 pub mod symbology;
 
 // NB: https://github.com/serde-rs/json/issues/545

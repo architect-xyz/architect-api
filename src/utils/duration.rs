@@ -1,18 +1,42 @@
 //! Utility functions for working with durations
 
-use anyhow::{anyhow, Result};
+use crate::json_schema_is_string;
+use anyhow::{anyhow, bail, Result};
 use chrono::{DateTime, Duration, Utc};
 use derive::Newtype;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
-use schemars::{
-    gen::SchemaGenerator,
-    schema::{InstanceType, Schema, SchemaObject},
-    JsonSchema,
-};
 use serde::{Deserialize, Serialize};
-use std::{num::NonZeroU32, str::FromStr};
+use serde_with::serde_conv;
+use std::str::FromStr;
 
+serde_conv!(pub DurationAsStr, Duration, format_duration, parse_duration);
+
+serde_conv!(
+    pub NonZeroDurationAsStr,
+    std::time::Duration,
+    format_nonzero_duration,
+    parse_nonzero_duration
+);
+
+fn format_nonzero_duration(dur: &std::time::Duration) -> String {
+    let secs = dur.as_secs();
+    let nanos = dur.subsec_nanos();
+    format!("{}.{:09}s", secs, nanos)
+}
+
+fn parse_nonzero_duration(s: &str) -> Result<std::time::Duration> {
+    let dur = parse_duration(s)?;
+    if dur.is_zero() {
+        bail!("duration must be non-zero");
+    }
+    Ok(dur.to_std()?)
+}
+
+json_schema_is_string!(DurationAsStr);
+json_schema_is_string!(NonZeroDurationAsStr);
+
+// CR alee: deprecating in favor of DurationAsStr
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Newtype,
 )]
@@ -36,41 +60,7 @@ impl FromStr for HumanDuration {
     }
 }
 
-impl JsonSchema for HumanDuration {
-    fn schema_name() -> String {
-        // Exclude the module path to make the name in generated schemas clearer.
-        "HumanDuration".to_owned()
-    }
-
-    fn json_schema(_gen: &mut SchemaGenerator) -> Schema {
-        // FIXME probably
-        SchemaObject {
-            instance_type: Some(InstanceType::String.into()),
-            ..Default::default()
-        }
-        .into()
-    }
-
-    fn is_referenceable() -> bool {
-        true
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct RateLimit {
-    pub max: NonZeroU32,
-    pub per: HumanDuration,
-}
-
-impl TryInto<governor::Quota> for &RateLimit {
-    type Error = anyhow::Error;
-
-    fn try_into(self) -> Result<governor::Quota> {
-        Ok(governor::Quota::with_period(self.per.to_std()?)
-            .ok_or_else(|| anyhow!("rate limit period must be non-zero"))?
-            .allow_burst(self.max))
-    }
-}
+json_schema_is_string!(HumanDuration);
 
 /// Helper struct to parse from either an absolute ISO 8601 datetime,
 /// or some duration relative to now (e.g. +1h, -3d, etc.)
@@ -109,6 +99,12 @@ impl FromStr for AbsoluteOrRelativeTime {
             Ok(Self::Absolute(DateTime::from_str(s)?))
         }
     }
+}
+
+// TODO: pick a more elegant format rather than dumb seconds
+fn format_duration(dur: &Duration) -> String {
+    let secs = dur.num_milliseconds() as f64 / 1000.;
+    format!("{}s", secs)
 }
 
 /// Parse a duration string into a `chrono::Duration`.

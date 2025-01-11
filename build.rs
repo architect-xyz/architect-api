@@ -186,7 +186,7 @@ fn build_grpc_stubs() {
                 .name("subscribe_tickers")
                 .route_name("SubscribeTickers")
                 .input_type("crate::external::marketdata::SubscribeTickersRequest")
-                .output_type("crate::external::marketdata::Ticker")
+                .output_type("crate::external::marketdata::TickerUpdate")
                 .server_streaming()
                 .codec_path(json_codec)
                 .build(),
@@ -211,6 +211,34 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let json_marketdata_snapshots_service = tonic_build::manual::Service::builder()
+        .name("MarketdataSnapshots")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("marketdata_snapshot")
+                .route_name("MarketdataSnapshot")
+                .input_type(
+                    "crate::external::marketdata_snapshots::MarketdataSnapshotRequest",
+                )
+                .output_type("crate::external::marketdata_snapshots::MarketdataSnapshot")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("marketdata_snapshots")
+                .route_name("MarketdataSnapshots")
+                .input_type(
+                    "crate::external::marketdata_snapshots::MarketdataSnapshotsRequest",
+                )
+                .output_type(
+                    "crate::external::marketdata_snapshots::MarketdataSnapshotsResponse",
+                )
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let mut schema_gen_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     schema_gen_dir.push("schema/generated");
     schema_builder::manual::Builder::new()
@@ -221,12 +249,14 @@ fn build_grpc_stubs() {
             &json_symbology_service,
             &json_symbology_v2_service,
             &json_marketdata_service,
+            &json_marketdata_snapshots_service,
         ]);
     tonic_build::manual::Builder::new().compile(&[
         json_health_service,
         json_symbology_service,
         json_symbology_v2_service,
         json_marketdata_service,
+        json_marketdata_snapshots_service,
     ]);
 }
 
