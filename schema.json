@@ -1,5 +1,4 @@
-health
-{
+[{
   "$schema": "jsonschema",
   "name": "Health",
   "rpcs": [
@@ -46,9 +45,8 @@ health
       }
     }
   ]
-}
+},
 
-symbology
 {
   "$schema": "jsonschema",
   "name": "Symbology",
@@ -3812,9 +3810,8 @@ symbology
       }
     }
   ]
-}
+},
 
-symbologyv2
 {
   "$schema": "jsonschema",
   "name": "SymbologyV2",
@@ -3873,11 +3870,13 @@ symbologyv2
             }
           },
           "sid": {
+            "title": "sequence_id",
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
           },
           "sn": {
+            "title": "sequence_number",
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
@@ -5130,11 +5129,13 @@ symbologyv2
             ]
           },
           "sid": {
+            "title": "sequence_id",
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
           },
           "sn": {
+            "title": "sequence_number",
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
@@ -8352,9 +8353,8 @@ symbologyv2
       }
     }
   ]
-}
+},
 
-marketdata
 {
   "$schema": "jsonschema",
   "name": "Marketdata",
@@ -8401,6 +8401,7 @@ marketdata
         ],
         "properties": {
           "a": {
+            "title": "best_ask",
             "type": [
               "array",
               "null"
@@ -8417,6 +8418,7 @@ marketdata
             "minItems": 2
           },
           "b": {
+            "title": "best_bid",
             "type": [
               "array",
               "null"
@@ -8433,6 +8435,7 @@ marketdata
             "minItems": 2
           },
           "e": {
+            "title": "epoch",
             "type": [
               "integer",
               "null"
@@ -8440,6 +8443,7 @@ marketdata
             "format": "int64"
           },
           "m": {
+            "title": "market_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/MarketId"
@@ -8450,6 +8454,7 @@ marketdata
             ]
           },
           "n": {
+            "title": "seqno",
             "type": [
               "integer",
               "null"
@@ -8458,17 +8463,20 @@ marketdata
             "minimum": 0.0
           },
           "s": {
+            "title": "symbol",
             "type": [
               "string",
               "null"
             ]
           },
           "tn": {
+            "title": "timestamp_ns",
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
           },
           "ts": {
+            "title": "timestamp",
             "type": "integer",
             "format": "int64"
           }
@@ -8537,6 +8545,7 @@ marketdata
             ],
             "properties": {
               "a": {
+                "title": "best_ask",
                 "type": [
                   "array",
                   "null"
@@ -8553,6 +8562,7 @@ marketdata
                 "minItems": 2
               },
               "b": {
+                "title": "best_bid",
                 "type": [
                   "array",
                   "null"
@@ -8569,6 +8579,7 @@ marketdata
                 "minItems": 2
               },
               "e": {
+                "title": "epoch",
                 "type": [
                   "integer",
                   "null"
@@ -8576,6 +8587,7 @@ marketdata
                 "format": "int64"
               },
               "m": {
+                "title": "market_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/MarketId"
@@ -8586,6 +8598,7 @@ marketdata
                 ]
               },
               "n": {
+                "title": "seqno",
                 "type": [
                   "integer",
                   "null"
@@ -8594,17 +8607,20 @@ marketdata
                 "minimum": 0.0
               },
               "s": {
+                "title": "symbol",
                 "type": [
                   "string",
                   "null"
                 ]
               },
               "tn": {
+                "title": "timestamp_ns",
                 "type": "integer",
                 "format": "uint32",
                 "minimum": 0.0
               },
               "ts": {
+                "title": "timestamp",
                 "type": "integer",
                 "format": "int64"
               }
@@ -8663,6 +8679,7 @@ marketdata
         ],
         "properties": {
           "a": {
+            "title": "best_ask",
             "type": [
               "array",
               "null"
@@ -8679,6 +8696,7 @@ marketdata
             "minItems": 2
           },
           "b": {
+            "title": "best_bid",
             "type": [
               "array",
               "null"
@@ -8695,6 +8713,7 @@ marketdata
             "minItems": 2
           },
           "e": {
+            "title": "epoch",
             "type": [
               "integer",
               "null"
@@ -8702,6 +8721,7 @@ marketdata
             "format": "int64"
           },
           "m": {
+            "title": "market_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/MarketId"
@@ -8712,6 +8732,7 @@ marketdata
             ]
           },
           "n": {
+            "title": "seqno",
             "type": [
               "integer",
               "null"
@@ -8720,17 +8741,20 @@ marketdata
             "minimum": 0.0
           },
           "s": {
+            "title": "symbol",
             "type": [
               "string",
               "null"
             ]
           },
           "tn": {
+            "title": "timestamp_ns",
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
           },
           "ts": {
+            "title": "timestamp",
             "type": "integer",
             "format": "int64"
           }
@@ -8784,6 +8808,7 @@ marketdata
         "description": "To build a book from a stream of updates, the client should first subscribe to this update stream, which then returns a stream starting with a snapshot and following with diffs.\n\nDiffs should be applied consecutively to the snapshot in order to reconstruct the state of the book.\n\n```rust # use architect_api::external::marketdata::*; # use std::collections::BTreeMap; # use rust_decimal::Decimal; # use rust_decimal_macros::dec;\n\n/// Suppose we receive this snapshot from the server: let snapshot: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"s\", \"ts\": 1729700837, \"tn\": 0, \"sid\": 123, \"sn\": 8999, \"b\": [[\"99.00\", \"3\"], [\"98.78\", \"2\"]], \"a\": [[\"100.00\", \"1\"], [\"100.10\", \"2\"]] }\"#)?;\n\n/// It corresponds to the following book: let mut book = BTreeMap::new(); book.insert(dec!(99.00), 3); book.insert(dec!(98.78), 2); book.insert(dec!(100.00), 1); book.insert(dec!(100.10), 2);\n\n/// Then we receive this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700839, \"tn\": 0, \"sid\": 123, \"sn\": 9000, \"b\": [[\"99.00\", \"1\"]], \"a\": [] }\"#)?;\n\n/// Verify that the sequence number is correct assert!(diff.sequence().is_next_in_sequence(&snapshot.sequence()));\n\n/// Apply the update to our book book.insert(dec!(99.00), 1);\n\n// Suppose we then receive this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700841, \"tn\": 0, \"sid\": 123, \"sn\": 9005, \"b\": [], \"a\": [[\"103.00\", \"1\"]] }\"#)?;\n\n/// We shouldn't apply this update because it's not next in sequence! assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);\n\n/// Or if we had received this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700841, \"tn\": 0, \"sid\": 170, \"sn\": 9001, \"b\": [], \"a\": [[\"103.00\", \"1\"]] }\"#)?;\n\n/// It appears that the sequence id is changed, signalling a new sequence. /// In this case, we should re-request the snapshot from the server. assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);\n\n# Ok::<(), anyhow::Error>(()) ```",
         "oneOf": [
           {
+            "title": "snapshot",
             "description": "Unique sequence id and number.",
             "type": "object",
             "required": [
@@ -8797,6 +8822,7 @@ marketdata
             ],
             "properties": {
               "a": {
+                "title": "asks",
                 "type": "array",
                 "items": {
                   "type": "array",
@@ -8813,6 +8839,7 @@ marketdata
                 }
               },
               "b": {
+                "title": "bids",
                 "type": "array",
                 "items": {
                   "type": "array",
@@ -8829,11 +8856,13 @@ marketdata
                 }
               },
               "sid": {
+                "title": "sequence_id",
                 "type": "integer",
                 "format": "uint64",
                 "minimum": 0.0
               },
               "sn": {
+                "title": "sequence_number",
                 "type": "integer",
                 "format": "uint64",
                 "minimum": 0.0
@@ -8845,17 +8874,20 @@ marketdata
                 ]
               },
               "tn": {
+                "title": "timestamp_ns",
                 "type": "integer",
                 "format": "uint32",
                 "minimum": 0.0
               },
               "ts": {
+                "title": "timestamp",
                 "type": "integer",
                 "format": "int64"
               }
             }
           },
           {
+            "title": "diff",
             "description": "Unique sequence id and number.",
             "type": "object",
             "required": [
@@ -8869,6 +8901,7 @@ marketdata
             ],
             "properties": {
               "a": {
+                "title": "asks",
                 "description": "Set of (price, level) updates. If zero, the price level has been removed from the book.",
                 "type": "array",
                 "items": {
@@ -8886,6 +8919,7 @@ marketdata
                 }
               },
               "b": {
+                "title": "bids",
                 "description": "Set of (price, level) updates. If zero, the price level has been removed from the book.",
                 "type": "array",
                 "items": {
@@ -8903,11 +8937,13 @@ marketdata
                 }
               },
               "sid": {
+                "title": "sequence_id",
                 "type": "integer",
                 "format": "uint64",
                 "minimum": 0.0
               },
               "sn": {
+                "title": "sequence_number",
                 "type": "integer",
                 "format": "uint64",
                 "minimum": 0.0
@@ -8919,11 +8955,13 @@ marketdata
                 ]
               },
               "tn": {
+                "title": "timestamp_ns",
                 "type": "integer",
                 "format": "uint32",
                 "minimum": 0.0
               },
               "ts": {
+                "title": "timestamp",
                 "type": "integer",
                 "format": "int64"
               }
@@ -8984,6 +9022,7 @@ marketdata
         ],
         "properties": {
           "a": {
+            "title": "asks",
             "type": "array",
             "items": {
               "type": "array",
@@ -9000,6 +9039,7 @@ marketdata
             }
           },
           "b": {
+            "title": "bids",
             "type": "array",
             "items": {
               "type": "array",
@@ -9016,21 +9056,25 @@ marketdata
             }
           },
           "sid": {
+            "title": "sequence_id",
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
           },
           "sn": {
+            "title": "sequence_number",
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
           },
           "tn": {
+            "title": "timestamp_ns",
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
           },
           "ts": {
+            "title": "timestamp",
             "type": "integer",
             "format": "int64"
           }
@@ -9121,6 +9165,7 @@ marketdata
         ],
         "properties": {
           "ac": {
+            "title": "ask_close",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9131,6 +9176,7 @@ marketdata
             ]
           },
           "ah": {
+            "title": "ask_high",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9141,6 +9187,7 @@ marketdata
             ]
           },
           "al": {
+            "title": "ask_low",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9151,6 +9198,7 @@ marketdata
             ]
           },
           "ao": {
+            "title": "ask_open",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9161,9 +9209,15 @@ marketdata
             ]
           },
           "av": {
-            "$ref": "#/definitions/Decimal"
+            "title": "sell_volume",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "bc": {
+            "title": "bid_close",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9174,6 +9228,7 @@ marketdata
             ]
           },
           "bh": {
+            "title": "bid_high",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9184,6 +9239,7 @@ marketdata
             ]
           },
           "bl": {
+            "title": "bid_low",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9194,6 +9250,7 @@ marketdata
             ]
           },
           "bo": {
+            "title": "bid_open",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9204,18 +9261,39 @@ marketdata
             ]
           },
           "bv": {
-            "$ref": "#/definitions/Decimal"
+            "title": "buy_volume",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "c": {
-            "$ref": "#/definitions/Decimal"
+            "title": "close",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "h": {
-            "$ref": "#/definitions/Decimal"
+            "title": "high",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "l": {
-            "$ref": "#/definitions/Decimal"
+            "title": "low",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "m": {
+            "title": "market_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/MarketId"
@@ -9226,6 +9304,7 @@ marketdata
             ]
           },
           "mc": {
+            "title": "mid_close",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9236,6 +9315,7 @@ marketdata
             ]
           },
           "mh": {
+            "title": "mid_high",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9246,6 +9326,7 @@ marketdata
             ]
           },
           "ml": {
+            "title": "mid_low",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9256,6 +9337,7 @@ marketdata
             ]
           },
           "mo": {
+            "title": "mid_open",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9266,28 +9348,46 @@ marketdata
             ]
           },
           "o": {
-            "$ref": "#/definitions/Decimal"
+            "title": "open",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "s": {
+            "title": "symbol",
             "type": [
               "string",
               "null"
             ]
           },
           "tn": {
+            "title": "timestamp_ns",
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
           },
           "ts": {
+            "title": "timestamp",
             "type": "integer",
             "format": "int64"
           },
           "v": {
-            "$ref": "#/definitions/Decimal"
+            "title": "volume",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "w": {
-            "$ref": "#/definitions/CandleWidth"
+            "title": "width",
+            "allOf": [
+              {
+                "$ref": "#/definitions/CandleWidth"
+              }
+            ]
           }
         },
         "definitions": {
@@ -9398,6 +9498,7 @@ marketdata
         ],
         "properties": {
           "ac": {
+            "title": "ask_close",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9408,6 +9509,7 @@ marketdata
             ]
           },
           "ah": {
+            "title": "ask_high",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9418,6 +9520,7 @@ marketdata
             ]
           },
           "al": {
+            "title": "ask_low",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9428,6 +9531,7 @@ marketdata
             ]
           },
           "ao": {
+            "title": "ask_open",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9438,9 +9542,15 @@ marketdata
             ]
           },
           "av": {
-            "$ref": "#/definitions/Decimal"
+            "title": "sell_volume",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "bc": {
+            "title": "bid_close",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9451,6 +9561,7 @@ marketdata
             ]
           },
           "bh": {
+            "title": "bid_high",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9461,6 +9572,7 @@ marketdata
             ]
           },
           "bl": {
+            "title": "bid_low",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9471,6 +9583,7 @@ marketdata
             ]
           },
           "bo": {
+            "title": "bid_open",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9481,18 +9594,39 @@ marketdata
             ]
           },
           "bv": {
-            "$ref": "#/definitions/Decimal"
+            "title": "buy_volume",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "c": {
-            "$ref": "#/definitions/Decimal"
+            "title": "close",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "h": {
-            "$ref": "#/definitions/Decimal"
+            "title": "high",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "l": {
-            "$ref": "#/definitions/Decimal"
+            "title": "low",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "m": {
+            "title": "market_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/MarketId"
@@ -9503,6 +9637,7 @@ marketdata
             ]
           },
           "mc": {
+            "title": "mid_close",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9513,6 +9648,7 @@ marketdata
             ]
           },
           "mh": {
+            "title": "mid_high",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9523,6 +9659,7 @@ marketdata
             ]
           },
           "ml": {
+            "title": "mid_low",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9533,6 +9670,7 @@ marketdata
             ]
           },
           "mo": {
+            "title": "mid_open",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9543,28 +9681,46 @@ marketdata
             ]
           },
           "o": {
-            "$ref": "#/definitions/Decimal"
+            "title": "open",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "s": {
+            "title": "symbol",
             "type": [
               "string",
               "null"
             ]
           },
           "tn": {
+            "title": "timestamp_ns",
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
           },
           "ts": {
+            "title": "timestamp",
             "type": "integer",
             "format": "int64"
           },
           "v": {
-            "$ref": "#/definitions/Decimal"
+            "title": "volume",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "w": {
-            "$ref": "#/definitions/CandleWidth"
+            "title": "width",
+            "allOf": [
+              {
+                "$ref": "#/definitions/CandleWidth"
+              }
+            ]
           }
         },
         "definitions": {
@@ -9642,6 +9798,7 @@ marketdata
         ],
         "properties": {
           "d": {
+            "title": "direction",
             "anyOf": [
               {
                 "$ref": "#/definitions/Dir"
@@ -9652,6 +9809,7 @@ marketdata
             ]
           },
           "m": {
+            "title": "market_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/MarketId"
@@ -9662,23 +9820,36 @@ marketdata
             ]
           },
           "p": {
-            "$ref": "#/definitions/Decimal"
+            "title": "price",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "q": {
-            "$ref": "#/definitions/Decimal"
+            "title": "size",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "s": {
+            "title": "symbol",
             "type": [
               "string",
               "null"
             ]
           },
           "tn": {
+            "title": "timestamp_ns",
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
           },
           "ts": {
+            "title": "timestamp",
             "type": "integer",
             "format": "int64"
           }
@@ -9746,6 +9917,7 @@ marketdata
             ]
           },
           "m": {
+            "title": "market_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/MarketId"
@@ -9756,6 +9928,7 @@ marketdata
             ]
           },
           "s": {
+            "title": "symbol",
             "type": [
               "string",
               "null"
@@ -9808,6 +9981,7 @@ marketdata
         "type": "object",
         "properties": {
           "h": {
+            "title": "high_24h",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9818,6 +9992,7 @@ marketdata
             ]
           },
           "l": {
+            "title": "low_24h",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9828,6 +10003,7 @@ marketdata
             ]
           },
           "m": {
+            "title": "market_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/MarketId"
@@ -9838,6 +10014,7 @@ marketdata
             ]
           },
           "o": {
+            "title": "open_24h",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9848,6 +10025,7 @@ marketdata
             ]
           },
           "oi": {
+            "title": "open_interest",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9858,12 +10036,14 @@ marketdata
             ]
           },
           "s": {
+            "title": "symbol",
             "type": [
               "string",
               "null"
             ]
           },
           "v": {
+            "title": "volume_24h",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9874,6 +10054,7 @@ marketdata
             ]
           },
           "vm": {
+            "title": "volume_30d",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -9942,6 +10123,7 @@ marketdata
             ],
             "properties": {
               "h": {
+                "title": "high_24h",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -9952,6 +10134,7 @@ marketdata
                 ]
               },
               "l": {
+                "title": "low_24h",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -9962,6 +10145,7 @@ marketdata
                 ]
               },
               "m": {
+                "title": "market_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/MarketId"
@@ -9972,6 +10156,7 @@ marketdata
                 ]
               },
               "o": {
+                "title": "open_24h",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -9982,6 +10167,7 @@ marketdata
                 ]
               },
               "oi": {
+                "title": "open_interest",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -9992,6 +10178,7 @@ marketdata
                 ]
               },
               "s": {
+                "title": "symbol",
                 "type": [
                   "string",
                   "null"
@@ -10000,10 +10187,11 @@ marketdata
               "t": {
                 "type": "string",
                 "enum": [
-                  "s"
+                  "snapshot"
                 ]
               },
               "v": {
+                "title": "volume_24h",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -10014,6 +10202,7 @@ marketdata
                 ]
               },
               "vm": {
+                "title": "volume_30d",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -10034,6 +10223,7 @@ marketdata
             ],
             "properties": {
               "h": {
+                "title": "high_24h",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -10044,6 +10234,7 @@ marketdata
                 ]
               },
               "l": {
+                "title": "low_24h",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -10054,6 +10245,7 @@ marketdata
                 ]
               },
               "m": {
+                "title": "market_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/MarketId"
@@ -10064,6 +10256,7 @@ marketdata
                 ]
               },
               "o": {
+                "title": "open_24h",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -10074,6 +10267,7 @@ marketdata
                 ]
               },
               "oi": {
+                "title": "open_interest",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -10084,6 +10278,7 @@ marketdata
                 ]
               },
               "s": {
+                "title": "symbol",
                 "type": [
                   "string",
                   "null"
@@ -10092,19 +10287,22 @@ marketdata
               "t": {
                 "type": "string",
                 "enum": [
-                  "d"
+                  "diff"
                 ]
               },
               "tn": {
+                "title": "timestamp_ns",
                 "type": "integer",
                 "format": "uint32",
                 "minimum": 0.0
               },
               "ts": {
+                "title": "timestamp",
                 "type": "integer",
                 "format": "int64"
               },
               "v": {
+                "title": "volume_24h",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -10115,6 +10313,7 @@ marketdata
                 ]
               },
               "vm": {
+                "title": "volume_30d",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -10186,9 +10385,15 @@ marketdata
         ],
         "properties": {
           "d": {
-            "$ref": "#/definitions/Dir"
+            "title": "direction",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Dir"
+              }
+            ]
           },
           "m": {
+            "title": "market_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/MarketId"
@@ -10199,23 +10404,36 @@ marketdata
             ]
           },
           "p": {
-            "$ref": "#/definitions/Decimal"
+            "title": "price",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "q": {
-            "$ref": "#/definitions/Decimal"
+            "title": "size",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
           "s": {
+            "title": "symbol",
             "type": [
               "string",
               "null"
             ]
           },
           "tn": {
+            "title": "timestamp_ns",
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
           },
           "ts": {
+            "title": "timestamp",
             "type": "integer",
             "format": "int64"
           }
@@ -10289,5 +10507,4 @@ marketdata
       }
     }
   ]
-}
-
+}]

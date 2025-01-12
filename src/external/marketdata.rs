@@ -67,22 +67,30 @@ impl From<Option<MarketId>> for SubscribeL1BookSnapshotsRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L1BookSnapshot {
     #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "market_id")]
     pub market_id: Option<MarketId>,
     #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "symbol")]
     pub symbol: Option<String>,
     #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
     // CR alee: deprecated
     #[serde(rename = "e", skip_serializing_if = "Option::is_none", default)]
+    #[schemars(title = "epoch")]
     pub epoch: Option<i64>,
     // CR alee: deprecated
     #[serde(rename = "n", skip_serializing_if = "Option::is_none", default)]
+    #[schemars(title = "seqno")]
     pub seqno: Option<u64>,
     #[serde(rename = "b")]
+    #[schemars(title = "best_bid")]
     pub best_bid: Option<(Decimal, Decimal)>,
     #[serde(rename = "a")]
+    #[schemars(title = "best_ask")]
     pub best_ask: Option<(Decimal, Decimal)>,
 }
 
@@ -120,14 +128,18 @@ impl L1BookSnapshot {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L2BookSnapshot {
     #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
     #[serde(flatten)]
     pub sequence: SequenceIdAndNumber,
     #[serde(rename = "b")]
+    #[schemars(title = "bids")]
     pub bids: Vec<(Decimal, Decimal)>,
     #[serde(rename = "a")]
+    #[schemars(title = "asks")]
     pub asks: Vec<(Decimal, Decimal)>,
 }
 
@@ -155,18 +167,22 @@ impl L2BookSnapshot {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L2BookDiff {
     #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
     #[serde(flatten)]
     pub sequence: SequenceIdAndNumber,
     /// Set of (price, level) updates. If zero, the price level
     /// has been removed from the book.
     #[serde(rename = "b")]
+    #[schemars(title = "bids")]
     pub bids: Vec<(Decimal, Decimal)>,
     /// Set of (price, level) updates. If zero, the price level
     /// has been removed from the book.
     #[serde(rename = "a")]
+    #[schemars(title = "asks")]
     pub asks: Vec<(Decimal, Decimal)>,
 }
 
@@ -274,8 +290,10 @@ impl L2BookDiff {
 #[serde(tag = "t")]
 pub enum L2BookUpdate {
     #[serde(rename = "s")]
+    #[schemars(title = "snapshot")]
     Snapshot(L2BookSnapshot),
     #[serde(rename = "d")]
+    #[schemars(title = "diff")]
     Diff(L2BookDiff),
 }
 
@@ -344,14 +362,18 @@ pub struct QueryExternalL2BookSnapshot {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L3BookSnapshot {
     #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
     #[serde(flatten)]
     pub sequence: SequenceIdAndNumber,
     #[serde(rename = "b")]
+    #[schemars(title = "bids")]
     pub bids: Vec<(u64, Decimal, Decimal)>,
     #[serde(rename = "a")]
+    #[schemars(title = "asks")]
     pub asks: Vec<(u64, Decimal, Decimal)>,
 }
 
@@ -410,52 +432,76 @@ pub struct SubscribeTradesRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Candle {
     #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "market_id")]
     pub market_id: Option<MarketId>,
     #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "symbol")]
     pub symbol: Option<String>,
     #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
     #[serde(rename = "w")]
+    #[schemars(title = "width")]
     pub width: CandleWidth,
     #[serde(rename = "o")]
+    #[schemars(title = "open")]
     pub open: Decimal,
     #[serde(rename = "h")]
+    #[schemars(title = "high")]
     pub high: Decimal,
     #[serde(rename = "l")]
+    #[schemars(title = "low")]
     pub low: Decimal,
     #[serde(rename = "c")]
+    #[schemars(title = "close")]
     pub close: Decimal,
     #[serde(rename = "v")]
+    #[schemars(title = "volume")]
     pub volume: Decimal,
     #[serde(rename = "bv")]
+    #[schemars(title = "buy_volume")]
     pub buy_volume: Decimal,
     #[serde(rename = "av")]
+    #[schemars(title = "sell_volume")]
     pub sell_volume: Decimal,
     #[serde(rename = "mo", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "mid_open")]
     pub mid_open: Option<Decimal>,
     #[serde(rename = "mc", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "mid_close")]
     pub mid_close: Option<Decimal>,
     #[serde(rename = "mh", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "mid_high")]
     pub mid_high: Option<Decimal>,
     #[serde(rename = "ml", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "mid_low")]
     pub mid_low: Option<Decimal>,
     #[serde(rename = "bo", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "bid_open")]
     pub bid_open: Option<Decimal>,
     #[serde(rename = "bc", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "bid_close")]
     pub bid_close: Option<Decimal>,
     #[serde(rename = "bh", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "bid_high")]
     pub bid_high: Option<Decimal>,
     #[serde(rename = "bl", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "bid_low")]
     pub bid_low: Option<Decimal>,
     #[serde(rename = "ao", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "ask_open")]
     pub ask_open: Option<Decimal>,
     #[serde(rename = "ac", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "ask_close")]
     pub ask_close: Option<Decimal>,
     #[serde(rename = "ah", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "ask_high")]
     pub ask_high: Option<Decimal>,
     #[serde(rename = "al", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "ask_low")]
     pub ask_low: Option<Decimal>,
 }
 
@@ -497,18 +543,25 @@ impl Candle {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Trade {
     #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "market_id")]
     pub market_id: Option<MarketId>,
     #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "symbol")]
     pub symbol: Option<String>,
     #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
     #[serde(rename = "d")]
+    #[schemars(title = "direction")]
     pub direction: Option<Dir>, // maker dir
     #[serde(rename = "p")]
+    #[schemars(title = "price")]
     pub price: Decimal,
     #[serde(rename = "q")]
+    #[schemars(title = "size")]
     pub size: Decimal,
 }
 
@@ -546,8 +599,10 @@ pub struct MarketStatusRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct MarketStatus {
     #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "market_id")]
     pub market_id: Option<MarketId>,
     #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "symbol")]
     pub symbol: Option<String>,
     pub is_trading: Option<bool>,
 }
@@ -565,20 +620,28 @@ pub struct TickerRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Ticker {
     #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "market_id")]
     pub market_id: Option<MarketId>,
     #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "symbol")]
     pub symbol: Option<String>,
     #[serde(rename = "o")]
+    #[schemars(title = "open_24h")]
     pub open_24h: Option<Decimal>,
     #[serde(rename = "v")]
+    #[schemars(title = "volume_24h")]
     pub volume_24h: Option<Decimal>,
     #[serde(rename = "l")]
+    #[schemars(title = "low_24h")]
     pub low_24h: Option<Decimal>,
     #[serde(rename = "h")]
+    #[schemars(title = "high_24h")]
     pub high_24h: Option<Decimal>,
     #[serde(rename = "vm")]
+    #[schemars(title = "volume_30d")]
     pub volume_30d: Option<Decimal>,
     #[serde(rename = "oi")]
+    #[schemars(title = "open_interest")]
     pub open_interest: Option<Decimal>,
 }
 
@@ -604,8 +667,10 @@ pub struct SubscribeTickersRequest {
 #[serde(tag = "t")]
 pub enum TickerUpdate {
     #[serde(rename = "s")]
+    #[schemars(rename = "snapshot")]
     Snapshot(Ticker),
     #[serde(rename = "d")]
+    #[schemars(rename = "diff")]
     Diff(TickerDiff),
 }
 
@@ -613,24 +678,34 @@ pub enum TickerUpdate {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct TickerDiff {
     #[serde(rename = "m", default)]
+    #[schemars(title = "market_id")]
     pub market_id: Option<MarketId>,
     #[serde(rename = "s", default)]
+    #[schemars(title = "symbol")]
     pub symbol: Option<String>,
     #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
     #[serde(rename = "o", default)]
+    #[schemars(title = "open_24h")]
     pub open_24h: Option<Decimal>,
     #[serde(rename = "v", default)]
+    #[schemars(title = "volume_24h")]
     pub volume_24h: Option<Decimal>,
     #[serde(rename = "l", default)]
+    #[schemars(title = "low_24h")]
     pub low_24h: Option<Decimal>,
     #[serde(rename = "h", default)]
+    #[schemars(title = "high_24h")]
     pub high_24h: Option<Decimal>,
     #[serde(rename = "vm", default)]
+    #[schemars(title = "volume_30d")]
     pub volume_30d: Option<Decimal>,
     #[serde(rename = "oi", default)]
+    #[schemars(title = "open_interest")]
     pub open_interest: Option<Decimal>,
 }
 
@@ -648,18 +723,25 @@ pub struct SubscribeLiquidationsRequest {
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
 pub struct Liquidation {
     #[serde(rename = "m", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "market_id")]
     pub market_id: Option<MarketId>,
     #[serde(rename = "s", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "symbol")]
     pub symbol: Option<String>,
     #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
     #[serde(rename = "d")]
+    #[schemars(title = "direction")]
     pub direction: Dir,
     #[serde(rename = "p")]
+    #[schemars(title = "price")]
     pub price: Decimal,
     #[serde(rename = "q")]
+    #[schemars(title = "size")]
     pub size: Decimal,
 }
 

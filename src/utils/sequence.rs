@@ -10,8 +10,10 @@ type SequenceId = u64;
 )]
 pub struct SequenceIdAndNumber {
     #[serde(rename = "sid")]
+    #[schemars(title = "sequence_id")]
     pub sequence_id: SequenceId,
     #[serde(rename = "sn")]
+    #[schemars(title = "sequence_number")]
     pub sequence_number: u64,
 }
 

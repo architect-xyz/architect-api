@@ -20,8 +20,8 @@ fn main() {
     let mut out_file = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     out_file.push("../schema.json");
     let mut f = std::fs::File::create(out_file).unwrap();
-    f.write_all(format!("health\n{health}\n\n").as_bytes()).unwrap();
-    f.write_all(format!("symbology\n{symbology}\n\n").as_bytes()).unwrap();
-    f.write_all(format!("symbologyv2\n{symbology_v2}\n\n").as_bytes()).unwrap();
-    f.write_all(format!("marketdata\n{marketdata}\n\n").as_bytes()).unwrap();
+    f.write_all(format!("[{health},\n\n").as_bytes()).unwrap();
+    f.write_all(format!("{symbology},\n\n").as_bytes()).unwrap();
+    f.write_all(format!("{symbology_v2},\n\n").as_bytes()).unwrap();
+    f.write_all(format!("{marketdata}]").as_bytes()).unwrap();
 }
