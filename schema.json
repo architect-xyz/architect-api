@@ -9862,8 +9862,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "Buy",
-              "Sell"
+              "buy",
+              "sell"
             ]
           },
           "MarketId": {
@@ -10446,8 +10446,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "Buy",
-              "Sell"
+              "buy",
+              "sell"
             ]
           },
           "MarketId": {
@@ -10537,7 +10537,7 @@
                   "order_type": {
                     "type": "string",
                     "enum": [
-                      "Limit"
+                      "limit"
                     ]
                   },
                   "post_only": {
@@ -10559,7 +10559,7 @@
                   "order_type": {
                     "type": "string",
                     "enum": [
-                      "StopLossLimit"
+                      "stop_loss_limit"
                     ]
                   },
                   "trigger_price": {
@@ -10581,7 +10581,7 @@
                   "order_type": {
                     "type": "string",
                     "enum": [
-                      "TakeProfitLimit"
+                      "take_profit_limit"
                     ]
                   },
                   "trigger_price": {
@@ -10609,6 +10609,7 @@
                 "$ref": "#/definitions/Dir"
               },
               "id": {
+                "default": null,
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -10714,8 +10715,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "Buy",
-              "Sell"
+              "buy",
+              "sell"
             ]
           },
           "OrderId": {
@@ -10792,7 +10793,7 @@
                   "order_type": {
                     "type": "string",
                     "enum": [
-                      "Limit"
+                      "limit"
                     ]
                   },
                   "post_only": {
@@ -10814,7 +10815,7 @@
                   "order_type": {
                     "type": "string",
                     "enum": [
-                      "StopLossLimit"
+                      "stop_loss_limit"
                     ]
                   },
                   "trigger_price": {
@@ -10836,7 +10837,7 @@
                   "order_type": {
                     "type": "string",
                     "enum": [
-                      "TakeProfitLimit"
+                      "take_profit_limit"
                     ]
                   },
                   "trigger_price": {
@@ -10870,6 +10871,7 @@
                 "$ref": "#/definitions/OrderId"
               },
               "parent_id": {
+                "default": null,
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -10887,9 +10889,13 @@
                 "format": "date-time"
               },
               "reject_reason": {
-                "type": [
-                  "string",
-                  "null"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "source": {
@@ -11130,6 +11136,7 @@
                 "$ref": "#/definitions/FillKind"
               },
               "order_id": {
+                "default": null,
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -11240,6 +11247,7 @@
                 ]
               },
               "order_id": {
+                "default": null,
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -11316,8 +11324,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "Buy",
-              "Sell"
+              "buy",
+              "sell"
             ]
           },
           "FillId": {
@@ -11360,9 +11368,9 @@
           "OrderRejectReason": {
             "type": "string",
             "enum": [
-              "DuplicateOrderId",
-              "NotAuthorized",
-              "Unknown"
+              "duplicate_order_id",
+              "not_authorized",
+              "unknown"
             ]
           },
           "OrderSource": {
