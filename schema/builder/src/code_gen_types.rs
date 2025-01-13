@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize, Serializer};
 
 #[derive(Deserialize)]
 pub enum RpcType {
+    BidirectionalStreaming,
     ClientStreaming,
     ServerStreaming,
     Unary,
@@ -44,6 +45,7 @@ impl Serialize for RpcType {
         S: Serializer,
     {
         let output = match *self {
+            RpcType::BidirectionalStreaming => "duplex_stream",
             RpcType::ClientStreaming => "client_stream",
             RpcType::ServerStreaming => "stream",
             RpcType::Unary => "unary",

@@ -96,16 +96,6 @@ pub trait AsAccount {
     fn as_account(&self) -> Account;
 }
 
-#[derive(Default, Debug, Clone, Copy, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub enum AccountSpecifier {
-    #[default]
-    Default,
-    Id(AccountId),
-    Name(AccountName),
-}
-
 /// Set of flags for account permissions
 #[derive(
     Debug,

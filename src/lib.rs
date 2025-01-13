@@ -12,6 +12,7 @@ pub mod marketdata;
 pub mod misc;
 pub mod oms;
 pub mod orderflow;
+pub mod orderflow_v2;
 pub mod symbology;
 pub mod symbology_v2;
 pub mod system_control;

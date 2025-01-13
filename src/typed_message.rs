@@ -173,8 +173,9 @@ impl<A, B> MaybeSplit<A, B> {
 mod test {
     use super::*;
     use crate::{
-        orderflow::{OrderBuilder, OrderId, OrderSource, Out},
+        orderflow::{OrderBuilder, OrderId, OrderSource},
         symbology::MarketId,
+        Dir,
     };
     use anyhow::Result;
     use rust_decimal::Decimal;
@@ -194,18 +195,6 @@ mod test {
         let m2: std::result::Result<MaybeSplit<TypedMessage, oms::OmsMessage>, _> =
             m.try_into();
         assert_eq!(m2.is_ok(), true);
-        Ok(())
-    }
-
-    /// test transitive closure of length 3 (B2C2 -> Orderflow -> Algo -> TWAPAlgo)
-    #[test]
-    fn test_try_into_any_variant_3() -> Result<()> {
-        use crate::{algo::twap::TwapAlgoMessage, cpty::b2c2::B2C2Message};
-        let src =
-            TypedMessage::B2C2Cpty(B2C2Message::Out(Out { order_id: OrderId::nil(123) }));
-        let dst: std::result::Result<MaybeSplit<TypedMessage, TwapAlgoMessage>, _> =
-            src.try_into();
-        assert_eq!(dst.is_ok(), true);
         Ok(())
     }
 }

@@ -239,6 +239,21 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let json_orderflow_service = tonic_build::manual::Service::builder()
+        .name("Orderflow")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("orderflow")
+                .route_name("Orderflow")
+                .input_type("crate::orderflow_v2::OrderflowRequest")
+                .output_type("crate::orderflow_v2::OrderflowResponse")
+                .client_streaming()
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let mut schema_gen_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     schema_gen_dir.push("schema/generated");
     schema_builder::manual::Builder::new()
@@ -250,6 +265,7 @@ fn build_grpc_stubs() {
             &json_symbology_v2_service,
             &json_marketdata_service,
             &json_marketdata_snapshots_service,
+            &json_orderflow_service,
         ]);
     tonic_build::manual::Builder::new().compile(&[
         json_health_service,
@@ -257,6 +273,7 @@ fn build_grpc_stubs() {
         json_symbology_v2_service,
         json_marketdata_service,
         json_marketdata_snapshots_service,
+        json_orderflow_service,
     ]);
 }
 

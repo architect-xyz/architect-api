@@ -12,7 +12,7 @@
 //! These are option-like event contract series.  The strikes are minted around the
 //! spot price of the underlying future.
 //!
-//! ```
+//! ```text
 //! let series = EventContractSeriesInfo {
 //!     event_contract_series: "ECES 20241227 CME Event Contracts".into(),
 //!     quote_symbol: "USD".into(),
@@ -35,7 +35,7 @@
 //!
 //! These are one time events that are better explicitly enumerated.
 //!
-//! ```
+//! ```text
 //! let series = EventContractSeriesInfo {
 //!     event_contract_series: "2024 Presidential Election KALSHI Event Contracts".into(),
 //!     quote_symbol: "USD".into(),

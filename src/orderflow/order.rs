@@ -80,12 +80,16 @@ impl Ord for Order {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema_repr)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
+#[serde(rename_all = "snake_case")]
 #[repr(u8)]
 pub enum OrderSource {
+    #[serde(rename = "api")]
     API,
+    #[serde(rename = "gui")]
     GUI,
     Algo,
     External,
+    #[serde(rename = "cli")]
     CLI,
     Telegram,
     #[serde(other)]

@@ -239,17 +239,38 @@ fn generate_client_streaming<T: Method>(
 
 #[allow(clippy::too_many_arguments)]
 fn generate_streaming<T: Method>(
-    _method: &T,
-    _crate_name: &str,
-    _proto_path: &str,
-    _method_path: Lit,
-    _compile_well_known_types: bool,
-    _method_ident: Ident,
+    method: &T,
+    crate_name: &str,
+    proto_path: &str,
+    method_path: Lit,
+    compile_well_known_types: bool,
+    method_ident: Ident,
     _server_trait: Ident,
     _use_arc_self: bool,
     _generate_default_stubs: bool,
 ) -> (TokenStream, TokenStream) {
-    unimplemented!()
+    let (request, response) =
+        request_response_name(method, crate_name, proto_path, compile_well_known_types);
+    let request_ident = quote::format_ident!("{}Request", method_ident);
+    let response_ident = quote::format_ident!("{}Response", method_ident);
+    // println!("cargo:warning=hello codec {:?}", method.codec_path());
+
+    let schemas = quote! {
+        #[allow(non_snake_case)]
+        let #request_ident = schemars::schema_for!(#request);
+        #[allow(non_snake_case)]
+        let #response_ident = schemars::schema_for!(#response);
+    };
+    let definitions = quote! {
+        schema_builder::code_gen_types::RpcDefinition {
+            rpc_type: schema_builder::code_gen_types::RpcType::BidirectionalStreaming,
+            route: #method_path.to_string(),
+            request_type: #request_ident,
+            response_type: #response_ident,
+        },
+    };
+
+    (schemas, definitions)
 }
 
 fn naive_snake_case(name: &str) -> String {

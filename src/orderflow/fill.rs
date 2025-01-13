@@ -175,6 +175,7 @@ impl Fill {
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[cfg_attr(feature = "netidx", derive(Pack))]
+#[serde(rename_all = "snake_case")]
 #[repr(u8)]
 pub enum FillKind {
     Normal,

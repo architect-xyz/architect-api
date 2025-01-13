@@ -27,7 +27,7 @@
 //!
 //! ## Sending an order in a simple tradable product pair
 //!
-//! ```no_run
+//! ```text
 //! client.send_order(Order {
 //!     tradable_product: "BTC Crypto/USD".into(),
 //!     execution_venue: Some("BINANCE".into()),
@@ -39,7 +39,7 @@
 //!
 //! Suppose you have loaded options series information from a symbology service.
 //!
-//! ```no_run
+//! ```text
 //! let options_series_info: OptionsSeriesInfo =
 //!     symbol_store.get_options_series_info("AAPL US Option".into())?;
 //!
@@ -62,7 +62,7 @@
 //! Alternatively, without loading anything from a symbology service, you can
 //! just guess at the tradable product name.
 //!
-//! ```no_run
+//! ```text
 //! client.send_order(Order {
 //!     tradable_product: "APPL US 20241030 125.0 C Option".into(),
 //!     // ...

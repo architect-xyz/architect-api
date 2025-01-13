@@ -20,6 +20,7 @@ use std::{ops::Deref, str::FromStr};
 #[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[cfg_attr(feature = "sqlx", sqlx(type_name = "orderflow.dir"))]
+#[serde(rename_all = "snake_case")]
 pub enum Dir {
     #[cfg_attr(feature = "sqlx", sqlx(rename = "Buy"))]
     #[serde(alias = "Buy", alias = "buy", alias = "BUY")]
