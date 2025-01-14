@@ -6,16 +6,12 @@ use chrono::{DateTime, Utc};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, DisplayFromStr};
 
-#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Fill {
     pub fill_id: FillId,
     pub fill_kind: FillKind,
     pub exchange_fill_id: Option<String>,
-    #[serde_as(as = "Option<DisplayFromStr>")]
-    #[schemars(with = "Option<OrderId>")]
     pub order_id: Option<OrderId>,
     pub trader: Option<UserId>,
     pub account: Option<AccountId>,
@@ -34,14 +30,11 @@ pub struct Fill {
 
 /// Fills which we received but couldn't parse fully,
 /// return details best effort
-#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct AberrantFill {
     pub fill_id: FillId,
     pub fill_kind: Option<FillKind>,
     pub exchange_fill_id: Option<String>,
-    #[serde_as(as = "Option<DisplayFromStr>")]
-    #[schemars(with = "Option<OrderId>")]
     pub order_id: Option<OrderId>,
     pub trader: Option<UserId>,
     pub account: Option<AccountId>,

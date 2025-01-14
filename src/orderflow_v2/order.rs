@@ -9,13 +9,9 @@ use derive_builder::Builder;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, DisplayFromStr};
 
-#[serde_as]
 #[derive(Builder, Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct PlaceOrderRequest {
-    #[serde_as(as = "Option<DisplayFromStr>")]
-    #[schemars(with = "Option<OrderId>")]
     pub id: Option<OrderId>,
     pub symbol: String,
     pub dir: Dir,
@@ -32,14 +28,9 @@ pub struct PlaceOrderRequest {
     pub time_in_force: TimeInForce,
 }
 
-#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Order {
-    #[serde_as(as = "DisplayFromStr")]
-    #[schemars(with = "OrderId")]
     pub id: OrderId,
-    #[serde_as(as = "Option<DisplayFromStr>")]
-    #[schemars(with = "Option<OrderId>")]
     pub parent_id: Option<OrderId>,
     pub recv_time: DateTime<Utc>,
     pub status: OrderStatus,

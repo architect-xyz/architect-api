@@ -4019,8 +4019,19 @@
               "venue_raw_symbol"
             ],
             "properties": {
+              "is_scalar": {
+                "description": "If true, this symbol is a scalar (e.g. index value); `only_possible_quote_symbol` isn't applicable in this case.",
+                "type": "boolean"
+              },
               "marketdata_venue": {
                 "type": "string"
+              },
+              "only_possible_quote_symbol": {
+                "description": "For products or series, if there's only one possible quote symbol",
+                "type": [
+                  "string",
+                  "null"
+                ]
               },
               "venue_raw_symbol": {
                 "type": "string"
@@ -5244,8 +5255,19 @@
                   "venue_raw_symbol"
                 ],
                 "properties": {
+                  "is_scalar": {
+                    "description": "If true, this symbol is a scalar (e.g. index value); `only_possible_quote_symbol` isn't applicable in this case.",
+                    "type": "boolean"
+                  },
                   "marketdata_venue": {
                     "type": "string"
+                  },
+                  "only_possible_quote_symbol": {
+                    "description": "For products or series, if there's only one possible quote symbol",
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "symbol": {
                     "type": "string"
@@ -5809,8 +5831,19 @@
               "venue_raw_symbol"
             ],
             "properties": {
+              "is_scalar": {
+                "description": "If true, this symbol is a scalar (e.g. index value); `only_possible_quote_symbol` isn't applicable in this case.",
+                "type": "boolean"
+              },
               "marketdata_venue": {
                 "type": "string"
+              },
+              "only_possible_quote_symbol": {
+                "description": "For products or series, if there's only one possible quote symbol",
+                "type": [
+                  "string",
+                  "null"
+                ]
               },
               "venue_raw_symbol": {
                 "type": "string"
@@ -7272,8 +7305,19 @@
               "venue_raw_symbol"
             ],
             "properties": {
+              "is_scalar": {
+                "description": "If true, this symbol is a scalar (e.g. index value); `only_possible_quote_symbol` isn't applicable in this case.",
+                "type": "boolean"
+              },
               "marketdata_venue": {
                 "type": "string"
+              },
+              "only_possible_quote_symbol": {
+                "description": "For products or series, if there's only one possible quote symbol",
+                "type": [
+                  "string",
+                  "null"
+                ]
               },
               "venue_raw_symbol": {
                 "type": "string"
@@ -10609,7 +10653,6 @@
                 "$ref": "#/definitions/Dir"
               },
               "id": {
-                "default": null,
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -10871,7 +10914,6 @@
                 "$ref": "#/definitions/OrderId"
               },
               "parent_id": {
-                "default": null,
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -11136,7 +11178,6 @@
                 "$ref": "#/definitions/FillKind"
               },
               "order_id": {
-                "default": null,
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -11247,7 +11288,6 @@
                 ]
               },
               "order_id": {
-                "default": null,
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"

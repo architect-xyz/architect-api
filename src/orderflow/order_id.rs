@@ -4,7 +4,7 @@ use bytes::BytesMut;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
+use serde_with::{DeserializeFromStr, SerializeDisplay};
 #[cfg(feature = "tokio-postgres")]
 use std::error::Error;
 use std::{fmt, str::FromStr};
@@ -20,8 +20,8 @@ use uuid::Uuid;
     Eq,
     PartialOrd,
     Ord,
-    Serialize,
-    Deserialize,
+    SerializeDisplay,
+    DeserializeFromStr,
     JsonSchema,
     bytemuck::Pod,
     bytemuck::Zeroable,
