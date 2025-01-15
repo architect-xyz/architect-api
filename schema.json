@@ -10086,6 +10086,17 @@
               "null"
             ]
           },
+          "sp": {
+            "title": "last_settlement_price",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "v": {
             "title": "volume_24h",
             "anyOf": [
@@ -10228,6 +10239,17 @@
                   "null"
                 ]
               },
+              "sp": {
+                "title": "last_settlement_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "t": {
                 "type": "string",
                 "enum": [
@@ -10326,6 +10348,17 @@
                 "type": [
                   "string",
                   "null"
+                ]
+              },
+              "sp": {
+                "title": "last_settlement_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "t": {

@@ -647,6 +647,9 @@ pub struct Ticker {
     #[serde(rename = "oi")]
     #[schemars(title = "open_interest")]
     pub open_interest: Option<Decimal>,
+    #[serde(rename = "sp")]
+    #[schemars(title = "last_settlement_price")]
+    pub last_settlement_price: Option<Decimal>,
 }
 
 /// Ticker updates are not strongly ordered because the data is considered
@@ -711,6 +714,9 @@ pub struct TickerDiff {
     #[serde(rename = "oi", default)]
     #[schemars(title = "open_interest")]
     pub open_interest: Option<Decimal>,
+    #[serde(rename = "sp", default)]
+    #[schemars(title = "last_settlement_price")]
+    pub last_settlement_price: Option<Decimal>,
 }
 
 #[grpc(package = "json.architect")]
