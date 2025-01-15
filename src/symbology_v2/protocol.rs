@@ -6,6 +6,17 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use std::collections::BTreeMap;
 
+/// List all symbols
+#[grpc(package = "json.architect")]
+#[grpc(service = "SymbologyV2", name = "symbols", response = "SymbolsResponse")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SymbolsRequest {}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SymbolsResponse {
+    pub symbols: Vec<String>,
+}
+
 #[grpc(package = "json.architect")]
 #[grpc(service = "SymbologyV2", name = "symbology_v2", response = "SymbologySnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -16,10 +27,8 @@ pub struct SymbologySnapshot {
     #[serde(flatten)]
     pub sequence: SequenceIdAndNumber,
     pub products: BTreeMap<Product, ProductInfo>,
-    pub tradable_products: BTreeMap<TradableProduct, TradableProductInfo>,
     pub options_series: BTreeMap<OptionsSeries, OptionsSeriesInfo>,
     pub execution_info: BTreeMap<String, BTreeMap<ExecutionVenue, ExecutionInfo>>,
-    pub marketdata_info: BTreeMap<String, BTreeMap<MarketdataVenue, MarketdataInfo>>,
 }
 
 #[skip_serializing_none]
@@ -30,14 +39,9 @@ pub struct SymbologyUpdate {
     #[serde(default)]
     pub products: Option<SnapshotOrUpdate<Product, ProductInfo>>,
     #[serde(default)]
-    pub tradable_products: Option<SnapshotOrUpdate<TradableProduct, TradableProductInfo>>,
-    #[serde(default)]
     pub options_series: Option<SnapshotOrUpdate<OptionsSeries, OptionsSeriesInfo>>,
     #[serde(default)]
     pub execution_info: Option<SnapshotOrUpdate2<String, ExecutionVenue, ExecutionInfo>>,
-    #[serde(default)]
-    pub marketdata_info:
-        Option<SnapshotOrUpdate2<String, MarketdataVenue, MarketdataInfo>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -124,13 +128,9 @@ pub struct UploadSymbologyV2Request {
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub products: BTreeMap<Product, ProductInfo>,
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
-    pub tradable_products: BTreeMap<TradableProduct, TradableProductInfo>,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub options_series: BTreeMap<OptionsSeries, OptionsSeriesInfo>,
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub execution_info: BTreeMap<String, BTreeMap<ExecutionVenue, ExecutionInfo>>,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
-    pub marketdata_info: BTreeMap<String, BTreeMap<MarketdataVenue, MarketdataInfo>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

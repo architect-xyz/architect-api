@@ -3818,6 +3818,32 @@
   "rpcs": [
     {
       "type": "unary",
+      "route": "/json.architect.SymbologyV2/Symbols",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "SymbolsRequest",
+        "description": "List all symbols",
+        "type": "object"
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "SymbolsResponse",
+        "type": "object",
+        "required": [
+          "symbols"
+        ],
+        "properties": {
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
       "route": "/json.architect.SymbologyV2/SymbologyV2",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -3831,12 +3857,10 @@
         "type": "object",
         "required": [
           "execution_info",
-          "marketdata_info",
           "options_series",
           "products",
           "sid",
-          "sn",
-          "tradable_products"
+          "sn"
         ],
         "properties": {
           "execution_info": {
@@ -3845,15 +3869,6 @@
               "type": "object",
               "additionalProperties": {
                 "$ref": "#/definitions/ExecutionInfo"
-              }
-            }
-          },
-          "marketdata_info": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "#/definitions/MarketdataInfo"
               }
             }
           },
@@ -3880,12 +3895,6 @@
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
-          },
-          "tradable_products": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/definitions/TradableProductInfo"
-            }
           }
         },
         "definitions": {
@@ -3977,8 +3986,7 @@
               "min_order_quantity",
               "min_order_quantity_unit",
               "step_size",
-              "tick_size",
-              "venue_raw_symbol"
+              "tick_size"
             ],
             "properties": {
               "execution_venue": {
@@ -3993,48 +4001,11 @@
               "min_order_quantity_unit": {
                 "$ref": "#/definitions/MinOrderQuantityUnit"
               },
-              "only_possible_quote_symbol": {
-                "description": "For products or series, if there's only one possible quote symbol",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
               "step_size": {
                 "$ref": "#/definitions/Decimal"
               },
               "tick_size": {
                 "$ref": "#/definitions/TickSize"
-              },
-              "venue_raw_symbol": {
-                "type": "string"
-              }
-            }
-          },
-          "MarketdataInfo": {
-            "description": "Information about a symbol related to its marketdata source.",
-            "type": "object",
-            "required": [
-              "marketdata_venue",
-              "venue_raw_symbol"
-            ],
-            "properties": {
-              "is_scalar": {
-                "description": "If true, this symbol is a scalar (e.g. index value); `only_possible_quote_symbol` isn't applicable in this case.",
-                "type": "boolean"
-              },
-              "marketdata_venue": {
-                "type": "string"
-              },
-              "only_possible_quote_symbol": {
-                "description": "For products or series, if there's only one possible quote symbol",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "venue_raw_symbol": {
-                "type": "string"
               }
             }
           },
@@ -5066,17 +5037,6 @@
               "WET",
               "Zulu"
             ]
-          },
-          "TradableProductInfo": {
-            "type": "object",
-            "required": [
-              "quote"
-            ],
-            "properties": {
-              "quote": {
-                "type": "string"
-              }
-            }
           }
         }
       }
@@ -5103,16 +5063,6 @@
             "anyOf": [
               {
                 "$ref": "#/definitions/SnapshotOrUpdate2_for_String_and_String_and_ExecutionInfo"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "marketdata_info": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/SnapshotOrUpdate2_for_String_and_String_and_MarketdataInfo"
               },
               {
                 "type": "null"
@@ -5150,16 +5100,6 @@
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
-          },
-          "tradable_products": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_TradableProductInfo"
-              },
-              {
-                "type": "null"
-              }
-            ]
           }
         },
         "definitions": {
@@ -5176,8 +5116,7 @@
                   "step_size",
                   "symbol",
                   "tick_size",
-                  "type",
-                  "venue_raw_symbol"
+                  "type"
                 ],
                 "properties": {
                   "execution_venue": {
@@ -5191,13 +5130,6 @@
                   },
                   "min_order_quantity_unit": {
                     "$ref": "#/definitions/MinOrderQuantityUnit"
-                  },
-                  "only_possible_quote_symbol": {
-                    "description": "For products or series, if there's only one possible quote symbol",
-                    "type": [
-                      "string",
-                      "null"
-                    ]
                   },
                   "step_size": {
                     "$ref": "#/definitions/Decimal"
@@ -5213,73 +5145,6 @@
                     "enum": [
                       "add"
                     ]
-                  },
-                  "venue_raw_symbol": {
-                    "type": "string"
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "symbol",
-                  "type",
-                  "venue"
-                ],
-                "properties": {
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "remove"
-                    ]
-                  },
-                  "venue": {
-                    "type": "string"
-                  }
-                }
-              }
-            ]
-          },
-          "AddOrRemove2_for_String_and_String_and_MarketdataInfo": {
-            "oneOf": [
-              {
-                "description": "Information about a symbol related to its marketdata source.",
-                "type": "object",
-                "required": [
-                  "marketdata_venue",
-                  "symbol",
-                  "type",
-                  "venue_raw_symbol"
-                ],
-                "properties": {
-                  "is_scalar": {
-                    "description": "If true, this symbol is a scalar (e.g. index value); `only_possible_quote_symbol` isn't applicable in this case.",
-                    "type": "boolean"
-                  },
-                  "marketdata_venue": {
-                    "type": "string"
-                  },
-                  "only_possible_quote_symbol": {
-                    "description": "For products or series, if there's only one possible quote symbol",
-                    "type": [
-                      "string",
-                      "null"
-                    ]
-                  },
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "add"
-                    ]
-                  },
-                  "venue_raw_symbol": {
-                    "type": "string"
                   }
                 }
               },
@@ -5657,50 +5522,6 @@
               }
             ]
           },
-          "AddOrRemove_for_String_and_TradableProductInfo": {
-            "oneOf": [
-              {
-                "type": "object",
-                "required": [
-                  "quote",
-                  "symbol",
-                  "type"
-                ],
-                "properties": {
-                  "quote": {
-                    "type": "string"
-                  },
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "add"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "symbol",
-                  "type"
-                ],
-                "properties": {
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "remove"
-                    ]
-                  }
-                }
-              }
-            ]
-          },
           "Decimal": {
             "type": "string"
           },
@@ -5789,8 +5610,7 @@
               "min_order_quantity",
               "min_order_quantity_unit",
               "step_size",
-              "tick_size",
-              "venue_raw_symbol"
+              "tick_size"
             ],
             "properties": {
               "execution_venue": {
@@ -5805,48 +5625,11 @@
               "min_order_quantity_unit": {
                 "$ref": "#/definitions/MinOrderQuantityUnit"
               },
-              "only_possible_quote_symbol": {
-                "description": "For products or series, if there's only one possible quote symbol",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
               "step_size": {
                 "$ref": "#/definitions/Decimal"
               },
               "tick_size": {
                 "$ref": "#/definitions/TickSize"
-              },
-              "venue_raw_symbol": {
-                "type": "string"
-              }
-            }
-          },
-          "MarketdataInfo": {
-            "description": "Information about a symbol related to its marketdata source.",
-            "type": "object",
-            "required": [
-              "marketdata_venue",
-              "venue_raw_symbol"
-            ],
-            "properties": {
-              "is_scalar": {
-                "description": "If true, this symbol is a scalar (e.g. index value); `only_possible_quote_symbol` isn't applicable in this case.",
-                "type": "boolean"
-              },
-              "marketdata_venue": {
-                "type": "string"
-              },
-              "only_possible_quote_symbol": {
-                "description": "For products or series, if there's only one possible quote symbol",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "venue_raw_symbol": {
-                "type": "string"
               }
             }
           },
@@ -6257,55 +6040,6 @@
               }
             ]
           },
-          "SnapshotOrUpdate2_for_String_and_String_and_MarketdataInfo": {
-            "oneOf": [
-              {
-                "type": "object",
-                "required": [
-                  "snapshot",
-                  "type"
-                ],
-                "properties": {
-                  "snapshot": {
-                    "type": "object",
-                    "additionalProperties": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "$ref": "#/definitions/MarketdataInfo"
-                      }
-                    }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "snapshot"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "type",
-                  "updates"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "update"
-                    ]
-                  },
-                  "updates": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/AddOrRemove2_for_String_and_String_and_MarketdataInfo"
-                    }
-                  }
-                }
-              }
-            ]
-          },
           "SnapshotOrUpdate_for_String_and_OptionsSeriesInfo": {
             "oneOf": [
               {
@@ -6392,52 +6126,6 @@
                     "type": "array",
                     "items": {
                       "$ref": "#/definitions/AddOrRemove_for_String_and_ProductInfo"
-                    }
-                  }
-                }
-              }
-            ]
-          },
-          "SnapshotOrUpdate_for_String_and_TradableProductInfo": {
-            "oneOf": [
-              {
-                "type": "object",
-                "required": [
-                  "snapshot",
-                  "type"
-                ],
-                "properties": {
-                  "snapshot": {
-                    "type": "object",
-                    "additionalProperties": {
-                      "$ref": "#/definitions/TradableProductInfo"
-                    }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "snapshot"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "type",
-                  "updates"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "update"
-                    ]
-                  },
-                  "updates": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/AddOrRemove_for_String_and_TradableProductInfo"
                     }
                   }
                 }
@@ -7114,17 +6802,6 @@
               "WET",
               "Zulu"
             ]
-          },
-          "TradableProductInfo": {
-            "type": "object",
-            "required": [
-              "quote"
-            ],
-            "properties": {
-              "quote": {
-                "type": "string"
-              }
-            }
           }
         }
       }
@@ -7146,15 +6823,6 @@
               }
             }
           },
-          "marketdata_info": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "#/definitions/MarketdataInfo"
-              }
-            }
-          },
           "options_series": {
             "type": "object",
             "additionalProperties": {
@@ -7165,12 +6833,6 @@
             "type": "object",
             "additionalProperties": {
               "$ref": "#/definitions/ProductInfo"
-            }
-          },
-          "tradable_products": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/definitions/TradableProductInfo"
             }
           }
         },
@@ -7263,8 +6925,7 @@
               "min_order_quantity",
               "min_order_quantity_unit",
               "step_size",
-              "tick_size",
-              "venue_raw_symbol"
+              "tick_size"
             ],
             "properties": {
               "execution_venue": {
@@ -7279,48 +6940,11 @@
               "min_order_quantity_unit": {
                 "$ref": "#/definitions/MinOrderQuantityUnit"
               },
-              "only_possible_quote_symbol": {
-                "description": "For products or series, if there's only one possible quote symbol",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
               "step_size": {
                 "$ref": "#/definitions/Decimal"
               },
               "tick_size": {
                 "$ref": "#/definitions/TickSize"
-              },
-              "venue_raw_symbol": {
-                "type": "string"
-              }
-            }
-          },
-          "MarketdataInfo": {
-            "description": "Information about a symbol related to its marketdata source.",
-            "type": "object",
-            "required": [
-              "marketdata_venue",
-              "venue_raw_symbol"
-            ],
-            "properties": {
-              "is_scalar": {
-                "description": "If true, this symbol is a scalar (e.g. index value); `only_possible_quote_symbol` isn't applicable in this case.",
-                "type": "boolean"
-              },
-              "marketdata_venue": {
-                "type": "string"
-              },
-              "only_possible_quote_symbol": {
-                "description": "For products or series, if there's only one possible quote symbol",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "venue_raw_symbol": {
-                "type": "string"
               }
             }
           },
@@ -8352,17 +7976,6 @@
               "WET",
               "Zulu"
             ]
-          },
-          "TradableProductInfo": {
-            "type": "object",
-            "required": [
-              "quote"
-            ],
-            "properties": {
-              "quote": {
-                "type": "string"
-              }
-            }
           }
         }
       },

@@ -1,4 +1,4 @@
-use super::{ExecutionVenue, Product};
+use super::ExecutionVenue;
 use crate::symbology::market::MinOrderQuantityUnit;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
@@ -8,10 +8,6 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
 pub struct ExecutionInfo {
     pub execution_venue: ExecutionVenue,
-    // NB: for series products, interpretation of `venue_raw_symbol` is venue-specific
-    pub venue_raw_symbol: String,
-    /// For products or series, if there's only one possible quote symbol
-    pub only_possible_quote_symbol: Option<Product>,
     pub tick_size: TickSize,
     pub step_size: Decimal,
     pub min_order_quantity: Decimal,
