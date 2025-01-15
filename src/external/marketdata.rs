@@ -652,6 +652,19 @@ pub struct Ticker {
     pub last_settlement_price: Option<Decimal>,
 }
 
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "tickers", response = "TickersResponse")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct TickersRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct TickersResponse {
+    pub tickers: Vec<Ticker>,
+}
+
 /// Ticker updates are not strongly ordered because the data is considered
 /// more casual.  You may receive diffs or snapshots slightly out of order.
 #[grpc(package = "json.architect")]

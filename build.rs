@@ -192,6 +192,15 @@ fn build_grpc_stubs() {
         )
         .method(
             tonic_build::manual::Method::builder()
+                .name("tickers")
+                .route_name("Tickers")
+                .input_type("crate::external::marketdata::TickersRequest")
+                .output_type("crate::external::marketdata::TickersResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
                 .name("subscribe_tickers")
                 .route_name("SubscribeTickers")
                 .input_type("crate::external::marketdata::SubscribeTickersRequest")

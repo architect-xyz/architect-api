@@ -9745,6 +9745,151 @@
       }
     },
     {
+      "type": "unary",
+      "route": "/json.architect.Marketdata/Tickers",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "TickersRequest",
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "TickersResponse",
+        "type": "object",
+        "required": [
+          "tickers"
+        ],
+        "properties": {
+          "tickers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Ticker"
+            }
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "MarketId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Ticker": {
+            "type": "object",
+            "properties": {
+              "h": {
+                "title": "high_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "l": {
+                "title": "low_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "m": {
+                "title": "market_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/MarketId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "o": {
+                "title": "open_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "oi": {
+                "title": "open_interest",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "s": {
+                "title": "symbol",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "sp": {
+                "title": "last_settlement_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "v": {
+                "title": "volume_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "vm": {
+                "title": "volume_30d",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "type": "stream",
       "route": "/json.architect.Marketdata/SubscribeTickers",
       "request_type": {
