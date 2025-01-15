@@ -538,6 +538,10 @@ impl Candle {
             ask_low: candle.ask_low,
         }
     }
+
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        DateTime::<Utc>::from_timestamp(self.timestamp, self.timestamp_ns)
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

@@ -39,3 +39,33 @@ pub enum OrderflowResponse {
     Fill(Fill),
     AberrantFill(AberrantFill),
 }
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Orderflow",
+    name = "dropcopy",
+    response = "DropcopyResponse",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct DropcopyRequest {
+    #[serde(default)]
+    pub orders: bool,
+    #[serde(default = "DropcopyRequest::default_fills")]
+    pub fills: bool,
+    #[serde(default)]
+    pub aberrant_fills: bool,
+}
+
+impl DropcopyRequest {
+    fn default_fills() -> bool {
+        true
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct DropcopyResponse {
+    pub orders: Vec<Order>,
+    pub fills: Vec<Fill>,
+    pub aberrant_fills: Vec<AberrantFill>,
+}

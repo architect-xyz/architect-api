@@ -238,6 +238,16 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("subscribe_marketdata_snapshots")
+                .route_name("SubscribeMarketdataSnapshots")
+                .input_type("crate::external::marketdata_snapshots::SubscribeMarketdataSnapshotsRequest")
+                .output_type("crate::external::marketdata_snapshots::SubscribeMarketdataSnapshotsResponse")
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let json_orderflow_service = tonic_build::manual::Service::builder()
         .name("Orderflow")
@@ -249,6 +259,16 @@ fn build_grpc_stubs() {
                 .input_type("crate::orderflow_v2::OrderflowRequest")
                 .output_type("crate::orderflow_v2::OrderflowResponse")
                 .client_streaming()
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("dropcopy")
+                .route_name("Dropcopy")
+                .input_type("crate::orderflow_v2::DropcopyRequest")
+                .output_type("crate::orderflow_v2::DropcopyResponse")
                 .server_streaming()
                 .codec_path(json_codec)
                 .build(),

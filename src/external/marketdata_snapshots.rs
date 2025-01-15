@@ -39,3 +39,18 @@ pub struct MarketdataSnapshotsRequest {
 pub struct MarketdataSnapshotsResponse {
     pub snapshots: Vec<MarketdataSnapshot>,
 }
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "MarketdataSnapshots",
+    name = "subscribe_marketdata_snapshots",
+    response = "SubscribeMarketdataSnapshotsResponse"
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubscribeMarketdataSnapshotsRequest {}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubscribeMarketdataSnapshotsResponse {
+    pub snapshots: Vec<MarketdataSnapshot>,
+}

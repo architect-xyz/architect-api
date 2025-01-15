@@ -11485,6 +11485,540 @@
           }
         }
       }
+    },
+    {
+      "type": "stream",
+      "route": "/json.architect.Orderflow/Dropcopy",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "DropcopyRequest",
+        "type": "object",
+        "properties": {
+          "aberrant_fills": {
+            "default": false,
+            "type": "boolean"
+          },
+          "fills": {
+            "default": true,
+            "type": "boolean"
+          },
+          "orders": {
+            "default": false,
+            "type": "boolean"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "DropcopyResponse",
+        "type": "object",
+        "required": [
+          "aberrant_fills",
+          "fills",
+          "orders"
+        ],
+        "properties": {
+          "aberrant_fills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/AberrantFill"
+            }
+          },
+          "fills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Fill"
+            }
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Order"
+            }
+          }
+        },
+        "definitions": {
+          "AberrantFill": {
+            "description": "Fills which we received but couldn't parse fully, return details best effort",
+            "type": "object",
+            "required": [
+              "fill_id"
+            ],
+            "properties": {
+              "account": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              },
+              "dir": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "exchange_fill_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fee": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fee_currency": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fill_id": {
+                "$ref": "#/definitions/FillId"
+              },
+              "fill_kind": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/FillKind"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "order_id": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "quantity": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "recv_time": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "symbol": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trade_time": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "trader": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "Decimal": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell"
+            ]
+          },
+          "Fill": {
+            "type": "object",
+            "required": [
+              "dir",
+              "fill_id",
+              "fill_kind",
+              "price",
+              "quantity",
+              "symbol",
+              "trade_time"
+            ],
+            "properties": {
+              "account": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              },
+              "dir": {
+                "$ref": "#/definitions/Dir"
+              },
+              "exchange_fill_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fee": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fee_currency": {
+                "description": "Fee currency, if different from the price currency",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fill_id": {
+                "$ref": "#/definitions/FillId"
+              },
+              "fill_kind": {
+                "$ref": "#/definitions/FillKind"
+              },
+              "order_id": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "quantity": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "recv_time": {
+                "description": "When Architect received the fill, if realtime",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "trade_time": {
+                "description": "When the cpty claims the trade happened",
+                "type": "string",
+                "format": "date-time"
+              },
+              "trader": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "FillId": {
+            "description": "The ID of a fill",
+            "type": "string",
+            "format": "uuid"
+          },
+          "FillKind": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Normal",
+              "Reversal",
+              "Correction"
+            ]
+          },
+          "Order": {
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "limit_price",
+                  "order_type",
+                  "post_only"
+                ],
+                "properties": {
+                  "limit_price": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "order_type": {
+                    "type": "string",
+                    "enum": [
+                      "limit"
+                    ]
+                  },
+                  "post_only": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "limit_price",
+                  "order_type",
+                  "trigger_price"
+                ],
+                "properties": {
+                  "limit_price": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "order_type": {
+                    "type": "string",
+                    "enum": [
+                      "stop_loss_limit"
+                    ]
+                  },
+                  "trigger_price": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "limit_price",
+                  "order_type",
+                  "trigger_price"
+                ],
+                "properties": {
+                  "limit_price": {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  "order_type": {
+                    "type": "string",
+                    "enum": [
+                      "take_profit_limit"
+                    ]
+                  },
+                  "trigger_price": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                }
+              }
+            ],
+            "required": [
+              "account",
+              "dir",
+              "id",
+              "quantity",
+              "recv_time",
+              "source",
+              "status",
+              "symbol",
+              "time_in_force",
+              "trader"
+            ],
+            "properties": {
+              "account": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "dir": {
+                "$ref": "#/definitions/Dir"
+              },
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "parent_id": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "quantity": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "recv_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reject_reason": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source": {
+                "$ref": "#/definitions/OrderSource"
+              },
+              "status": {
+                "$ref": "#/definitions/OrderStatus"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "time_in_force": {
+                "$ref": "#/definitions/TimeInForce"
+              },
+              "trader": {
+                "$ref": "#/definitions/UserId"
+              }
+            }
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "OrderRejectReason": {
+            "type": "string",
+            "enum": [
+              "duplicate_order_id",
+              "not_authorized",
+              "unknown"
+            ]
+          },
+          "OrderSource": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "x-enumNames": [
+              "API",
+              "GUI",
+              "Algo",
+              "External",
+              "CLI",
+              "Telegram",
+              "Other"
+            ]
+          },
+          "OrderStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "acked",
+              "rejected",
+              "open",
+              "out",
+              "canceling",
+              "canceled",
+              "stale"
+            ]
+          },
+          "TimeInForce": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "good_til_cancel",
+                  "immediate_or_cancel",
+                  "fill_or_kill"
+                ]
+              },
+              {
+                "type": "object",
+                "required": [
+                  "good_til_date"
+                ],
+                "properties": {
+                  "good_til_date": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "description": "Day order--the specific time which this expires will be dependent on the venue",
+                "type": "string",
+                "enum": [
+                  "good_til_day"
+                ]
+              }
+            ]
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
     }
   ]
 }]
