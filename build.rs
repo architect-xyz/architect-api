@@ -296,7 +296,7 @@ fn build_grpc_stubs() {
             &json_marketdata_snapshots_service,
             &json_orderflow_service,
         ]);
-    tonic_build::manual::Builder::new().compile(&[
+    tonic_build::manual::Builder::new().out_dir("schema/generated").compile(&[
         json_health_service,
         json_symbology_service,
         json_symbology_v2_service,
