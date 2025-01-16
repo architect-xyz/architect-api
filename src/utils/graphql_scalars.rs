@@ -1,9 +1,8 @@
 //! Custom scalars for GraphQL
 
-use derive::Newtype;
+use derive_more::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Copy, Newtype, juniper::GraphQLScalar)]
-#[newtype(Deref, DerefMut)]
+#[derive(Debug, Clone, Copy, Deref, DerefMut, juniper::GraphQLScalar)]
 pub struct U8(pub u8);
 
 impl From<u8> for U8 {

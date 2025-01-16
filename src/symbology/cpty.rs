@@ -2,7 +2,7 @@ use super::{RouteId, VenueId};
 use anyhow::bail;
 #[cfg(feature = "netidx")]
 use derive::FromValue;
-use derive::Newtype;
+use derive_more::Deref;
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use schemars::JsonSchema;
@@ -48,8 +48,7 @@ impl std::str::FromStr for CptyId {
     }
 }
 
-#[derive(Clone, Debug, DeserializeFromStr, Newtype, JsonSchema)]
-#[newtype(Deref)]
+#[derive(Clone, Debug, Deref, DeserializeFromStr, JsonSchema)]
 pub struct CptyIdFromStr(CptyId);
 
 impl std::str::FromStr for CptyIdFromStr {

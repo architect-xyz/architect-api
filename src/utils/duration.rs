@@ -3,7 +3,7 @@
 use crate::json_schema_is_string;
 use anyhow::{anyhow, bail, Result};
 use chrono::{DateTime, Duration, Utc};
-use derive::Newtype;
+use derive_more::{Deref, DerefMut, From};
 #[cfg(feature = "netidx")]
 use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
@@ -38,9 +38,19 @@ json_schema_is_string!(NonZeroDurationAsStr);
 
 // CR alee: deprecating in favor of DurationAsStr
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Newtype,
+    Debug,
+    Clone,
+    Copy,
+    From,
+    Deref,
+    DerefMut,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Serialize,
+    Deserialize,
 )]
-#[newtype(Deref, DerefMut, From)]
 #[serde(transparent)]
 #[cfg_attr(feature = "netidx", derive(Pack))]
 #[cfg_attr(feature = "netidx", pack(unwrapped))]
