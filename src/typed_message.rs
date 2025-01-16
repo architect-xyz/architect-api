@@ -1,7 +1,9 @@
 #[cfg(feature = "netidx")]
 use super::*;
 #[cfg(feature = "netidx")]
-use derive::{FromInner, FromValue, TryIntoAnyInner};
+use derive::{FromValue, TryIntoAnyInner};
+#[cfg(feature = "netidx")]
+use derive_more::From;
 use enumflags2::bitflags;
 #[cfg(feature = "netidx")]
 use enumflags2::BitFlags;
@@ -26,7 +28,7 @@ use serde_json::json;
 /// compatibility, such as explicit tagging of variants, and avoiding breaking 
 /// changes to the component message types.
 #[cfg(feature = "netidx")]
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, FromInner, TryIntoAnyInner, JsonSchema)]
+#[derive(Debug, Clone, Pack, From, FromValue, Serialize, Deserialize, TryIntoAnyInner, JsonSchema)]
 #[transitive(B2C2Cpty <-> Orderflow)]
 #[transitive(BinanceCpty <-> Orderflow)]
 #[transitive(BinanceCpty <-> Folio)]
