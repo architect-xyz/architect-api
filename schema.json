@@ -1,4 +1,5 @@
-[{
+[
+{
   "$schema": "jsonschema",
   "name": "Health",
   "rpcs": [
@@ -10346,6 +10347,468 @@
 
 {
   "$schema": "jsonschema",
+  "name": "MarketdataSnapshots",
+  "rpcs": [
+    {
+      "type": "unary",
+      "route": "/json.architect.MarketdataSnapshots/MarketdataSnapshot",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "MarketdataSnapshotRequest",
+        "type": "object",
+        "properties": {
+          "latest_at_or_before": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "market_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "definitions": {
+          "MarketId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "MarketSnapshot",
+        "type": "object",
+        "required": [
+          "snapshot_ts"
+        ],
+        "properties": {
+          "ask_price": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bid_price": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "high_24h": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_price": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "low_24h": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "market": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/MarketId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "open_24h": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "open_interest": {
+            "default": null,
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "snapshot_ts": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "volume_24h": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "MarketId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.MarketdataSnapshots/MarketdataSnapshots",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "MarketdataSnapshotsRequest",
+        "type": "object",
+        "properties": {
+          "latest_at_or_before": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "MarketdataSnapshotsResponse",
+        "type": "object",
+        "required": [
+          "snapshots"
+        ],
+        "properties": {
+          "snapshots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/MarketSnapshot"
+            }
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "MarketId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "MarketSnapshot": {
+            "type": "object",
+            "required": [
+              "snapshot_ts"
+            ],
+            "properties": {
+              "ask_price": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bid_price": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "high_24h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_price": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "low_24h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "market": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/MarketId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "open_24h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "open_interest": {
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "snapshot_ts": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "symbol": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "volume_24h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "stream",
+      "route": "/json.architect.MarketdataSnapshots/SubscribeMarketdataSnapshots",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "SubscribeMarketdataSnapshotsRequest",
+        "type": "object"
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "SubscribeMarketdataSnapshotsResponse",
+        "type": "object",
+        "required": [
+          "snapshots"
+        ],
+        "properties": {
+          "snapshots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/MarketSnapshot"
+            }
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "MarketId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "MarketSnapshot": {
+            "type": "object",
+            "required": [
+              "snapshot_ts"
+            ],
+            "properties": {
+              "ask_price": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bid_price": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "high_24h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_price": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "low_24h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "market": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/MarketId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "open_24h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "open_interest": {
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "snapshot_ts": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "symbol": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "volume_24h": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+},
+
+{
+  "$schema": "jsonschema",
   "name": "Orderflow",
   "rpcs": [
     {
@@ -11812,4 +12275,5 @@
       }
     }
   ]
-}]
+}
+]
