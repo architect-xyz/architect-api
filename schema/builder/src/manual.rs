@@ -35,6 +35,7 @@
 
 use crate::code_gen::CodeGenBuilder;
 use proc_macro2::TokenStream;
+use quote::quote;
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -79,6 +80,7 @@ impl ServiceGenerator {
 pub struct Builder {
     rewrite_crate_name: Option<String>,
     out_dir: Option<PathBuf>,
+    emit_composite_package: bool,
 }
 
 impl Builder {
@@ -102,6 +104,14 @@ impl Builder {
         self
     }
 
+    /// Set whether to emit a composite package.
+    ///
+    /// Defaults to false
+    pub fn emit_composite_package(mut self, emit_composite_package: bool) -> Self {
+        self.emit_composite_package = emit_composite_package;
+        self
+    }
+
     /// Performs code generation for the provided services.
     ///
     /// Generated services will be output into the directory specified by `out_dir`
@@ -115,6 +125,7 @@ impl Builder {
             PathBuf::from(std::env::var("OUT_DIR").unwrap())
         };
 
+        // If provided, rewrites `crate::mod::Type` references to `{name}::mod::Type`
         let rewrite_crate_name = if let Some(name) = self.rewrite_crate_name.as_ref() {
             name
         } else {
@@ -131,10 +142,53 @@ impl Builder {
             generator.generate(service, rewrite_crate_name);
             generator.finalize(&mut output);
 
-            let out_file =
-                out_dir.join(format!("{}.{}.sdk.rs", service.package(), service.name()));
+            let out_file = out_dir.join(out_file(service));
             fs::write(&out_file, output)
                 .expect(&format!("failed to write: {}", out_file.display()));
+        }
+
+        if self.emit_composite_package {
+            let out_file = out_dir.join("packages.sdk.rs");
+            let output = generate_composite_package(services);
+            let ast = syn::parse2(output).unwrap();
+            let code = prettyplease::unparse(&ast);
+
+            fs::write(&out_file, code)
+                .expect(&format!("failed to write: {}", out_file.display()));
+        }
+    }
+}
+
+fn out_file(service: &manual::Service) -> String {
+    format!("{}.{}.sdk.rs", service.package(), service.name())
+}
+
+fn generate_composite_package(services: &[&manual::Service]) -> TokenStream {
+    let mut includes = TokenStream::new();
+    let mut rpc_calls = TokenStream::new();
+
+    for service in services {
+        let service_name = syn::Lit::Str(syn::LitStr::new(
+            &out_file(service),
+            proc_macro2::Span::call_site(),
+        ));
+        includes.extend(quote! {
+            include!(#service_name);
+        });
+
+        let call = crate::server::server_fn_ident(service.name());
+        rpc_calls.extend(quote! { #call(), });
+    }
+
+    let rpcs = quote! {
+        vec![#rpc_calls]
+    };
+
+    quote! {
+        #includes
+
+        pub fn definitions() -> Vec<schema_builder::code_gen_types::SdkGeneratorStruct> {
+            #rpcs
         }
     }
 }

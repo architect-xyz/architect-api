@@ -297,6 +297,7 @@ fn build_grpc_stubs() {
     schema_builder::manual::Builder::new()
         .rewrite_crate("architect_api")
         .out_dir(schema_gen_dir)
+        .emit_composite_package(true)
         .compile(&[
             &json_health_service,
             &json_symbology_service,

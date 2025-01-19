@@ -35,11 +35,8 @@ pub(crate) fn generate_definition<T: Service>(
         generate_default_stubs,
     );
 
-    let server_fn = quote::format_ident!(
-        "get_{}_server_definition",
-        naive_snake_case(service.name())
-    );
     let server_service_str = service.name();
+    let server_fn = server_fn_ident(server_service_str);
     let rpcs = quote! {
         vec![#definitions]
     };
@@ -325,4 +322,8 @@ fn format_service_name<T: Service>(service: &T, emit_package: bool) -> String {
         if package.is_empty() { "" } else { "." },
         service.identifier(),
     )
+}
+
+pub(crate) fn server_fn_ident(service_name: &str) -> Ident {
+    quote::format_ident!("get_{}_server_definition", naive_snake_case(service_name))
 }
