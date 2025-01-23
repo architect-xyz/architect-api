@@ -1,242 +1,128 @@
 use crate::{
-    orderflow::{AberrantFill, Fill},
-    symbology::*,
-    utils::{half_open_range::ClampSign, messaging::MaybeRequest},
-    AccountId, Dir, HalfOpenRange,
+    orderflow::{AberrantFill, Fill, Order},
+    symbology::{ExecutionVenue, Product},
+    AccountId, OrderId, UserId,
 };
-use chrono::{DateTime, NaiveDate, Utc};
-#[cfg(feature = "netidx")]
-use derive::FromValue;
-#[cfg(feature = "netidx")]
-use netidx_derive::Pack;
+use chrono::{DateTime, Utc};
+use derive::grpc;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use std::{
-    collections::{BTreeMap, BTreeSet},
-    sync::Arc,
-};
-use uuid::Uuid;
+use serde_with::skip_serializing_none;
+use std::collections::BTreeMap;
 
-pub static SCHEMA: &'static str = include_str!("schema.sql");
-
-/// Cpty should implement the following RPCs/messages for Folio integration:
-///
-/// - GetFills/Fills
-/// - GetAccountSummaries/AccountSummaries
-/// - Fills (realtime unsolicited fill dropcopy)
+#[grpc(package = "json.architect")]
+#[grpc(service = "Folio", name = "account_summary", response = "AccountSummary")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
-pub enum FolioMessage {
-    GetFillsQuery(MarketFilter, HalfOpenRange<Option<DateTime<Utc>>>),
-    GetFillsQueryResponse(
-        MarketFilter,
-        HalfOpenRange<Option<DateTime<Utc>>>,
-        Arc<Vec<Result<Fill, AberrantFill>>>,
-    ),
-    GetFills(Uuid, GetFills),
-    Fills(Option<Uuid>, CptyId, Result<Fills, GetFillsError>), // None for unsolicited
-    /// Cptys should dropcopy realtime fills to Folio as they become known
-    RealtimeFill(Result<Fill, AberrantFill>),
-    /// Request account summaries snapshot from all cptys, grouped by cpty
-    ///
-    /// - request id
-    /// - account ids (None for all accounts)
-    GetAllAccountSummaries(Uuid, Option<Arc<BTreeSet<AccountId>>>),
-    AllAccountSummaries(Uuid, Vec<(CptyId, Arc<AccountSummaries>)>),
-    /// Request account summaries snapshot; can be called internally
-    /// (as Folio <-> Cpty), or externally (client <-> Folio)
-    ///
-    /// - request id
-    /// - cpty id
-    /// - account ids (None for all accounts)
-    GetAccountSummaries(Uuid, CptyId, Option<Arc<BTreeSet<AccountId>>>),
-    /// Response from cpty with balances snapshot;
-    /// may be unsolicited (response_id = None) from cptys
-    AccountSummaries(Option<Uuid>, CptyId, Option<Arc<AccountSummaries>>),
-    /// Control message to folio to update balances
-    UpdateAccountSummaries,
-    /// Control messages to folio to sync fills
-    SyncFillsForward,
-    SyncFillsBackward(CptyId),
-    InvalidateSyncBefore(CptyId, DateTime<Utc>),
-    InvalidateSyncAfter(CptyId, DateTime<Utc>),
-    GetSyncStatus(Uuid, CptyId),
-    GetSyncStatusResponse(Uuid, FolioSyncStatus),
-    /// Take a snapshot of balances and upsert
-    SnapshotBalances,
+pub struct AccountSummaryRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<ExecutionVenue>,
+    pub account: AccountId,
 }
 
-#[derive(Copy, Debug, Clone, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
-pub struct MarketFilter {
-    pub venue: Option<VenueId>,
-    pub route: Option<RouteId>,
-    pub base: Option<ProductId>,
-    pub quote: Option<ProductId>,
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Folio",
+    name = "account_summaries",
+    response = "AccountSummariesResponse"
+)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct AccountSummariesRequest {
+    #[serde(default)]
+    pub venue: Option<ExecutionVenue>,
+    #[serde(default)]
+    pub trader: Option<UserId>,
+    /// If not provided, all accounts for venue will be returned.
+    #[serde(default)]
+    pub accounts: Option<Vec<AccountId>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
-pub struct AccountSummaries {
-    pub snapshot_ts: DateTime<Utc>,
-    pub by_account: BTreeMap<AccountId, AccountSummary>,
+pub struct AccountSummariesResponse {
+    pub account_summaries: Vec<AccountSummary>,
 }
 
-impl AccountSummaries {
-    pub fn filter_accounts(&self, accounts: &BTreeSet<AccountId>) -> Self {
-        let by_account = self
-            .by_account
-            .iter()
-            .filter_map(|(account_id, summary)| {
-                if accounts.contains(account_id) {
-                    Some((*account_id, summary.clone()))
-                } else {
-                    None
-                }
-            })
-            .collect();
-        Self { snapshot_ts: self.snapshot_ts, by_account }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Default, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct AccountSummary {
-    pub balances: BTreeMap<ProductId, Balance>,
-    // There could be multiple open positions for a particular Market,
-    // so this is not a BTreeMap like [balances].
-    pub positions: Vec<Position>,
-    pub profit_loss: Option<Decimal>,
-    pub clearing_venue: Option<VenueId>,
-}
-
-impl AccountSummary {
-    pub fn from_simple_balances(balances: BTreeMap<ProductId, Decimal>) -> Self {
-        Self {
-            balances: balances
-                .into_iter()
-                .map(|(product_id, total)| {
-                    (product_id, Balance { total: Some(total), ..Default::default() })
-                })
-                .collect(),
-            positions: vec![],
-            ..Default::default()
-        }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Default, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
-pub struct Balance {
-    /// The total amount of this asset held in the account by the
-    /// venue/broker.
-    pub total: Option<Decimal>,
-
-    /// Margin requirement calculated for worst-case based on open positions and working orders.
-    pub total_margin: Option<Decimal>,
-
-    /// Margin requirement calculated for worst-case based on open positions.
-    pub position_margin: Option<Decimal>,
-
-    /// Available account funds including balance, realized profit (or loss), collateral and credits.
-    pub purchasing_power: Option<Decimal>,
-
-    /// Cash available in the account beyond the required margin.
+    pub account: AccountId,
+    pub timestamp: DateTime<Utc>,
+    pub balances: BTreeMap<Product, Decimal>,
+    pub positions: Vec<AccountPosition>,
+    pub unrealized_pnl: Option<Decimal>,
+    pub realized_pnl: Option<Decimal>,
+    pub equity: Option<Decimal>,
+    pub yesterday_equity: Option<Decimal>,
     pub cash_excess: Option<Decimal>,
-
-    /// Cash balance from the last statement.
-    pub yesterday_balance: Option<Decimal>,
+    pub total_margin: Option<Decimal>,
+    pub position_margin: Option<Decimal>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
-pub struct Position {
-    pub market_id: MarketId,
-
-    pub quantity: Option<Decimal>,
-
-    /// Average price used to open position
-    pub average_price: Option<Decimal>,
-
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct AccountPosition {
+    pub account: AccountId,
+    pub symbol: String,
+    pub quantity: Decimal,
+    /// The meaning of this field varies by reporting venue.
     pub trade_time: Option<DateTime<Utc>>,
-
-    /// The trade date according to the exchange
-    /// settlement calendar.
-    pub trade_date: Option<NaiveDate>,
-
-    pub dir: Dir,
-
+    pub cost_basis: Decimal,
     pub break_even_price: Option<Decimal>,
-
     pub liquidation_price: Option<Decimal>,
 }
 
-/// Request to cpty for a certain range of fills.
-///
-/// Cpty is allowed to reply with a range smaller than requested,
-/// for whatever reason (don't want to paginate, API limit)...
-/// the clamp_sign tells you which side of the range should be
-/// moved when shirking the range.
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
-pub struct GetFills {
-    pub cpty: CptyId,
-    pub range: HalfOpenRange<Option<DateTime<Utc>>>,
-    pub clamp_sign: ClampSign,
+pub struct AccountHistoryRequest {
+    pub venue: Option<ExecutionVenue>,
+    pub account: AccountId,
+    pub from_inclusive: Option<DateTime<Utc>>,
+    pub to_exclusive: Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
-pub enum GetFillsError {
-    #[serde(other)]
-    #[cfg_attr(feature = "netidx", pack(other))]
-    Unknown,
+pub struct AccountHistoryResponse {
+    pub history: Vec<AccountSummary>,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Folio",
+    name = "historical_fills",
+    response = "HistoricalFillsResponse"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct HistoricalFillsRequest {
+    pub venue: Option<ExecutionVenue>,
+    pub account: Option<AccountId>,
+    pub order_id: Option<OrderId>,
+    pub from_inclusive: Option<DateTime<Utc>>,
+    pub to_exclusive: Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
-pub struct Fills {
-    pub range: HalfOpenRange<Option<DateTime<Utc>>>,
-    pub fills: Arc<Vec<Result<Fill, AberrantFill>>>,
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct HistoricalFillsResponse {
+    pub fills: Vec<Fill>,
+    pub aberrant_fills: Vec<AberrantFill>,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Folio",
+    name = "historical_orders",
+    response = "HistoricalOrdersResponse"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct HistoricalOrdersRequest {
+    pub venue: Option<ExecutionVenue>,
+    pub account: Option<AccountId>,
+    pub parent_order_id: Option<OrderId>,
+    pub from_inclusive: Option<DateTime<Utc>>,
+    pub to_exclusive: Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", derive(FromValue))]
-pub struct FolioSyncStatus {
-    pub synced_range: Option<HalfOpenRange<DateTime<Utc>>>,
-    pub beginning_of_time: DateTime<Utc>,
-    pub forward_sync_backoff: Option<DateTime<Utc>>,
-    pub backfill_backoff: Option<DateTime<Utc>>,
-}
-
-impl MaybeRequest for FolioMessage {
-    fn request_id(&self) -> Option<Uuid> {
-        match self {
-            FolioMessage::GetFills(id, ..)
-            | FolioMessage::GetSyncStatus(id, ..)
-            | FolioMessage::GetAccountSummaries(id, ..)
-            | FolioMessage::GetAllAccountSummaries(id, ..) => Some(*id),
-            _ => None,
-        }
-    }
-
-    fn response_id(&self) -> Option<Uuid> {
-        match self {
-            FolioMessage::Fills(id, ..) | FolioMessage::AccountSummaries(id, ..) => *id,
-            FolioMessage::GetSyncStatusResponse(id, ..)
-            | FolioMessage::AllAccountSummaries(id, ..) => Some(*id),
-            _ => None,
-        }
-    }
+pub struct HistoricalOrdersResponse {
+    pub orders: Vec<Order>,
 }

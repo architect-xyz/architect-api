@@ -1,377 +1,606 @@
-use crate::{
-    symbology::{MarketId, ProductId},
-    utils::pool::Pooled,
-    Dir, DirPair,
-};
-use anyhow::anyhow;
-use chrono::{DateTime, TimeDelta, Utc};
-#[cfg(feature = "netidx")]
-use derive::FromValue;
-use enumflags2::bitflags;
-#[cfg(feature = "netidx")]
-use netidx::path::Path;
-#[cfg(feature = "netidx")]
-use netidx_derive::Pack;
+use crate::{symbology::MarketdataVenue, Dir, SequenceIdAndNumber};
+use chrono::{DateTime, Utc};
+use derive::grpc;
 use rust_decimal::Decimal;
-use schemars::JsonSchema_repr;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
-use std::str::FromStr;
+use serde_with::skip_serializing_none;
 
-pub mod databento;
+pub mod candle_width;
+pub use candle_width::CandleWidth;
+
 pub mod snapshots;
 
-// CR alee: deprecate this in favor of [Symbolic]; would need to adjust how blockchain QFs work
-/// Quotefeed path definitions for symbolics
-#[cfg(feature = "netidx")]
-pub trait NetidxFeedPaths {
-    fn path_by_id(&self, base: &Path) -> Path;
-    fn path_by_name(&self, base: &Path) -> Path;
-    fn unalias_id(&self) -> Option<String>;
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "l1_book_snapshot", response = "L1BookSnapshot")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct L1BookSnapshotRequest {
+    pub symbol: String,
 }
 
-/// Book snapshot
-#[derive(Debug, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-pub struct Snapshot {
-    pub book: DirPair<Pooled<Vec<(Decimal, Decimal)>>>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    pub timestamp: DateTime<Utc>,
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "l1_book_snapshots", response = "L1BookSnapshot")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct L1BookSnapshotsRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
 }
 
-/// Book update
-#[derive(Debug, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", pack(unwrapped))]
-pub enum Update {
-    Remove { price: Decimal },
-    Change { price: Decimal, size: Decimal },
-}
+pub type L1BookSnapshots = Vec<L1BookSnapshot>;
 
-/// Book updates
-#[derive(Debug, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-pub struct Updates {
-    pub book: DirPair<Pooled<Vec<Update>>>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    pub timestamp: DateTime<Utc>,
-}
-
-impl Default for Updates {
-    fn default() -> Self {
-        Self {
-            book: DirPair { buy: Pooled::orphan(vec![]), sell: Pooled::orphan(vec![]) },
-            timestamp: DateTime::<Utc>::default(),
-        }
-    }
-}
-
-impl Updates {
-    pub fn len(&self) -> usize {
-        self.book.buy.len() + self.book.sell.len()
-    }
-
-    pub fn clear(&mut self) {
-        self.book.buy.clear();
-        self.book.sell.clear();
-    }
-}
-
-#[cfg(feature = "netidx")]
-#[derive(Debug, Clone, PartialEq, Eq, Pack)]
-#[pack(unwrapped)]
-pub enum MessageHeader {
-    Updates,
-    Snapshot,
-}
-
-#[derive(
-    Debug,
-    Clone,
-    Copy,
-    Deserialize,
-    PartialEq,
-    Eq,
-    PartialOrd,
-    Ord,
-    Hash,
-    Serialize,
-    JsonSchema_repr,
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_l1_book_snapshots",
+    response = "L1BookSnapshot",
+    server_streaming
 )]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
-#[bitflags]
-#[repr(u8)]
-pub enum CandleWidth {
-    OneSecond,
-    FiveSecond,
-    OneMinute,
-    FifteenMinute,
-    OneHour,
-    OneDay,
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SubscribeL1BookSnapshotsRequest {
+    /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
 }
 
-impl CandleWidth {
-    pub fn all() -> Vec<Self> {
-        vec![
-            Self::OneSecond,
-            Self::FiveSecond,
-            Self::OneMinute,
-            Self::FifteenMinute,
-            Self::OneHour,
-            Self::OneDay,
-        ]
-    }
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct L1BookSnapshot {
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
+    pub symbol: String,
+    #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "b")]
+    #[schemars(title = "best_bid")]
+    pub best_bid: Option<(Decimal, Decimal)>,
+    #[serde(rename = "a")]
+    #[schemars(title = "best_ask")]
+    pub best_ask: Option<(Decimal, Decimal)>,
+}
 
-    pub fn as_str(&self) -> &'static str {
+impl L1BookSnapshot {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        chrono::DateTime::from_timestamp(self.timestamp, self.timestamp_ns)
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct L2BookSnapshot {
+    #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
+    pub timestamp_ns: u32,
+    #[serde(flatten)]
+    pub sequence: SequenceIdAndNumber,
+    #[serde(rename = "b")]
+    #[schemars(title = "bids")]
+    pub bids: Vec<(Decimal, Decimal)>,
+    #[serde(rename = "a")]
+    #[schemars(title = "asks")]
+    pub asks: Vec<(Decimal, Decimal)>,
+}
+
+impl L2BookSnapshot {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        chrono::DateTime::from_timestamp(self.timestamp, self.timestamp_ns)
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct L2BookDiff {
+    #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
+    pub timestamp_ns: u32,
+    #[serde(flatten)]
+    pub sequence: SequenceIdAndNumber,
+    /// Set of (price, level) updates. If zero, the price level
+    /// has been removed from the book.
+    #[serde(rename = "b")]
+    #[schemars(title = "bids")]
+    pub bids: Vec<(Decimal, Decimal)>,
+    /// Set of (price, level) updates. If zero, the price level
+    /// has been removed from the book.
+    #[serde(rename = "a")]
+    #[schemars(title = "asks")]
+    pub asks: Vec<(Decimal, Decimal)>,
+}
+
+impl L2BookDiff {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        chrono::DateTime::from_timestamp(self.timestamp, self.timestamp_ns)
+    }
+}
+
+/// To build a book from a stream of updates, the client should first subscribe to
+/// this update stream, which then returns a stream starting with a snapshot and
+/// following with diffs.
+///
+/// Diffs should be applied consecutively to the snapshot in order to reconstruct
+/// the state of the book.
+///
+/// ```rust
+/// # use architect_api::external::marketdata::*;
+/// # use std::collections::BTreeMap;
+/// # use rust_decimal::Decimal;
+/// # use rust_decimal_macros::dec;
+///
+/// /// Suppose we receive this snapshot from the server:
+/// let snapshot: L2BookUpdate = serde_json::from_str(r#"{
+///     "t": "s",
+///     "ts": 1729700837,
+///     "tn": 0,
+///     "sid": 123,
+///     "sn": 8999,
+///     "b": [["99.00", "3"], ["98.78", "2"]],
+///     "a": [["100.00", "1"], ["100.10", "2"]]
+/// }"#)?;
+///
+/// /// It corresponds to the following book:
+/// let mut book = BTreeMap::new();
+/// book.insert(dec!(99.00), 3);
+/// book.insert(dec!(98.78), 2);
+/// book.insert(dec!(100.00), 1);
+/// book.insert(dec!(100.10), 2);
+///
+/// /// Then we receive this update:
+/// let diff: L2BookUpdate = serde_json::from_str(r#"{
+///     "t": "d",
+///     "ts": 1729700839,
+///     "tn": 0,
+///     "sid": 123,
+///     "sn": 9000,
+///     "b": [["99.00", "1"]],
+///     "a": []
+/// }"#)?;
+///
+/// /// Verify that the sequence number is correct
+/// assert!(diff.sequence().is_next_in_sequence(&snapshot.sequence()));
+///
+/// /// Apply the update to our book
+/// book.insert(dec!(99.00), 1);
+///
+/// // Suppose we then receive this update:
+/// let diff: L2BookUpdate = serde_json::from_str(r#"{
+///     "t": "d",
+///     "ts": 1729700841,
+///     "tn": 0,
+///     "sid": 123,
+///     "sn": 9005,
+///     "b": [],
+///     "a": [["103.00", "1"]]
+/// }"#)?;
+///
+/// /// We shouldn't apply this update because it's not next in sequence!
+/// assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);
+///
+/// /// Or if we had received this update:
+/// let diff: L2BookUpdate = serde_json::from_str(r#"{
+///     "t": "d",
+///     "ts": 1729700841,
+///     "tn": 0,
+///     "sid": 170,
+///     "sn": 9001,
+///     "b": [],
+///     "a": [["103.00", "1"]]
+/// }"#)?;
+///
+/// /// It appears that the sequence id is changed, signalling a new sequence.
+/// /// In this case, we should re-request the snapshot from the server.
+/// assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);
+///
+/// # Ok::<(), anyhow::Error>(())
+/// ```
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(tag = "t")]
+pub enum L2BookUpdate {
+    #[serde(rename = "s")]
+    #[schemars(title = "snapshot")]
+    Snapshot(L2BookSnapshot),
+    #[serde(rename = "d")]
+    #[schemars(title = "diff")]
+    Diff(L2BookDiff),
+}
+
+impl L2BookUpdate {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
         match self {
-            Self::OneSecond => "1s",
-            Self::FiveSecond => "5s",
-            Self::OneMinute => "1m",
-            Self::FifteenMinute => "15m",
-            Self::OneHour => "1h",
-            Self::OneDay => "1d",
+            Self::Snapshot(snapshot) => snapshot.timestamp(),
+            Self::Diff(diff) => diff.timestamp(),
         }
     }
 
-    pub fn as_seconds(&self) -> i64 {
+    pub fn sequence(&self) -> SequenceIdAndNumber {
         match self {
-            Self::OneSecond => 1,
-            Self::FiveSecond => 5,
-            Self::OneMinute => 60,
-            Self::FifteenMinute => 900,
-            Self::OneHour => 3600,
-            Self::OneDay => 86400,
+            Self::Snapshot(snapshot) => snapshot.sequence,
+            Self::Diff(diff) => diff.sequence,
+        }
+    }
+
+    pub fn is_snapshot(&self) -> bool {
+        match self {
+            Self::Snapshot(_) => true,
+            Self::Diff(_) => false,
         }
     }
 }
 
-impl FromStr for CandleWidth {
-    type Err = anyhow::Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "1s" => Ok(Self::OneSecond),
-            "5s" => Ok(Self::FiveSecond),
-            "1m" => Ok(Self::OneMinute),
-            "15m" => Ok(Self::FifteenMinute),
-            "1h" => Ok(Self::OneHour),
-            "1d" => Ok(Self::OneDay),
-            _ => Err(anyhow!("invalid candle width: {}", s)),
-        }
-    }
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "l2_book_snapshot", response = "L2BookSnapshot")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct L2BookSnapshotRequest {
+    pub symbol: String,
 }
 
-impl Into<TimeDelta> for CandleWidth {
-    fn into(self) -> TimeDelta {
-        TimeDelta::seconds(self.as_seconds())
-    }
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_l2_book_updates",
+    response = "L2BookUpdate",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SubscribeL2BookUpdatesRequest {
+    pub symbol: String,
 }
 
-/// NB: buy_volume + sell_volume <> volume; volume may count trades
-/// that don't have a discernible direction.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Deserialize, Serialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-pub struct CandleV1 {
-    pub time: DateTime<Utc>,
-    pub open: Decimal,
-    pub high: Decimal,
-    pub low: Decimal,
-    pub close: Decimal,
+// Subscribe to candles for a single market.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_candles",
+    response = "Candle",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SubscribeCandlesRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
+    pub symbol: String,
+    /// If None, subscribe from all candle widths on the feed
+    pub candle_widths: Option<Vec<CandleWidth>>,
+}
+
+// Subscribe to a single candle width across many markets.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_many_candles",
+    response = "Candle",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SubscribeManyCandlesRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
+    /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
+    pub candle_width: CandleWidth,
+}
+
+/// Subscribe to the current candle.  This allows you to display
+/// the most recent/building candle live in a UI, for example.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_current_candles",
+    response = "Candle",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SubscribeCurrentCandlesRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
+    pub symbol: String,
+    pub candle_width: CandleWidth,
+    /// If None, send the current candle on every trade or candle tick.
+    /// Otherwise, send a candle every `tick_period_ms`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tick_period_ms: Option<u32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct Candle {
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
+    pub symbol: String,
+    #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "w")]
+    #[schemars(title = "width")]
+    pub width: CandleWidth,
+    #[serde(rename = "o")]
+    #[schemars(title = "open")]
+    pub open: Option<Decimal>,
+    #[serde(rename = "h")]
+    #[schemars(title = "high")]
+    pub high: Option<Decimal>,
+    #[serde(rename = "l")]
+    #[schemars(title = "low")]
+    pub low: Option<Decimal>,
+    #[serde(rename = "c")]
+    #[schemars(title = "close")]
+    pub close: Option<Decimal>,
+    #[serde(rename = "v")]
+    #[schemars(title = "volume")]
     pub volume: Decimal,
+    #[serde(rename = "bv")]
+    #[schemars(title = "buy_volume")]
     pub buy_volume: Decimal,
+    #[serde(rename = "av")]
+    #[schemars(title = "sell_volume")]
     pub sell_volume: Decimal,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "mo", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "mid_open")]
     pub mid_open: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "mc", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "mid_close")]
     pub mid_close: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "mh", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "mid_high")]
     pub mid_high: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "ml", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "mid_low")]
     pub mid_low: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "bo", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "bid_open")]
     pub bid_open: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "bc", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "bid_close")]
     pub bid_close: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "bh", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "bid_high")]
     pub bid_high: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "bl", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "bid_low")]
     pub bid_low: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "ao", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "ask_open")]
     pub ask_open: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "ac", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "ask_close")]
     pub ask_close: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "ah", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "ask_high")]
     pub ask_high: Option<Decimal>,
-    #[cfg_attr(feature = "netidx", pack(default))]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, rename = "al", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "ask_low")]
     pub ask_low: Option<Decimal>,
 }
 
-impl CandleV1 {
-    pub fn ohlcv(
-        time: DateTime<Utc>,
-        open: Decimal,
-        high: Decimal,
-        low: Decimal,
-        close: Decimal,
-        volume: Decimal,
-        buy_volume: Decimal,
-        sell_volume: Decimal,
-    ) -> Self {
-        Self {
-            time,
-            open,
-            high,
-            low,
-            close,
-            volume,
-            buy_volume,
-            sell_volume,
-            mid_open: None,
-            mid_close: None,
-            mid_high: None,
-            mid_low: None,
-            bid_open: None,
-            bid_close: None,
-            bid_high: None,
-            bid_low: None,
-            ask_open: None,
-            ask_close: None,
-            ask_high: None,
-            ask_low: None,
-        }
+impl Candle {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        DateTime::<Utc>::from_timestamp(self.timestamp, self.timestamp_ns)
     }
 }
 
-#[cfg(feature = "tokio-postgres")]
-impl TryInto<CandleV1> for tokio_postgres::Row {
-    type Error = anyhow::Error;
-
-    fn try_into(self) -> Result<CandleV1, Self::Error> {
-        Ok(CandleV1 {
-            time: self.try_get("ts")?,
-            open: self.try_get("open_price")?,
-            high: self.try_get("high_price")?,
-            close: self.try_get("close_price")?,
-            low: self.try_get("low_price")?,
-            volume: self.try_get("volume")?,
-            buy_volume: self.try_get("buy_volume")?,
-            sell_volume: self.try_get("sell_volume")?,
-            mid_open: self.try_get("mid_open_price")?,
-            mid_close: self.try_get("mid_close_price")?,
-            mid_high: self.try_get("mid_high_price")?,
-            mid_low: self.try_get("mid_low_price")?,
-            bid_open: self.try_get("bid_open_price")?,
-            bid_close: self.try_get("bid_close_price")?,
-            bid_high: self.try_get("bid_high_price")?,
-            bid_low: self.try_get("bid_low_price")?,
-            ask_open: self.try_get("ask_open_price")?,
-            ask_close: self.try_get("ask_close_price")?,
-            ask_high: self.try_get("ask_high_price")?,
-            ask_low: self.try_get("ask_low_price")?,
-        })
-    }
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "subscribe_trades",
+    response = "Trade",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SubscribeTradesRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
+    /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub struct HistoricalCandlesV1 {
-    pub candles: Vec<CandleV1>,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-pub struct TradeV0 {
-    pub time: Option<DateTime<Utc>>,
-    pub direction: Dir,
-    pub price: Decimal,
-    pub size: Decimal,
-}
-
-impl Into<TradeV1> for TradeV0 {
-    fn into(self) -> TradeV1 {
-        TradeV1 {
-            time: self.time,
-            direction: Some(self.direction),
-            price: self.price,
-            size: self.size,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-pub struct TradeV1 {
-    pub time: Option<DateTime<Utc>>,
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct Trade {
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
+    pub symbol: String,
+    #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "d")]
+    #[schemars(title = "direction")]
     pub direction: Option<Dir>, // maker dir
+    #[serde(rename = "p")]
+    #[schemars(title = "price")]
     pub price: Decimal,
+    #[serde(rename = "q")]
+    #[schemars(title = "size")]
     pub size: Decimal,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub struct TradeGlobalV1 {
-    pub market: MarketId,
-    pub time: Option<DateTime<Utc>>,
-    pub direction: Option<Dir>, // maker dir
-    pub price: Decimal,
-    pub size: Decimal,
+impl Trade {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        DateTime::<Utc>::from_timestamp(self.timestamp, self.timestamp_ns)
+    }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub struct LiquidationV1 {
-    pub time: DateTime<Utc>,
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "market_status", response = "MarketStatus")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct MarketStatusRequest {
+    pub symbol: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
+pub struct MarketStatus {
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
+    pub symbol: String,
+    pub is_trading: Option<bool>,
+    pub is_quoting: Option<bool>,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "ticker", response = "Ticker")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct TickerRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
+    pub symbol: String,
+}
+
+#[derive(Default, Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
+pub struct TickerValues {
+    #[serde(rename = "xo")]
+    #[schemars(title = "session_open")]
+    pub session_open: Option<Decimal>,
+    #[serde(rename = "xl")]
+    #[schemars(title = "session_low")]
+    pub session_low: Option<Decimal>,
+    #[serde(rename = "xh")]
+    #[schemars(title = "session_high")]
+    pub session_high: Option<Decimal>,
+    #[serde(rename = "o")]
+    #[schemars(title = "open_24h")]
+    pub open_24h: Option<Decimal>,
+    #[serde(rename = "l")]
+    #[schemars(title = "low_24h")]
+    pub low_24h: Option<Decimal>,
+    #[serde(rename = "h")]
+    #[schemars(title = "high_24h")]
+    pub high_24h: Option<Decimal>,
+    #[serde(rename = "v")]
+    #[schemars(title = "volume_24h")]
+    pub volume_24h: Option<Decimal>,
+    #[serde(rename = "vm")]
+    #[schemars(title = "volume_30d")]
+    pub volume_30d: Option<Decimal>,
+    #[serde(rename = "oi")]
+    #[schemars(title = "open_interest")]
+    pub open_interest: Option<Decimal>,
+    #[serde(rename = "sp")]
+    #[schemars(title = "last_settlement_price")]
+    pub last_settlement_price: Option<Decimal>,
+}
+
+impl TickerValues {
+    pub fn is_none(&self) -> bool {
+        self.session_open.is_none()
+            && self.session_low.is_none()
+            && self.session_high.is_none()
+            && self.open_24h.is_none()
+            && self.low_24h.is_none()
+            && self.high_24h.is_none()
+            && self.volume_24h.is_none()
+            && self.volume_30d.is_none()
+            && self.open_interest.is_none()
+            && self.last_settlement_price.is_none()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
+pub struct Ticker {
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
+    pub symbol: String,
+    #[serde(flatten)]
+    pub values: TickerValues,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "tickers", response = "TickersResponse")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct TickersRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
+pub struct TickersResponse {
+    pub tickers: Vec<Ticker>,
+}
+
+/// Ticker updates are not strongly ordered because the data is considered
+/// more casual.  You may receive diffs or snapshots slightly out of order.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "ticker",
+    response = "TickerUpdate",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SubscribeTickersRequest {
+    /// If None, subscribe from all symbols on the feed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(tag = "t")]
+pub enum TickerUpdate {
+    #[serde(rename = "s")]
+    #[schemars(rename = "snapshot")]
+    Snapshot(Ticker),
+    #[serde(rename = "d")]
+    #[schemars(rename = "diff")]
+    Diff(TickerDiff),
+}
+
+#[skip_serializing_none]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct TickerDiff {
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
+    pub symbol: String,
+    #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
+    pub timestamp_ns: u32,
+    #[serde(flatten)]
+    pub values: TickerValues,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "subscribe_liquidations", response = "Liquidation")]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
+pub struct SubscribeLiquidationsRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+pub struct Liquidation {
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
+    pub symbol: String,
+    #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "d")]
+    #[schemars(title = "direction")]
     pub direction: Dir,
+    #[serde(rename = "p")]
+    #[schemars(title = "price")]
     pub price: Decimal,
+    #[serde(rename = "q")]
+    #[schemars(title = "size")]
     pub size: Decimal,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub struct LiquidationGlobalV1 {
-    pub market: MarketId,
-    pub time: DateTime<Utc>,
-    pub direction: Dir,
-    pub price: Decimal,
-    pub size: Decimal,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub struct RfqRequest {
-    pub base: ProductId,
-    pub quote: ProductId,
-    pub quantity: Decimal,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub struct RfqResponse {
-    pub market: MarketId,
-    pub sides: DirPair<Result<RfqResponseSide, String>>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-pub struct RfqResponseSide {
-    pub price: Decimal,
-    pub quantity: Decimal,
-    pub quote_id: Option<String>,
 }

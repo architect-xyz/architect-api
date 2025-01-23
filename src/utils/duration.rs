@@ -4,8 +4,6 @@ use crate::json_schema_is_string;
 use anyhow::{anyhow, bail, Result};
 use chrono::{DateTime, Duration, Utc};
 use derive_more::{Deref, DerefMut, From};
-#[cfg(feature = "netidx")]
-use netidx_derive::Pack;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_conv;
 use std::str::FromStr;
@@ -52,8 +50,6 @@ json_schema_is_string!(NonZeroDurationAsStr);
     Deserialize,
 )]
 #[serde(transparent)]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", pack(unwrapped))]
 pub struct HumanDuration(
     #[serde(
         serialize_with = "serialize_duration",

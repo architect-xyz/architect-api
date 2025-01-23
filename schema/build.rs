@@ -7,7 +7,6 @@ mod defs {
 
 fn main() {
     let config = Config { pretty: true };
-
     let mut out_file = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     out_file.push("../schema.json");
 

@@ -1,56 +1,34 @@
 use super::*;
-use crate::{
-    algo::generic_container::AlgoContainerMessage, symbology::MarketId, Dir, OrderId,
-};
+use crate::{symbology::ExecutionVenue, Dir, HumanDuration};
 use anyhow::{bail, Result};
 use chrono::{DateTime, Utc};
-use derive::FromValue;
-use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
-use std::time::Duration;
 
-pub type TwapAlgoMessage =
-    AlgoContainerMessage<TwapOrder, NoModification, AlgoPreview, TwapStatus, AlgoLog>;
-
-#[derive(Debug, Clone, Copy, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
-pub struct TwapOrder {
-    pub order_id: OrderId,
-    pub market: MarketId,
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct TwapParams {
+    pub symbol: String,
+    pub execution_venue: ExecutionVenue,
     pub dir: Dir,
     pub quantity: Decimal,
-    pub interval: Duration,
+    pub interval: HumanDuration,
     pub end_time: DateTime<Utc>,
-    pub trader: UserId,
-    pub account: Option<AccountId>,
-    pub reject_lockout: Duration,
+    pub reject_lockout: HumanDuration,
     pub take_through_frac: Option<Decimal>,
-    pub parent_order_id: Option<OrderId>,
 }
 
-impl Into<AlgoOrder> for &TwapOrder {
-    fn into(self) -> AlgoOrder {
-        AlgoOrder {
-            order_id: self.order_id,
-            trader: self.trader,
-            account: self.account,
-            algo: AlgoKind::Twap,
-            parent_order_id: self.parent_order_id,
-            markets: Arc::new(vec![self.market]),
-        }
-    }
-}
-
-impl Validate for TwapOrder {
+impl Validate for TwapParams {
     fn validate(&self) -> Result<()> {
         if !self.quantity.is_sign_positive() {
             bail!("quantity must be positive");
         }
-        if self.interval.as_secs() < 1 {
-            bail!("interval must be >= 1 second");
+        if self.interval.num_milliseconds() < 100 {
+            bail!("interval must be >= 100ms");
         }
-        if self.reject_lockout.as_millis() < 500 || self.reject_lockout.as_secs() > 300 {
+        if self.reject_lockout.num_milliseconds() < 500
+            || self.reject_lockout.num_seconds() > 300
+        {
             bail!("reject lockout must be between 0.5 seconds and 300 seconds");
         }
         if let Some(take_through_frac) = self.take_through_frac {
@@ -62,18 +40,8 @@ impl Validate for TwapOrder {
     }
 }
 
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct TwapStatus {
-    #[serde(flatten)]
-    pub algo_status: AlgoStatus,
     pub realized_twap: Option<Decimal>,
     pub quantity_filled: Decimal,
-}
-
-impl TryInto<AlgoStatus> for &TwapStatus {
-    type Error = ();
-
-    fn try_into(self) -> Result<AlgoStatus, ()> {
-        Ok(self.algo_status)
-    }
 }

@@ -1,9 +1,5 @@
 //! Types for working with the secret store
 
-#[cfg(feature = "netidx")]
-use bytes::{Buf, BufMut};
-#[cfg(feature = "netidx")]
-use netidx::pack::{Pack, PackError};
 use schemars::{
     gen::SchemaGenerator,
     schema::{InstanceType, Schema, SchemaObject},
@@ -147,44 +143,6 @@ impl<'de, T: DeserializeOwned + FromStr + Zeroize> Deserialize<'de> for MaybeSec
                 }
             }
             Format::Plain(t) => Ok(MaybeSecret::Plain(Zeroizing::new(t))),
-        }
-    }
-}
-
-#[cfg(feature = "netidx")]
-impl<T: Zeroize + Pack> Pack for MaybeSecret<T> {
-    fn encoded_len(&self) -> usize {
-        const TAG_LEN: usize = 1;
-        let clen = match self {
-            MaybeSecret::Secret(s) => s.encoded_len(),
-            MaybeSecret::Plain(t) => t.encoded_len(),
-        };
-        TAG_LEN + clen
-    }
-
-    fn encode(&self, buf: &mut impl BufMut) -> Result<(), PackError> {
-        match self {
-            MaybeSecret::Secret(s) => {
-                buf.put_u8(0);
-                s.encode(buf)?;
-            }
-            MaybeSecret::Plain(t) => {
-                buf.put_u8(1);
-                t.encode(buf)?;
-            }
-        }
-        Ok(())
-    }
-
-    fn decode(buf: &mut impl Buf) -> Result<Self, PackError>
-    where
-        Self: Sized,
-    {
-        let tag = buf.get_u8();
-        match tag {
-            0 => Ok(MaybeSecret::Secret(String::decode(buf)?)),
-            1 => Ok(MaybeSecret::Plain(Zeroizing::new(T::decode(buf)?))),
-            _ => Err(PackError::UnknownTag),
         }
     }
 }

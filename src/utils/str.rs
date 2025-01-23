@@ -11,11 +11,6 @@
 
 use anyhow::bail;
 use fxhash::FxHashSet;
-#[cfg(feature = "netidx")]
-use netidx::{
-    chars::Chars,
-    pack::{decode_varint, encode_varint, varint_len, Pack, PackError},
-};
 use once_cell::sync::Lazy;
 use parking_lot::Mutex;
 use schemars::JsonSchema;
@@ -169,14 +164,6 @@ impl Str {
     pub fn is_immediate(&self) -> bool {
         self.0 & TAG_MASK > 0
     }
-
-    #[cfg(feature = "netidx")]
-    pub fn as_chars(&self) -> Chars {
-        match self.as_static_str() {
-            Some(s) => Chars::from(s),
-            None => Chars::from(String::from(self.as_str())),
-        }
-    }
 }
 
 impl fmt::Debug for Str {
@@ -197,44 +184,6 @@ impl Serialize for Str {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
-    }
-}
-
-#[cfg(feature = "netidx")]
-impl Pack for Str {
-    fn encoded_len(&self) -> usize {
-        let len = self.len();
-        varint_len(len as u64) + len
-    }
-
-    fn encode(
-        &self,
-        buf: &mut impl bytes::BufMut,
-    ) -> Result<(), netidx::pack::PackError> {
-        let s = &**self;
-        encode_varint(s.len() as u64, buf);
-        Ok(buf.put_slice(s.as_bytes()))
-    }
-
-    fn decode(buf: &mut impl bytes::Buf) -> Result<Self, netidx::pack::PackError> {
-        use std::cell::RefCell;
-        thread_local! {
-            static BUF: RefCell<Vec<u8>> = RefCell::new(Vec::new());
-        }
-        let len = decode_varint(buf)? as usize;
-        if len > u8::MAX as usize {
-            Err(PackError::TooBig)
-        } else {
-            BUF.with(|tmp| {
-                let mut tmp = tmp.borrow_mut();
-                tmp.resize(len, 0);
-                buf.copy_to_slice(&mut *tmp);
-                match str::from_utf8(&*tmp) {
-                    Err(_) => Err(PackError::InvalidFormat),
-                    Ok(s) => Ok(Str::try_from(s).unwrap()),
-                }
-            })
-        }
     }
 }
 

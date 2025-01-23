@@ -1,312 +1,99 @@
-#![cfg(feature = "netidx")]
-
 use crate::{
-    orderflow::*,
-    utils::{messaging::MaybeRequest, pool::Pooled},
-    ComponentId, HalfOpenRange,
+    orderflow::{order_types::*, Cancel, Order, TimeInForce},
+    symbology::ExecutionVenue,
+    AccountId, Dir, OrderId, UserId,
 };
-use arcstr::{literal, ArcStr};
-use chrono::{DateTime, Utc};
-use derive::FromValue;
-use enumflags2::{bitflags, BitFlags};
-use netidx_derive::Pack;
+use derive::grpc;
+use derive_builder::Builder;
 use rust_decimal::Decimal;
-use schemars::{JsonSchema, JsonSchema_repr};
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
-use std::sync::Arc;
+use serde_with::skip_serializing_none;
 use uuid::Uuid;
 
-pub mod limits_file;
-
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize, JsonSchema)]
-pub struct ForwardOrderflow {
-    pub to: ComponentId,
-    pub rule: ForwardOrderflowRule,
+#[grpc(package = "json.architect")]
+#[grpc(service = "Oms", name = "place_order", response = "Order")]
+#[derive(Builder, Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct PlaceOrderRequest {
+    pub id: Option<OrderId>,
+    pub symbol: String,
+    pub dir: Dir,
+    pub quantity: Decimal,
+    #[serde(default)]
+    #[builder(setter(strip_option), default)]
+    pub trader: Option<String>,
+    #[serde(default)]
+    #[builder(setter(strip_option), default)]
+    pub account: Option<String>,
+    #[serde(flatten)]
+    pub order_type: OrderType,
+    #[builder(default = "TimeInForce::GoodTilCancel")]
+    pub time_in_force: TimeInForce,
+    #[serde(default)]
+    #[builder(setter(strip_option), default)]
+    pub execution_venue: Option<ExecutionVenue>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Pack, Serialize, Deserialize, JsonSchema)]
-pub enum ForwardOrderflowRule {
-    Always,
-    OnlyIfNoCptyMatch,
-}
-
-#[derive(Debug, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
-pub enum OmsMessage {
-    Order(Order),
-    OrderUpdate(OmsOrderUpdate),
-    Cancel(Cancel),
-    CancelAll(CancelAll),
-    Reject(OmsReject),
-    Ack(Ack),
-    Fill(Result<Fill, AberrantFill>),
-    FillWarning(OrderId, FillId, BitFlags<FillWarning>),
-    Out(Out),
-    Initialize(limits_file::LimitsFile),
-    RetireOutedOrdersAndUnknownFills,
-    // some of these are better queried via a follower Oms or StatsDb;
-    // for latency sensitive applications, responding to these requests
-    // blocks the Oms for too long; but the option is available
-    GetOpenOrders(Uuid),
-    GetOpenOrdersResponse(Uuid, Vec<OrderLog>),
-    // retrieve outed orders that the oms knows about; outed orders are retired
-    // from the oms after the configured interval
-    GetOutedOrders(Uuid, HalfOpenRange<DateTime<Utc>>),
-    GetOutedOrdersResponse(Uuid, Arc<Vec<OrderLog>>),
-    GetOrder(Uuid, OrderId),
-    GetOrderResponse(Uuid, Option<OrderLog>),
-    GetFills(Uuid, OrderId),
-    GetFillsResponse(Uuid, Result<GetFillsResponse, GetFillsError>),
-    ReconcileOrders(Arc<Vec<ReconcileOrder>>),
-}
-
-#[derive(Debug, Copy, Clone, Pack, FromValue, Serialize, Deserialize, JsonSchema)]
-pub struct ReconcileOrder {
-    pub order: Order,
-    pub order_state: OrderState,
-}
-
-#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
-pub struct OmsReject {
+#[grpc(package = "json.architect")]
+#[grpc(service = "Oms", name = "cancel_order", response = "Cancel")]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+pub struct CancelOrderRequest {
+    /// If not specified, one will be generated for you; note, in that case,
+    /// you won't know for sure if the specific request went through.
+    #[serde(default)]
+    pub id: Option<Uuid>,
     pub order_id: OrderId,
-    pub reason: OmsRejectReason,
 }
 
-impl OmsReject {
-    pub fn new(order_id: OrderId, reason: OmsRejectReason) -> Self {
-        Self { order_id, reason }
-    }
+#[grpc(package = "json.architect")]
+#[grpc(service = "Oms", name = "cancel_all_orders", response = "CancelAllOrdersResponse")]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct CancelAllOrdersRequest {
+    pub id: Uuid,
+    #[serde(default)]
+    pub trader: Option<String>,
+    #[serde(default)]
+    pub account: Option<String>,
+    #[serde(default)]
+    pub execution_venue: Option<ExecutionVenue>,
 }
 
-impl Into<Reject> for OmsReject {
-    fn into(self) -> Reject {
-        Reject { order_id: self.order_id, reason: self.reason.into() }
-    }
+// CR alee: we could think of a more useful response
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct CancelAllOrdersResponse {}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Oms", name = "open_orders", response = "OpenOrdersResponse")]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct OpenOrdersRequest {
+    pub venue: Option<ExecutionVenue>,
+    pub account: Option<AccountId>,
+    pub trader: Option<UserId>,
+    pub symbol: Option<String>,
+    pub parent_order_id: Option<OrderId>,
+    pub order_ids: Option<Vec<OrderId>>,
 }
 
-impl Into<OmsReject> for &Reject {
-    fn into(self) -> OmsReject {
-        OmsReject { order_id: self.order_id, reason: (&self.reason).into() }
-    }
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct OpenOrdersResponse {
+    pub open_orders: Vec<Order>,
 }
 
-#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
-pub enum OmsRejectReason {
-    NotInitialized,
-    RateLimitExceeded,
-    UnknownMarket,
-    InvalidMarketKind,
-    UnknownCpty,
-    WouldExceedOpenBuyQty,
-    WouldExceedOpenSellQty,
-    WouldExceedOpenQty,
-    WouldExceedPosLimit,
-    Literal(ArcStr),
-    NotAuthorized,
-    NotAuthorizedForAccount,
-    NoDefaultAccount,
-    #[pack(other)]
-    #[serde(other)]
-    Unknown,
+#[grpc(package = "json.architect")]
+#[grpc(service = "Oms", name = "pending_cancels", response = "PendingCancelsResponse")]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct PendingCancelsRequest {
+    pub venue: Option<ExecutionVenue>,
+    pub account: Option<AccountId>,
+    pub trader: Option<UserId>,
+    pub symbol: Option<String>,
+    pub cancel_ids: Option<Vec<Uuid>>,
 }
 
-const RATE_LIMIT_EXCEEDED: ArcStr = literal!("order rate limit exceeded");
-const INVALID_MARKET_KIND: ArcStr = literal!("invalid market kind");
-const WOULD_EXCEED_OPEN_BUY_QTY: ArcStr = literal!("would exceed open buy qty limit");
-const WOULD_EXCEED_OPEN_SELL_QTY: ArcStr = literal!("would exceed open sell qty limit");
-const WOULD_EXCEED_OPEN_QTY: ArcStr = literal!("would exceed open qty limit");
-const WOULD_EXCEED_POS_LIMIT: ArcStr = literal!("would exceed position limit if filled");
-const NO_DEFAULT_ACCOUNT: ArcStr = literal!("no default account for venue for trader");
-
-impl Into<RejectReason> for OmsRejectReason {
-    fn into(self) -> RejectReason {
-        use OmsRejectReason::*;
-        use RejectReason as R;
-        match self {
-            NotInitialized => R::ComponentNotInitialized,
-            RateLimitExceeded => R::Literal(RATE_LIMIT_EXCEEDED),
-            UnknownMarket => R::UnknownMarket,
-            InvalidMarketKind => R::Literal(INVALID_MARKET_KIND),
-            UnknownCpty => R::UnknownCpty,
-            WouldExceedOpenBuyQty => R::Literal(WOULD_EXCEED_OPEN_BUY_QTY),
-            WouldExceedOpenSellQty => R::Literal(WOULD_EXCEED_OPEN_SELL_QTY),
-            WouldExceedOpenQty => R::Literal(WOULD_EXCEED_OPEN_QTY),
-            WouldExceedPosLimit => R::Literal(WOULD_EXCEED_POS_LIMIT),
-            Literal(s) => R::Literal(s),
-            NotAuthorized => R::NotAuthorized,
-            NotAuthorizedForAccount => R::NotAuthorizedForAccount,
-            NoDefaultAccount => R::Literal(NO_DEFAULT_ACCOUNT),
-            Unknown => R::Unknown,
-        }
-    }
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct PendingCancelsResponse {
+    pub pending_cancels: Vec<Cancel>,
 }
-
-impl Into<OmsRejectReason> for &RejectReason {
-    fn into(self) -> OmsRejectReason {
-        use OmsRejectReason::*;
-        use RejectReason as R;
-        match self {
-            R::ComponentNotInitialized => NotInitialized,
-            R::UnknownMarket => UnknownMarket,
-            R::UnknownCpty => UnknownCpty,
-            R::NotAuthorized => NotAuthorized,
-            R::NotAuthorizedForAccount => NotAuthorizedForAccount,
-            R::Literal(s) if s == &RATE_LIMIT_EXCEEDED => RateLimitExceeded,
-            R::Literal(s) if s == &INVALID_MARKET_KIND => InvalidMarketKind,
-            R::Literal(s) if s == &WOULD_EXCEED_OPEN_BUY_QTY => WouldExceedOpenBuyQty,
-            R::Literal(s) if s == &WOULD_EXCEED_OPEN_SELL_QTY => WouldExceedOpenSellQty,
-            R::Literal(s) if s == &WOULD_EXCEED_OPEN_QTY => WouldExceedOpenQty,
-            R::Literal(s) if s == &WOULD_EXCEED_POS_LIMIT => WouldExceedPosLimit,
-            R::Literal(s) if s == &NO_DEFAULT_ACCOUNT => NoDefaultAccount,
-            R::Literal(s) => Literal(s.clone()),
-            _ => Unknown,
-        }
-    }
-}
-
-impl MaybeRequest for OmsMessage {
-    fn request_id(&self) -> Option<Uuid> {
-        match self {
-            OmsMessage::GetOpenOrders(id)
-            | OmsMessage::GetOutedOrders(id, ..)
-            | OmsMessage::GetOrder(id, ..)
-            | OmsMessage::GetFills(id, ..) => Some(*id),
-            _ => None,
-        }
-    }
-
-    fn response_id(&self) -> Option<Uuid> {
-        match self {
-            OmsMessage::GetOpenOrdersResponse(id, ..)
-            | OmsMessage::GetOutedOrdersResponse(id, ..)
-            | OmsMessage::GetOrderResponse(id, ..)
-            | OmsMessage::GetFillsResponse(id, ..) => Some(*id),
-            _ => None,
-        }
-    }
-}
-
-impl From<&OrderflowMessage> for OmsMessage {
-    fn from(msg: &OrderflowMessage) -> Self {
-        match msg {
-            OrderflowMessage::Order(msg) => OmsMessage::Order(*msg),
-            OrderflowMessage::Cancel(msg) => OmsMessage::Cancel(*msg),
-            OrderflowMessage::CancelAll(msg) => OmsMessage::CancelAll(msg.clone()),
-            OrderflowMessage::Reject(msg) => OmsMessage::Reject(msg.into()),
-            OrderflowMessage::Ack(msg) => OmsMessage::Ack(*msg),
-            OrderflowMessage::Fill(msg) => OmsMessage::Fill(*msg),
-            OrderflowMessage::Out(msg) => OmsMessage::Out(*msg),
-        }
-    }
-}
-
-impl TryInto<OrderflowMessage> for &OmsMessage {
-    type Error = ();
-
-    fn try_into(self) -> Result<OrderflowMessage, ()> {
-        match self {
-            OmsMessage::Order(msg) => Ok(OrderflowMessage::Order(*msg)),
-            OmsMessage::Cancel(msg) => Ok(OrderflowMessage::Cancel(*msg)),
-            OmsMessage::CancelAll(msg) => Ok(OrderflowMessage::CancelAll(msg.clone())),
-            OmsMessage::Reject(msg) => Ok(OrderflowMessage::Reject(msg.clone().into())),
-            OmsMessage::Ack(msg) => Ok(OrderflowMessage::Ack(*msg)),
-            OmsMessage::Fill(msg) => Ok(OrderflowMessage::Fill(*msg)),
-            OmsMessage::Out(msg) => Ok(OrderflowMessage::Out(*msg)),
-            OmsMessage::OrderUpdate(..)
-            | OmsMessage::Initialize(..)
-            | OmsMessage::RetireOutedOrdersAndUnknownFills
-            | OmsMessage::ReconcileOrders(..)
-            | OmsMessage::FillWarning(..)
-            | OmsMessage::GetOpenOrders(_)
-            | OmsMessage::GetOpenOrdersResponse(..)
-            | OmsMessage::GetOutedOrders(..)
-            | OmsMessage::GetOutedOrdersResponse(..)
-            | OmsMessage::GetFills(..)
-            | OmsMessage::GetFillsResponse(..)
-            | OmsMessage::GetOrder(..)
-            | OmsMessage::GetOrderResponse(..) => Err(()),
-        }
-    }
-}
-
-#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
-pub struct OrderLog {
-    pub timestamp: DateTime<Utc>,
-    pub order: Order,
-    pub order_state: OrderState,
-    pub filled_qty: Decimal,
-    pub avg_fill_price: Option<Decimal>,
-    pub reject_reason: Option<OmsRejectReason>,
-}
-
-#[derive(Debug, Clone, Copy, Pack, Serialize, Deserialize, JsonSchema)]
-pub struct OmsOrderUpdate {
-    pub order_id: OrderId,
-    pub state: OrderState,
-    pub filled_qty: Decimal,
-    pub avg_fill_price: Option<Decimal>,
-}
-
-#[cfg(feature = "juniper")]
-#[juniper::graphql_object]
-impl OmsOrderUpdate {
-    pub fn order_id(&self) -> OrderId {
-        self.order_id
-    }
-
-    pub fn state(&self) -> Vec<OrderStateFlags> {
-        self.state.iter().collect()
-    }
-
-    pub fn filled_qty(&self) -> Decimal {
-        self.filled_qty
-    }
-
-    pub fn avg_fill_price(&self) -> Option<Decimal> {
-        self.avg_fill_price
-    }
-}
-
-#[bitflags]
-#[repr(u64)]
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, JsonSchema_repr)]
-pub enum FillWarning {
-    FillAfterOut,
-    Overfilled,
-}
-
-#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
-pub struct GetFillsResponse {
-    pub fills: Option<Pooled<Vec<Fill>>>,
-    pub aberrant_fills: Option<Pooled<Vec<AberrantFill>>>,
-}
-
-#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
-pub enum GetFillsError {
-    OrderNotFound,
-}
-
-impl std::fmt::Display for GetFillsError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            GetFillsError::OrderNotFound => write!(f, "order not found"),
-        }
-    }
-}
-
-impl std::error::Error for GetFillsError {}
-
-#[derive(Debug, Clone, Pack, Serialize, Deserialize, JsonSchema)]
-pub enum GetOrderError {
-    OrderNotFound,
-}
-
-impl std::fmt::Display for GetOrderError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            GetOrderError::OrderNotFound => write!(f, "order not found"),
-        }
-    }
-}
-
-impl std::error::Error for GetOrderError {}

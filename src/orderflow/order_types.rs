@@ -1,0 +1,58 @@
+use rust_decimal::Decimal;
+use schemars::JsonSchema;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
+#[serde(tag = "order_type", rename_all = "snake_case")]
+pub enum OrderType {
+    Limit(LimitOrderType),
+    StopLossLimit(StopLossLimitOrderType),
+    TakeProfitLimit(TakeProfitLimitOrderType),
+}
+
+impl OrderType {
+    pub fn limit_price(&self) -> Option<Decimal> {
+        match self {
+            OrderType::Limit(limit) => Some(limit.limit_price),
+            OrderType::StopLossLimit(stop_loss) => Some(stop_loss.limit_price),
+            OrderType::TakeProfitLimit(take_profit) => Some(take_profit.limit_price),
+        }
+    }
+
+    pub fn post_only(&self) -> Option<bool> {
+        match self {
+            OrderType::Limit(limit) => Some(limit.post_only),
+            OrderType::StopLossLimit(_) => None,
+            OrderType::TakeProfitLimit(_) => None,
+        }
+    }
+
+    pub fn trigger_price(&self) -> Option<Decimal> {
+        match self {
+            OrderType::Limit(_) => None,
+            OrderType::StopLossLimit(stop_loss) => Some(stop_loss.trigger_price),
+            OrderType::TakeProfitLimit(take_profit) => Some(take_profit.trigger_price),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct LimitOrderType {
+    pub limit_price: Decimal,
+    pub post_only: bool,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct StopLossLimitOrderType {
+    pub limit_price: Decimal,
+    pub trigger_price: Decimal,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct TakeProfitLimitOrderType {
+    pub limit_price: Decimal,
+    pub trigger_price: Decimal,
+}

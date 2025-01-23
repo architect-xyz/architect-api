@@ -1,8 +1,4 @@
 use crate::Dir;
-#[cfg(feature = "netidx")]
-use derive::FromValue;
-#[cfg(feature = "netidx")]
-use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use schemars::JsonSchema;
@@ -12,7 +8,6 @@ use serde::{Deserialize, Serialize};
 ///
 /// For example one might hold one's position in a particular coin in a `DirPair<Decimal>`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct DirPair<T: 'static> {
     pub buy: T,
     pub sell: T,

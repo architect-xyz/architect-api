@@ -12,10 +12,9 @@ name = "architect-api"
 version = "5.0.8"
 
 [features]
-all = ["graphql", "grpc", "netidx", "postgres"]
+all = ["graphql", "grpc", "postgres"]
 graphql = ["juniper"]
 grpc = ["tonic", "tonic-build"]
-netidx = ["dep:netidx", "netidx-core", "netidx-derive"]
 postgres = ["postgres-types", "tokio-postgres"]
 
 [dependencies]
@@ -25,28 +24,18 @@ bytemuck = { workspace = true }
 bytes = { workspace = true }
 chrono = { workspace = true }
 chrono-tz = { workspace = true, features = ["serde"] }
-clap = { workspace = true, optional = true }
-compact_str = { workspace = true }
 crossbeam = { workspace = true }
 derive = { package = "architect-derive", version = "0.4.0", path = "../derive" }
 derive_builder = { workspace = true }
 derive_more = { workspace = true }
-dirs = { workspace = true }
-enum_dispatch = { workspace = true }
 enumflags2 = { workspace = true }
 futures = { workspace = true }
 fxhash = { workspace = true }
 governor = { workspace = true }
-indexmap = { workspace = true }
 juniper = { workspace = true, optional = true }
 log = { workspace = true }
-netidx = { workspace = true, optional = true }
-netidx-core = { workspace = true, optional = true }
-netidx-derive = { workspace = true, optional = true }
 once_cell = { workspace = true }
 parking_lot = { workspace = true }
-pest = { workspace = true }
-pest_derive = { workspace = true }
 postgres-types = { workspace = true, optional = true }
 rand = { workspace = true }
 regex = { workspace = true }
@@ -55,11 +44,9 @@ rust_decimal = { workspace = true }
 rust_decimal_macros = { workspace = true }
 schemars = { workspace = true }
 serde = { workspace = true }
-serde_derive = { workspace = true }
 serde_json = { workspace = true }
 serde_with = { workspace = true }
 serde_yaml = { workspace = true }
-smallvec = { workspace = true }
 sqlx = { workspace = true, optional = true }
 strum = { workspace = true }
 strum_macros = { workspace = true }
@@ -67,7 +54,6 @@ tokio = { workspace = true, optional = true }
 tokio-postgres = { workspace = true, optional = true }
 tonic = { workspace = true, optional = true }
 triomphe = { workspace = true }
-url = { workspace = true }
 uuid = { workspace = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }
 
@@ -87,7 +73,6 @@ name = "order_id_benchmark"
 
 [package.metadata.cargo-machete]
 ignored = [
-    "netidx_core", # netidx_derive
     "schema_builder", # build.rs
     "strum", # strum_macros
     "tonic_build", # build.rs

@@ -1,10 +1,6 @@
 use anyhow::{bail, Result};
 #[cfg(feature = "tokio-postgres")]
 use bytes::BytesMut;
-#[cfg(feature = "netidx")]
-use derive::FromValue;
-#[cfg(feature = "netidx")]
-use netidx_derive::Pack;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use schemars::JsonSchema;
@@ -17,7 +13,6 @@ use std::{ops::Deref, str::FromStr};
 /// In GraphQL these are serialized as "buy" or "sell".
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[cfg_attr(feature = "sqlx", sqlx(type_name = "orderflow.dir"))]
 #[serde(rename_all = "snake_case")]

@@ -1,8 +1,8 @@
 use super::ExecutionVenue;
-use crate::symbology::market::MinOrderQuantityUnit;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use strum_macros::{EnumString, IntoStaticStr};
 
 /// Information about a symbol related to its execution route.
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
@@ -31,3 +31,26 @@ impl TickSize {
         Self::Simple(tick_size)
     }
 }
+
+#[derive(
+    Default,
+    Debug,
+    Clone,
+    Copy,
+    EnumString,
+    IntoStaticStr,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[serde(tag = "unit", rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
+pub enum MinOrderQuantityUnit {
+    #[default]
+    Base,
+    Quote,
+}
+
+#[cfg(feature = "postgres")]
+crate::to_sql_str!(MinOrderQuantityUnit);

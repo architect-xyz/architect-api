@@ -1,47 +1,93 @@
-//! Venues represent where products can be traded or custodied, e.g. an exchange, an ATS,
-//! custodian, blockchain, or DeFi app.
-
-use super::Symbolic;
-use crate::{uuid_val, Str};
-use anyhow::Result;
-#[cfg(feature = "netidx")]
-use derive::FromValue;
-#[cfg(feature = "netidx")]
-use netidx_derive::Pack;
+use derive_more::{Deref, Display, From, FromStr};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use uuid::{uuid, Uuid};
 
-static VENUE_NS: Uuid = uuid!("dd85a6c5-b45f-46d1-bf50-793dacb1e51a");
-uuid_val!(VenueId, VENUE_NS);
+/// A venue that provides marketdata, e.g. COINBASE, DATABENTO, XIGNITE, etc.
+#[derive(
+    Debug,
+    Display,
+    Deref,
+    Clone,
+    Hash,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    From,
+    FromStr,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+)]
+#[repr(transparent)]
+#[from(forward)]
+#[deref(forward)]
+#[serde(transparent)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLScalar))]
+#[cfg_attr(feature = "graphql", graphql(transparent))]
+#[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
+#[cfg_attr(feature = "postgres", postgres(transparent))]
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx", sqlx(transparent))]
+pub struct MarketdataVenue(String);
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
-pub struct Venue {
-    pub id: VenueId,
-    pub name: Str,
-    // CR alee: maybe VenueInfo
-}
-
-impl Venue {
-    pub fn new(name: &str) -> Result<Self> {
-        Ok(Venue { id: VenueId::from(name), name: Str::try_from(name)? })
+impl MarketdataVenue {
+    pub fn new(name: String) -> Self {
+        Self(name)
     }
 }
 
-impl Symbolic for Venue {
-    type Id = VenueId;
-
-    fn type_name() -> &'static str {
-        "venue"
+impl std::borrow::Borrow<str> for MarketdataVenue {
+    fn borrow(&self) -> &str {
+        &self.0
     }
+}
 
-    fn id(&self) -> Self::Id {
-        self.id
+impl PartialEq<ExecutionVenue> for MarketdataVenue {
+    fn eq(&self, other: &ExecutionVenue) -> bool {
+        self.0 == other.0
     }
+}
 
-    fn name(&self) -> Str {
-        self.name
+/// A venue that provides execution, e.g. CME, CBOE, NYSE, etc.
+#[derive(
+    Debug,
+    Display,
+    Clone,
+    Hash,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    From,
+    FromStr,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+)]
+#[repr(transparent)]
+#[from(forward)]
+#[serde(transparent)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLScalar))]
+#[cfg_attr(feature = "graphql", graphql(transparent))]
+#[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
+#[cfg_attr(feature = "postgres", postgres(transparent))]
+pub struct ExecutionVenue(String);
+
+impl ExecutionVenue {
+    pub fn new(name: String) -> Self {
+        Self(name)
+    }
+}
+
+impl std::borrow::Borrow<str> for ExecutionVenue {
+    fn borrow(&self) -> &str {
+        &self.0
+    }
+}
+
+impl PartialEq<MarketdataVenue> for ExecutionVenue {
+    fn eq(&self, other: &MarketdataVenue) -> bool {
+        self.0 == other.0
     }
 }

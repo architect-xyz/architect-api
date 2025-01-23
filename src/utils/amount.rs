@@ -1,14 +1,9 @@
-#[cfg(feature = "netidx")]
-use derive::FromValue;
-#[cfg(feature = "netidx")]
-use netidx_derive::Pack;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 #[derive(
     Default, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema,
 )]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct Amount<T: 'static, U: 'static> {
     amount: T,
     unit: U,

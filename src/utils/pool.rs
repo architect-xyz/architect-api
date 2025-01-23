@@ -1,10 +1,5 @@
-#[cfg(feature = "netidx")]
-use bytes::{Buf, BufMut};
 use crossbeam::queue::ArrayQueue;
 use fxhash::FxHashMap;
-use indexmap::{IndexMap, IndexSet};
-#[cfg(feature = "netidx")]
-use netidx::pack::{Pack, PackError};
 use once_cell::sync::Lazy;
 use parking_lot::Mutex;
 use schemars::{schema::InstanceType, JsonSchema};
@@ -79,7 +74,6 @@ macro_rules! impl_hashmap {
 }
 
 impl_hashmap!(HashMap);
-impl_hashmap!(IndexMap);
 
 macro_rules! impl_hashset {
     ($ty:ident) => {
@@ -104,7 +98,6 @@ macro_rules! impl_hashset {
 }
 
 impl_hashset!(HashSet);
-impl_hashset!(IndexSet);
 
 impl<T> Poolable for Vec<T> {
     fn empty() -> Self {
@@ -466,26 +459,5 @@ impl<T: Poolable + Send + 'static + JsonSchema> JsonSchema for Pooled<T> {
 
     fn is_referenceable() -> bool {
         true
-    }
-}
-
-#[cfg(feature = "netidx")]
-impl<T: Pack + Any + Send + Sync + Poolable> Pack for Pooled<T> {
-    fn encoded_len(&self) -> usize {
-        <T as Pack>::encoded_len(&**self)
-    }
-
-    fn encode(&self, buf: &mut impl BufMut) -> Result<(), PackError> {
-        <T as Pack>::encode(&**self, buf)
-    }
-
-    fn decode(buf: &mut impl Buf) -> Result<Self, PackError> {
-        let mut t = take_t::<T>(1000, 1000);
-        <T as Pack>::decode_into(&mut *t, buf)?;
-        Ok(t)
-    }
-
-    fn decode_into(&mut self, buf: &mut impl Buf) -> Result<(), PackError> {
-        <T as Pack>::decode_into(&mut **self, buf)
     }
 }

@@ -10,11 +10,7 @@
 
 use crate::Str;
 use anyhow::{bail, Result};
-#[cfg(feature = "netidx")]
-use derive::FromValue;
 use derive_more::{Deref, Display};
-#[cfg(feature = "netidx")]
-use netidx_derive::Pack;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
@@ -35,7 +31,8 @@ pub type AccountId = Uuid;
     Serialize,
     Deserialize,
 )]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLScalar))]
+#[cfg_attr(feature = "graphql", graphql(transparent))]
 pub struct AccountName(Str);
 
 impl AccountName {
@@ -87,6 +84,7 @@ impl postgres_types::ToSql for AccountName {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct Account {
     pub id: AccountId,
     pub name: AccountName,
@@ -110,7 +108,6 @@ pub trait AsAccount {
     Ord,
     JsonSchema,
 )]
-#[cfg_attr(feature = "netidx", derive(Pack, FromValue))]
 pub struct AccountPermissions {
     pub list: bool,            // know about the account's existence
     pub view: bool,            // know the account's holdings and activity

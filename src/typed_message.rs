@@ -29,37 +29,10 @@ use serde_json::json;
 /// changes to the component message types.
 #[cfg(feature = "netidx")]
 #[derive(Debug, Clone, Pack, From, FromValue, Serialize, Deserialize, TryIntoAnyInner, JsonSchema)]
-#[transitive(B2C2Cpty <-> Orderflow)]
-#[transitive(BinanceCpty <-> Orderflow)]
-#[transitive(BinanceCpty <-> Folio)]
-#[transitive(CboeDigitalCpty <-> Folio)]
-#[transitive(CoinbaseCpty <-> Folio)]
-#[transitive(CoinbaseCpty <-> Orderflow)]
-#[transitive(CoinbasePrimeCpty <-> Folio)]
-#[transitive(CoinbasePrimeCpty <-> Orderflow)]
 #[transitive(CqgCpty <-> Orderflow)]
 #[transitive(CqgCpty <-> Folio)]
-#[transitive(CumberlandCpty <-> Orderflow)]
-#[transitive(CumberlandCpty <-> Folio)]
-#[transitive(DeribitCpty <-> Folio)]
-#[transitive(DeribitCpty <-> Orderflow)]
-#[transitive(FalconXCpty <-> Folio)]
-#[transitive(FalconXCpty <-> Orderflow)]
-#[transitive(GalaxyCpty <-> Orderflow)]
-#[transitive(KalshiCpty <-> Folio)]
-#[transitive(KalshiCpty <-> Orderflow)]
-#[transitive(KrakenCpty <-> Folio)]
-#[transitive(KrakenCpty <-> Orderflow)]
-#[transitive(OkxCpty <-> Folio)]
-#[transitive(OkxCpty <-> Orderflow)]
-#[transitive(MockCpty <-> Folio)]
-#[transitive(MockCpty <-> Orderflow)]
 #[transitive(PaperCpty <-> Folio)]
 #[transitive(PaperCpty <-> Orderflow)]
-#[transitive(ExternalCpty <-> Folio)]
-#[transitive(ExternalCpty <-> Orderflow)]
-#[transitive(WintermuteCpty <-> Folio)]
-#[transitive(WintermuteCpty <-> Orderflow)]
 #[transitive(Orderflow <-> Oms)]
 #[transitive(Orderflow <- Algo)]
 #[transitive(Algo <-> TwapAlgo <- Orderflow)]
@@ -78,22 +51,7 @@ pub enum TypedMessage {
     #[pack(tag(  5))] Algo(algo::AlgoMessage),
     #[pack(tag(  6))] Folio(folio::FolioMessage),
     #[pack(tag( 10))] ChannelControl(channel_control::ChannelControlMessage),
-    #[pack(tag( 98))] ExternalCpty(cpty::generic_external::ExternalCptyMessage),
-    #[pack(tag( 99))] MockCpty(cpty::mock::MockCptyMessage),
-    #[pack(tag(100))] CoinbaseCpty(cpty::coinbase::CoinbaseMessage),
-    #[pack(tag(101))] B2C2Cpty(cpty::b2c2::B2C2Message),
-    #[pack(tag(103))] KrakenCpty(cpty::kraken::KrakenMessage),
-    #[pack(tag(104))] DeribitCpty(cpty::deribit::DeribitMessage),
-    #[pack(tag(105))] WintermuteCpty(cpty::wintermute::WintermuteMessage),
-    #[pack(tag(106))] FalconXCpty(cpty::falconx::FalconXMessage),
-    #[pack(tag(107))] CoinbasePrimeCpty(cpty::coinbase_prime::CoinbasePrimeMessage),
-    #[pack(tag(108))] GalaxyCpty(cpty::galaxy::GalaxyMessage),
-    #[pack(tag(109))] CumberlandCpty(cpty::cumberland::CumberlandMessage),
-    #[pack(tag(110))] CboeDigitalCpty(cpty::cboe_digital::CboeDigitalMessage),
-    #[pack(tag(111))] BinanceCpty(cpty::binance::BinanceMessage),
     #[pack(tag(112))] CqgCpty(cpty::cqg::CqgMessage),
-    #[pack(tag(113))] OkxCpty(cpty::okx::OkxMessage),
-    #[pack(tag(114))] KalshiCpty(cpty::kalshi::KalshiMessage),
     #[pack(tag(115))] PaperCpty(cpty::paper::PaperCptyMessage),
     #[pack(tag(200))] TwapAlgo(algo::twap::TwapAlgoMessage),
     #[pack(tag(201))] SmartOrderRouterAlgo(algo::smart_order_router::SmartOrderRouterMessage),

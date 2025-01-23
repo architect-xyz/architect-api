@@ -1,8 +1,6 @@
 use anyhow::{bail, Result};
 #[cfg(feature = "tokio-postgres")]
 use bytes::BytesMut;
-#[cfg(feature = "netidx")]
-use netidx_derive::Pack;
 use schemars::JsonSchema;
 use serde_with::{DeserializeFromStr, SerializeDisplay};
 #[cfg(feature = "tokio-postgres")]
@@ -27,8 +25,6 @@ use uuid::Uuid;
     bytemuck::Zeroable,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
-#[cfg_attr(feature = "netidx", derive(Pack))]
-#[cfg_attr(feature = "netidx", pack(unwrapped))]
 #[repr(C)]
 pub struct OrderId {
     pub seqid: Uuid,

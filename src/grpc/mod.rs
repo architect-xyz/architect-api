@@ -15,8 +15,8 @@ pub type SubscriptionStream<T> = Pin<Box<dyn Stream<Item = Result<T, Status>> + 
 pub mod json_service {
     include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Health.rs"));
     include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Symbology.rs"));
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.SymbologyV2.rs"));
     include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Marketdata.rs"));
     include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.MarketdataSnapshots.rs"));
     include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Orderflow.rs"));
+    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Folio.rs"));
 }
