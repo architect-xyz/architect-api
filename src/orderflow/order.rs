@@ -63,6 +63,12 @@ pub struct Order {
     pub execution_venue: ExecutionVenue,
 }
 
+impl Order {
+    pub fn recv_time(&self) -> Option<DateTime<Utc>> {
+        DateTime::from_timestamp(self.recv_time, self.recv_time_ns)
+    }
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum TimeInForce {

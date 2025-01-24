@@ -4533,7 +4533,7 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "L2BookUpdate",
-        "description": "To build a book from a stream of updates, the client should first subscribe to this update stream, which then returns a stream starting with a snapshot and following with diffs.\n\nDiffs should be applied consecutively to the snapshot in order to reconstruct the state of the book.\n\n```rust # use architect_api::external::marketdata::*; # use std::collections::BTreeMap; # use rust_decimal::Decimal; # use rust_decimal_macros::dec;\n\n/// Suppose we receive this snapshot from the server: let snapshot: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"s\", \"ts\": 1729700837, \"tn\": 0, \"sid\": 123, \"sn\": 8999, \"b\": [[\"99.00\", \"3\"], [\"98.78\", \"2\"]], \"a\": [[\"100.00\", \"1\"], [\"100.10\", \"2\"]] }\"#)?;\n\n/// It corresponds to the following book: let mut book = BTreeMap::new(); book.insert(dec!(99.00), 3); book.insert(dec!(98.78), 2); book.insert(dec!(100.00), 1); book.insert(dec!(100.10), 2);\n\n/// Then we receive this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700839, \"tn\": 0, \"sid\": 123, \"sn\": 9000, \"b\": [[\"99.00\", \"1\"]], \"a\": [] }\"#)?;\n\n/// Verify that the sequence number is correct assert!(diff.sequence().is_next_in_sequence(&snapshot.sequence()));\n\n/// Apply the update to our book book.insert(dec!(99.00), 1);\n\n// Suppose we then receive this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700841, \"tn\": 0, \"sid\": 123, \"sn\": 9005, \"b\": [], \"a\": [[\"103.00\", \"1\"]] }\"#)?;\n\n/// We shouldn't apply this update because it's not next in sequence! assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);\n\n/// Or if we had received this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700841, \"tn\": 0, \"sid\": 170, \"sn\": 9001, \"b\": [], \"a\": [[\"103.00\", \"1\"]] }\"#)?;\n\n/// It appears that the sequence id is changed, signalling a new sequence. /// In this case, we should re-request the snapshot from the server. assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);\n\n# Ok::<(), anyhow::Error>(()) ```",
+        "description": "To build a book from a stream of updates, the client should first subscribe to this update stream, which then returns a stream starting with a snapshot and following with diffs.\n\nDiffs should be applied consecutively to the snapshot in order to reconstruct the state of the book.\n\n```rust # use architect_api::marketdata::*; # use std::collections::BTreeMap; # use rust_decimal::Decimal; # use rust_decimal_macros::dec;\n\n/// Suppose we receive this snapshot from the server: let snapshot: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"s\", \"ts\": 1729700837, \"tn\": 0, \"sid\": 123, \"sn\": 8999, \"b\": [[\"99.00\", \"3\"], [\"98.78\", \"2\"]], \"a\": [[\"100.00\", \"1\"], [\"100.10\", \"2\"]] }\"#)?;\n\n/// It corresponds to the following book: let mut book = BTreeMap::new(); book.insert(dec!(99.00), 3); book.insert(dec!(98.78), 2); book.insert(dec!(100.00), 1); book.insert(dec!(100.10), 2);\n\n/// Then we receive this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700839, \"tn\": 0, \"sid\": 123, \"sn\": 9000, \"b\": [[\"99.00\", \"1\"]], \"a\": [] }\"#)?;\n\n/// Verify that the sequence number is correct assert!(diff.sequence().is_next_in_sequence(&snapshot.sequence()));\n\n/// Apply the update to our book book.insert(dec!(99.00), 1);\n\n// Suppose we then receive this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700841, \"tn\": 0, \"sid\": 123, \"sn\": 9005, \"b\": [], \"a\": [[\"103.00\", \"1\"]] }\"#)?;\n\n/// We shouldn't apply this update because it's not next in sequence! assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);\n\n/// Or if we had received this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700841, \"tn\": 0, \"sid\": 170, \"sn\": 9001, \"b\": [], \"a\": [[\"103.00\", \"1\"]] }\"#)?;\n\n/// It appears that the sequence id is changed, signalling a new sequence. /// In this case, we should re-request the snapshot from the server. assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);\n\n# Ok::<(), anyhow::Error>(()) ```",
         "oneOf": [
           {
             "title": "snapshot",
@@ -7170,28 +7170,27 @@
               }
             ],
             "required": [
-              "dir",
-              "quantity",
-              "symbol",
-              "time_in_force",
+              "d",
+              "q",
+              "s",
+              "tif",
               "type"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "default": null,
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "execution_venue": {
-                "default": null,
-                "type": [
-                  "string",
-                  "null"
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
                 ]
               },
               "id": {
@@ -7204,26 +7203,46 @@
                   }
                 ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "time_in_force": {
-                "$ref": "#/definitions/TimeInForce"
-              },
-              "trader": {
-                "default": null,
-                "type": [
-                  "string",
-                  "null"
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
                 ]
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "place_order"
+                ]
+              },
+              "u": {
+                "title": "trader",
+                "default": null,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "default": null,
+                "type": [
+                  "string",
+                  "null"
                 ]
               }
             }
@@ -7329,18 +7348,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "good_til_cancel",
-                  "immediate_or_cancel",
-                  "fill_or_kill"
+                  "gtc",
+                  "ioc",
+                  "fok"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "good_til_date"
+                  "gtd"
                 ],
                 "properties": {
-                  "good_til_date": {
+                  "gtd": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -7351,7 +7370,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "good_til_day"
+                  "day"
                 ]
               }
             ]
@@ -7774,37 +7793,54 @@
           {
             "type": "object",
             "required": [
-              "dir",
-              "execution_venue",
-              "fill_id",
-              "fill_kind",
-              "price",
-              "quantity",
-              "symbol",
-              "trade_time",
-              "type"
+              "d",
+              "id",
+              "k",
+              "p",
+              "q",
+              "s",
+              "tn",
+              "ts",
+              "type",
+              "x"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "uuid"
               },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "exchange_fill_id": {
+              "atn": {
+                "title": "recv_time_ns",
                 "type": [
-                  "string",
+                  "integer",
                   "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "description": "When Architect received the fill, if realtime",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
                 ]
               },
-              "execution_venue": {
-                "type": "string"
-              },
-              "fee": {
+              "f": {
+                "title": "fee",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7814,21 +7850,29 @@
                   }
                 ]
               },
-              "fee_currency": {
+              "fu": {
+                "title": "fee_currency",
                 "description": "Fee currency, if different from the price currency",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "fill_id": {
+              "id": {
+                "title": "fill_id",
                 "type": "string",
                 "format": "uuid"
               },
-              "fill_kind": {
-                "$ref": "#/definitions/FillKind"
+              "k": {
+                "title": "fill_kind",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/FillKind"
+                  }
+                ]
               },
-              "order_id": {
+              "oid": {
+                "title": "order_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -7838,29 +7882,46 @@
                   }
                 ]
               },
-              "price": {
-                "$ref": "#/definitions/Decimal"
+              "p": {
+                "title": "price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "recv_time": {
-                "description": "When Architect received the fill, if realtime",
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "trade_time": {
-                "description": "When the cpty claims the trade happened",
-                "type": "string",
-                "format": "date-time"
+              "tn": {
+                "title": "trade_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
               },
-              "trader": {
+              "ts": {
+                "title": "trade_time",
+                "description": "When the cpty claims the trade happened",
+                "type": "integer",
+                "format": "int64"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "fill"
+                ]
+              },
+              "u": {
+                "title": "trader",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/UserId"
@@ -7870,10 +7931,15 @@
                   }
                 ]
               },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "fill"
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
                 ]
               }
             }
@@ -7882,19 +7948,38 @@
             "description": "Fills which we received but couldn't parse fully, return details best effort",
             "type": "object",
             "required": [
-              "execution_venue",
-              "fill_id",
-              "type"
+              "id",
+              "type",
+              "x"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "uuid"
               },
-              "dir": {
+              "atn": {
+                "title": "recv_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -7904,16 +7989,8 @@
                   }
                 ]
               },
-              "exchange_fill_id": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "fee": {
+              "f": {
+                "title": "fee",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7923,17 +8000,20 @@
                   }
                 ]
               },
-              "fee_currency": {
+              "fu": {
+                "title": "fee_currency",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "fill_id": {
+              "id": {
+                "title": "fill_id",
                 "type": "string",
                 "format": "uuid"
               },
-              "fill_kind": {
+              "k": {
+                "title": "fill_kind",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/FillKind"
@@ -7943,7 +8023,8 @@
                   }
                 ]
               },
-              "order_id": {
+              "oid": {
+                "title": "order_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -7953,7 +8034,8 @@
                   }
                 ]
               },
-              "price": {
+              "p": {
+                "title": "price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7963,7 +8045,8 @@
                   }
                 ]
               },
-              "quantity": {
+              "q": {
+                "title": "quantity",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7973,27 +8056,38 @@
                   }
                 ]
               },
-              "recv_time": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "trade_time": {
+              "tn": {
+                "title": "trade_time_ns",
                 "type": [
-                  "string",
+                  "integer",
                   "null"
                 ],
-                "format": "date-time"
+                "format": "uint32",
+                "minimum": 0.0
               },
-              "trader": {
+              "ts": {
+                "title": "trade_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "aberrant_fill"
+                ]
+              },
+              "u": {
+                "title": "trader",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/UserId"
@@ -8003,10 +8097,15 @@
                   }
                 ]
               },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "aberrant_fill"
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
                 ]
               }
             }
@@ -8033,11 +8132,16 @@
             ]
           },
           "FillKind": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "normal",
-              "reversal",
-              "correction"
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Normal",
+              "Reversal",
+              "Correction"
             ]
           },
           "OrderId": {
@@ -8116,18 +8220,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "good_til_cancel",
-                  "immediate_or_cancel",
-                  "fill_or_kill"
+                  "gtc",
+                  "ioc",
+                  "fok"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "good_til_date"
+                  "gtd"
                 ],
                 "properties": {
-                  "good_til_date": {
+                  "gtd": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -8138,7 +8242,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "good_til_day"
+                  "day"
                 ]
               }
             ]
@@ -8609,37 +8713,54 @@
           {
             "type": "object",
             "required": [
-              "dir",
-              "execution_venue",
-              "fill_id",
-              "fill_kind",
-              "price",
-              "quantity",
-              "symbol",
-              "trade_time",
-              "type"
+              "d",
+              "id",
+              "k",
+              "p",
+              "q",
+              "s",
+              "tn",
+              "ts",
+              "type",
+              "x"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "uuid"
               },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "exchange_fill_id": {
+              "atn": {
+                "title": "recv_time_ns",
                 "type": [
-                  "string",
+                  "integer",
                   "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "description": "When Architect received the fill, if realtime",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
                 ]
               },
-              "execution_venue": {
-                "type": "string"
-              },
-              "fee": {
+              "f": {
+                "title": "fee",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -8649,21 +8770,29 @@
                   }
                 ]
               },
-              "fee_currency": {
+              "fu": {
+                "title": "fee_currency",
                 "description": "Fee currency, if different from the price currency",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "fill_id": {
+              "id": {
+                "title": "fill_id",
                 "type": "string",
                 "format": "uuid"
               },
-              "fill_kind": {
-                "$ref": "#/definitions/FillKind"
+              "k": {
+                "title": "fill_kind",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/FillKind"
+                  }
+                ]
               },
-              "order_id": {
+              "oid": {
+                "title": "order_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -8673,29 +8802,46 @@
                   }
                 ]
               },
-              "price": {
-                "$ref": "#/definitions/Decimal"
+              "p": {
+                "title": "price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "recv_time": {
-                "description": "When Architect received the fill, if realtime",
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "trade_time": {
-                "description": "When the cpty claims the trade happened",
-                "type": "string",
-                "format": "date-time"
+              "tn": {
+                "title": "trade_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
               },
-              "trader": {
+              "ts": {
+                "title": "trade_time",
+                "description": "When the cpty claims the trade happened",
+                "type": "integer",
+                "format": "int64"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "fill"
+                ]
+              },
+              "u": {
+                "title": "trader",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/UserId"
@@ -8705,10 +8851,15 @@
                   }
                 ]
               },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "fill"
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
                 ]
               }
             }
@@ -8717,19 +8868,38 @@
             "description": "Fills which we received but couldn't parse fully, return details best effort",
             "type": "object",
             "required": [
-              "execution_venue",
-              "fill_id",
-              "type"
+              "id",
+              "type",
+              "x"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "uuid"
               },
-              "dir": {
+              "atn": {
+                "title": "recv_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -8739,16 +8909,8 @@
                   }
                 ]
               },
-              "exchange_fill_id": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "fee": {
+              "f": {
+                "title": "fee",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -8758,17 +8920,20 @@
                   }
                 ]
               },
-              "fee_currency": {
+              "fu": {
+                "title": "fee_currency",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "fill_id": {
+              "id": {
+                "title": "fill_id",
                 "type": "string",
                 "format": "uuid"
               },
-              "fill_kind": {
+              "k": {
+                "title": "fill_kind",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/FillKind"
@@ -8778,7 +8943,8 @@
                   }
                 ]
               },
-              "order_id": {
+              "oid": {
+                "title": "order_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -8788,7 +8954,8 @@
                   }
                 ]
               },
-              "price": {
+              "p": {
+                "title": "price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -8798,7 +8965,8 @@
                   }
                 ]
               },
-              "quantity": {
+              "q": {
+                "title": "quantity",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -8808,27 +8976,38 @@
                   }
                 ]
               },
-              "recv_time": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "trade_time": {
+              "tn": {
+                "title": "trade_time_ns",
                 "type": [
-                  "string",
+                  "integer",
                   "null"
                 ],
-                "format": "date-time"
+                "format": "uint32",
+                "minimum": 0.0
               },
-              "trader": {
+              "ts": {
+                "title": "trade_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "aberrant_fill"
+                ]
+              },
+              "u": {
+                "title": "trader",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/UserId"
@@ -8838,10 +9017,15 @@
                   }
                 ]
               },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "aberrant_fill"
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
                 ]
               }
             }
@@ -8868,11 +9052,16 @@
             ]
           },
           "FillKind": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "normal",
-              "reversal",
-              "correction"
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Normal",
+              "Reversal",
+              "Correction"
             ]
           },
           "OrderId": {
@@ -8951,18 +9140,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "good_til_cancel",
-                  "immediate_or_cancel",
-                  "fill_or_kill"
+                  "gtc",
+                  "ioc",
+                  "fok"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "good_til_date"
+                  "gtd"
                 ],
                 "properties": {
-                  "good_til_date": {
+                  "gtd": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -8973,7 +9162,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "good_til_day"
+                  "day"
                 ]
               }
             ]
@@ -9073,18 +9262,37 @@
             "description": "Fills which we received but couldn't parse fully, return details best effort",
             "type": "object",
             "required": [
-              "execution_venue",
-              "fill_id"
+              "id",
+              "x"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "uuid"
               },
-              "dir": {
+              "atn": {
+                "title": "recv_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -9094,16 +9302,8 @@
                   }
                 ]
               },
-              "exchange_fill_id": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "fee": {
+              "f": {
+                "title": "fee",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -9113,17 +9313,20 @@
                   }
                 ]
               },
-              "fee_currency": {
+              "fu": {
+                "title": "fee_currency",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "fill_id": {
+              "id": {
+                "title": "fill_id",
                 "type": "string",
                 "format": "uuid"
               },
-              "fill_kind": {
+              "k": {
+                "title": "fill_kind",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/FillKind"
@@ -9133,7 +9336,8 @@
                   }
                 ]
               },
-              "order_id": {
+              "oid": {
+                "title": "order_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -9143,7 +9347,8 @@
                   }
                 ]
               },
-              "price": {
+              "p": {
+                "title": "price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -9153,7 +9358,8 @@
                   }
                 ]
               },
-              "quantity": {
+              "q": {
+                "title": "quantity",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -9163,27 +9369,32 @@
                   }
                 ]
               },
-              "recv_time": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "trade_time": {
+              "tn": {
+                "title": "trade_time_ns",
                 "type": [
-                  "string",
+                  "integer",
                   "null"
                 ],
-                "format": "date-time"
+                "format": "uint32",
+                "minimum": 0.0
               },
-              "trader": {
+              "ts": {
+                "title": "trade_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/UserId"
@@ -9191,6 +9402,17 @@
                   {
                     "type": "null"
                   }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
                 ]
               }
             }
@@ -9209,36 +9431,53 @@
           "Fill": {
             "type": "object",
             "required": [
-              "dir",
-              "execution_venue",
-              "fill_id",
-              "fill_kind",
-              "price",
-              "quantity",
-              "symbol",
-              "trade_time"
+              "d",
+              "id",
+              "k",
+              "p",
+              "q",
+              "s",
+              "tn",
+              "ts",
+              "x"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "uuid"
               },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "exchange_fill_id": {
+              "atn": {
+                "title": "recv_time_ns",
                 "type": [
-                  "string",
+                  "integer",
                   "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "description": "When Architect received the fill, if realtime",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
                 ]
               },
-              "execution_venue": {
-                "type": "string"
-              },
-              "fee": {
+              "f": {
+                "title": "fee",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -9248,21 +9487,29 @@
                   }
                 ]
               },
-              "fee_currency": {
+              "fu": {
+                "title": "fee_currency",
                 "description": "Fee currency, if different from the price currency",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "fill_id": {
+              "id": {
+                "title": "fill_id",
                 "type": "string",
                 "format": "uuid"
               },
-              "fill_kind": {
-                "$ref": "#/definitions/FillKind"
+              "k": {
+                "title": "fill_kind",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/FillKind"
+                  }
+                ]
               },
-              "order_id": {
+              "oid": {
+                "title": "order_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -9272,29 +9519,40 @@
                   }
                 ]
               },
-              "price": {
-                "$ref": "#/definitions/Decimal"
+              "p": {
+                "title": "price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "recv_time": {
-                "description": "When Architect received the fill, if realtime",
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "trade_time": {
-                "description": "When the cpty claims the trade happened",
-                "type": "string",
-                "format": "date-time"
+              "tn": {
+                "title": "trade_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
               },
-              "trader": {
+              "ts": {
+                "title": "trade_time",
+                "description": "When the cpty claims the trade happened",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/UserId"
@@ -9303,15 +9561,31 @@
                     "type": "null"
                   }
                 ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
               }
             }
           },
           "FillKind": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "normal",
-              "reversal",
-              "correction"
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Normal",
+              "Reversal",
+              "Correction"
             ]
           },
           "Order": {
@@ -9620,18 +9894,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "good_til_cancel",
-                  "immediate_or_cancel",
-                  "fill_or_kill"
+                  "gtc",
+                  "ioc",
+                  "fok"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "good_til_date"
+                  "gtd"
                 ],
                 "properties": {
-                  "good_til_date": {
+                  "gtd": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -9642,7 +9916,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "good_til_day"
+                  "day"
                 ]
               }
             ]
@@ -9763,27 +10037,26 @@
           }
         ],
         "required": [
-          "dir",
-          "quantity",
-          "symbol",
-          "time_in_force"
+          "d",
+          "q",
+          "s",
+          "tif"
         ],
         "properties": {
-          "account": {
+          "a": {
+            "title": "account",
             "default": null,
             "type": [
               "string",
               "null"
             ]
           },
-          "dir": {
-            "$ref": "#/definitions/Dir"
-          },
-          "execution_venue": {
-            "default": null,
-            "type": [
-              "string",
-              "null"
+          "d": {
+            "title": "dir",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Dir"
+              }
             ]
           },
           "id": {
@@ -9796,16 +10069,36 @@
               }
             ]
           },
-          "quantity": {
-            "$ref": "#/definitions/Decimal"
+          "q": {
+            "title": "quantity",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
-          "symbol": {
+          "s": {
+            "title": "symbol",
             "type": "string"
           },
-          "time_in_force": {
-            "$ref": "#/definitions/TimeInForce"
+          "tif": {
+            "title": "time_in_force",
+            "allOf": [
+              {
+                "$ref": "#/definitions/TimeInForce"
+              }
+            ]
           },
-          "trader": {
+          "u": {
+            "title": "trader",
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "x": {
+            "title": "execution_venue",
             "default": null,
             "type": [
               "string",
@@ -9849,18 +10142,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "good_til_cancel",
-                  "immediate_or_cancel",
-                  "fill_or_kill"
+                  "gtc",
+                  "ioc",
+                  "fok"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "good_til_date"
+                  "gtd"
                 ],
                 "properties": {
-                  "good_til_date": {
+                  "gtd": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -9871,7 +10164,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "good_til_day"
+                  "day"
                 ]
               }
             ]
@@ -10197,18 +10490,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "good_til_cancel",
-                  "immediate_or_cancel",
-                  "fill_or_kill"
+                  "gtc",
+                  "ioc",
+                  "fok"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "good_til_date"
+                  "gtd"
                 ],
                 "properties": {
-                  "good_til_date": {
+                  "gtd": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -10219,7 +10512,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "good_til_day"
+                  "day"
                 ]
               }
             ]
@@ -10797,18 +11090,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "good_til_cancel",
-                  "immediate_or_cancel",
-                  "fill_or_kill"
+                  "gtc",
+                  "ioc",
+                  "fok"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "good_til_date"
+                  "gtd"
                 ],
                 "properties": {
-                  "good_til_date": {
+                  "gtd": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -10819,7 +11112,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "good_til_day"
+                  "day"
                 ]
               }
             ]
@@ -11679,18 +11972,37 @@
             "description": "Fills which we received but couldn't parse fully, return details best effort",
             "type": "object",
             "required": [
-              "execution_venue",
-              "fill_id"
+              "id",
+              "x"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "uuid"
               },
-              "dir": {
+              "atn": {
+                "title": "recv_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -11700,16 +12012,8 @@
                   }
                 ]
               },
-              "exchange_fill_id": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "fee": {
+              "f": {
+                "title": "fee",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -11719,17 +12023,20 @@
                   }
                 ]
               },
-              "fee_currency": {
+              "fu": {
+                "title": "fee_currency",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "fill_id": {
+              "id": {
+                "title": "fill_id",
                 "type": "string",
                 "format": "uuid"
               },
-              "fill_kind": {
+              "k": {
+                "title": "fill_kind",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/FillKind"
@@ -11739,7 +12046,8 @@
                   }
                 ]
               },
-              "order_id": {
+              "oid": {
+                "title": "order_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -11749,7 +12057,8 @@
                   }
                 ]
               },
-              "price": {
+              "p": {
+                "title": "price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -11759,7 +12068,8 @@
                   }
                 ]
               },
-              "quantity": {
+              "q": {
+                "title": "quantity",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -11769,27 +12079,32 @@
                   }
                 ]
               },
-              "recv_time": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "trade_time": {
+              "tn": {
+                "title": "trade_time_ns",
                 "type": [
-                  "string",
+                  "integer",
                   "null"
                 ],
-                "format": "date-time"
+                "format": "uint32",
+                "minimum": 0.0
               },
-              "trader": {
+              "ts": {
+                "title": "trade_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/UserId"
@@ -11797,6 +12112,17 @@
                   {
                     "type": "null"
                   }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
                 ]
               }
             }
@@ -11815,36 +12141,53 @@
           "Fill": {
             "type": "object",
             "required": [
-              "dir",
-              "execution_venue",
-              "fill_id",
-              "fill_kind",
-              "price",
-              "quantity",
-              "symbol",
-              "trade_time"
+              "d",
+              "id",
+              "k",
+              "p",
+              "q",
+              "s",
+              "tn",
+              "ts",
+              "x"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "uuid"
               },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "exchange_fill_id": {
+              "atn": {
+                "title": "recv_time_ns",
                 "type": [
-                  "string",
+                  "integer",
                   "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "description": "When Architect received the fill, if realtime",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
                 ]
               },
-              "execution_venue": {
-                "type": "string"
-              },
-              "fee": {
+              "f": {
+                "title": "fee",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -11854,21 +12197,29 @@
                   }
                 ]
               },
-              "fee_currency": {
+              "fu": {
+                "title": "fee_currency",
                 "description": "Fee currency, if different from the price currency",
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "fill_id": {
+              "id": {
+                "title": "fill_id",
                 "type": "string",
                 "format": "uuid"
               },
-              "fill_kind": {
-                "$ref": "#/definitions/FillKind"
+              "k": {
+                "title": "fill_kind",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/FillKind"
+                  }
+                ]
               },
-              "order_id": {
+              "oid": {
+                "title": "order_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -11878,29 +12229,40 @@
                   }
                 ]
               },
-              "price": {
-                "$ref": "#/definitions/Decimal"
+              "p": {
+                "title": "price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "recv_time": {
-                "description": "When Architect received the fill, if realtime",
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date-time"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "trade_time": {
-                "description": "When the cpty claims the trade happened",
-                "type": "string",
-                "format": "date-time"
+              "tn": {
+                "title": "trade_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
               },
-              "trader": {
+              "ts": {
+                "title": "trade_time",
+                "description": "When the cpty claims the trade happened",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/UserId"
@@ -11909,15 +12271,31 @@
                     "type": "null"
                   }
                 ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
               }
             }
           },
           "FillKind": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "normal",
-              "reversal",
-              "correction"
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Normal",
+              "Reversal",
+              "Correction"
             ]
           },
           "OrderId": {
@@ -12347,18 +12725,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "good_til_cancel",
-                  "immediate_or_cancel",
-                  "fill_or_kill"
+                  "gtc",
+                  "ioc",
+                  "fok"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "good_til_date"
+                  "gtd"
                 ],
                 "properties": {
-                  "good_til_date": {
+                  "gtd": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -12369,7 +12747,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "good_til_day"
+                  "day"
                 ]
               }
             ]

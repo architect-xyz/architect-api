@@ -101,7 +101,6 @@ pub struct HistoricalFillsRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct HistoricalFillsResponse {
     pub fills: Vec<Fill>,
     pub aberrant_fills: Vec<AberrantFill>,
