@@ -24,12 +24,14 @@ pub enum CancelStatus {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CancelAck {
     pub id: Uuid,
     pub order_id: OrderId,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct CancelReject {
     pub id: Uuid,
     pub order_id: OrderId,

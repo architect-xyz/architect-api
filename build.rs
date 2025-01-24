@@ -255,6 +255,16 @@ fn build_grpc_stubs() {
         )
         .method(
             tonic_build::manual::Method::builder()
+                .name("subscribe_orderflow")
+                .route_name("SubscribeOrderflow")
+                .input_type("crate::orderflow::SubscribeOrderflowRequest")
+                .output_type("crate::orderflow::OrderflowResponse")
+                .server_streaming()
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
                 .name("dropcopy")
                 .route_name("Dropcopy")
                 .input_type("crate::orderflow::DropcopyRequest")

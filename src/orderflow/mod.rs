@@ -1,3 +1,4 @@
+use crate::{symbology::ExecutionVenue, AccountId, UserId};
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -44,6 +45,24 @@ pub enum OrderflowResponse {
     AberrantFill(AberrantFill),
 }
 
+/// Subscribe/listen to orderflow events.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Orderflow",
+    name = "subscribe_orderflow",
+    response = "OrderflowResponse",
+    server_streaming
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct SubscribeOrderflowRequest {
+    #[serde(default)]
+    pub execution_venue: Option<ExecutionVenue>,
+    #[serde(default)]
+    pub trader: Option<UserId>,
+    #[serde(default)]
+    pub account: Option<AccountId>,
+}
+
 #[grpc(package = "json.architect")]
 #[grpc(
     service = "Orderflow",
@@ -53,6 +72,12 @@ pub enum OrderflowResponse {
 )]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct DropcopyRequest {
+    #[serde(default)]
+    pub execution_venue: Option<ExecutionVenue>,
+    #[serde(default)]
+    pub trader: Option<UserId>,
+    #[serde(default)]
+    pub account: Option<AccountId>,
     #[serde(default)]
     pub orders: bool,
     #[serde(default = "DropcopyRequest::default_fills")]

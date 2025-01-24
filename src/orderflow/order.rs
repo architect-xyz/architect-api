@@ -74,6 +74,7 @@ pub enum OrderStatus {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct OrderAck {
     pub order_id: OrderId,
 }
@@ -96,11 +97,13 @@ pub enum OrderRejectReason {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct OrderOut {
     pub order_id: OrderId,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct OrderStale {
     pub order_id: OrderId,
 }
