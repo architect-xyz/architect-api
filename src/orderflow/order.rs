@@ -10,6 +10,7 @@ use serde_json::json;
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Order {
     pub id: OrderId,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<OrderId>,
     pub recv_time: DateTime<Utc>,
     pub status: OrderStatus,
@@ -20,7 +21,9 @@ pub struct Order {
     pub account: AccountId,
     pub dir: Dir,
     pub quantity: Decimal,
+    #[serde(skip_serializing_if = "Decimal::is_zero")]
     pub filled_quantity: Decimal,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub average_fill_price: Option<Decimal>,
     #[serde(flatten)]
     pub order_type: OrderType,
@@ -111,6 +114,7 @@ pub struct OrderStale {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::oms::PlaceOrderRequest;
     use rust_decimal_macros::dec;
 
     #[test]
@@ -171,7 +175,9 @@ mod tests {
             trader: UserId::anonymous(),
             account: AccountId::nil(),
             dir: Dir::Buy,
-            quantity: dec!(100), 
+            quantity: dec!(100),
+            filled_quantity: dec!(0),
+            average_fill_price: None,
             order_type: OrderType::Limit(LimitOrderType {
                 limit_price: dec!(4500),
                 post_only: false,
@@ -182,7 +188,6 @@ mod tests {
         }, @r###"
         {
           "id": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:123",
-          "parent_id": null,
           "recv_time": "2025-01-01T04:20:00Z",
           "status": "out",
           "reject_reason": "duplicate_order_id",
@@ -213,6 +218,8 @@ mod tests {
             account: AccountId::nil(),
             dir: Dir::Sell,
             quantity: dec!(0.7050),
+            filled_quantity: dec!(0.7050),
+            average_fill_price: Some(dec!(4250)),
             order_type: OrderType::StopLossLimit(StopLossLimitOrderType {
                 limit_price: dec!(4500),
                 trigger_price: dec!(4000),
@@ -233,6 +240,8 @@ mod tests {
           "account": "00000000-0000-0000-0000-000000000000",
           "dir": "sell",
           "quantity": "0.7050",
+          "filled_quantity": "0.7050",
+          "average_fill_price": "4250",
           "order_type": "stop_loss_limit",
           "limit_price": "4500",
           "trigger_price": "4000",
