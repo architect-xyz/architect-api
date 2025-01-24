@@ -7079,21 +7079,27 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "post_only"
+                  "k",
+                  "p",
+                  "po"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "limit"
                     ]
                   },
-                  "post_only": {
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
                     "type": "boolean"
                   }
                 }
@@ -7101,44 +7107,64 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "stop_loss_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "take_profit_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               }
@@ -7342,21 +7368,27 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "post_only"
+                  "k",
+                  "p",
+                  "po"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "limit"
                     ]
                   },
-                  "post_only": {
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
                     "type": "boolean"
                   }
                 }
@@ -7364,91 +7396,111 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "stop_loss_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "take_profit_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               }
             ],
             "required": [
-              "account",
-              "dir",
-              "execution_venue",
-              "filled_quantity",
+              "a",
+              "d",
               "id",
-              "quantity",
-              "recv_time",
-              "source",
-              "status",
-              "symbol",
-              "time_in_force",
-              "trader",
-              "type"
+              "o",
+              "q",
+              "s",
+              "src",
+              "tif",
+              "tn",
+              "ts",
+              "type",
+              "u",
+              "x",
+              "xq"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": "string",
                 "format": "uuid"
               },
-              "average_fill_price": {
-                "anyOf": [
+              "d": {
+                "title": "dir",
+                "allOf": [
                   {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
+                    "$ref": "#/definitions/Dir"
                   }
                 ]
-              },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "filled_quantity": {
-                "$ref": "#/definitions/Decimal"
               },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "parent_id": {
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -7458,14 +7510,16 @@
                   }
                 ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "recv_time": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "reject_reason": {
+              "r": {
+                "title": "reject_reason",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderRejectReason"
@@ -7475,25 +7529,72 @@
                   }
                 ]
               },
-              "source": {
-                "$ref": "#/definitions/OrderSource"
-              },
-              "status": {
-                "$ref": "#/definitions/OrderStatus"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "time_in_force": {
-                "$ref": "#/definitions/TimeInForce"
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
               },
-              "trader": {
-                "$ref": "#/definitions/UserId"
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "order_pending"
+                ]
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
                 ]
               }
             }
@@ -7975,7 +8076,7 @@
               3,
               4,
               5,
-              6
+              255
             ],
             "x-enumNames": [
               "API",
@@ -7988,16 +8089,26 @@
             ]
           },
           "OrderStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected",
-              "open",
-              "out",
-              "canceling",
-              "canceled",
-              "stale"
+              0,
+              1,
+              2,
+              3,
+              4,
+              128,
+              129,
+              254
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected",
+              "Open",
+              "Out",
+              "Canceling",
+              "Canceled",
+              "Stale"
             ]
           },
           "TimeInForce": {
@@ -8092,21 +8203,27 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "post_only"
+                  "k",
+                  "p",
+                  "po"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "limit"
                     ]
                   },
-                  "post_only": {
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
                     "type": "boolean"
                   }
                 }
@@ -8114,91 +8231,111 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "stop_loss_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "take_profit_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               }
             ],
             "required": [
-              "account",
-              "dir",
-              "execution_venue",
-              "filled_quantity",
+              "a",
+              "d",
               "id",
-              "quantity",
-              "recv_time",
-              "source",
-              "status",
-              "symbol",
-              "time_in_force",
-              "trader",
-              "type"
+              "o",
+              "q",
+              "s",
+              "src",
+              "tif",
+              "tn",
+              "ts",
+              "type",
+              "u",
+              "x",
+              "xq"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": "string",
                 "format": "uuid"
               },
-              "average_fill_price": {
-                "anyOf": [
+              "d": {
+                "title": "dir",
+                "allOf": [
                   {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
+                    "$ref": "#/definitions/Dir"
                   }
                 ]
-              },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "filled_quantity": {
-                "$ref": "#/definitions/Decimal"
               },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "parent_id": {
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -8208,14 +8345,16 @@
                   }
                 ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "recv_time": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "reject_reason": {
+              "r": {
+                "title": "reject_reason",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderRejectReason"
@@ -8225,25 +8364,72 @@
                   }
                 ]
               },
-              "source": {
-                "$ref": "#/definitions/OrderSource"
-              },
-              "status": {
-                "$ref": "#/definitions/OrderStatus"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "time_in_force": {
-                "$ref": "#/definitions/TimeInForce"
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
               },
-              "trader": {
-                "$ref": "#/definitions/UserId"
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "order_pending"
+                ]
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
                 ]
               }
             }
@@ -8725,7 +8911,7 @@
               3,
               4,
               5,
-              6
+              255
             ],
             "x-enumNames": [
               "API",
@@ -8738,16 +8924,26 @@
             ]
           },
           "OrderStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected",
-              "open",
-              "out",
-              "canceling",
-              "canceled",
-              "stale"
+              0,
+              1,
+              2,
+              3,
+              4,
+              128,
+              129,
+              254
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected",
+              "Open",
+              "Out",
+              "Canceling",
+              "Canceled",
+              "Stale"
             ]
           },
           "TimeInForce": {
@@ -9124,21 +9320,27 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "post_only"
+                  "k",
+                  "p",
+                  "po"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "limit"
                     ]
                   },
-                  "post_only": {
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
                     "type": "boolean"
                   }
                 }
@@ -9146,90 +9348,110 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "stop_loss_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "take_profit_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               }
             ],
             "required": [
-              "account",
-              "dir",
-              "execution_venue",
-              "filled_quantity",
+              "a",
+              "d",
               "id",
-              "quantity",
-              "recv_time",
-              "source",
-              "status",
-              "symbol",
-              "time_in_force",
-              "trader"
+              "o",
+              "q",
+              "s",
+              "src",
+              "tif",
+              "tn",
+              "ts",
+              "u",
+              "x",
+              "xq"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": "string",
                 "format": "uuid"
               },
-              "average_fill_price": {
-                "anyOf": [
+              "d": {
+                "title": "dir",
+                "allOf": [
                   {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
+                    "$ref": "#/definitions/Dir"
                   }
                 ]
-              },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "filled_quantity": {
-                "$ref": "#/definitions/Decimal"
               },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "parent_id": {
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -9239,14 +9461,16 @@
                   }
                 ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "recv_time": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "reject_reason": {
+              "r": {
+                "title": "reject_reason",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderRejectReason"
@@ -9256,20 +9480,67 @@
                   }
                 ]
               },
-              "source": {
-                "$ref": "#/definitions/OrderSource"
-              },
-              "status": {
-                "$ref": "#/definitions/OrderStatus"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "time_in_force": {
-                "$ref": "#/definitions/TimeInForce"
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
               },
-              "trader": {
-                "$ref": "#/definitions/UserId"
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               }
             }
           },
@@ -9309,7 +9580,7 @@
               3,
               4,
               5,
-              6
+              255
             ],
             "x-enumNames": [
               "API",
@@ -9322,16 +9593,26 @@
             ]
           },
           "OrderStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected",
-              "open",
-              "out",
-              "canceling",
-              "canceled",
-              "stale"
+              0,
+              1,
+              2,
+              3,
+              4,
+              128,
+              129,
+              254
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected",
+              "Open",
+              "Out",
+              "Canceling",
+              "Canceled",
+              "Stale"
             ]
           },
           "TimeInForce": {
@@ -9391,21 +9672,27 @@
           {
             "type": "object",
             "required": [
-              "limit_price",
-              "order_type",
-              "post_only"
+              "k",
+              "p",
+              "po"
             ],
             "properties": {
-              "limit_price": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "order_type": {
+              "k": {
                 "type": "string",
                 "enum": [
                   "limit"
                 ]
               },
-              "post_only": {
+              "p": {
+                "title": "limit_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "po": {
+                "title": "post_only",
                 "type": "boolean"
               }
             }
@@ -9413,44 +9700,64 @@
           {
             "type": "object",
             "required": [
-              "limit_price",
-              "order_type",
-              "trigger_price"
+              "k",
+              "p",
+              "tp"
             ],
             "properties": {
-              "limit_price": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "order_type": {
+              "k": {
                 "type": "string",
                 "enum": [
                   "stop_loss_limit"
                 ]
               },
-              "trigger_price": {
-                "$ref": "#/definitions/Decimal"
+              "p": {
+                "title": "limit_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "tp": {
+                "title": "trigger_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               }
             }
           },
           {
             "type": "object",
             "required": [
-              "limit_price",
-              "order_type",
-              "trigger_price"
+              "k",
+              "p",
+              "tp"
             ],
             "properties": {
-              "limit_price": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "order_type": {
+              "k": {
                 "type": "string",
                 "enum": [
                   "take_profit_limit"
                 ]
               },
-              "trigger_price": {
-                "$ref": "#/definitions/Decimal"
+              "p": {
+                "title": "limit_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "tp": {
+                "title": "trigger_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               }
             }
           }
@@ -9579,21 +9886,27 @@
           {
             "type": "object",
             "required": [
-              "limit_price",
-              "order_type",
-              "post_only"
+              "k",
+              "p",
+              "po"
             ],
             "properties": {
-              "limit_price": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "order_type": {
+              "k": {
                 "type": "string",
                 "enum": [
                   "limit"
                 ]
               },
-              "post_only": {
+              "p": {
+                "title": "limit_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "po": {
+                "title": "post_only",
                 "type": "boolean"
               }
             }
@@ -9601,90 +9914,110 @@
           {
             "type": "object",
             "required": [
-              "limit_price",
-              "order_type",
-              "trigger_price"
+              "k",
+              "p",
+              "tp"
             ],
             "properties": {
-              "limit_price": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "order_type": {
+              "k": {
                 "type": "string",
                 "enum": [
                   "stop_loss_limit"
                 ]
               },
-              "trigger_price": {
-                "$ref": "#/definitions/Decimal"
+              "p": {
+                "title": "limit_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "tp": {
+                "title": "trigger_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               }
             }
           },
           {
             "type": "object",
             "required": [
-              "limit_price",
-              "order_type",
-              "trigger_price"
+              "k",
+              "p",
+              "tp"
             ],
             "properties": {
-              "limit_price": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "order_type": {
+              "k": {
                 "type": "string",
                 "enum": [
                   "take_profit_limit"
                 ]
               },
-              "trigger_price": {
-                "$ref": "#/definitions/Decimal"
+              "p": {
+                "title": "limit_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "tp": {
+                "title": "trigger_price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               }
             }
           }
         ],
         "required": [
-          "account",
-          "dir",
-          "execution_venue",
-          "filled_quantity",
+          "a",
+          "d",
           "id",
-          "quantity",
-          "recv_time",
-          "source",
-          "status",
-          "symbol",
-          "time_in_force",
-          "trader"
+          "o",
+          "q",
+          "s",
+          "src",
+          "tif",
+          "tn",
+          "ts",
+          "u",
+          "x",
+          "xq"
         ],
         "properties": {
-          "account": {
+          "a": {
+            "title": "account",
             "type": "string",
             "format": "uuid"
           },
-          "average_fill_price": {
-            "anyOf": [
+          "d": {
+            "title": "dir",
+            "allOf": [
               {
-                "$ref": "#/definitions/Decimal"
-              },
-              {
-                "type": "null"
+                "$ref": "#/definitions/Dir"
               }
             ]
-          },
-          "dir": {
-            "$ref": "#/definitions/Dir"
-          },
-          "execution_venue": {
-            "type": "string"
-          },
-          "filled_quantity": {
-            "$ref": "#/definitions/Decimal"
           },
           "id": {
             "$ref": "#/definitions/OrderId"
           },
-          "parent_id": {
+          "o": {
+            "title": "status",
+            "allOf": [
+              {
+                "$ref": "#/definitions/OrderStatus"
+              }
+            ]
+          },
+          "pid": {
+            "title": "parent_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/OrderId"
@@ -9694,14 +10027,16 @@
               }
             ]
           },
-          "quantity": {
-            "$ref": "#/definitions/Decimal"
+          "q": {
+            "title": "quantity",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           },
-          "recv_time": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "reject_reason": {
+          "r": {
+            "title": "reject_reason",
             "anyOf": [
               {
                 "$ref": "#/definitions/OrderRejectReason"
@@ -9711,20 +10046,67 @@
               }
             ]
           },
-          "source": {
-            "$ref": "#/definitions/OrderSource"
-          },
-          "status": {
-            "$ref": "#/definitions/OrderStatus"
-          },
-          "symbol": {
+          "s": {
+            "title": "symbol",
             "type": "string"
           },
-          "time_in_force": {
-            "$ref": "#/definitions/TimeInForce"
+          "src": {
+            "title": "source",
+            "allOf": [
+              {
+                "$ref": "#/definitions/OrderSource"
+              }
+            ]
           },
-          "trader": {
-            "$ref": "#/definitions/UserId"
+          "tif": {
+            "title": "time_in_force",
+            "allOf": [
+              {
+                "$ref": "#/definitions/TimeInForce"
+              }
+            ]
+          },
+          "tn": {
+            "title": "recv_time_ns",
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "ts": {
+            "title": "recv_time",
+            "type": "integer",
+            "format": "int64"
+          },
+          "u": {
+            "title": "trader",
+            "allOf": [
+              {
+                "$ref": "#/definitions/UserId"
+              }
+            ]
+          },
+          "x": {
+            "title": "execution_venue",
+            "type": "string"
+          },
+          "xp": {
+            "title": "average_fill_price",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "xq": {
+            "title": "filled_quantity",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              }
+            ]
           }
         },
         "definitions": {
@@ -9775,7 +10157,7 @@
               3,
               4,
               5,
-              6
+              255
             ],
             "x-enumNames": [
               "API",
@@ -9788,16 +10170,26 @@
             ]
           },
           "OrderStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected",
-              "open",
-              "out",
-              "canceling",
-              "canceled",
-              "stale"
+              0,
+              1,
+              2,
+              3,
+              4,
+              128,
+              129,
+              254
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected",
+              "Open",
+              "Out",
+              "Canceling",
+              "Canceled",
+              "Stale"
             ]
           },
           "TimeInForce": {
@@ -10105,21 +10497,27 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "post_only"
+                  "k",
+                  "p",
+                  "po"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "limit"
                     ]
                   },
-                  "post_only": {
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
                     "type": "boolean"
                   }
                 }
@@ -10127,90 +10525,110 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "stop_loss_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "take_profit_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               }
             ],
             "required": [
-              "account",
-              "dir",
-              "execution_venue",
-              "filled_quantity",
+              "a",
+              "d",
               "id",
-              "quantity",
-              "recv_time",
-              "source",
-              "status",
-              "symbol",
-              "time_in_force",
-              "trader"
+              "o",
+              "q",
+              "s",
+              "src",
+              "tif",
+              "tn",
+              "ts",
+              "u",
+              "x",
+              "xq"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": "string",
                 "format": "uuid"
               },
-              "average_fill_price": {
-                "anyOf": [
+              "d": {
+                "title": "dir",
+                "allOf": [
                   {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
+                    "$ref": "#/definitions/Dir"
                   }
                 ]
-              },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "filled_quantity": {
-                "$ref": "#/definitions/Decimal"
               },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "parent_id": {
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -10220,14 +10638,16 @@
                   }
                 ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "recv_time": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "reject_reason": {
+              "r": {
+                "title": "reject_reason",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderRejectReason"
@@ -10237,20 +10657,67 @@
                   }
                 ]
               },
-              "source": {
-                "$ref": "#/definitions/OrderSource"
-              },
-              "status": {
-                "$ref": "#/definitions/OrderStatus"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "time_in_force": {
-                "$ref": "#/definitions/TimeInForce"
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
               },
-              "trader": {
-                "$ref": "#/definitions/UserId"
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               }
             }
           },
@@ -10290,7 +10757,7 @@
               3,
               4,
               5,
-              6
+              255
             ],
             "x-enumNames": [
               "API",
@@ -10303,16 +10770,26 @@
             ]
           },
           "OrderStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected",
-              "open",
-              "out",
-              "canceling",
-              "canceled",
-              "stale"
+              0,
+              1,
+              2,
+              3,
+              4,
+              128,
+              129,
+              254
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected",
+              "Open",
+              "Out",
+              "Canceling",
+              "Canceled",
+              "Stale"
             ]
           },
           "TimeInForce": {
@@ -11570,21 +12047,27 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "post_only"
+                  "k",
+                  "p",
+                  "po"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "limit"
                     ]
                   },
-                  "post_only": {
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
                     "type": "boolean"
                   }
                 }
@@ -11592,90 +12075,110 @@
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "stop_loss_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "limit_price",
-                  "order_type",
-                  "trigger_price"
+                  "k",
+                  "p",
+                  "tp"
                 ],
                 "properties": {
-                  "limit_price": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "order_type": {
+                  "k": {
                     "type": "string",
                     "enum": [
                       "take_profit_limit"
                     ]
                   },
-                  "trigger_price": {
-                    "$ref": "#/definitions/Decimal"
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
                   }
                 }
               }
             ],
             "required": [
-              "account",
-              "dir",
-              "execution_venue",
-              "filled_quantity",
+              "a",
+              "d",
               "id",
-              "quantity",
-              "recv_time",
-              "source",
-              "status",
-              "symbol",
-              "time_in_force",
-              "trader"
+              "o",
+              "q",
+              "s",
+              "src",
+              "tif",
+              "tn",
+              "ts",
+              "u",
+              "x",
+              "xq"
             ],
             "properties": {
-              "account": {
+              "a": {
+                "title": "account",
                 "type": "string",
                 "format": "uuid"
               },
-              "average_fill_price": {
-                "anyOf": [
+              "d": {
+                "title": "dir",
+                "allOf": [
                   {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
+                    "$ref": "#/definitions/Dir"
                   }
                 ]
-              },
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "filled_quantity": {
-                "$ref": "#/definitions/Decimal"
               },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "parent_id": {
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -11685,14 +12188,16 @@
                   }
                 ]
               },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               },
-              "recv_time": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "reject_reason": {
+              "r": {
+                "title": "reject_reason",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderRejectReason"
@@ -11702,20 +12207,67 @@
                   }
                 ]
               },
-              "source": {
-                "$ref": "#/definitions/OrderSource"
-              },
-              "status": {
-                "$ref": "#/definitions/OrderStatus"
-              },
-              "symbol": {
+              "s": {
+                "title": "symbol",
                 "type": "string"
               },
-              "time_in_force": {
-                "$ref": "#/definitions/TimeInForce"
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
               },
-              "trader": {
-                "$ref": "#/definitions/UserId"
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
               }
             }
           },
@@ -11755,7 +12307,7 @@
               3,
               4,
               5,
-              6
+              255
             ],
             "x-enumNames": [
               "API",
@@ -11768,16 +12320,26 @@
             ]
           },
           "OrderStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected",
-              "open",
-              "out",
-              "canceling",
-              "canceled",
-              "stale"
+              0,
+              1,
+              2,
+              3,
+              4,
+              128,
+              129,
+              254
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected",
+              "Open",
+              "Out",
+              "Canceling",
+              "Canceled",
+              "Stale"
             ]
           },
           "TimeInForce": {

@@ -3,7 +3,7 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
-#[serde(tag = "order_type", rename_all = "snake_case")]
+#[serde(tag = "k", rename_all = "snake_case")]
 pub enum OrderType {
     Limit(LimitOrderType),
     StopLossLimit(StopLossLimitOrderType),
@@ -39,20 +39,32 @@ impl OrderType {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct LimitOrderType {
+    #[serde(rename = "p")]
+    #[schemars(title = "limit_price")]
     pub limit_price: Decimal,
+    #[serde(rename = "po")]
+    #[schemars(title = "post_only")]
     pub post_only: bool,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct StopLossLimitOrderType {
+    #[serde(rename = "p")]
+    #[schemars(title = "limit_price")]
     pub limit_price: Decimal,
+    #[serde(rename = "tp")]
+    #[schemars(title = "trigger_price")]
     pub trigger_price: Decimal,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct TakeProfitLimitOrderType {
+    #[serde(rename = "p")]
+    #[schemars(title = "limit_price")]
     pub limit_price: Decimal,
+    #[serde(rename = "tp")]
+    #[schemars(title = "trigger_price")]
     pub trigger_price: Decimal,
 }

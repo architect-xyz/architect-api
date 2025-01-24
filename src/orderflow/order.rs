@@ -6,74 +6,112 @@ use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Order {
     pub id: OrderId,
+    #[serde(rename = "pid")]
+    #[schemars(title = "parent_id")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<OrderId>,
-    pub recv_time: DateTime<Utc>,
+    #[serde(rename = "ts")]
+    #[schemars(title = "recv_time")]
+    pub recv_time: i64,
+    #[serde(rename = "tn")]
+    #[schemars(title = "recv_time_ns")]
+    pub recv_time_ns: u32,
+    #[serde(rename = "o")]
+    #[schemars(title = "status")]
     pub status: OrderStatus,
+    #[serde(rename = "r")]
+    #[schemars(title = "reject_reason")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reject_reason: Option<OrderRejectReason>,
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
     pub symbol: String,
+    #[serde(rename = "u")]
+    #[schemars(title = "trader")]
     pub trader: UserId,
+    #[serde(rename = "a")]
+    #[schemars(title = "account")]
     pub account: AccountId,
+    #[serde(rename = "d")]
+    #[schemars(title = "dir")]
     pub dir: Dir,
+    #[serde(rename = "q")]
+    #[schemars(title = "quantity")]
     pub quantity: Decimal,
-    #[serde(skip_serializing_if = "Decimal::is_zero")]
+    #[serde(rename = "xq")]
+    #[schemars(title = "filled_quantity")]
     pub filled_quantity: Decimal,
+    #[serde(rename = "xp")]
+    #[schemars(title = "average_fill_price")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub average_fill_price: Option<Decimal>,
     #[serde(flatten)]
     pub order_type: OrderType,
+    #[serde(rename = "tif")]
+    #[schemars(title = "time_in_force")]
     pub time_in_force: TimeInForce,
+    #[serde(rename = "src")]
+    #[schemars(title = "source")]
     pub source: OrderSource,
+    #[serde(rename = "x")]
+    #[schemars(title = "execution_venue")]
     pub execution_venue: ExecutionVenue,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum TimeInForce {
+    #[serde(rename = "gtc")]
     GoodTilCancel,
+    #[serde(rename = "gtd")]
     GoodTilDate(DateTime<Utc>),
     /// Day order--the specific time which this expires
     /// will be dependent on the venue
+    #[serde(rename = "day")]
     GoodTilDay,
+    #[serde(rename = "ioc")]
     ImmediateOrCancel,
+    #[serde(rename = "fok")]
     FillOrKill,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema_repr)]
+#[derive(
+    Debug, Clone, Copy, Serialize_repr, Deserialize_repr, PartialEq, Eq, JsonSchema_repr,
+)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[serde(rename_all = "snake_case")]
 #[repr(u8)]
 pub enum OrderSource {
-    #[serde(rename = "api")]
-    API,
-    #[serde(rename = "gui")]
-    GUI,
-    Algo,
-    External,
-    #[serde(rename = "cli")]
-    CLI,
-    Telegram,
+    API = 0,
+    GUI = 1,
+    Algo = 2,
+    External = 3,
+    CLI = 4,
+    Telegram = 5,
     #[serde(other)]
-    Other,
+    Other = 255,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
+#[derive(
+    Debug, Clone, Copy, Serialize_repr, Deserialize_repr, PartialEq, Eq, JsonSchema_repr,
+)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+#[repr(u8)]
 pub enum OrderStatus {
-    Pending,
-    Acked,
-    Rejected,
-    Open,
-    Out,
-    Canceling,
-    Canceled,
-    Stale,
+    Pending = 0,
+    Acked = 1,
+    Rejected = 2,
+    Open = 3,
+    Out = 4,
+    Canceling = 128,
+    Canceled = 129,
+    Stale = 254,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -123,16 +161,16 @@ mod tests {
         let por: PlaceOrderRequest = serde_json::from_str(r#"
             {
                 "id": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:123",
-                "symbol": "BTC Crypto/USD",
-                "dir": "buy",
-                "quantity": "100",
-                "trader": "trader1",
-                "account": "account1",
-                "order_type": "limit",
-                "limit_price": "4500",
-                "post_only": true,
-                "time_in_force": {
-                    "good_til_date": "2025-01-05T04:20:00Z"
+                "s": "BTC Crypto/USD",
+                "d": "buy",
+                "q": "100",
+                "u": "trader1",
+                "a": "account1",
+                "k": "limit",
+                "p": "4500",
+                "po": true,
+                "tif": {
+                    "gtd": "2025-01-05T04:20:00Z"
                 } 
             }
         "#).unwrap();
@@ -162,13 +200,15 @@ mod tests {
 
     #[test]
     fn test_order_json() {
+        let recv_time: DateTime<Utc> = "2025-01-01T04:20:00Z".parse().unwrap();
         insta::assert_json_snapshot!(Order {
             id: OrderId {
                 seqid: "d3f97244-78e6-4549-abf6-90adfe0ab7fe".parse().unwrap(),
                 seqno: 123
             },
             parent_id: None,
-            recv_time: "2025-01-01T04:20:00Z".parse().unwrap(),
+            recv_time: recv_time.timestamp(),
+            recv_time_ns: recv_time.timestamp_subsec_nanos(),
             status: OrderStatus::Out,
             reject_reason: Some(OrderRejectReason::DuplicateOrderId),
             symbol: "BTC Crypto/USD".into(),
@@ -188,29 +228,33 @@ mod tests {
         }, @r###"
         {
           "id": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:123",
-          "recv_time": "2025-01-01T04:20:00Z",
-          "status": "out",
-          "reject_reason": "duplicate_order_id",
-          "symbol": "BTC Crypto/USD",
-          "trader": "00000000-0000-0000-0000-000000000000",
-          "account": "00000000-0000-0000-0000-000000000000",
-          "dir": "buy",
-          "quantity": "100",
-          "order_type": "limit",
-          "limit_price": "4500",
-          "post_only": false,
-          "time_in_force": "good_til_cancel",
-          "source": "api",
-          "execution_venue": "BINANCE"
+          "ts": 1735705200,
+          "tn": 0,
+          "o": 4,
+          "r": "duplicate_order_id",
+          "s": "BTC Crypto/USD",
+          "u": "00000000-0000-0000-0000-000000000000",
+          "a": "00000000-0000-0000-0000-000000000000",
+          "d": "buy",
+          "q": "100",
+          "xq": "0",
+          "k": "limit",
+          "p": "4500",
+          "po": false,
+          "tif": "gtc",
+          "src": 0,
+          "x": "BINANCE"
         }
         "###);
+        let recv_time: DateTime<Utc> = "2025-01-01T04:20:00Z".parse().unwrap();
         insta::assert_json_snapshot!(Order {
             id: OrderId::nil(123),
             parent_id: Some(OrderId {
                 seqid: "d3f97244-78e6-4549-abf6-90adfe0ab7fe".parse().unwrap(),
                 seqno: 456
             }),
-            recv_time: "2025-01-01T04:20:00Z".parse().unwrap(),
+            recv_time: recv_time.timestamp(),
+            recv_time_ns: recv_time.timestamp_subsec_nanos(),
             status: OrderStatus::Open,
             reject_reason: None,
             symbol: "ETH Crypto/USD".into(),
@@ -232,24 +276,25 @@ mod tests {
         }, @r###"
         {
           "id": "123",
-          "parent_id": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:456",
-          "recv_time": "2025-01-01T04:20:00Z",
-          "status": "open",
-          "symbol": "ETH Crypto/USD",
-          "trader": "00000000-0000-0000-0000-000000000000",
-          "account": "00000000-0000-0000-0000-000000000000",
-          "dir": "sell",
-          "quantity": "0.7050",
-          "filled_quantity": "0.7050",
-          "average_fill_price": "4250",
-          "order_type": "stop_loss_limit",
-          "limit_price": "4500",
-          "trigger_price": "4000",
-          "time_in_force": {
-            "good_til_date": "2025-01-05T04:20:00Z"
+          "pid": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:456",
+          "ts": 1735705200,
+          "tn": 0,
+          "o": 3,
+          "s": "ETH Crypto/USD",
+          "u": "00000000-0000-0000-0000-000000000000",
+          "a": "00000000-0000-0000-0000-000000000000",
+          "d": "sell",
+          "q": "0.7050",
+          "xq": "0.7050",
+          "xp": "4250",
+          "k": "stop_loss_limit",
+          "p": "4500",
+          "tp": "4000",
+          "tif": {
+            "gtd": "2025-01-05T04:20:00Z"
           },
-          "source": "telegram",
-          "execution_venue": "BINANCE"
+          "src": 5,
+          "x": "BINANCE"
         }
         "###);
     }

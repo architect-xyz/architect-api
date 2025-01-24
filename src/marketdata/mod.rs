@@ -127,7 +127,7 @@ impl L2BookDiff {
 /// the state of the book.
 ///
 /// ```rust
-/// # use architect_api::external::marketdata::*;
+/// # use architect_api::marketdata::*;
 /// # use std::collections::BTreeMap;
 /// # use rust_decimal::Decimal;
 /// # use rust_decimal_macros::dec;

@@ -16,20 +16,31 @@ use uuid::Uuid;
 #[derive(Builder, Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct PlaceOrderRequest {
     pub id: Option<OrderId>,
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
     pub symbol: String,
+    #[serde(rename = "d")]
+    #[schemars(title = "dir")]
     pub dir: Dir,
+    #[serde(rename = "q")]
+    #[schemars(title = "quantity")]
     pub quantity: Decimal,
-    #[serde(default)]
+    #[serde(rename = "u", default)]
+    #[schemars(title = "trader")]
     #[builder(setter(strip_option), default)]
     pub trader: Option<String>,
-    #[serde(default)]
+    #[serde(rename = "a", default)]
+    #[schemars(title = "account")]
     #[builder(setter(strip_option), default)]
     pub account: Option<String>,
     #[serde(flatten)]
     pub order_type: OrderType,
+    #[serde(rename = "tif")]
+    #[schemars(title = "time_in_force")]
     #[builder(default = "TimeInForce::GoodTilCancel")]
     pub time_in_force: TimeInForce,
-    #[serde(default)]
+    #[serde(rename = "x", default)]
+    #[schemars(title = "execution_venue")]
     #[builder(setter(strip_option), default)]
     pub execution_venue: Option<ExecutionVenue>,
 }
