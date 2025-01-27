@@ -38,6 +38,10 @@ impl OrderId {
         Self { seqid: Uuid::nil(), seqno }
     }
 
+    pub fn random() -> Self {
+        Self { seqid: Uuid::new_v4(), seqno: 0 }
+    }
+
     pub fn as_bytes(&self) -> &[u8] {
         bytemuck::bytes_of(self)
     }

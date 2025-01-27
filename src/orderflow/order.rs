@@ -137,11 +137,25 @@ pub struct OrderReject {
     pub message: Option<String>,
 }
 
+impl OrderReject {
+    pub fn to_error_string(&self) -> String {
+        format!(
+            "order {} rejected: {} ({})",
+            self.order_id,
+            self.message.as_deref().unwrap_or("--"),
+            self.reason
+        )
+    }
+}
+
 #[derive(Debug, Display, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum OrderRejectReason {
     DuplicateOrderId,
     NotAuthorized,
+    NoExecutionVenue,
+    NoAccount,
+    NoCpty,
     #[serde(other)]
     Unknown,
 }
@@ -163,7 +177,7 @@ pub struct OrderStale {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::oms::PlaceOrderRequest;
+    use crate::{oms::PlaceOrderRequest, AccountIdOrName, AccountName, TraderIdOrEmail};
     use rust_decimal_macros::dec;
 
     #[test]
@@ -176,7 +190,7 @@ mod tests {
                 "d": "buy",
                 "q": "100",
                 "u": "trader1",
-                "a": "account1",
+                "a": "COINBASE:TEST",
                 "k": "limit",
                 "p": "4500",
                 "po": true,
@@ -185,6 +199,7 @@ mod tests {
                 } 
             }
         "#).unwrap();
+        let trader: UserId = "trader1".parse().unwrap();
         assert_eq!(
             por,
             PlaceOrderRequest {
@@ -192,11 +207,14 @@ mod tests {
                     seqid: "d3f97244-78e6-4549-abf6-90adfe0ab7fe".parse().unwrap(),
                     seqno: 123
                 }),
+                parent_id: None,
                 symbol: "BTC Crypto/USD".into(),
                 dir: Dir::Buy,
                 quantity: dec!(100),
-                trader: Some("trader1".into()),
-                account: Some("account1".into()),
+                trader: Some(TraderIdOrEmail::Id(trader)),
+                account: Some(AccountIdOrName::Name(
+                    AccountName::new("COINBASE", "TEST").unwrap()
+                )),
                 order_type: OrderType::Limit(LimitOrderType {
                     limit_price: dec!(4500),
                     post_only: true,
@@ -204,6 +222,7 @@ mod tests {
                 time_in_force: TimeInForce::GoodTilDate(
                     "2025-01-05T04:20:00Z".parse().unwrap()
                 ),
+                source: None,
                 execution_venue: None,
             }
         );

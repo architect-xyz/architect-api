@@ -1,7 +1,7 @@
 use crate::{
-    orderflow::{order_types::*, Cancel, Order, TimeInForce},
+    orderflow::{order_types::*, Cancel, Order, OrderSource, TimeInForce},
     symbology::ExecutionVenue,
-    AccountId, Dir, OrderId, UserId,
+    AccountIdOrName, Dir, OrderId, TraderIdOrEmail,
 };
 use derive::grpc;
 use derive_builder::Builder;
@@ -15,7 +15,13 @@ use uuid::Uuid;
 #[grpc(service = "Oms", name = "place_order", response = "Order")]
 #[derive(Builder, Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct PlaceOrderRequest {
+    /// If not specified, one will be generated for you; note, in that case,
+    /// you won't know for sure if the specific request went through.
     pub id: Option<OrderId>,
+    #[serde(rename = "pid", default)]
+    #[schemars(title = "parent_id")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parent_id: Option<OrderId>,
     #[serde(rename = "s")]
     #[schemars(title = "symbol")]
     pub symbol: String,
@@ -28,17 +34,21 @@ pub struct PlaceOrderRequest {
     #[serde(rename = "u", default)]
     #[schemars(title = "trader")]
     #[builder(setter(strip_option), default)]
-    pub trader: Option<String>,
+    pub trader: Option<TraderIdOrEmail>,
     #[serde(rename = "a", default)]
     #[schemars(title = "account")]
     #[builder(setter(strip_option), default)]
-    pub account: Option<String>,
+    pub account: Option<AccountIdOrName>,
     #[serde(flatten)]
     pub order_type: OrderType,
     #[serde(rename = "tif")]
     #[schemars(title = "time_in_force")]
     #[builder(default = "TimeInForce::GoodTilCancel")]
     pub time_in_force: TimeInForce,
+    #[serde(rename = "src", default)]
+    #[schemars(title = "source")]
+    #[builder(setter(strip_option), default)]
+    pub source: Option<OrderSource>,
     #[serde(rename = "x", default)]
     #[schemars(title = "execution_venue")]
     #[builder(setter(strip_option), default)]
@@ -63,9 +73,9 @@ pub struct CancelOrderRequest {
 pub struct CancelAllOrdersRequest {
     pub id: Uuid,
     #[serde(default)]
-    pub trader: Option<String>,
+    pub trader: Option<TraderIdOrEmail>,
     #[serde(default)]
-    pub account: Option<String>,
+    pub account: Option<AccountIdOrName>,
     #[serde(default)]
     pub execution_venue: Option<ExecutionVenue>,
 }
@@ -80,8 +90,8 @@ pub struct CancelAllOrdersResponse {}
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct OpenOrdersRequest {
     pub venue: Option<ExecutionVenue>,
-    pub account: Option<AccountId>,
-    pub trader: Option<UserId>,
+    pub account: Option<AccountIdOrName>,
+    pub trader: Option<TraderIdOrEmail>,
     pub symbol: Option<String>,
     pub parent_order_id: Option<OrderId>,
     pub order_ids: Option<Vec<OrderId>>,
@@ -98,8 +108,8 @@ pub struct OpenOrdersResponse {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct PendingCancelsRequest {
     pub venue: Option<ExecutionVenue>,
-    pub account: Option<AccountId>,
-    pub trader: Option<UserId>,
+    pub account: Option<AccountIdOrName>,
+    pub trader: Option<TraderIdOrEmail>,
     pub symbol: Option<String>,
     pub cancel_ids: Option<Vec<Uuid>>,
 }

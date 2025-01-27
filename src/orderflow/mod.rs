@@ -35,7 +35,7 @@ pub enum OrderflowRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
-pub enum OrderflowResponse {
+pub enum Orderflow {
     #[serde(rename = "w")]
     OrderPending(Order),
     #[serde(rename = "a")]
@@ -107,7 +107,7 @@ impl DropcopyRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
-pub enum DropcopyResponse {
+pub enum Dropcopy {
     #[serde(rename = "o")]
     Order(Order),
     #[serde(rename = "f")]

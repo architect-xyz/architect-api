@@ -53,6 +53,7 @@ impl PartialEq<ExecutionVenue> for MarketdataVenue {
 #[derive(
     Debug,
     Display,
+    Deref,
     Clone,
     Hash,
     PartialEq,
@@ -67,6 +68,7 @@ impl PartialEq<ExecutionVenue> for MarketdataVenue {
 )]
 #[repr(transparent)]
 #[from(forward)]
+#[deref(forward)]
 #[serde(transparent)]
 #[cfg_attr(feature = "graphql", derive(juniper::GraphQLScalar))]
 #[cfg_attr(feature = "graphql", graphql(transparent))]

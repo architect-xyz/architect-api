@@ -7180,9 +7180,13 @@
               "a": {
                 "title": "account",
                 "default": null,
-                "type": [
-                  "string",
-                  "null"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "d": {
@@ -7194,6 +7198,18 @@
                 ]
               },
               "id": {
+                "description": "If not specified, one will be generated for you; note, in that case, you won't know for sure if the specific request went through.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/OrderId"
@@ -7215,6 +7231,18 @@
                 "title": "symbol",
                 "type": "string"
               },
+              "src": {
+                "title": "source",
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "t": {
                 "type": "string",
                 "enum": [
@@ -7232,9 +7260,13 @@
               "u": {
                 "title": "trader",
                 "default": null,
-                "type": [
-                  "string",
-                  "null"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/TraderIdOrEmail"
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "x": {
@@ -7282,9 +7314,13 @@
             ],
             "properties": {
               "account": {
-                "type": [
-                  "string",
-                  "null"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "execution_venue": {
@@ -7304,15 +7340,22 @@
                 ]
               },
               "trader": {
-                "type": [
-                  "string",
-                  "null"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/TraderIdOrEmail"
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               }
             }
           }
         ],
         "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
           "Decimal": {
             "type": "string"
           },
@@ -7342,6 +7385,27 @@
                 "minimum": 0.0
               }
             }
+          },
+          "OrderSource": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              255
+            ],
+            "x-enumNames": [
+              "API",
+              "GUI",
+              "Algo",
+              "External",
+              "CLI",
+              "Telegram",
+              "Other"
+            ]
           },
           "TimeInForce": {
             "oneOf": [
@@ -7374,12 +7438,15 @@
                 ]
               }
             ]
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "OrderflowResponse",
+        "title": "Orderflow",
         "oneOf": [
           {
             "type": "object",
@@ -8168,6 +8235,9 @@
             "enum": [
               "duplicate_order_id",
               "not_authorized",
+              "no_execution_venue",
+              "no_account",
+              "no_cpty",
               "unknown"
             ]
           },
@@ -8299,7 +8369,7 @@
       },
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "OrderflowResponse",
+        "title": "Orderflow",
         "oneOf": [
           {
             "type": "object",
@@ -9088,6 +9158,9 @@
             "enum": [
               "duplicate_order_id",
               "not_authorized",
+              "no_execution_venue",
+              "no_account",
+              "no_cpty",
               "unknown"
             ]
           },
@@ -9230,7 +9303,7 @@
       },
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "DropcopyResponse",
+        "title": "Dropcopy",
         "oneOf": [
           {
             "type": "object",
@@ -9839,6 +9912,9 @@
             "enum": [
               "duplicate_order_id",
               "not_authorized",
+              "no_execution_venue",
+              "no_account",
+              "no_cpty",
               "unknown"
             ]
           },
@@ -10043,9 +10119,13 @@
           "a": {
             "title": "account",
             "default": null,
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "d": {
@@ -10057,6 +10137,18 @@
             ]
           },
           "id": {
+            "description": "If not specified, one will be generated for you; note, in that case, you won't know for sure if the specific request went through.",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pid": {
+            "title": "parent_id",
             "anyOf": [
               {
                 "$ref": "#/definitions/OrderId"
@@ -10078,6 +10170,18 @@
             "title": "symbol",
             "type": "string"
           },
+          "src": {
+            "title": "source",
+            "default": null,
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderSource"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "tif": {
             "title": "time_in_force",
             "allOf": [
@@ -10089,9 +10193,13 @@
           "u": {
             "title": "trader",
             "default": null,
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/TraderIdOrEmail"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "x": {
@@ -10104,6 +10212,9 @@
           }
         },
         "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
           "Decimal": {
             "type": "string"
           },
@@ -10133,6 +10244,27 @@
                 "minimum": 0.0
               }
             }
+          },
+          "OrderSource": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              255
+            ],
+            "x-enumNames": [
+              "API",
+              "GUI",
+              "Algo",
+              "External",
+              "CLI",
+              "Telegram",
+              "Other"
+            ]
           },
           "TimeInForce": {
             "oneOf": [
@@ -10165,6 +10297,9 @@
                 ]
               }
             ]
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },
@@ -10435,6 +10570,9 @@
             "enum": [
               "duplicate_order_id",
               "not_authorized",
+              "no_execution_venue",
+              "no_account",
+              "no_cpty",
               "unknown"
             ]
           },
@@ -10642,9 +10780,13 @@
         ],
         "properties": {
           "account": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "execution_venue": {
@@ -10658,10 +10800,22 @@
             "format": "uuid"
           },
           "trader": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/TraderIdOrEmail"
+              },
+              {
+                "type": "null"
+              }
             ]
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },
@@ -10680,11 +10834,14 @@
         "type": "object",
         "properties": {
           "account": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "order_ids": {
             "type": [
@@ -10714,7 +10871,7 @@
           "trader": {
             "anyOf": [
               {
-                "$ref": "#/definitions/UserId"
+                "$ref": "#/definitions/TraderIdOrEmail"
               },
               {
                 "type": "null"
@@ -10729,6 +10886,9 @@
           }
         },
         "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
           "OrderId": {
             "description": "System-unique, persistent order identifiers",
             "type": "object",
@@ -10748,9 +10908,8 @@
               }
             }
           },
-          "UserId": {
-            "type": "string",
-            "format": "uuid"
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },
@@ -11035,6 +11194,9 @@
             "enum": [
               "duplicate_order_id",
               "not_authorized",
+              "no_execution_venue",
+              "no_account",
+              "no_cpty",
               "unknown"
             ]
           },
@@ -11130,11 +11292,14 @@
         "type": "object",
         "properties": {
           "account": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "cancel_ids": {
             "type": [
@@ -11155,7 +11320,7 @@
           "trader": {
             "anyOf": [
               {
-                "$ref": "#/definitions/UserId"
+                "$ref": "#/definitions/TraderIdOrEmail"
               },
               {
                 "type": "null"
@@ -11170,9 +11335,11 @@
           }
         },
         "definitions": {
-          "UserId": {
-            "type": "string",
-            "format": "uuid"
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },
@@ -12670,6 +12837,9 @@
             "enum": [
               "duplicate_order_id",
               "not_authorized",
+              "no_execution_venue",
+              "no_account",
+              "no_cpty",
               "unknown"
             ]
           },

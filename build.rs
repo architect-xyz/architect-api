@@ -247,7 +247,7 @@ fn build_grpc_stubs() {
                 .name("orderflow")
                 .route_name("Orderflow")
                 .input_type("crate::orderflow::OrderflowRequest")
-                .output_type("crate::orderflow::OrderflowResponse")
+                .output_type("crate::orderflow::Orderflow")
                 .client_streaming()
                 .server_streaming()
                 .codec_path(json_codec)
@@ -258,7 +258,7 @@ fn build_grpc_stubs() {
                 .name("subscribe_orderflow")
                 .route_name("SubscribeOrderflow")
                 .input_type("crate::orderflow::SubscribeOrderflowRequest")
-                .output_type("crate::orderflow::OrderflowResponse")
+                .output_type("crate::orderflow::Orderflow")
                 .server_streaming()
                 .codec_path(json_codec)
                 .build(),
@@ -268,7 +268,7 @@ fn build_grpc_stubs() {
                 .name("dropcopy")
                 .route_name("Dropcopy")
                 .input_type("crate::orderflow::DropcopyRequest")
-                .output_type("crate::orderflow::DropcopyResponse")
+                .output_type("crate::orderflow::Dropcopy")
                 .server_streaming()
                 .codec_path(json_codec)
                 .build(),
