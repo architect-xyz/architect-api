@@ -7173,8 +7173,8 @@
               "d",
               "q",
               "s",
-              "tif",
-              "type"
+              "t",
+              "tif"
             ],
             "properties": {
               "a": {
@@ -7215,18 +7215,18 @@
                 "title": "symbol",
                 "type": "string"
               },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "p"
+                ]
+              },
               "tif": {
                 "title": "time_in_force",
                 "allOf": [
                   {
                     "$ref": "#/definitions/TimeInForce"
                   }
-                ]
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "place_order"
                 ]
               },
               "u": {
@@ -7251,7 +7251,7 @@
             "type": "object",
             "required": [
               "order_id",
-              "type"
+              "t"
             ],
             "properties": {
               "id": {
@@ -7266,10 +7266,10 @@
               "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "cancel_order"
+                  "x"
                 ]
               }
             }
@@ -7278,7 +7278,7 @@
             "type": "object",
             "required": [
               "id",
-              "type"
+              "t"
             ],
             "properties": {
               "account": {
@@ -7297,16 +7297,16 @@
                 "type": "string",
                 "format": "uuid"
               },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "xo"
+                ]
+              },
               "trader": {
                 "type": [
                   "string",
                   "null"
-                ]
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "cancel_all_orders"
                 ]
               }
             }
@@ -7485,10 +7485,10 @@
               "q",
               "s",
               "src",
+              "t",
               "tif",
               "tn",
               "ts",
-              "type",
               "u",
               "x",
               "xq"
@@ -7560,6 +7560,12 @@
                   }
                 ]
               },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "w"
+                ]
+              },
               "tif": {
                 "title": "time_in_force",
                 "allOf": [
@@ -7578,12 +7584,6 @@
                 "title": "recv_time",
                 "type": "integer",
                 "format": "int64"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "order_pending"
-                ]
               },
               "u": {
                 "title": "trader",
@@ -7621,17 +7621,17 @@
           {
             "type": "object",
             "required": [
-              "order_id",
-              "type"
+              "id",
+              "t"
             ],
             "properties": {
-              "order_id": {
+              "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "order_ack"
+                  "a"
                 ]
               }
             }
@@ -7639,27 +7639,27 @@
           {
             "type": "object",
             "required": [
-              "order_id",
-              "reason",
-              "type"
+              "id",
+              "r",
+              "t"
             ],
             "properties": {
-              "message": {
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "m": {
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "order_id": {
-                "$ref": "#/definitions/OrderId"
-              },
-              "reason": {
+              "r": {
                 "$ref": "#/definitions/OrderRejectReason"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "order_reject"
+                  "r"
                 ]
               }
             }
@@ -7667,17 +7667,17 @@
           {
             "type": "object",
             "required": [
-              "order_id",
-              "type"
+              "id",
+              "t"
             ],
             "properties": {
-              "order_id": {
+              "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "order_out"
+                  "o"
                 ]
               }
             }
@@ -7685,17 +7685,17 @@
           {
             "type": "object",
             "required": [
-              "order_id",
-              "type"
+              "id",
+              "t"
             ],
             "properties": {
-              "order_id": {
+              "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "order_stale"
+                  "z"
                 ]
               }
             }
@@ -7707,7 +7707,7 @@
               "order_id",
               "recv_time",
               "status",
-              "type"
+              "t"
             ],
             "properties": {
               "id": {
@@ -7730,10 +7730,10 @@
               "status": {
                 "$ref": "#/definitions/CancelStatus"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "cancel_pending"
+                  "xc"
                 ]
               }
             }
@@ -7743,7 +7743,7 @@
             "required": [
               "id",
               "order_id",
-              "type"
+              "t"
             ],
             "properties": {
               "id": {
@@ -7753,10 +7753,10 @@
               "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "cancel_ack"
+                  "xa"
                 ]
               }
             }
@@ -7766,7 +7766,7 @@
             "required": [
               "id",
               "order_id",
-              "type"
+              "t"
             ],
             "properties": {
               "id": {
@@ -7782,10 +7782,10 @@
               "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "cancel_reject"
+                  "xr"
                 ]
               }
             }
@@ -7799,9 +7799,9 @@
               "p",
               "q",
               "s",
+              "t",
               "tn",
               "ts",
-              "type",
               "x"
             ],
             "properties": {
@@ -7902,6 +7902,12 @@
                 "title": "symbol",
                 "type": "string"
               },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "f"
+                ]
+              },
               "tn": {
                 "title": "trade_time_ns",
                 "type": "integer",
@@ -7913,12 +7919,6 @@
                 "description": "When the cpty claims the trade happened",
                 "type": "integer",
                 "format": "int64"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "fill"
-                ]
               },
               "u": {
                 "title": "trader",
@@ -7949,7 +7949,7 @@
             "type": "object",
             "required": [
               "id",
-              "type",
+              "t",
               "x"
             ],
             "properties": {
@@ -8063,6 +8063,12 @@
                   "null"
                 ]
               },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "af"
+                ]
+              },
               "tn": {
                 "title": "trade_time_ns",
                 "type": [
@@ -8079,12 +8085,6 @@
                   "null"
                 ],
                 "format": "int64"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "aberrant_fill"
-                ]
               },
               "u": {
                 "title": "trader",
@@ -8405,10 +8405,10 @@
               "q",
               "s",
               "src",
+              "t",
               "tif",
               "tn",
               "ts",
-              "type",
               "u",
               "x",
               "xq"
@@ -8480,6 +8480,12 @@
                   }
                 ]
               },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "w"
+                ]
+              },
               "tif": {
                 "title": "time_in_force",
                 "allOf": [
@@ -8498,12 +8504,6 @@
                 "title": "recv_time",
                 "type": "integer",
                 "format": "int64"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "order_pending"
-                ]
               },
               "u": {
                 "title": "trader",
@@ -8541,17 +8541,17 @@
           {
             "type": "object",
             "required": [
-              "order_id",
-              "type"
+              "id",
+              "t"
             ],
             "properties": {
-              "order_id": {
+              "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "order_ack"
+                  "a"
                 ]
               }
             }
@@ -8559,27 +8559,27 @@
           {
             "type": "object",
             "required": [
-              "order_id",
-              "reason",
-              "type"
+              "id",
+              "r",
+              "t"
             ],
             "properties": {
-              "message": {
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "m": {
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "order_id": {
-                "$ref": "#/definitions/OrderId"
-              },
-              "reason": {
+              "r": {
                 "$ref": "#/definitions/OrderRejectReason"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "order_reject"
+                  "r"
                 ]
               }
             }
@@ -8587,17 +8587,17 @@
           {
             "type": "object",
             "required": [
-              "order_id",
-              "type"
+              "id",
+              "t"
             ],
             "properties": {
-              "order_id": {
+              "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "order_out"
+                  "o"
                 ]
               }
             }
@@ -8605,17 +8605,17 @@
           {
             "type": "object",
             "required": [
-              "order_id",
-              "type"
+              "id",
+              "t"
             ],
             "properties": {
-              "order_id": {
+              "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "order_stale"
+                  "z"
                 ]
               }
             }
@@ -8627,7 +8627,7 @@
               "order_id",
               "recv_time",
               "status",
-              "type"
+              "t"
             ],
             "properties": {
               "id": {
@@ -8650,10 +8650,10 @@
               "status": {
                 "$ref": "#/definitions/CancelStatus"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "cancel_pending"
+                  "xc"
                 ]
               }
             }
@@ -8663,7 +8663,7 @@
             "required": [
               "id",
               "order_id",
-              "type"
+              "t"
             ],
             "properties": {
               "id": {
@@ -8673,10 +8673,10 @@
               "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "cancel_ack"
+                  "xa"
                 ]
               }
             }
@@ -8686,7 +8686,7 @@
             "required": [
               "id",
               "order_id",
-              "type"
+              "t"
             ],
             "properties": {
               "id": {
@@ -8702,10 +8702,10 @@
               "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "type": {
+              "t": {
                 "type": "string",
                 "enum": [
-                  "cancel_reject"
+                  "xr"
                 ]
               }
             }
@@ -8719,9 +8719,9 @@
               "p",
               "q",
               "s",
+              "t",
               "tn",
               "ts",
-              "type",
               "x"
             ],
             "properties": {
@@ -8822,6 +8822,12 @@
                 "title": "symbol",
                 "type": "string"
               },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "f"
+                ]
+              },
               "tn": {
                 "title": "trade_time_ns",
                 "type": "integer",
@@ -8833,12 +8839,6 @@
                 "description": "When the cpty claims the trade happened",
                 "type": "integer",
                 "format": "int64"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "fill"
-                ]
               },
               "u": {
                 "title": "trader",
@@ -8869,7 +8869,7 @@
             "type": "object",
             "required": [
               "id",
-              "type",
+              "t",
               "x"
             ],
             "properties": {
@@ -8983,6 +8983,12 @@
                   "null"
                 ]
               },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "af"
+                ]
+              },
               "tn": {
                 "title": "trade_time_ns",
                 "type": [
@@ -8999,12 +9005,6 @@
                   "null"
                 ],
                 "format": "int64"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "aberrant_fill"
-                ]
               },
               "u": {
                 "title": "trader",
@@ -9231,364 +9231,8 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "DropcopyResponse",
-        "type": "object",
-        "required": [
-          "aberrant_fills",
-          "fills",
-          "orders"
-        ],
-        "properties": {
-          "aberrant_fills": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/AberrantFill"
-            }
-          },
-          "fills": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/Fill"
-            }
-          },
-          "orders": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/Order"
-            }
-          }
-        },
-        "definitions": {
-          "AberrantFill": {
-            "description": "Fills which we received but couldn't parse fully, return details best effort",
-            "type": "object",
-            "required": [
-              "id",
-              "x"
-            ],
-            "properties": {
-              "a": {
-                "title": "account",
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "uuid"
-              },
-              "atn": {
-                "title": "recv_time_ns",
-                "type": [
-                  "integer",
-                  "null"
-                ],
-                "format": "uint32",
-                "minimum": 0.0
-              },
-              "ats": {
-                "title": "recv_time",
-                "type": [
-                  "integer",
-                  "null"
-                ],
-                "format": "int64"
-              },
-              "d": {
-                "title": "direction",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Dir"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "f": {
-                "title": "fee",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "fu": {
-                "title": "fee_currency",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "id": {
-                "title": "fill_id",
-                "type": "string",
-                "format": "uuid"
-              },
-              "k": {
-                "title": "fill_kind",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/FillKind"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "oid": {
-                "title": "order_id",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/OrderId"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "p": {
-                "title": "price",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "q": {
-                "title": "quantity",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "s": {
-                "title": "symbol",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "tn": {
-                "title": "trade_time_ns",
-                "type": [
-                  "integer",
-                  "null"
-                ],
-                "format": "uint32",
-                "minimum": 0.0
-              },
-              "ts": {
-                "title": "trade_time",
-                "type": [
-                  "integer",
-                  "null"
-                ],
-                "format": "int64"
-              },
-              "u": {
-                "title": "trader",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/UserId"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "x": {
-                "title": "execution_venue",
-                "type": "string"
-              },
-              "xid": {
-                "title": "exchange_fill_id",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              }
-            }
-          },
-          "Decimal": {
-            "type": "string"
-          },
-          "Dir": {
-            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
-            "type": "string",
-            "enum": [
-              "buy",
-              "sell"
-            ]
-          },
-          "Fill": {
-            "type": "object",
-            "required": [
-              "d",
-              "id",
-              "k",
-              "p",
-              "q",
-              "s",
-              "tn",
-              "ts",
-              "x"
-            ],
-            "properties": {
-              "a": {
-                "title": "account",
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "uuid"
-              },
-              "atn": {
-                "title": "recv_time_ns",
-                "type": [
-                  "integer",
-                  "null"
-                ],
-                "format": "uint32",
-                "minimum": 0.0
-              },
-              "ats": {
-                "title": "recv_time",
-                "description": "When Architect received the fill, if realtime",
-                "type": [
-                  "integer",
-                  "null"
-                ],
-                "format": "int64"
-              },
-              "d": {
-                "title": "direction",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/Dir"
-                  }
-                ]
-              },
-              "f": {
-                "title": "fee",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "fu": {
-                "title": "fee_currency",
-                "description": "Fee currency, if different from the price currency",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "id": {
-                "title": "fill_id",
-                "type": "string",
-                "format": "uuid"
-              },
-              "k": {
-                "title": "fill_kind",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/FillKind"
-                  }
-                ]
-              },
-              "oid": {
-                "title": "order_id",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/OrderId"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "p": {
-                "title": "price",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  }
-                ]
-              },
-              "q": {
-                "title": "quantity",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  }
-                ]
-              },
-              "s": {
-                "title": "symbol",
-                "type": "string"
-              },
-              "tn": {
-                "title": "trade_time_ns",
-                "type": "integer",
-                "format": "uint32",
-                "minimum": 0.0
-              },
-              "ts": {
-                "title": "trade_time",
-                "description": "When the cpty claims the trade happened",
-                "type": "integer",
-                "format": "int64"
-              },
-              "u": {
-                "title": "trader",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/UserId"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "x": {
-                "title": "execution_venue",
-                "type": "string"
-              },
-              "xid": {
-                "title": "exchange_fill_id",
-                "type": [
-                  "string",
-                  "null"
-                ]
-              }
-            }
-          },
-          "FillKind": {
-            "type": "integer",
-            "enum": [
-              0,
-              1,
-              2
-            ],
-            "x-enumNames": [
-              "Normal",
-              "Reversal",
-              "Correction"
-            ]
-          },
-          "Order": {
+        "oneOf": [
+          {
             "type": "object",
             "oneOf": [
               {
@@ -9692,6 +9336,7 @@
               "q",
               "s",
               "src",
+              "t",
               "tif",
               "tn",
               "ts",
@@ -9766,6 +9411,12 @@
                   }
                 ]
               },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "o"
+                ]
+              },
               "tif": {
                 "title": "time_in_force",
                 "allOf": [
@@ -9817,6 +9468,352 @@
                 ]
               }
             }
+          },
+          {
+            "type": "object",
+            "required": [
+              "d",
+              "id",
+              "k",
+              "p",
+              "q",
+              "s",
+              "t",
+              "tn",
+              "ts",
+              "x"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              },
+              "atn": {
+                "title": "recv_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "description": "When Architect received the fill, if realtime",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "f": {
+                "title": "fee",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fu": {
+                "title": "fee_currency",
+                "description": "Fee currency, if different from the price currency",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "title": "fill_id",
+                "type": "string",
+                "format": "uuid"
+              },
+              "k": {
+                "title": "fill_kind",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/FillKind"
+                  }
+                ]
+              },
+              "oid": {
+                "title": "order_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "p": {
+                "title": "price",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "f"
+                ]
+              },
+              "tn": {
+                "title": "trade_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "trade_time",
+                "description": "When the cpty claims the trade happened",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          {
+            "description": "Fills which we received but couldn't parse fully, return details best effort",
+            "type": "object",
+            "required": [
+              "id",
+              "t",
+              "x"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              },
+              "atn": {
+                "title": "recv_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "direction",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "f": {
+                "title": "fee",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fu": {
+                "title": "fee_currency",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "title": "fill_id",
+                "type": "string",
+                "format": "uuid"
+              },
+              "k": {
+                "title": "fill_kind",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/FillKind"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "oid": {
+                "title": "order_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "p": {
+                "title": "price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "quantity",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "s": {
+                "title": "symbol",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "af"
+                ]
+              },
+              "tn": {
+                "title": "trade_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "trade_time",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        ],
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell"
+            ]
+          },
+          "FillKind": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Normal",
+              "Reversal",
+              "Correction"
+            ]
           },
           "OrderId": {
             "description": "System-unique, persistent order identifiers",

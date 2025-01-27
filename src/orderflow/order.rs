@@ -123,14 +123,17 @@ pub enum OrderStatus {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct OrderAck {
+    #[serde(rename = "id")]
     pub order_id: OrderId,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct OrderReject {
+    #[serde(rename = "id")]
     pub order_id: OrderId,
+    #[serde(rename = "r")]
     pub reason: OrderRejectReason,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "m", skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
 }
 
@@ -146,12 +149,14 @@ pub enum OrderRejectReason {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct OrderOut {
+    #[serde(rename = "id")]
     pub order_id: OrderId,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct OrderStale {
+    #[serde(rename = "id")]
     pub order_id: OrderId,
 }
 

@@ -1,4 +1,4 @@
-use crate::{symbology::ExecutionVenue, AccountId, UserId};
+use crate::{oms::*, symbology::ExecutionVenue, AccountId, UserId};
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -23,25 +23,38 @@ pub use order_types::*;
     bidi_streaming
 )]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[serde(tag = "t")]
 pub enum OrderflowRequest {
-    PlaceOrder(crate::oms::PlaceOrderRequest),
-    CancelOrder(crate::oms::CancelOrderRequest),
-    CancelAllOrders(crate::oms::CancelAllOrdersRequest),
+    #[serde(rename = "p")]
+    PlaceOrder(PlaceOrderRequest),
+    #[serde(rename = "x")]
+    CancelOrder(CancelOrderRequest),
+    #[serde(rename = "xo")]
+    CancelAllOrders(CancelAllOrdersRequest),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[serde(tag = "t")]
 pub enum OrderflowResponse {
+    #[serde(rename = "w")]
     OrderPending(Order),
+    #[serde(rename = "a")]
     OrderAck(OrderAck),
+    #[serde(rename = "r")]
     OrderReject(OrderReject),
+    #[serde(rename = "o")]
     OrderOut(OrderOut),
+    #[serde(rename = "z")]
     OrderStale(OrderStale),
+    #[serde(rename = "xc")]
     CancelPending(Cancel),
+    #[serde(rename = "xa")]
     CancelAck(CancelAck),
+    #[serde(rename = "xr")]
     CancelReject(CancelReject),
+    #[serde(rename = "f")]
     Fill(Fill),
+    #[serde(rename = "af")]
     AberrantFill(AberrantFill),
 }
 
@@ -93,8 +106,12 @@ impl DropcopyRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct DropcopyResponse {
-    pub orders: Vec<Order>,
-    pub fills: Vec<Fill>,
-    pub aberrant_fills: Vec<AberrantFill>,
+#[serde(tag = "t")]
+pub enum DropcopyResponse {
+    #[serde(rename = "o")]
+    Order(Order),
+    #[serde(rename = "f")]
+    Fill(Fill),
+    #[serde(rename = "af")]
+    AberrantFill(AberrantFill),
 }
