@@ -91,6 +91,11 @@ impl Product {
         Self::new(symbol, venue_discriminant, "Index")
     }
 
+    pub fn equity(symbol: &str, country: &str) -> Result<Self> {
+        let symbol = format!("{symbol} {country}");
+        Self::new(&symbol, None, "Equity")
+    }
+
     pub fn future(
         symbol: &str,
         expiration: NaiveDate,

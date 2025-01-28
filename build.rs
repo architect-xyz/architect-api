@@ -147,6 +147,15 @@ fn build_grpc_stubs() {
         )
         .method(
             tonic_build::manual::Method::builder()
+                .name("historical_candles")
+                .route_name("HistoricalCandles")
+                .input_type("crate::marketdata::HistoricalCandlesRequest")
+                .output_type("crate::marketdata::HistoricalCandlesResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
                 .name("subscribe_trades")
                 .route_name("SubscribeTrades")
                 .input_type("crate::marketdata::SubscribeTradesRequest")

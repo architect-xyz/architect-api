@@ -386,6 +386,26 @@ impl Candle {
     }
 }
 
+// Query historical candles for a single market.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
+    name = "historical_candles",
+    response = "HistoricalCandlesResponse"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct HistoricalCandlesRequest {
+    pub symbol: String,
+    pub candle_width: CandleWidth,
+    pub start_date: DateTime<Utc>,
+    pub end_date: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct HistoricalCandlesResponse {
+    pub candles: Vec<Candle>,
+}
+
 #[grpc(package = "json.architect")]
 #[grpc(
     service = "Marketdata",
