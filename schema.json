@@ -6245,9 +6245,88 @@
         "title": "Ticker",
         "type": "object",
         "required": [
-          "s"
+          "s",
+          "tn",
+          "ts"
         ],
         "properties": {
+          "ap": {
+            "title": "ask_price",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "as": {
+            "title": "ask_size",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bp": {
+            "title": "bid_price",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bs": {
+            "title": "bid_size",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dividend": {
+            "title": "dividend",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dividend_yield": {
+            "title": "dividend_yield",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "eps_adj": {
+            "title": "eps_adj",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "h": {
             "title": "high_24h",
             "anyOf": [
@@ -6261,6 +6340,17 @@
           },
           "l": {
             "title": "low_24h",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "market_cap": {
+            "title": "market_cap",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6292,9 +6382,53 @@
               }
             ]
           },
+          "p": {
+            "title": "last_price",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "price_to_earnings": {
+            "title": "price_to_earnings",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "q": {
+            "title": "last_size",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "s": {
             "title": "symbol",
             "type": "string"
+          },
+          "shares_outstanding_weighted_adj": {
+            "title": "shares_outstanding_weighted_adj",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "sp": {
             "title": "last_settlement_price",
@@ -6306,6 +6440,17 @@
                 "type": "null"
               }
             ]
+          },
+          "tn": {
+            "title": "timestamp_ns",
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "ts": {
+            "title": "timestamp",
+            "type": "integer",
+            "format": "int64"
           },
           "v": {
             "title": "volume_24h",
@@ -6353,6 +6498,17 @@
           },
           "xo": {
             "title": "session_open",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "xv": {
+            "title": "session_volume",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6417,9 +6573,88 @@
           "Ticker": {
             "type": "object",
             "required": [
-              "s"
+              "s",
+              "tn",
+              "ts"
             ],
             "properties": {
+              "ap": {
+                "title": "ask_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "as": {
+                "title": "ask_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bp": {
+                "title": "bid_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bs": {
+                "title": "bid_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dividend": {
+                "title": "dividend",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dividend_yield": {
+                "title": "dividend_yield",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "eps_adj": {
+                "title": "eps_adj",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "h": {
                 "title": "high_24h",
                 "anyOf": [
@@ -6433,6 +6668,17 @@
               },
               "l": {
                 "title": "low_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "market_cap": {
+                "title": "market_cap",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6464,9 +6710,53 @@
                   }
                 ]
               },
+              "p": {
+                "title": "last_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_to_earnings": {
+                "title": "price_to_earnings",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "last_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "s": {
                 "title": "symbol",
                 "type": "string"
+              },
+              "shares_outstanding_weighted_adj": {
+                "title": "shares_outstanding_weighted_adj",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "sp": {
                 "title": "last_settlement_price",
@@ -6478,6 +6768,17 @@
                     "type": "null"
                   }
                 ]
+              },
+              "tn": {
+                "title": "timestamp_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "timestamp",
+                "type": "integer",
+                "format": "int64"
               },
               "v": {
                 "title": "volume_24h",
@@ -6525,6 +6826,17 @@
               },
               "xo": {
                 "title": "session_open",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xv": {
+                "title": "session_volume",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6568,9 +6880,88 @@
             "type": "object",
             "required": [
               "s",
-              "t"
+              "t",
+              "tn",
+              "ts"
             ],
             "properties": {
+              "ap": {
+                "title": "ask_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "as": {
+                "title": "ask_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bp": {
+                "title": "bid_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bs": {
+                "title": "bid_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dividend": {
+                "title": "dividend",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dividend_yield": {
+                "title": "dividend_yield",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "eps_adj": {
+                "title": "eps_adj",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "h": {
                 "title": "high_24h",
                 "anyOf": [
@@ -6584,6 +6975,17 @@
               },
               "l": {
                 "title": "low_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "market_cap": {
+                "title": "market_cap",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6615,9 +7017,53 @@
                   }
                 ]
               },
+              "p": {
+                "title": "last_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_to_earnings": {
+                "title": "price_to_earnings",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "last_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "s": {
                 "title": "symbol",
                 "type": "string"
+              },
+              "shares_outstanding_weighted_adj": {
+                "title": "shares_outstanding_weighted_adj",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "sp": {
                 "title": "last_settlement_price",
@@ -6635,6 +7081,17 @@
                 "enum": [
                   "snapshot"
                 ]
+              },
+              "tn": {
+                "title": "timestamp_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "timestamp",
+                "type": "integer",
+                "format": "int64"
               },
               "v": {
                 "title": "volume_24h",
@@ -6690,6 +7147,17 @@
                     "type": "null"
                   }
                 ]
+              },
+              "xv": {
+                "title": "session_volume",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             }
           },
@@ -6702,6 +7170,83 @@
               "ts"
             ],
             "properties": {
+              "ap": {
+                "title": "ask_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "as": {
+                "title": "ask_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bp": {
+                "title": "bid_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bs": {
+                "title": "bid_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dividend": {
+                "title": "dividend",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dividend_yield": {
+                "title": "dividend_yield",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "eps_adj": {
+                "title": "eps_adj",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "h": {
                 "title": "high_24h",
                 "anyOf": [
@@ -6715,6 +7260,17 @@
               },
               "l": {
                 "title": "low_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "market_cap": {
+                "title": "market_cap",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6746,9 +7302,53 @@
                   }
                 ]
               },
+              "p": {
+                "title": "last_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_to_earnings": {
+                "title": "price_to_earnings",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "last_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "s": {
                 "title": "symbol",
                 "type": "string"
+              },
+              "shares_outstanding_weighted_adj": {
+                "title": "shares_outstanding_weighted_adj",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "sp": {
                 "title": "last_settlement_price",
@@ -6824,6 +7424,17 @@
               },
               "xo": {
                 "title": "session_open",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xv": {
+                "title": "session_volume",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6926,464 +7537,6 @@
               "buy",
               "sell"
             ]
-          }
-        }
-      }
-    }
-  ]
-},
-
-{
-  "$schema": "jsonschema",
-  "name": "MarketdataSnapshots",
-  "rpcs": [
-    {
-      "type": "unary",
-      "route": "/json.architect.MarketdataSnapshots/MarketdataSnapshot",
-      "request_type": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "MarketdataSnapshotRequest",
-        "type": "object",
-        "required": [
-          "symbol"
-        ],
-        "properties": {
-          "latest_at_or_before": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "symbol": {
-            "type": "string"
-          },
-          "venue": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
-        }
-      },
-      "response_type": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "MarketdataSnapshot",
-        "type": "object",
-        "required": [
-          "s",
-          "tn",
-          "ts"
-        ],
-        "properties": {
-          "a": {
-            "title": "ask_price",
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "b": {
-            "title": "bid_price",
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "h": {
-            "title": "high_24h",
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "l": {
-            "title": "low_24h",
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "o": {
-            "title": "open_24h",
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "oi": {
-            "title": "open_interest",
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "p": {
-            "title": "last_price",
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "s": {
-            "title": "symbol",
-            "type": "string"
-          },
-          "tn": {
-            "title": "timestamp_ns",
-            "type": "integer",
-            "format": "uint32",
-            "minimum": 0.0
-          },
-          "ts": {
-            "title": "timestamp",
-            "type": "integer",
-            "format": "int64"
-          },
-          "v": {
-            "title": "volume_24h",
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Decimal"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "definitions": {
-          "Decimal": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    {
-      "type": "unary",
-      "route": "/json.architect.MarketdataSnapshots/MarketdataSnapshots",
-      "request_type": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "MarketdataSnapshotsRequest",
-        "type": "object",
-        "properties": {
-          "latest_at_or_before": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "venue": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
-        }
-      },
-      "response_type": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "MarketdataSnapshotsResponse",
-        "type": "object",
-        "required": [
-          "snapshots"
-        ],
-        "properties": {
-          "snapshots": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/MarketdataSnapshot"
-            }
-          }
-        },
-        "definitions": {
-          "Decimal": {
-            "type": "string"
-          },
-          "MarketdataSnapshot": {
-            "type": "object",
-            "required": [
-              "s",
-              "tn",
-              "ts"
-            ],
-            "properties": {
-              "a": {
-                "title": "ask_price",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "b": {
-                "title": "bid_price",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "h": {
-                "title": "high_24h",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "l": {
-                "title": "low_24h",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "o": {
-                "title": "open_24h",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "oi": {
-                "title": "open_interest",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "p": {
-                "title": "last_price",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "s": {
-                "title": "symbol",
-                "type": "string"
-              },
-              "tn": {
-                "title": "timestamp_ns",
-                "type": "integer",
-                "format": "uint32",
-                "minimum": 0.0
-              },
-              "ts": {
-                "title": "timestamp",
-                "type": "integer",
-                "format": "int64"
-              },
-              "v": {
-                "title": "volume_24h",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "stream",
-      "route": "/json.architect.MarketdataSnapshots/SubscribeMarketdataSnapshots",
-      "request_type": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "SubscribeMarketdataSnapshotsRequest",
-        "type": "object"
-      },
-      "response_type": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "SubscribeMarketdataSnapshotsResponse",
-        "type": "object",
-        "required": [
-          "snapshots"
-        ],
-        "properties": {
-          "snapshots": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/MarketdataSnapshot"
-            }
-          }
-        },
-        "definitions": {
-          "Decimal": {
-            "type": "string"
-          },
-          "MarketdataSnapshot": {
-            "type": "object",
-            "required": [
-              "s",
-              "tn",
-              "ts"
-            ],
-            "properties": {
-              "a": {
-                "title": "ask_price",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "b": {
-                "title": "bid_price",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "h": {
-                "title": "high_24h",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "l": {
-                "title": "low_24h",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "o": {
-                "title": "open_24h",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "oi": {
-                "title": "open_interest",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "p": {
-                "title": "last_price",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "s": {
-                "title": "symbol",
-                "type": "string"
-              },
-              "tn": {
-                "title": "timestamp_ns",
-                "type": "integer",
-                "format": "uint32",
-                "minimum": 0.0
-              },
-              "ts": {
-                "title": "timestamp",
-                "type": "integer",
-                "format": "int64"
-              },
-              "v": {
-                "title": "volume_24h",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              }
-            }
           }
         }
       }

@@ -212,42 +212,6 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
-    let json_marketdata_snapshots_service = tonic_build::manual::Service::builder()
-        .name("MarketdataSnapshots")
-        .package("json.architect")
-        .method(
-            tonic_build::manual::Method::builder()
-                .name("marketdata_snapshot")
-                .route_name("MarketdataSnapshot")
-                .input_type("crate::marketdata::snapshots::MarketdataSnapshotRequest")
-                .output_type("crate::marketdata::snapshots::MarketdataSnapshot")
-                .codec_path(json_codec)
-                .build(),
-        )
-        .method(
-            tonic_build::manual::Method::builder()
-                .name("marketdata_snapshots")
-                .route_name("MarketdataSnapshots")
-                .input_type("crate::marketdata::snapshots::MarketdataSnapshotsRequest")
-                .output_type("crate::marketdata::snapshots::MarketdataSnapshotsResponse")
-                .codec_path(json_codec)
-                .build(),
-        )
-        .method(
-            tonic_build::manual::Method::builder()
-                .name("subscribe_marketdata_snapshots")
-                .route_name("SubscribeMarketdataSnapshots")
-                .input_type(
-                    "crate::marketdata::snapshots::SubscribeMarketdataSnapshotsRequest",
-                )
-                .output_type(
-                    "crate::marketdata::snapshots::SubscribeMarketdataSnapshotsResponse",
-                )
-                .server_streaming()
-                .codec_path(json_codec)
-                .build(),
-        )
-        .build();
     let json_orderflow_service = tonic_build::manual::Service::builder()
         .name("Orderflow")
         .package("json.architect")
@@ -391,7 +355,6 @@ fn build_grpc_stubs() {
             &json_health_service,
             &json_symbology_service,
             &json_marketdata_service,
-            &json_marketdata_snapshots_service,
             &json_orderflow_service,
             &json_oms_service,
             &json_folio_service,
@@ -400,7 +363,6 @@ fn build_grpc_stubs() {
         json_health_service,
         json_symbology_service,
         json_marketdata_service,
-        json_marketdata_snapshots_service,
         json_orderflow_service,
         json_oms_service,
         json_folio_service,

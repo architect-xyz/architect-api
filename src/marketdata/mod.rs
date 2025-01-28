@@ -9,8 +9,6 @@ use serde_with::skip_serializing_none;
 pub mod candle_width;
 pub use candle_width::CandleWidth;
 
-pub mod snapshots;
-
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "l1_book_snapshot", response = "L1BookSnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -476,9 +474,27 @@ pub struct TickerRequest {
     pub symbol: String,
 }
 
+#[skip_serializing_none]
 #[derive(Default, Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct TickerValues {
+    #[serde(rename = "bp")]
+    #[schemars(title = "bid_price")]
+    pub bid_price: Option<Decimal>,
+    #[serde(rename = "bs")]
+    #[schemars(title = "bid_size")]
+    pub bid_size: Option<Decimal>,
+    #[serde(rename = "ap")]
+    #[schemars(title = "ask_price")]
+    pub ask_price: Option<Decimal>,
+    #[serde(rename = "as")]
+    #[schemars(title = "ask_size")]
+    pub ask_size: Option<Decimal>,
+    #[serde(rename = "p")]
+    #[schemars(title = "last_price")]
+    pub last_price: Option<Decimal>,
+    #[serde(rename = "q")]
+    #[schemars(title = "last_size")]
+    pub last_size: Option<Decimal>,
     #[serde(rename = "xo")]
     #[schemars(title = "session_open")]
     pub session_open: Option<Decimal>,
@@ -488,6 +504,9 @@ pub struct TickerValues {
     #[serde(rename = "xh")]
     #[schemars(title = "session_high")]
     pub session_high: Option<Decimal>,
+    #[serde(rename = "xv")]
+    #[schemars(title = "session_volume")]
+    pub session_volume: Option<Decimal>,
     #[serde(rename = "o")]
     #[schemars(title = "open_24h")]
     pub open_24h: Option<Decimal>,
@@ -509,6 +528,17 @@ pub struct TickerValues {
     #[serde(rename = "sp")]
     #[schemars(title = "last_settlement_price")]
     pub last_settlement_price: Option<Decimal>,
+    pub market_cap: Option<Decimal>,
+    pub price_to_earnings: Option<Decimal>,
+    pub eps_adj: Option<Decimal>,
+    pub shares_outstanding_weighted_adj: Option<Decimal>,
+    pub dividend: Option<Decimal>,
+    pub dividend_yield: Option<Decimal>,
+    /*
+    #[serde(rename = "dvex")]
+    #[schemars(title = "dividend_ex_date")]
+    pub dividend_ex_date: Option<String>,
+    */
 }
 
 impl TickerValues {
@@ -527,13 +557,24 @@ impl TickerValues {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct Ticker {
     #[serde(rename = "s")]
     #[schemars(title = "symbol")]
     pub symbol: String,
+    #[serde(rename = "ts")]
+    #[schemars(title = "timestamp")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    #[schemars(title = "timestamp_ns")]
+    pub timestamp_ns: u32,
     #[serde(flatten)]
     pub values: TickerValues,
+}
+
+impl Ticker {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        DateTime::<Utc>::from_timestamp(self.timestamp, self.timestamp_ns)
+    }
 }
 
 #[grpc(package = "json.architect")]
@@ -547,7 +588,6 @@ pub struct TickersRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct TickersResponse {
     pub tickers: Vec<Ticker>,
 }
@@ -576,23 +616,7 @@ pub enum TickerUpdate {
     Snapshot(Ticker),
     #[serde(rename = "d")]
     #[schemars(rename = "diff")]
-    Diff(TickerDiff),
-}
-
-#[skip_serializing_none]
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct TickerDiff {
-    #[serde(rename = "s")]
-    #[schemars(title = "symbol")]
-    pub symbol: String,
-    #[serde(rename = "ts")]
-    #[schemars(title = "timestamp")]
-    pub timestamp: i64,
-    #[serde(rename = "tn")]
-    #[schemars(title = "timestamp_ns")]
-    pub timestamp_ns: u32,
-    #[serde(flatten)]
-    pub values: TickerValues,
+    Diff(Ticker),
 }
 
 #[grpc(package = "json.architect")]
