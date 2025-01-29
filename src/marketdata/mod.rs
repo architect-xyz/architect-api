@@ -561,6 +561,9 @@ pub struct Ticker {
     #[serde(rename = "s")]
     #[schemars(title = "symbol")]
     pub symbol: String,
+    #[serde(rename = "ve")]
+    #[schemars(title = "venue")]
+    pub venue: MarketdataVenue,
     #[serde(rename = "ts")]
     #[schemars(title = "timestamp")]
     pub timestamp: i64,

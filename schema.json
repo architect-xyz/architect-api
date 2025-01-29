@@ -6246,6 +6246,7 @@
         "type": "object",
         "required": [
           "s",
+          "sv",
           "tn",
           "ts"
         ],
@@ -6295,7 +6296,6 @@
             ]
           },
           "dividend": {
-            "title": "dividend",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6306,7 +6306,6 @@
             ]
           },
           "dividend_yield": {
-            "title": "dividend_yield",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6317,7 +6316,6 @@
             ]
           },
           "eps_adj": {
-            "title": "eps_adj",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6350,7 +6348,6 @@
             ]
           },
           "market_cap": {
-            "title": "market_cap",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6394,7 +6391,6 @@
             ]
           },
           "price_to_earnings": {
-            "title": "price_to_earnings",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6420,7 +6416,6 @@
             "type": "string"
           },
           "shares_outstanding_weighted_adj": {
-            "title": "shares_outstanding_weighted_adj",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6440,6 +6435,10 @@
                 "type": "null"
               }
             ]
+          },
+          "sv": {
+            "title": "venue",
+            "type": "string"
           },
           "tn": {
             "title": "timestamp_ns",
@@ -6574,6 +6573,7 @@
             "type": "object",
             "required": [
               "s",
+              "sv",
               "tn",
               "ts"
             ],
@@ -6623,7 +6623,6 @@
                 ]
               },
               "dividend": {
-                "title": "dividend",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6634,7 +6633,6 @@
                 ]
               },
               "dividend_yield": {
-                "title": "dividend_yield",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6645,7 +6643,6 @@
                 ]
               },
               "eps_adj": {
-                "title": "eps_adj",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6678,7 +6675,6 @@
                 ]
               },
               "market_cap": {
-                "title": "market_cap",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6722,7 +6718,6 @@
                 ]
               },
               "price_to_earnings": {
-                "title": "price_to_earnings",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6748,7 +6743,6 @@
                 "type": "string"
               },
               "shares_outstanding_weighted_adj": {
-                "title": "shares_outstanding_weighted_adj",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6768,6 +6762,10 @@
                     "type": "null"
                   }
                 ]
+              },
+              "sv": {
+                "title": "venue",
+                "type": "string"
               },
               "tn": {
                 "title": "timestamp_ns",
@@ -6880,6 +6878,7 @@
             "type": "object",
             "required": [
               "s",
+              "sv",
               "t",
               "tn",
               "ts"
@@ -6930,7 +6929,6 @@
                 ]
               },
               "dividend": {
-                "title": "dividend",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6941,7 +6939,6 @@
                 ]
               },
               "dividend_yield": {
-                "title": "dividend_yield",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6952,7 +6949,6 @@
                 ]
               },
               "eps_adj": {
-                "title": "eps_adj",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6985,7 +6981,6 @@
                 ]
               },
               "market_cap": {
-                "title": "market_cap",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7029,7 +7024,6 @@
                 ]
               },
               "price_to_earnings": {
-                "title": "price_to_earnings",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7055,7 +7049,6 @@
                 "type": "string"
               },
               "shares_outstanding_weighted_adj": {
-                "title": "shares_outstanding_weighted_adj",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7075,6 +7068,10 @@
                     "type": "null"
                   }
                 ]
+              },
+              "sv": {
+                "title": "venue",
+                "type": "string"
               },
               "t": {
                 "type": "string",
@@ -7165,6 +7162,7 @@
             "type": "object",
             "required": [
               "s",
+              "sv",
               "t",
               "tn",
               "ts"
@@ -7215,7 +7213,6 @@
                 ]
               },
               "dividend": {
-                "title": "dividend",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7226,7 +7223,6 @@
                 ]
               },
               "dividend_yield": {
-                "title": "dividend_yield",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7237,7 +7233,6 @@
                 ]
               },
               "eps_adj": {
-                "title": "eps_adj",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7270,7 +7265,6 @@
                 ]
               },
               "market_cap": {
-                "title": "market_cap",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7314,7 +7308,6 @@
                 ]
               },
               "price_to_earnings": {
-                "title": "price_to_earnings",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7340,7 +7333,6 @@
                 "type": "string"
               },
               "shares_outstanding_weighted_adj": {
-                "title": "shares_outstanding_weighted_adj",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7360,6 +7352,10 @@
                     "type": "null"
                   }
                 ]
+              },
+              "sv": {
+                "title": "venue",
+                "type": "string"
               },
               "t": {
                 "type": "string",
