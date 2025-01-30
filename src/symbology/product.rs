@@ -3,7 +3,7 @@
 use super::*;
 use anyhow::{anyhow, bail, Result};
 use chrono::{DateTime, NaiveDate, Utc};
-use derive_more::{AsRef, Display};
+use derive_more::{AsRef, Deref, Display, From};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -13,7 +13,9 @@ use strum_macros::{EnumString, IntoStaticStr};
 #[derive(
     Debug,
     Display,
+    From,
     AsRef,
+    Deref,
     Clone,
     PartialEq,
     Eq,
@@ -59,14 +61,6 @@ impl Product {
             None => format!("{} {}", symbol, product_kind),
         };
         Ok(Self(inner))
-    }
-
-    pub fn new_unchecked(symbol: String) -> Self {
-        Self(symbol)
-    }
-
-    pub fn as_str(&self) -> &str {
-        &self.0
     }
 
     pub fn fiat(symbol: &str) -> Result<Self> {

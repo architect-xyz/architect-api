@@ -8,6 +8,18 @@ pub enum TraderIdOrEmail {
     Email(String),
 }
 
+impl std::str::FromStr for TraderIdOrEmail {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s.contains('@') {
+            Ok(Self::Email(s.to_string()))
+        } else {
+            Ok(Self::Id(s.parse()?))
+        }
+    }
+}
+
 json_schema_is_string!(TraderIdOrEmail);
 
 #[cfg(test)]

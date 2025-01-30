@@ -40,19 +40,19 @@ json_schema_is_string!(AccountName);
 impl AccountName {
     /// Constructor that codifies some attempt at standard naming convention
     pub fn new(
-        venue_name: impl AsRef<str>,
-        exchange_account_id: impl AsRef<str>,
+        cpty_name: impl AsRef<str>,
+        cpty_account_id: impl AsRef<str>,
     ) -> Result<Self> {
-        let name = format!("{}:{}", venue_name.as_ref(), exchange_account_id.as_ref());
+        let name = format!("{}:{}", cpty_name.as_ref(), cpty_account_id.as_ref());
         Ok(Self(Str::try_from(name)?))
     }
 
-    pub fn venue_name(&self) -> Option<&str> {
-        self.0.split_once(':').map(|(v, _)| v)
+    pub fn cpty_name(&self) -> Option<&str> {
+        self.0.split_once(':').map(|(c, _)| c)
     }
 
-    pub fn exchange_account_id(&self) -> Option<&str> {
-        self.0.split_once(':').map(|(_, e)| e)
+    pub fn cpty_account_id(&self) -> Option<&str> {
+        self.0.split_once(':').map(|(_, c)| c)
     }
 }
 

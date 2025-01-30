@@ -4,7 +4,7 @@
 
 use super::Product;
 use anyhow::{bail, Result};
-use derive_more::{AsRef, Display};
+use derive_more::{AsRef, Deref, Display, From};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
@@ -12,6 +12,8 @@ use std::str::FromStr;
 #[derive(
     Debug,
     Display,
+    Deref,
+    From,
     AsRef,
     Clone,
     PartialEq,
@@ -27,38 +29,34 @@ use std::str::FromStr;
 #[serde(transparent)]
 #[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
 #[cfg_attr(feature = "postgres", postgres(transparent))]
-pub struct TradableProduct(String);
+pub struct TradableProduct(pub(crate) String);
 
 impl TradableProduct {
     pub fn new(base: &Product, quote: Option<&Product>) -> Result<Self> {
-        if base.0.contains('/') {
+        if base.contains('/') {
             bail!("base product cannot contain '/'");
         }
         match quote {
             Some(quote) => {
-                if quote.0.contains('/') {
+                if quote.contains('/') {
                     bail!("quote product cannot contain '/'");
                 }
                 Ok(Self(format!("{base}/{quote}")))
             }
-            None => Ok(Self(base.0.clone())),
+            None => Ok(Self(base.to_string())),
         }
     }
 
-    pub(crate) fn new_unchecked(symbol: impl AsRef<str>) -> Self {
-        Self(symbol.as_ref().to_string())
-    }
-
     pub fn base(&self) -> Product {
-        match self.0.split_once('/') {
-            Some((base, _)) => Product::new_unchecked(base.to_string()),
-            None => Product::new_unchecked(self.0.clone()),
+        match self.split_once('/') {
+            Some((base, _)) => Product(base.to_string()),
+            None => Product(self.0.clone()),
         }
     }
 
     pub fn quote(&self) -> Option<Product> {
         match self.0.split_once('/') {
-            Some((_, quote)) => Some(Product::new_unchecked(quote.to_string())),
+            Some((_, quote)) => Some(Product(quote.to_string())),
             None => None,
         }
     }
@@ -77,7 +75,7 @@ impl FromStr for TradableProduct {
         if s.chars().filter(|c| *c == '/').count() > 1 {
             bail!("tradable product symbol cannot contain more than one forward slash character '/'");
         }
-        Ok(Self::new_unchecked(s))
+        Ok(Self(s.to_string()))
     }
 }
 

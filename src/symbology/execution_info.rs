@@ -32,6 +32,7 @@ impl TickSize {
     }
 }
 
+// TODO: un snake_case this
 #[derive(
     Default,
     Debug,

@@ -8093,6 +8093,13 @@
                   }
                 ]
               },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "s": {
                 "title": "symbol",
                 "type": "string"
@@ -8192,14 +8199,14 @@
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "m": {
+              "r": {
+                "$ref": "#/definitions/OrderRejectReason"
+              },
+              "rm": {
                 "type": [
                   "string",
                   "null"
                 ]
-              },
-              "r": {
-                "$ref": "#/definitions/OrderRejectReason"
               },
               "t": {
                 "type": "string",
@@ -8249,37 +8256,43 @@
             "type": "object",
             "required": [
               "id",
-              "order_id",
-              "recv_time",
-              "status",
-              "t"
+              "o",
+              "t",
+              "tn",
+              "ts",
+              "xid"
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "recv_time": {
-                "type": "string",
-                "format": "date-time"
+              "o": {
+                "$ref": "#/definitions/CancelStatus"
               },
-              "reject_reason": {
+              "r": {
                 "type": [
                   "string",
                   "null"
                 ]
-              },
-              "status": {
-                "$ref": "#/definitions/CancelStatus"
               },
               "t": {
                 "type": "string",
                 "enum": [
                   "xc"
                 ]
+              },
+              "tn": {
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "xid": {
+                "type": "string",
+                "format": "uuid"
               }
             }
           },
@@ -8287,15 +8300,39 @@
             "type": "object",
             "required": [
               "id",
-              "order_id",
+              "t",
+              "xid"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "rm": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "xr"
+                ]
+              },
+              "xid": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
               "t"
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
               "t": {
@@ -8303,6 +8340,13 @@
                 "enum": [
                   "xa"
                 ]
+              },
+              "xid": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
               }
             }
           },
@@ -8310,28 +8354,24 @@
             "type": "object",
             "required": [
               "id",
-              "order_id",
               "t"
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "message": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
               "t": {
                 "type": "string",
                 "enum": [
-                  "xr"
+                  "xx"
                 ]
+              },
+              "xid": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
               }
             }
           },
@@ -8658,11 +8698,16 @@
         ],
         "definitions": {
           "CancelStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected"
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected"
             ]
           },
           "Decimal": {
@@ -8746,17 +8791,15 @@
               0,
               1,
               2,
-              3,
-              4,
+              127,
               128,
               129,
               254
             ],
             "x-enumNames": [
               "Pending",
-              "Acked",
-              "Rejected",
               "Open",
+              "Rejected",
               "Out",
               "Canceling",
               "Canceled",
@@ -9016,6 +9059,13 @@
                   }
                 ]
               },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "s": {
                 "title": "symbol",
                 "type": "string"
@@ -9115,14 +9165,14 @@
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "m": {
+              "r": {
+                "$ref": "#/definitions/OrderRejectReason"
+              },
+              "rm": {
                 "type": [
                   "string",
                   "null"
                 ]
-              },
-              "r": {
-                "$ref": "#/definitions/OrderRejectReason"
               },
               "t": {
                 "type": "string",
@@ -9172,37 +9222,43 @@
             "type": "object",
             "required": [
               "id",
-              "order_id",
-              "recv_time",
-              "status",
-              "t"
+              "o",
+              "t",
+              "tn",
+              "ts",
+              "xid"
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "recv_time": {
-                "type": "string",
-                "format": "date-time"
+              "o": {
+                "$ref": "#/definitions/CancelStatus"
               },
-              "reject_reason": {
+              "r": {
                 "type": [
                   "string",
                   "null"
                 ]
-              },
-              "status": {
-                "$ref": "#/definitions/CancelStatus"
               },
               "t": {
                 "type": "string",
                 "enum": [
                   "xc"
                 ]
+              },
+              "tn": {
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "xid": {
+                "type": "string",
+                "format": "uuid"
               }
             }
           },
@@ -9210,15 +9266,39 @@
             "type": "object",
             "required": [
               "id",
-              "order_id",
+              "t",
+              "xid"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "rm": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "xr"
+                ]
+              },
+              "xid": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
               "t"
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
               "t": {
@@ -9226,6 +9306,13 @@
                 "enum": [
                   "xa"
                 ]
+              },
+              "xid": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
               }
             }
           },
@@ -9233,28 +9320,24 @@
             "type": "object",
             "required": [
               "id",
-              "order_id",
               "t"
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "message": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
               "t": {
                 "type": "string",
                 "enum": [
-                  "xr"
+                  "xx"
                 ]
+              },
+              "xid": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
               }
             }
           },
@@ -9581,11 +9664,16 @@
         ],
         "definitions": {
           "CancelStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected"
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected"
             ]
           },
           "Decimal": {
@@ -9669,17 +9757,15 @@
               0,
               1,
               2,
-              3,
-              4,
+              127,
               128,
               129,
               254
             ],
             "x-enumNames": [
               "Pending",
-              "Acked",
-              "Rejected",
               "Open",
+              "Rejected",
               "Out",
               "Canceling",
               "Canceled",
@@ -9950,6 +10036,13 @@
                   }
                 ]
               },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "s": {
                 "title": "symbol",
                 "type": "string"
@@ -10423,17 +10516,15 @@
               0,
               1,
               2,
-              3,
-              4,
+              127,
               128,
               129,
               254
             ],
             "x-enumNames": [
               "Pending",
-              "Acked",
-              "Rejected",
               "Open",
+              "Rejected",
               "Out",
               "Canceling",
               "Canceled",
@@ -10949,6 +11040,13 @@
               }
             ]
           },
+          "rm": {
+            "title": "reject_message",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "s": {
             "title": "symbol",
             "type": "string"
@@ -11081,17 +11179,15 @@
               0,
               1,
               2,
-              3,
-              4,
+              127,
               128,
               129,
               254
             ],
             "x-enumNames": [
               "Pending",
-              "Acked",
-              "Rejected",
               "Open",
+              "Rejected",
               "Out",
               "Canceling",
               "Canceled",
@@ -11189,39 +11285,50 @@
         "type": "object",
         "required": [
           "id",
-          "order_id",
-          "recv_time",
-          "status"
+          "o",
+          "tn",
+          "ts",
+          "xid"
         ],
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "order_id": {
             "$ref": "#/definitions/OrderId"
           },
-          "recv_time": {
-            "type": "string",
-            "format": "date-time"
+          "o": {
+            "$ref": "#/definitions/CancelStatus"
           },
-          "reject_reason": {
+          "r": {
             "type": [
               "string",
               "null"
             ]
           },
-          "status": {
-            "$ref": "#/definitions/CancelStatus"
+          "tn": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "ts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "xid": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "definitions": {
           "CancelStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected"
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected"
             ]
           },
           "OrderId": {
@@ -11584,6 +11691,13 @@
                   }
                 ]
               },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "s": {
                 "title": "symbol",
                 "type": "string"
@@ -11705,17 +11819,15 @@
               0,
               1,
               2,
-              3,
-              4,
+              127,
               128,
               129,
               254
             ],
             "x-enumNames": [
               "Pending",
-              "Acked",
-              "Rejected",
               "Open",
+              "Rejected",
               "Out",
               "Canceling",
               "Canceled",
@@ -11841,39 +11953,50 @@
             "type": "object",
             "required": [
               "id",
-              "order_id",
-              "recv_time",
-              "status"
+              "o",
+              "tn",
+              "ts",
+              "xid"
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "order_id": {
                 "$ref": "#/definitions/OrderId"
               },
-              "recv_time": {
-                "type": "string",
-                "format": "date-time"
+              "o": {
+                "$ref": "#/definitions/CancelStatus"
               },
-              "reject_reason": {
+              "r": {
                 "type": [
                   "string",
                   "null"
                 ]
               },
-              "status": {
-                "$ref": "#/definitions/CancelStatus"
+              "tn": {
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "xid": {
+                "type": "string",
+                "format": "uuid"
               }
             }
           },
           "CancelStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-              "pending",
-              "acked",
-              "rejected"
+              0,
+              1,
+              2
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected"
             ]
           },
           "OrderId": {
@@ -13227,6 +13350,13 @@
                   }
                 ]
               },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "s": {
                 "title": "symbol",
                 "type": "string"
@@ -13348,17 +13478,15 @@
               0,
               1,
               2,
-              3,
-              4,
+              127,
               128,
               129,
               254
             ],
             "x-enumNames": [
               "Pending",
-              "Acked",
-              "Rejected",
               "Open",
+              "Rejected",
               "Out",
               "Canceling",
               "Canceled",

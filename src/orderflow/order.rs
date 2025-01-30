@@ -1,5 +1,8 @@
 use super::order_types::*;
-use crate::{symbology::ExecutionVenue, AccountId, Dir, OrderId, UserId};
+use crate::{
+    symbology::{ExecutionVenue, TradableProduct},
+    AccountId, Dir, OrderId, UserId,
+};
 use chrono::{DateTime, Utc};
 use derive_more::Display;
 use rust_decimal::Decimal;
@@ -7,6 +10,8 @@ use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_repr::{Deserialize_repr, Serialize_repr};
+use serde_with::skip_serializing_none;
+use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Order {
@@ -24,13 +29,15 @@ pub struct Order {
     #[serde(rename = "o")]
     #[schemars(title = "status")]
     pub status: OrderStatus,
-    #[serde(rename = "r")]
+    #[serde(rename = "r", skip_serializing_if = "Option::is_none")]
     #[schemars(title = "reject_reason")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reject_reason: Option<OrderRejectReason>,
+    #[serde(rename = "rm", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "reject_message")]
+    pub reject_message: Option<String>,
     #[serde(rename = "s")]
     #[schemars(title = "symbol")]
-    pub symbol: String,
+    pub symbol: TradableProduct,
     #[serde(rename = "u")]
     #[schemars(title = "trader")]
     pub trader: UserId,
@@ -66,6 +73,32 @@ pub struct Order {
 impl Order {
     pub fn recv_time(&self) -> Option<DateTime<Utc>> {
         DateTime::from_timestamp(self.recv_time, self.recv_time_ns)
+    }
+}
+
+#[skip_serializing_none]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OrderUpdate {
+    pub id: OrderId,
+    #[serde(rename = "ts")]
+    pub timestamp: i64,
+    #[serde(rename = "tn")]
+    pub timestamp_ns: u32,
+    #[serde(rename = "o")]
+    pub status: Option<OrderStatus>,
+    #[serde(rename = "r")]
+    pub reject_reason: Option<OrderRejectReason>,
+    #[serde(rename = "rm")]
+    pub reject_message: Option<String>,
+    #[serde(rename = "xq")]
+    pub filled_quantity: Option<Decimal>,
+    #[serde(rename = "xp")]
+    pub average_fill_price: Option<Decimal>,
+}
+
+impl OrderUpdate {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        DateTime::from_timestamp(self.timestamp, self.timestamp_ns)
     }
 }
 
@@ -111,13 +144,25 @@ pub enum OrderSource {
 #[repr(u8)]
 pub enum OrderStatus {
     Pending = 0,
-    Acked = 1,
+    Open = 1,
     Rejected = 2,
-    Open = 3,
-    Out = 4,
+    Out = 127,
     Canceling = 128,
     Canceled = 129,
     Stale = 254,
+}
+
+impl OrderStatus {
+    pub fn is_alive(&self) -> bool {
+        match self {
+            Self::Pending | Self::Open | Self::Canceling | Self::Stale => true,
+            Self::Out | Self::Canceled | Self::Rejected => false,
+        }
+    }
+
+    pub fn is_dead(&self) -> bool {
+        !self.is_alive()
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -133,7 +178,7 @@ pub struct OrderReject {
     pub order_id: OrderId,
     #[serde(rename = "r")]
     pub reason: OrderRejectReason,
-    #[serde(rename = "m", skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "rm", skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
 }
 
@@ -158,6 +203,24 @@ pub enum OrderRejectReason {
     NoCpty,
     #[serde(other)]
     Unknown,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct OrderCanceling {
+    #[serde(rename = "id")]
+    pub order_id: OrderId,
+    #[serde(rename = "xid", skip_serializing_if = "Option::is_none")]
+    pub cancel_id: Option<Uuid>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct OrderCanceled {
+    #[serde(rename = "id")]
+    pub order_id: OrderId,
+    #[serde(rename = "xid", skip_serializing_if = "Option::is_none")]
+    pub cancel_id: Option<Uuid>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -241,7 +304,8 @@ mod tests {
             recv_time_ns: recv_time.timestamp_subsec_nanos(),
             status: OrderStatus::Out,
             reject_reason: Some(OrderRejectReason::DuplicateOrderId),
-            symbol: "BTC Crypto/USD".into(),
+            reject_message: None,
+            symbol: "BTC Crypto/USD".parse().unwrap(),
             trader: UserId::anonymous(),
             account: AccountId::nil(),
             dir: Dir::Buy,
@@ -287,7 +351,8 @@ mod tests {
             recv_time_ns: recv_time.timestamp_subsec_nanos(),
             status: OrderStatus::Open,
             reject_reason: None,
-            symbol: "ETH Crypto/USD".into(),
+            reject_message: None,
+            symbol: "ETH Crypto/USD".parse().unwrap(),
             trader: UserId::anonymous(),
             account: AccountId::nil(),
             dir: Dir::Sell,

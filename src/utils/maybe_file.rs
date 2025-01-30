@@ -20,6 +20,18 @@ impl<T: Display> Display for MaybeFile<T> {
     }
 }
 
+impl<T: Serialize> Serialize for MaybeFile<T> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self {
+            MaybeFile::Value(v) => v.serialize(serializer),
+            MaybeFile::File(p) => p.serialize(serializer),
+        }
+    }
+}
+
 impl<T: Clone + DeserializeOwned> MaybeFile<T> {
     #[cfg(feature = "tokio")]
     pub async fn load(&self) -> Result<T> {

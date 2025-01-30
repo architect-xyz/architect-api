@@ -48,10 +48,12 @@ pub enum Orderflow {
     OrderStale(OrderStale),
     #[serde(rename = "xc")]
     CancelPending(Cancel),
-    #[serde(rename = "xa")]
-    CancelAck(CancelAck),
     #[serde(rename = "xr")]
     CancelReject(CancelReject),
+    #[serde(rename = "xa")]
+    OrderCanceling(OrderCanceling),
+    #[serde(rename = "xx")]
+    OrderCanceled(OrderCanceled),
     #[serde(rename = "f")]
     Fill(Fill),
     #[serde(rename = "af")]
