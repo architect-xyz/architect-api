@@ -6246,9 +6246,9 @@
         "type": "object",
         "required": [
           "s",
-          "sv",
           "tn",
-          "ts"
+          "ts",
+          "ve"
         ],
         "properties": {
           "ap": {
@@ -6436,10 +6436,6 @@
               }
             ]
           },
-          "sv": {
-            "title": "venue",
-            "type": "string"
-          },
           "tn": {
             "title": "timestamp_ns",
             "type": "integer",
@@ -6461,6 +6457,10 @@
                 "type": "null"
               }
             ]
+          },
+          "ve": {
+            "title": "venue",
+            "type": "string"
           },
           "vm": {
             "title": "volume_30d",
@@ -6573,9 +6573,9 @@
             "type": "object",
             "required": [
               "s",
-              "sv",
               "tn",
-              "ts"
+              "ts",
+              "ve"
             ],
             "properties": {
               "ap": {
@@ -6763,10 +6763,6 @@
                   }
                 ]
               },
-              "sv": {
-                "title": "venue",
-                "type": "string"
-              },
               "tn": {
                 "title": "timestamp_ns",
                 "type": "integer",
@@ -6788,6 +6784,10 @@
                     "type": "null"
                   }
                 ]
+              },
+              "ve": {
+                "title": "venue",
+                "type": "string"
               },
               "vm": {
                 "title": "volume_30d",
@@ -6878,10 +6878,10 @@
             "type": "object",
             "required": [
               "s",
-              "sv",
               "t",
               "tn",
-              "ts"
+              "ts",
+              "ve"
             ],
             "properties": {
               "ap": {
@@ -7069,10 +7069,6 @@
                   }
                 ]
               },
-              "sv": {
-                "title": "venue",
-                "type": "string"
-              },
               "t": {
                 "type": "string",
                 "enum": [
@@ -7100,6 +7096,10 @@
                     "type": "null"
                   }
                 ]
+              },
+              "ve": {
+                "title": "venue",
+                "type": "string"
               },
               "vm": {
                 "title": "volume_30d",
@@ -7162,10 +7162,10 @@
             "type": "object",
             "required": [
               "s",
-              "sv",
               "t",
               "tn",
-              "ts"
+              "ts",
+              "ve"
             ],
             "properties": {
               "ap": {
@@ -7353,10 +7353,6 @@
                   }
                 ]
               },
-              "sv": {
-                "title": "venue",
-                "type": "string"
-              },
               "t": {
                 "type": "string",
                 "enum": [
@@ -7384,6 +7380,10 @@
                     "type": "null"
                   }
                 ]
+              },
+              "ve": {
+                "title": "venue",
+                "type": "string"
               },
               "vm": {
                 "title": "volume_30d",
