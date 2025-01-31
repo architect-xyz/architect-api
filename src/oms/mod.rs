@@ -90,7 +90,7 @@ pub struct CancelAllOrdersResponse {}
 #[grpc(package = "json.architect")]
 #[grpc(service = "Oms", name = "open_orders", response = "OpenOrdersResponse")]
 #[skip_serializing_none]
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct OpenOrdersRequest {
     pub venue: Option<ExecutionVenue>,
     pub account: Option<AccountIdOrName>,
@@ -108,7 +108,7 @@ pub struct OpenOrdersResponse {
 #[grpc(package = "json.architect")]
 #[grpc(service = "Oms", name = "pending_cancels", response = "PendingCancelsResponse")]
 #[skip_serializing_none]
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct PendingCancelsRequest {
     pub venue: Option<ExecutionVenue>,
     pub account: Option<AccountIdOrName>,

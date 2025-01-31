@@ -23,7 +23,7 @@ pub struct Cancel {
 }
 
 impl Cancel {
-    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+    pub fn recv_time(&self) -> Option<DateTime<Utc>> {
         DateTime::from_timestamp(self.recv_time, self.recv_time_ns)
     }
 }
