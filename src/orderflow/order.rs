@@ -120,7 +120,15 @@ pub enum TimeInForce {
 }
 
 #[derive(
-    Debug, Clone, Copy, Serialize_repr, Deserialize_repr, PartialEq, Eq, JsonSchema_repr,
+    Debug,
+    Display,
+    Clone,
+    Copy,
+    Serialize_repr,
+    Deserialize_repr,
+    PartialEq,
+    Eq,
+    JsonSchema_repr,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[serde(rename_all = "snake_case")]
@@ -137,7 +145,15 @@ pub enum OrderSource {
 }
 
 #[derive(
-    Debug, Clone, Copy, Serialize_repr, Deserialize_repr, PartialEq, Eq, JsonSchema_repr,
+    Debug,
+    Display,
+    Clone,
+    Copy,
+    Serialize_repr,
+    Deserialize_repr,
+    PartialEq,
+    Eq,
+    JsonSchema_repr,
 )]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]

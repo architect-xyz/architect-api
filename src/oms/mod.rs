@@ -61,8 +61,11 @@ pub struct PlaceOrderRequest {
 pub struct CancelOrderRequest {
     /// If not specified, one will be generated for you; note, in that case,
     /// you won't know for sure if the specific request went through.
-    #[serde(default)]
-    pub id: Option<Uuid>,
+    #[serde(rename = "xid", default)]
+    #[schemars(title = "cancel_id")]
+    pub cancel_id: Option<Uuid>,
+    #[serde(rename = "id")]
+    #[schemars(title = "order_id")]
     pub order_id: OrderId,
 }
 

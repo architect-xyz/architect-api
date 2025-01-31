@@ -27,6 +27,8 @@ use std::str::FromStr;
 )]
 #[as_ref(forward)]
 #[serde(transparent)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
+#[cfg_attr(feature = "juniper", graphql(transparent))]
 #[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
 #[cfg_attr(feature = "postgres", postgres(transparent))]
 pub struct TradableProduct(pub(crate) String);

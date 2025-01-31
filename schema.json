@@ -7760,11 +7760,26 @@
           {
             "type": "object",
             "required": [
-              "order_id",
+              "id",
               "t"
             ],
             "properties": {
               "id": {
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "x"
+                ]
+              },
+              "xid": {
+                "title": "cancel_id",
                 "description": "If not specified, one will be generated for you; note, in that case, you won't know for sure if the specific request went through.",
                 "default": null,
                 "type": [
@@ -7772,15 +7787,6 @@
                   "null"
                 ],
                 "format": "uuid"
-              },
-              "order_id": {
-                "$ref": "#/definitions/OrderId"
-              },
-              "t": {
-                "type": "string",
-                "enum": [
-                  "x"
-                ]
               }
             }
           },
@@ -11241,10 +11247,19 @@
         "title": "CancelOrderRequest",
         "type": "object",
         "required": [
-          "order_id"
+          "id"
         ],
         "properties": {
           "id": {
+            "title": "order_id",
+            "allOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              }
+            ]
+          },
+          "xid": {
+            "title": "cancel_id",
             "description": "If not specified, one will be generated for you; note, in that case, you won't know for sure if the specific request went through.",
             "default": null,
             "type": [
@@ -11252,9 +11267,6 @@
               "null"
             ],
             "format": "uuid"
-          },
-          "order_id": {
-            "$ref": "#/definitions/OrderId"
           }
         },
         "definitions": {
@@ -12040,14 +12052,18 @@
         ],
         "properties": {
           "account": {
-            "type": "string",
-            "format": "uuid"
+            "$ref": "#/definitions/AccountIdOrName"
           },
           "venue": {
             "type": [
               "string",
               "null"
             ]
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
           }
         }
       },
@@ -12073,6 +12089,7 @@
             }
           },
           "cash_excess": {
+            "description": "Cash available to withdraw.",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -12093,6 +12110,7 @@
             ]
           },
           "position_margin": {
+            "description": "Margin requirement based on current positions only.",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -12103,10 +12121,23 @@
             ]
           },
           "positions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/AccountPosition"
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AccountPosition"
+              }
             }
+          },
+          "purchasing_power": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "realized_pnl": {
             "anyOf": [
@@ -12123,6 +12154,7 @@
             "format": "date-time"
           },
           "total_margin": {
+            "description": "Margin requirement calculated for worst-case based on open positions and working orders.",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -12157,16 +12189,9 @@
           "AccountPosition": {
             "type": "object",
             "required": [
-              "account",
-              "cost_basis",
-              "quantity",
-              "symbol"
+              "quantity"
             ],
             "properties": {
-              "account": {
-                "type": "string",
-                "format": "uuid"
-              },
               "break_even_price": {
                 "anyOf": [
                   {
@@ -12178,7 +12203,14 @@
                 ]
               },
               "cost_basis": {
-                "$ref": "#/definitions/Decimal"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "liquidation_price": {
                 "anyOf": [
@@ -12192,9 +12224,6 @@
               },
               "quantity": {
                 "$ref": "#/definitions/Decimal"
-              },
-              "symbol": {
-                "type": "string"
               },
               "trade_time": {
                 "description": "The meaning of this field varies by reporting venue.",
@@ -12227,8 +12256,7 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "format": "uuid"
+              "$ref": "#/definitions/AccountIdOrName"
             }
           },
           "trader": {
@@ -12249,6 +12277,9 @@
           }
         },
         "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
           "UserId": {
             "type": "string",
             "format": "uuid"
@@ -12274,16 +12305,9 @@
           "AccountPosition": {
             "type": "object",
             "required": [
-              "account",
-              "cost_basis",
-              "quantity",
-              "symbol"
+              "quantity"
             ],
             "properties": {
-              "account": {
-                "type": "string",
-                "format": "uuid"
-              },
               "break_even_price": {
                 "anyOf": [
                   {
@@ -12295,7 +12319,14 @@
                 ]
               },
               "cost_basis": {
-                "$ref": "#/definitions/Decimal"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "liquidation_price": {
                 "anyOf": [
@@ -12309,9 +12340,6 @@
               },
               "quantity": {
                 "$ref": "#/definitions/Decimal"
-              },
-              "symbol": {
-                "type": "string"
               },
               "trade_time": {
                 "description": "The meaning of this field varies by reporting venue.",
@@ -12343,6 +12371,7 @@
                 }
               },
               "cash_excess": {
+                "description": "Cash available to withdraw.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -12363,6 +12392,7 @@
                 ]
               },
               "position_margin": {
+                "description": "Margin requirement based on current positions only.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -12373,10 +12403,23 @@
                 ]
               },
               "positions": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/AccountPosition"
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AccountPosition"
+                  }
                 }
+              },
+              "purchasing_power": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "realized_pnl": {
                 "anyOf": [
@@ -12393,6 +12436,7 @@
                 "format": "date-time"
               },
               "total_margin": {
+                "description": "Margin requirement calculated for worst-case based on open positions and working orders.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -12442,8 +12486,7 @@
         ],
         "properties": {
           "account": {
-            "type": "string",
-            "format": "uuid"
+            "$ref": "#/definitions/AccountIdOrName"
           },
           "from_inclusive": {
             "type": [
@@ -12464,6 +12507,11 @@
               "string",
               "null"
             ]
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
           }
         }
       },
@@ -12486,16 +12534,9 @@
           "AccountPosition": {
             "type": "object",
             "required": [
-              "account",
-              "cost_basis",
-              "quantity",
-              "symbol"
+              "quantity"
             ],
             "properties": {
-              "account": {
-                "type": "string",
-                "format": "uuid"
-              },
               "break_even_price": {
                 "anyOf": [
                   {
@@ -12507,7 +12548,14 @@
                 ]
               },
               "cost_basis": {
-                "$ref": "#/definitions/Decimal"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "liquidation_price": {
                 "anyOf": [
@@ -12521,9 +12569,6 @@
               },
               "quantity": {
                 "$ref": "#/definitions/Decimal"
-              },
-              "symbol": {
-                "type": "string"
               },
               "trade_time": {
                 "description": "The meaning of this field varies by reporting venue.",
@@ -12555,6 +12600,7 @@
                 }
               },
               "cash_excess": {
+                "description": "Cash available to withdraw.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -12575,6 +12621,7 @@
                 ]
               },
               "position_margin": {
+                "description": "Margin requirement based on current positions only.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -12585,10 +12632,23 @@
                 ]
               },
               "positions": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/AccountPosition"
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AccountPosition"
+                  }
                 }
+              },
+              "purchasing_power": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "realized_pnl": {
                 "anyOf": [
@@ -12605,6 +12665,7 @@
                 "format": "date-time"
               },
               "total_margin": {
+                "description": "Margin requirement calculated for worst-case based on open positions and working orders.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -12651,11 +12712,14 @@
         "type": "object",
         "properties": {
           "account": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "from_inclusive": {
             "type": [
@@ -12689,6 +12753,9 @@
           }
         },
         "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
           "OrderId": {
             "description": "System-unique, persistent order identifiers",
             "type": "object",
@@ -13098,11 +13165,14 @@
         "type": "object",
         "properties": {
           "account": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "from_inclusive": {
             "type": [
@@ -13136,6 +13206,9 @@
           }
         },
         "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
           "OrderId": {
             "description": "System-unique, persistent order identifiers",
             "type": "object",
