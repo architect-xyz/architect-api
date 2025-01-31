@@ -94,6 +94,18 @@ pub enum AccountIdOrName {
 
 json_schema_is_string!(AccountIdOrName);
 
+impl std::str::FromStr for AccountIdOrName {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if let Ok(id) = AccountId::from_str(s) {
+            Ok(Self::Id(id))
+        } else {
+            Ok(Self::Name(AccountName::from_str(s)?))
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct Account {

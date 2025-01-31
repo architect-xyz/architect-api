@@ -1,7 +1,7 @@
 use crate::{
     orderflow::{AberrantFill, Fill, Order},
     symbology::{ExecutionVenue, Product, TradableProduct},
-    AccountId, AccountIdOrName, OrderId, UserId,
+    AccountId, AccountIdOrName, OrderId, TraderIdOrEmail,
 };
 use chrono::{DateTime, Utc};
 use derive::grpc;
@@ -32,7 +32,7 @@ pub struct AccountSummariesRequest {
     #[serde(default)]
     pub venue: Option<ExecutionVenue>,
     #[serde(default)]
-    pub trader: Option<UserId>,
+    pub trader: Option<TraderIdOrEmail>,
     /// If not provided, all accounts for venue will be returned.
     #[serde(default)]
     pub accounts: Option<Vec<AccountIdOrName>>,

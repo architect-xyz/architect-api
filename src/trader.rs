@@ -8,6 +8,15 @@ pub enum TraderIdOrEmail {
     Email(String),
 }
 
+impl std::fmt::Display for TraderIdOrEmail {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Id(id) => write!(f, "{}", id),
+            Self::Email(email) => write!(f, "{}", email),
+        }
+    }
+}
+
 impl std::str::FromStr for TraderIdOrEmail {
     type Err = anyhow::Error;
 

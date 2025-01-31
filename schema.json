@@ -12262,7 +12262,7 @@
           "trader": {
             "anyOf": [
               {
-                "$ref": "#/definitions/UserId"
+                "$ref": "#/definitions/TraderIdOrEmail"
               },
               {
                 "type": "null"
@@ -12280,9 +12280,8 @@
           "AccountIdOrName": {
             "type": "string"
           },
-          "UserId": {
-            "type": "string",
-            "format": "uuid"
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },
