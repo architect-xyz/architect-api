@@ -137,7 +137,7 @@ pub enum OrderSource {
     API = 0,
     GUI = 1,
     Algo = 2,
-    External = 3,
+    Reconciled = 3,
     CLI = 4,
     Telegram = 5,
     #[serde(other)]
