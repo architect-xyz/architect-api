@@ -50,3 +50,13 @@ pub struct CancelReject {
     #[serde(rename = "rm", skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
 }
+
+impl CancelReject {
+    pub fn to_error_string(&self) -> String {
+        format!(
+            "cancel {} rejected: {}",
+            self.cancel_id,
+            self.message.as_deref().unwrap_or("--")
+        )
+    }
+}
