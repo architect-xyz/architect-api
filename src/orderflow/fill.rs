@@ -5,10 +5,12 @@ use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_repr::{Deserialize_repr, Serialize_repr};
+use strum::FromRepr;
 use uuid::Uuid;
 
 #[derive(
     Debug,
+    FromRepr,
     Clone,
     Copy,
     Hash,

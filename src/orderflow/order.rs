@@ -4,13 +4,14 @@ use crate::{
     AccountId, Dir, OrderId, UserId,
 };
 use chrono::{DateTime, Utc};
-use derive_more::Display;
+use derive_more::{Display, FromStr};
 use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use serde_with::skip_serializing_none;
+use strum::{FromRepr, IntoStaticStr};
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -102,26 +103,42 @@ impl OrderUpdate {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
-#[serde(rename_all = "snake_case")]
+#[derive(
+    Debug, Clone, Copy, IntoStaticStr, Serialize, Deserialize, PartialEq, Eq, JsonSchema,
+)]
 pub enum TimeInForce {
     #[serde(rename = "gtc")]
+    #[strum(serialize = "gtc")]
     GoodTilCancel,
     #[serde(rename = "gtd")]
+    #[strum(serialize = "gtd")]
     GoodTilDate(DateTime<Utc>),
     /// Day order--the specific time which this expires
     /// will be dependent on the venue
     #[serde(rename = "day")]
+    #[strum(serialize = "day")]
     GoodTilDay,
     #[serde(rename = "ioc")]
+    #[strum(serialize = "ioc")]
     ImmediateOrCancel,
     #[serde(rename = "fok")]
+    #[strum(serialize = "fok")]
     FillOrKill,
+}
+
+impl TimeInForce {
+    pub fn good_til_date(&self) -> Option<DateTime<Utc>> {
+        match self {
+            Self::GoodTilDate(dt) => Some(*dt),
+            _ => None,
+        }
+    }
 }
 
 #[derive(
     Debug,
     Display,
+    FromStr,
     Clone,
     Copy,
     Serialize_repr,
@@ -144,9 +161,13 @@ pub enum OrderSource {
     Other = 255,
 }
 
+#[cfg(feature = "postgres")]
+crate::to_sql_display!(OrderSource);
+
 #[derive(
     Debug,
     Display,
+    FromRepr,
     Clone,
     Copy,
     Serialize_repr,
@@ -209,7 +230,7 @@ impl OrderReject {
     }
 }
 
-#[derive(Debug, Display, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Display, FromStr, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum OrderRejectReason {
     DuplicateOrderId,
@@ -220,6 +241,9 @@ pub enum OrderRejectReason {
     #[serde(other)]
     Unknown,
 }
+
+#[cfg(feature = "postgres")]
+crate::to_sql_display!(OrderRejectReason);
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]

@@ -1,9 +1,13 @@
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use strum::IntoStaticStr;
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
+#[derive(
+    Debug, Clone, Copy, IntoStaticStr, Serialize, Deserialize, PartialEq, Eq, JsonSchema,
+)]
 #[serde(tag = "k", rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
 pub enum OrderType {
     Limit(LimitOrderType),
     StopLossLimit(StopLossLimitOrderType),
