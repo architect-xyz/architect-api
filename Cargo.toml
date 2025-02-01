@@ -19,7 +19,6 @@ postgres = ["postgres-types", "tokio-postgres"]
 
 [dependencies]
 anyhow = { workspace = true }
-arcstr = { workspace = true }
 bytemuck = { workspace = true }
 bytes = { workspace = true }
 chrono = { workspace = true }
