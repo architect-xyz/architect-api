@@ -1,4 +1,5 @@
 use super::ExecutionVenue;
+use derive_more::Display;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -36,6 +37,7 @@ impl TickSize {
 #[derive(
     Default,
     Debug,
+    Display,
     Clone,
     Copy,
     EnumString,

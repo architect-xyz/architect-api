@@ -145,7 +145,7 @@ impl FromStr for Product {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
+#[derive(Debug, Clone, IntoStaticStr, Deserialize, Serialize, JsonSchema)]
 #[serde(tag = "type")]
 pub enum ProductInfo {
     Fiat,
