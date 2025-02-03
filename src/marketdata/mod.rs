@@ -234,6 +234,8 @@ impl L2BookUpdate {
 #[grpc(service = "Marketdata", name = "l2_book_snapshot", response = "L2BookSnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L2BookSnapshotRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
     pub symbol: String,
 }
 
@@ -246,6 +248,8 @@ pub struct L2BookSnapshotRequest {
 )]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeL2BookUpdatesRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
     pub symbol: String,
 }
 
@@ -452,6 +456,8 @@ impl Trade {
 #[grpc(service = "Marketdata", name = "market_status", response = "MarketStatus")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct MarketStatusRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
     pub symbol: String,
 }
 

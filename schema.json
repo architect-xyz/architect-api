@@ -4527,6 +4527,12 @@
         "properties": {
           "symbol": {
             "type": "string"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -4716,6 +4722,12 @@
         "properties": {
           "symbol": {
             "type": "string"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -6188,6 +6200,12 @@
         "properties": {
           "symbol": {
             "type": "string"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -8862,11 +8880,14 @@
         "properties": {
           "account": {
             "default": null,
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "execution_venue": {
             "default": null,
@@ -8879,7 +8900,7 @@
             "default": null,
             "anyOf": [
               {
-                "$ref": "#/definitions/UserId"
+                "$ref": "#/definitions/TraderIdOrEmail"
               },
               {
                 "type": "null"
@@ -8888,9 +8909,11 @@
           }
         },
         "definitions": {
-          "UserId": {
-            "type": "string",
-            "format": "uuid"
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },
@@ -9831,11 +9854,14 @@
           },
           "account": {
             "default": null,
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "execution_venue": {
             "default": null,
@@ -9856,7 +9882,7 @@
             "default": null,
             "anyOf": [
               {
-                "$ref": "#/definitions/UserId"
+                "$ref": "#/definitions/TraderIdOrEmail"
               },
               {
                 "type": "null"
@@ -9865,9 +9891,11 @@
           }
         },
         "definitions": {
-          "UserId": {
-            "type": "string",
-            "format": "uuid"
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },

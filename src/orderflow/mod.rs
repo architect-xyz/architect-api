@@ -1,4 +1,4 @@
-use crate::{oms::*, symbology::ExecutionVenue, AccountId, UserId};
+use crate::{oms::*, symbology::ExecutionVenue, AccountIdOrName, TraderIdOrEmail};
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -73,9 +73,9 @@ pub struct SubscribeOrderflowRequest {
     #[serde(default)]
     pub execution_venue: Option<ExecutionVenue>,
     #[serde(default)]
-    pub trader: Option<UserId>,
+    pub trader: Option<TraderIdOrEmail>,
     #[serde(default)]
-    pub account: Option<AccountId>,
+    pub account: Option<AccountIdOrName>,
 }
 
 #[grpc(package = "json.architect")]
@@ -90,9 +90,9 @@ pub struct DropcopyRequest {
     #[serde(default)]
     pub execution_venue: Option<ExecutionVenue>,
     #[serde(default)]
-    pub trader: Option<UserId>,
+    pub trader: Option<TraderIdOrEmail>,
     #[serde(default)]
-    pub account: Option<AccountId>,
+    pub account: Option<AccountIdOrName>,
     #[serde(default)]
     pub orders: bool,
     #[serde(default = "DropcopyRequest::default_fills")]
