@@ -106,7 +106,9 @@ impl std::str::FromStr for AccountIdOrName {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, JsonSchema,
+)]
 #[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct Account {
     pub id: AccountId,
@@ -131,6 +133,7 @@ pub trait AsAccount {
     Ord,
     JsonSchema,
 )]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct AccountPermissions {
     pub list: bool,            // know about the account's existence
     pub view: bool,            // know the account's holdings and activity

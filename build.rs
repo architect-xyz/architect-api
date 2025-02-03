@@ -15,6 +15,19 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let json_accounts_service = tonic_build::manual::Service::builder()
+        .name("Accounts")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("accounts")
+                .route_name("Accounts")
+                .input_type("crate::accounts::AccountsRequest")
+                .output_type("crate::accounts::AccountsResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let json_symbology_service = tonic_build::manual::Service::builder()
         .name("Symbology")
         .package("json.architect")
@@ -353,6 +366,7 @@ fn build_grpc_stubs() {
         .emit_composite_package(true)
         .compile(&[
             &json_health_service,
+            &json_accounts_service,
             &json_symbology_service,
             &json_marketdata_service,
             &json_orderflow_service,
@@ -361,6 +375,7 @@ fn build_grpc_stubs() {
         ]);
     tonic_build::manual::Builder::new().out_dir("schema/generated").compile(&[
         json_health_service,
+        json_accounts_service,
         json_symbology_service,
         json_marketdata_service,
         json_orderflow_service,
