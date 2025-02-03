@@ -10,7 +10,6 @@ pub mod json_codec;
 /// Commonly used type for gRPC server-streaming implementations
 pub type SubscriptionStream<T> = Pin<Box<dyn Stream<Item = Result<T, Status>> + Send>>;
 
-// If adding new services, ensure you also add reference to `.sdk.rs` file in `./codegen.rs`
 #[rustfmt::skip]
 pub mod json_service {
     include!("generated/json.architect.Health.rs");
