@@ -74,6 +74,8 @@ impl PartialEq<ExecutionVenue> for MarketdataVenue {
 #[cfg_attr(feature = "graphql", graphql(transparent))]
 #[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
 #[cfg_attr(feature = "postgres", postgres(transparent))]
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx", sqlx(transparent))]
 pub struct ExecutionVenue(String);
 
 impl ExecutionVenue {

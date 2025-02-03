@@ -14,13 +14,14 @@ use std::{ops::Deref, str::FromStr};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLScalar))]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
-#[cfg_attr(feature = "sqlx", sqlx(type_name = "orderflow.dir"))]
-#[serde(rename_all = "snake_case")]
+#[cfg_attr(
+    feature = "sqlx",
+    sqlx(type_name = "TEXT", rename_all = "SCREAMING_SNAKE_CASE")
+)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Dir {
-    #[cfg_attr(feature = "sqlx", sqlx(rename = "Buy"))]
     #[serde(alias = "Buy", alias = "buy", alias = "BUY")]
     Buy,
-    #[cfg_attr(feature = "sqlx", sqlx(rename = "Sell"))]
     #[serde(alias = "Sell", alias = "sell", alias = "SELL")]
     Sell,
 }

@@ -31,6 +31,8 @@ use std::str::FromStr;
 #[cfg_attr(feature = "juniper", graphql(transparent))]
 #[cfg_attr(feature = "postgres", derive(postgres_types::ToSql))]
 #[cfg_attr(feature = "postgres", postgres(transparent))]
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx", sqlx(transparent))]
 pub struct TradableProduct(pub(crate) String);
 
 impl TradableProduct {

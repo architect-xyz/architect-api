@@ -75,6 +75,7 @@ pub enum AbsoluteOrRelativeTime {
     Absolute(DateTime<Utc>),
     RelativeFuture(Duration),
     RelativePast(Duration),
+    Now,
 }
 
 impl AbsoluteOrRelativeTime {
@@ -83,6 +84,7 @@ impl AbsoluteOrRelativeTime {
             Self::Absolute(dt) => *dt,
             Self::RelativeFuture(d) => now + *d,
             Self::RelativePast(d) => now - *d,
+            Self::Now => now,
         }
     }
 
@@ -95,7 +97,9 @@ impl FromStr for AbsoluteOrRelativeTime {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self> {
-        if s.starts_with('+') {
+        if s == "now" {
+            Ok(Self::Now)
+        } else if s.starts_with('+') {
             Ok(Self::RelativeFuture(parse_duration(&s[1..])?))
         } else if s.starts_with('_') || s.starts_with("~") {
             // CR-someday alee: clap is actually a bad library in a lot of ways, including

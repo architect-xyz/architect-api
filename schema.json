@@ -6168,8 +6168,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           }
         }
@@ -7530,8 +7530,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           }
         }
@@ -7565,7 +7565,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "limit"
+                      "LIMIT"
                     ]
                   },
                   "p": {
@@ -7593,7 +7593,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "stop_loss_limit"
+                      "STOP_LOSS_LIMIT"
                     ]
                   },
                   "p": {
@@ -7625,7 +7625,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "take_profit_limit"
+                      "TAKE_PROFIT_LIMIT"
                     ]
                   },
                   "p": {
@@ -7847,8 +7847,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           },
           "OrderId": {
@@ -7896,18 +7896,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "gtc",
-                  "ioc",
-                  "fok"
+                  "GTC",
+                  "IOC",
+                  "FOK"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "gtd"
+                  "GTD"
                 ],
                 "properties": {
-                  "gtd": {
+                  "GTD": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -7918,7 +7918,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "day"
+                  "DAY"
                 ]
               }
             ]
@@ -7946,7 +7946,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "limit"
+                      "LIMIT"
                     ]
                   },
                   "p": {
@@ -7974,7 +7974,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "stop_loss_limit"
+                      "STOP_LOSS_LIMIT"
                     ]
                   },
                   "p": {
@@ -8006,7 +8006,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "take_profit_limit"
+                      "TAKE_PROFIT_LIMIT"
                     ]
                   },
                   "p": {
@@ -8494,10 +8494,8 @@
                 "type": "string"
               },
               "t": {
-                "type": "string",
-                "enum": [
-                  "f"
-                ]
+                "title": "is_taker",
+                "type": "boolean"
               },
               "tn": {
                 "title": "trade_time_ns",
@@ -8708,12 +8706,14 @@
             "enum": [
               0,
               1,
-              2
+              2,
+              127
             ],
             "x-enumNames": [
               "Pending",
               "Acked",
-              "Rejected"
+              "Rejected",
+              "Out"
             ]
           },
           "Decimal": {
@@ -8723,8 +8723,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           },
           "FillKind": {
@@ -8762,12 +8762,12 @@
           "OrderRejectReason": {
             "type": "string",
             "enum": [
-              "duplicate_order_id",
-              "not_authorized",
-              "no_execution_venue",
-              "no_account",
-              "no_cpty",
-              "unknown"
+              "DuplicateOrderId",
+              "NotAuthorized",
+              "NoExecutionVenue",
+              "NoAccount",
+              "NoCpty",
+              "Unknown"
             ]
           },
           "OrderSource": {
@@ -8817,18 +8817,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "gtc",
-                  "ioc",
-                  "fok"
+                  "GTC",
+                  "IOC",
+                  "FOK"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "gtd"
+                  "GTD"
                 ],
                 "properties": {
-                  "gtd": {
+                  "GTD": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -8839,7 +8839,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "day"
+                  "DAY"
                 ]
               }
             ]
@@ -8912,7 +8912,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "limit"
+                      "LIMIT"
                     ]
                   },
                   "p": {
@@ -8940,7 +8940,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "stop_loss_limit"
+                      "STOP_LOSS_LIMIT"
                     ]
                   },
                   "p": {
@@ -8972,7 +8972,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "take_profit_limit"
+                      "TAKE_PROFIT_LIMIT"
                     ]
                   },
                   "p": {
@@ -9460,10 +9460,8 @@
                 "type": "string"
               },
               "t": {
-                "type": "string",
-                "enum": [
-                  "f"
-                ]
+                "title": "is_taker",
+                "type": "boolean"
               },
               "tn": {
                 "title": "trade_time_ns",
@@ -9674,12 +9672,14 @@
             "enum": [
               0,
               1,
-              2
+              2,
+              127
             ],
             "x-enumNames": [
               "Pending",
               "Acked",
-              "Rejected"
+              "Rejected",
+              "Out"
             ]
           },
           "Decimal": {
@@ -9689,8 +9689,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           },
           "FillKind": {
@@ -9728,12 +9728,12 @@
           "OrderRejectReason": {
             "type": "string",
             "enum": [
-              "duplicate_order_id",
-              "not_authorized",
-              "no_execution_venue",
-              "no_account",
-              "no_cpty",
-              "unknown"
+              "DuplicateOrderId",
+              "NotAuthorized",
+              "NoExecutionVenue",
+              "NoAccount",
+              "NoCpty",
+              "Unknown"
             ]
           },
           "OrderSource": {
@@ -9783,18 +9783,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "gtc",
-                  "ioc",
-                  "fok"
+                  "GTC",
+                  "IOC",
+                  "FOK"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "gtd"
+                  "GTD"
                 ],
                 "properties": {
-                  "gtd": {
+                  "GTD": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -9805,7 +9805,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "day"
+                  "DAY"
                 ]
               }
             ]
@@ -9889,7 +9889,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "limit"
+                      "LIMIT"
                     ]
                   },
                   "p": {
@@ -9917,7 +9917,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "stop_loss_limit"
+                      "STOP_LOSS_LIMIT"
                     ]
                   },
                   "p": {
@@ -9949,7 +9949,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "take_profit_limit"
+                      "TAKE_PROFIT_LIMIT"
                     ]
                   },
                   "p": {
@@ -10232,10 +10232,8 @@
                 "type": "string"
               },
               "t": {
-                "type": "string",
-                "enum": [
-                  "f"
-                ]
+                "title": "is_taker",
+                "type": "boolean"
               },
               "tn": {
                 "title": "trade_time_ns",
@@ -10448,8 +10446,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           },
           "FillKind": {
@@ -10487,12 +10485,12 @@
           "OrderRejectReason": {
             "type": "string",
             "enum": [
-              "duplicate_order_id",
-              "not_authorized",
-              "no_execution_venue",
-              "no_account",
-              "no_cpty",
-              "unknown"
+              "DuplicateOrderId",
+              "NotAuthorized",
+              "NoExecutionVenue",
+              "NoAccount",
+              "NoCpty",
+              "Unknown"
             ]
           },
           "OrderSource": {
@@ -10542,18 +10540,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "gtc",
-                  "ioc",
-                  "fok"
+                  "GTC",
+                  "IOC",
+                  "FOK"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "gtd"
+                  "GTD"
                 ],
                 "properties": {
-                  "gtd": {
+                  "GTD": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -10564,7 +10562,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "day"
+                  "DAY"
                 ]
               }
             ]
@@ -10602,7 +10600,7 @@
               "k": {
                 "type": "string",
                 "enum": [
-                  "limit"
+                  "LIMIT"
                 ]
               },
               "p": {
@@ -10630,7 +10628,7 @@
               "k": {
                 "type": "string",
                 "enum": [
-                  "stop_loss_limit"
+                  "STOP_LOSS_LIMIT"
                 ]
               },
               "p": {
@@ -10662,7 +10660,7 @@
               "k": {
                 "type": "string",
                 "enum": [
-                  "take_profit_limit"
+                  "TAKE_PROFIT_LIMIT"
                 ]
               },
               "p": {
@@ -10797,8 +10795,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           },
           "OrderId": {
@@ -10846,18 +10844,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "gtc",
-                  "ioc",
-                  "fok"
+                  "GTC",
+                  "IOC",
+                  "FOK"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "gtd"
+                  "GTD"
                 ],
                 "properties": {
-                  "gtd": {
+                  "GTD": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -10868,7 +10866,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "day"
+                  "DAY"
                 ]
               }
             ]
@@ -10894,7 +10892,7 @@
               "k": {
                 "type": "string",
                 "enum": [
-                  "limit"
+                  "LIMIT"
                 ]
               },
               "p": {
@@ -10922,7 +10920,7 @@
               "k": {
                 "type": "string",
                 "enum": [
-                  "stop_loss_limit"
+                  "STOP_LOSS_LIMIT"
                 ]
               },
               "p": {
@@ -10954,7 +10952,7 @@
               "k": {
                 "type": "string",
                 "enum": [
-                  "take_profit_limit"
+                  "TAKE_PROFIT_LIMIT"
                 ]
               },
               "p": {
@@ -11124,8 +11122,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           },
           "OrderId": {
@@ -11150,12 +11148,12 @@
           "OrderRejectReason": {
             "type": "string",
             "enum": [
-              "duplicate_order_id",
-              "not_authorized",
-              "no_execution_venue",
-              "no_account",
-              "no_cpty",
-              "unknown"
+              "DuplicateOrderId",
+              "NotAuthorized",
+              "NoExecutionVenue",
+              "NoAccount",
+              "NoCpty",
+              "Unknown"
             ]
           },
           "OrderSource": {
@@ -11205,18 +11203,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "gtc",
-                  "ioc",
-                  "fok"
+                  "GTC",
+                  "IOC",
+                  "FOK"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "gtd"
+                  "GTD"
                 ],
                 "properties": {
-                  "gtd": {
+                  "GTD": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -11227,7 +11225,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "day"
+                  "DAY"
                 ]
               }
             ]
@@ -11335,12 +11333,14 @@
             "enum": [
               0,
               1,
-              2
+              2,
+              127
             ],
             "x-enumNames": [
               "Pending",
               "Acked",
-              "Rejected"
+              "Rejected",
+              "Out"
             ]
           },
           "OrderId": {
@@ -11533,8 +11533,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           },
           "Order": {
@@ -11551,7 +11551,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "limit"
+                      "LIMIT"
                     ]
                   },
                   "p": {
@@ -11579,7 +11579,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "stop_loss_limit"
+                      "STOP_LOSS_LIMIT"
                     ]
                   },
                   "p": {
@@ -11611,7 +11611,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "take_profit_limit"
+                      "TAKE_PROFIT_LIMIT"
                     ]
                   },
                   "p": {
@@ -11796,12 +11796,12 @@
           "OrderRejectReason": {
             "type": "string",
             "enum": [
-              "duplicate_order_id",
-              "not_authorized",
-              "no_execution_venue",
-              "no_account",
-              "no_cpty",
-              "unknown"
+              "DuplicateOrderId",
+              "NotAuthorized",
+              "NoExecutionVenue",
+              "NoAccount",
+              "NoCpty",
+              "Unknown"
             ]
           },
           "OrderSource": {
@@ -11851,18 +11851,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "gtc",
-                  "ioc",
-                  "fok"
+                  "GTC",
+                  "IOC",
+                  "FOK"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "gtd"
+                  "GTD"
                 ],
                 "properties": {
-                  "gtd": {
+                  "GTD": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -11873,7 +11873,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "day"
+                  "DAY"
                 ]
               }
             ]
@@ -12003,12 +12003,14 @@
             "enum": [
               0,
               1,
-              2
+              2,
+              127
             ],
             "x-enumNames": [
               "Pending",
               "Acked",
-              "Rejected"
+              "Rejected",
+              "Out"
             ]
           },
           "OrderId": {
@@ -12727,6 +12729,15 @@
             ],
             "format": "date-time"
           },
+          "limit": {
+            "description": "Default maximum is 1000.",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint32",
+            "minimum": 0.0
+          },
           "order_id": {
             "anyOf": [
               {
@@ -12743,6 +12754,16 @@
               "null"
             ],
             "format": "date-time"
+          },
+          "trader": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/TraderIdOrEmail"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "venue": {
             "type": [
@@ -12773,6 +12794,9 @@
                 "minimum": 0.0
               }
             }
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },
@@ -12965,8 +12989,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           },
           "Fill": {
@@ -12978,6 +13002,7 @@
               "p",
               "q",
               "s",
+              "t",
               "tn",
               "ts",
               "x"
@@ -13080,6 +13105,10 @@
                 "title": "symbol",
                 "type": "string"
               },
+              "t": {
+                "title": "is_taker",
+                "type": "boolean"
+              },
               "tn": {
                 "title": "trade_time_ns",
                 "type": "integer",
@@ -13180,6 +13209,15 @@
             ],
             "format": "date-time"
           },
+          "limit": {
+            "description": "Default maximum is 1000.",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint32",
+            "minimum": 0.0
+          },
           "parent_order_id": {
             "anyOf": [
               {
@@ -13196,6 +13234,16 @@
               "null"
             ],
             "format": "date-time"
+          },
+          "trader": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/TraderIdOrEmail"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "venue": {
             "type": [
@@ -13226,6 +13274,9 @@
                 "minimum": 0.0
               }
             }
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
           }
         }
       },
@@ -13252,8 +13303,8 @@
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
             "type": "string",
             "enum": [
-              "buy",
-              "sell"
+              "BUY",
+              "SELL"
             ]
           },
           "Order": {
@@ -13270,7 +13321,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "limit"
+                      "LIMIT"
                     ]
                   },
                   "p": {
@@ -13298,7 +13349,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "stop_loss_limit"
+                      "STOP_LOSS_LIMIT"
                     ]
                   },
                   "p": {
@@ -13330,7 +13381,7 @@
                   "k": {
                     "type": "string",
                     "enum": [
-                      "take_profit_limit"
+                      "TAKE_PROFIT_LIMIT"
                     ]
                   },
                   "p": {
@@ -13515,12 +13566,12 @@
           "OrderRejectReason": {
             "type": "string",
             "enum": [
-              "duplicate_order_id",
-              "not_authorized",
-              "no_execution_venue",
-              "no_account",
-              "no_cpty",
-              "unknown"
+              "DuplicateOrderId",
+              "NotAuthorized",
+              "NoExecutionVenue",
+              "NoAccount",
+              "NoCpty",
+              "Unknown"
             ]
           },
           "OrderSource": {
@@ -13570,18 +13621,18 @@
               {
                 "type": "string",
                 "enum": [
-                  "gtc",
-                  "ioc",
-                  "fok"
+                  "GTC",
+                  "IOC",
+                  "FOK"
                 ]
               },
               {
                 "type": "object",
                 "required": [
-                  "gtd"
+                  "GTD"
                 ],
                 "properties": {
-                  "gtd": {
+                  "GTD": {
                     "type": "string",
                     "format": "date-time"
                   }
@@ -13592,7 +13643,7 @@
                 "description": "Day order--the specific time which this expires will be dependent on the venue",
                 "type": "string",
                 "enum": [
-                  "day"
+                  "DAY"
                 ]
               }
             ]

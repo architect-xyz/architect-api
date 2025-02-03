@@ -4,6 +4,7 @@ use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_repr::{Deserialize_repr, Serialize_repr};
+use serde_with::skip_serializing_none;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -38,6 +39,7 @@ pub enum CancelStatus {
     Pending = 0,
     Acked = 1,
     Rejected = 2,
+    Out = 127,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -58,5 +60,22 @@ impl CancelReject {
             self.cancel_id,
             self.message.as_deref().unwrap_or("--")
         )
+    }
+}
+
+#[skip_serializing_none]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CancelUpdate {
+    pub cancel_id: Uuid,
+    pub order_id: OrderId,
+    pub timestamp: i64,
+    pub timestamp_ns: u32,
+    pub status: Option<CancelStatus>,
+    pub reject_reason: Option<String>,
+}
+
+impl CancelUpdate {
+    pub fn timestamp(&self) -> Option<DateTime<Utc>> {
+        DateTime::from_timestamp(self.timestamp, self.timestamp_ns)
     }
 }

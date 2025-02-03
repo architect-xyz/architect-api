@@ -116,9 +116,12 @@ pub struct AccountHistoryResponse {
 pub struct HistoricalFillsRequest {
     pub venue: Option<ExecutionVenue>,
     pub account: Option<AccountIdOrName>,
+    pub trader: Option<TraderIdOrEmail>,
     pub order_id: Option<OrderId>,
     pub from_inclusive: Option<DateTime<Utc>>,
     pub to_exclusive: Option<DateTime<Utc>>,
+    /// Default maximum is 1000.
+    pub limit: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -137,9 +140,12 @@ pub struct HistoricalFillsResponse {
 pub struct HistoricalOrdersRequest {
     pub venue: Option<ExecutionVenue>,
     pub account: Option<AccountIdOrName>,
+    pub trader: Option<TraderIdOrEmail>,
     pub parent_order_id: Option<OrderId>,
     pub from_inclusive: Option<DateTime<Utc>>,
     pub to_exclusive: Option<DateTime<Utc>>,
+    /// Default maximum is 1000.
+    pub limit: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

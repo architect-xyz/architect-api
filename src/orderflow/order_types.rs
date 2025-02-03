@@ -6,8 +6,8 @@ use strum::IntoStaticStr;
 #[derive(
     Debug, Clone, Copy, IntoStaticStr, Serialize, Deserialize, PartialEq, Eq, JsonSchema,
 )]
-#[serde(tag = "k", rename_all = "snake_case")]
-#[strum(serialize_all = "snake_case")]
+#[serde(tag = "k", rename_all = "SCREAMING_SNAKE_CASE")]
+#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
 pub enum OrderType {
     Limit(LimitOrderType),
     StopLossLimit(StopLossLimitOrderType),

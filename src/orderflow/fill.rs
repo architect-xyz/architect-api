@@ -1,5 +1,9 @@
-use crate::{symbology::ExecutionVenue, AccountId, Dir, OrderId, UserId};
+use crate::{
+    symbology::{ExecutionVenue, TradableProduct},
+    AccountId, Dir, OrderId, UserId,
+};
 use chrono::{DateTime, Utc};
+use derive_more::{Display, FromStr};
 use rust_decimal::Decimal;
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
@@ -10,6 +14,8 @@ use uuid::Uuid;
 
 #[derive(
     Debug,
+    Display,
+    FromStr,
     FromRepr,
     Clone,
     Copy,
@@ -21,7 +27,7 @@ use uuid::Uuid;
     JsonSchema_repr,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
-#[serde(rename_all = "snake_case")]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[repr(u8)]
 pub enum FillKind {
     Normal = 0,
@@ -54,7 +60,7 @@ pub struct Fill {
     pub account: Option<AccountId>,
     #[serde(rename = "s")]
     #[schemars(title = "symbol")]
-    pub symbol: String,
+    pub symbol: TradableProduct,
     #[serde(rename = "d")]
     #[schemars(title = "direction")]
     pub dir: Dir,
@@ -64,6 +70,9 @@ pub struct Fill {
     #[serde(rename = "p")]
     #[schemars(title = "price")]
     pub price: Decimal,
+    #[serde(rename = "t")]
+    #[schemars(title = "is_taker")]
+    pub is_taker: bool,
     #[serde(rename = "f")]
     #[schemars(title = "fee")]
     pub fee: Option<Decimal>,
@@ -195,10 +204,11 @@ mod tests {
             order_id: Some(OrderId::nil(100)),
             trader: Some(UserId::anonymous()),
             account: Some(AccountId::nil()),
-            symbol: "BTC-USD".to_string(),
+            symbol: "BTC-USD".to_string().into(),
             dir: Dir::Buy,
             quantity: dec!(1.5),
             price: dec!(50000),
+            is_taker: true,
             fee: Some(dec!(0.001)),
             fee_currency: Some("BTC".to_string()),
             recv_time: Some(recv_time.timestamp()),

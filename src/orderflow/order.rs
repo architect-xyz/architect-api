@@ -107,22 +107,22 @@ impl OrderUpdate {
     Debug, Clone, Copy, IntoStaticStr, Serialize, Deserialize, PartialEq, Eq, JsonSchema,
 )]
 pub enum TimeInForce {
-    #[serde(rename = "gtc")]
-    #[strum(serialize = "gtc")]
+    #[serde(rename = "GTC")]
+    #[strum(serialize = "GTC")]
     GoodTilCancel,
-    #[serde(rename = "gtd")]
-    #[strum(serialize = "gtd")]
+    #[serde(rename = "GTD")]
+    #[strum(serialize = "GTD")]
     GoodTilDate(DateTime<Utc>),
     /// Day order--the specific time which this expires
     /// will be dependent on the venue
-    #[serde(rename = "day")]
-    #[strum(serialize = "day")]
+    #[serde(rename = "DAY")]
+    #[strum(serialize = "DAY")]
     GoodTilDay,
-    #[serde(rename = "ioc")]
-    #[strum(serialize = "ioc")]
+    #[serde(rename = "IOC")]
+    #[strum(serialize = "IOC")]
     ImmediateOrCancel,
-    #[serde(rename = "fok")]
-    #[strum(serialize = "fok")]
+    #[serde(rename = "FOK")]
+    #[strum(serialize = "FOK")]
     FillOrKill,
 }
 
@@ -148,7 +148,6 @@ impl TimeInForce {
     JsonSchema_repr,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
-#[serde(rename_all = "snake_case")]
 #[repr(u8)]
 pub enum OrderSource {
     API = 0,
@@ -167,6 +166,7 @@ crate::to_sql_display!(OrderSource);
 #[derive(
     Debug,
     Display,
+    FromStr,
     FromRepr,
     Clone,
     Copy,
@@ -176,7 +176,6 @@ crate::to_sql_display!(OrderSource);
     Eq,
     JsonSchema_repr,
 )]
-#[serde(rename_all = "snake_case")]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[repr(u8)]
 pub enum OrderStatus {
@@ -230,8 +229,9 @@ impl OrderReject {
     }
 }
 
-#[derive(Debug, Display, FromStr, Clone, Serialize, Deserialize, JsonSchema)]
-#[serde(rename_all = "snake_case")]
+#[derive(Debug, Display, FromStr, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
+#[cfg_attr(feature = "sqlx", sqlx(type_name = "TEXT"))]
 pub enum OrderRejectReason {
     DuplicateOrderId,
     NotAuthorized,
