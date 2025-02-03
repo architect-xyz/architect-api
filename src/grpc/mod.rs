@@ -13,10 +13,10 @@ pub type SubscriptionStream<T> = Pin<Box<dyn Stream<Item = Result<T, Status>> + 
 // If adding new services, ensure you also add reference to `.sdk.rs` file in `./codegen.rs`
 #[rustfmt::skip]
 pub mod json_service {
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Health.rs"));
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Symbology.rs"));
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Marketdata.rs"));
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Orderflow.rs"));
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Oms.rs"));
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/schema/generated/json.architect.Folio.rs"));
+    include!("generated/json.architect.Health.rs");
+    include!("generated/json.architect.Symbology.rs");
+    include!("generated/json.architect.Marketdata.rs");
+    include!("generated/json.architect.Orderflow.rs");
+    include!("generated/json.architect.Oms.rs");
+    include!("generated/json.architect.Folio.rs");
 }

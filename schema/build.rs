@@ -2,7 +2,7 @@ use schema_builder::code_gen_types::*;
 use std::{io::Write, path::PathBuf};
 
 mod defs {
-    include!("./generated/packages.sdk.rs");
+    include!("../src/grpc/generated/packages.sdk.rs");
 }
 
 fn main() {

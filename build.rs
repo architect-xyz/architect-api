@@ -358,8 +358,9 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let target_dir = "src/grpc/generated";
     let mut schema_gen_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-    schema_gen_dir.push("schema/generated");
+    schema_gen_dir.push(target_dir);
     schema_builder::manual::Builder::new()
         .rewrite_crate("architect_api")
         .out_dir(schema_gen_dir)
@@ -373,7 +374,7 @@ fn build_grpc_stubs() {
             &json_oms_service,
             &json_folio_service,
         ]);
-    tonic_build::manual::Builder::new().out_dir("schema/generated").compile(&[
+    tonic_build::manual::Builder::new().out_dir(target_dir).compile(&[
         json_health_service,
         json_accounts_service,
         json_symbology_service,
