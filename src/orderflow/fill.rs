@@ -9,6 +9,7 @@ use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_repr::{Deserialize_repr, Serialize_repr};
+use serde_with::{serde_as, BoolFromInt};
 use strum::FromRepr;
 use uuid::Uuid;
 
@@ -35,6 +36,7 @@ pub enum FillKind {
     Correction = 2,
 }
 
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Fill {
     #[serde(rename = "id")]
@@ -71,7 +73,8 @@ pub struct Fill {
     #[schemars(title = "price")]
     pub price: Decimal,
     #[serde(rename = "t")]
-    #[schemars(title = "is_taker")]
+    #[serde_as(as = "BoolFromInt")]
+    #[schemars(title = "is_taker", with = "isize")]
     pub is_taker: bool,
     #[serde(rename = "f")]
     #[schemars(title = "fee")]
@@ -226,9 +229,10 @@ mod tests {
           "u": "00000000-0000-0000-0000-000000000000",
           "a": "00000000-0000-0000-0000-000000000000",
           "s": "BTC-USD",
-          "d": "buy",
+          "d": "BUY",
           "q": "1.5",
           "p": "50000",
+          "t": 1,
           "f": "0.001",
           "fu": "BTC",
           "ats": 1609459200,

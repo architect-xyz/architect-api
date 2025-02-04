@@ -18,4 +18,5 @@ pub mod json_service {
     include!("generated/json.architect.Orderflow.rs");
     include!("generated/json.architect.Oms.rs");
     include!("generated/json.architect.Folio.rs");
+    include!("generated/json.architect.Algo.rs");
 }

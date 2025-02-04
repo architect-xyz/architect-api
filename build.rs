@@ -358,6 +358,28 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let json_algo_service = tonic_build::manual::Service::builder()
+        .name("Algo")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("create_twap_algo_order")
+                .route_name("CreateTwapAlgoOrder")
+                .input_type("crate::algo::twap::CreateTwapAlgoOrderRequest")
+                .output_type("crate::algo::twap::TwapAlgoOrder")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("modify_twap_algo_order")
+                .route_name("ModifyTwapAlgoOrder")
+                .input_type("crate::algo::twap::ModifyTwapAlgoOrderRequest")
+                .output_type("crate::algo::twap::TwapAlgoOrder")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let target_dir = "src/grpc/generated";
     let mut schema_gen_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     schema_gen_dir.push(target_dir);
@@ -373,6 +395,7 @@ fn build_grpc_stubs() {
             &json_orderflow_service,
             &json_oms_service,
             &json_folio_service,
+            &json_algo_service,
         ]);
     tonic_build::manual::Builder::new().out_dir(target_dir).compile(&[
         json_health_service,
@@ -382,6 +405,7 @@ fn build_grpc_stubs() {
         json_orderflow_service,
         json_oms_service,
         json_folio_service,
+        json_algo_service,
     ]);
 }
 

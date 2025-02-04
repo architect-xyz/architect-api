@@ -2,38 +2,48 @@ use crate::{AccountId, OrderId, UserId};
 use anyhow::Result;
 use chrono::{DateTime, Utc};
 use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 pub mod twap;
 
+pub trait Algo {
+    type Params: Validate + Serialize + DeserializeOwned + JsonSchema;
+    type Status: Serialize + DeserializeOwned + JsonSchema;
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct CreateAlgoOrderRequest<T> {
+pub struct CreateAlgoOrderRequest<A: Algo> {
     pub algo_name: String,
     pub algo_order_id: Option<OrderId>,
     pub parent_order_id: Option<OrderId>,
     pub trader: Option<UserId>,
     pub account: Option<AccountId>,
-    pub params: T,
+    pub params: A::Params,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct ModifyAlgoOrderRequest<T> {
+pub struct ModifyAlgoOrderRequest<A: Algo> {
     pub algo_order_id: OrderId,
-    pub params: T,
+    pub params: A::Params,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct StartAlgoOrder {
-    pub algo_order_id: OrderId,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct StopAlgoOrder {
+pub struct StartAlgoOrderRequest {
     pub algo_order_id: OrderId,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct AlgoOrder<T, S> {
+pub struct StopAlgoOrderRequest {
+    pub algo_order_id: OrderId,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct AlgoOrderRequest {
+    pub algo_order_id: OrderId,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct AlgoOrder<A: Algo> {
     pub algo_name: String,
     pub algo_order_id: OrderId,
     pub parent_order_id: Option<OrderId>,
@@ -43,8 +53,8 @@ pub struct AlgoOrder<T, S> {
     pub display_symbols: Option<Vec<String>>,
     pub last_error: Option<String>,
     pub last_error_time: Option<DateTime<Utc>>,
-    pub params: T,
-    pub status: S,
+    pub params: A::Params,
+    pub status: A::Status,
     pub state: AlgoState,
 }
 

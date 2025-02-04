@@ -290,15 +290,15 @@ mod tests {
             {
                 "id": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:123",
                 "s": "BTC Crypto/USD",
-                "d": "buy",
+                "d": "BUY",
                 "q": "100",
                 "u": "trader1",
                 "a": "COINBASE:TEST",
-                "k": "limit",
+                "k": "LIMIT",
                 "p": "4500",
                 "po": true,
                 "tif": {
-                    "gtd": "2025-01-05T04:20:00Z"
+                    "GTD": "2025-01-05T04:20:00Z"
                 } 
             }
         "#).unwrap();
@@ -364,18 +364,18 @@ mod tests {
           "id": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:123",
           "ts": 1735705200,
           "tn": 0,
-          "o": 4,
-          "r": "duplicate_order_id",
+          "o": 127,
+          "r": "DuplicateOrderId",
           "s": "BTC Crypto/USD",
           "u": "00000000-0000-0000-0000-000000000000",
           "a": "00000000-0000-0000-0000-000000000000",
-          "d": "buy",
+          "d": "BUY",
           "q": "100",
           "xq": "0",
-          "k": "limit",
+          "k": "LIMIT",
           "p": "4500",
           "po": false,
-          "tif": "gtc",
+          "tif": "GTC",
           "src": 0,
           "x": "BINANCE"
         }
@@ -414,19 +414,19 @@ mod tests {
           "pid": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:456",
           "ts": 1735705200,
           "tn": 0,
-          "o": 3,
+          "o": 1,
           "s": "ETH Crypto/USD",
           "u": "00000000-0000-0000-0000-000000000000",
           "a": "00000000-0000-0000-0000-000000000000",
-          "d": "sell",
+          "d": "SELL",
           "q": "0.7050",
           "xq": "0.7050",
           "xp": "4250",
-          "k": "stop_loss_limit",
+          "k": "STOP_LOSS_LIMIT",
           "p": "4500",
           "tp": "4000",
           "tif": {
-            "gtd": "2025-01-05T04:20:00Z"
+            "GTD": "2025-01-05T04:20:00Z"
           },
           "src": 5,
           "x": "BINANCE"

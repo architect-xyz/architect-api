@@ -2,9 +2,32 @@ use super::*;
 use crate::{symbology::ExecutionVenue, Dir, HumanDuration};
 use anyhow::{bail, Result};
 use chrono::{DateTime, Utc};
+use derive::grpc;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct TwapAlgo;
+
+impl Algo for TwapAlgo {
+    type Params = TwapParams;
+    type Status = TwapStatus;
+}
+
+pub type TwapAlgoOrder = AlgoOrder<TwapAlgo>;
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Algo", name = "create_twap_algo_order", response = "TwapAlgoOrder")]
+pub type CreateTwapAlgoOrderRequest = CreateAlgoOrderRequest<TwapAlgo>;
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Algo", name = "modify_twap_algo_order", response = "TwapAlgoOrder")]
+pub type ModifyTwapAlgoOrderRequest = ModifyAlgoOrderRequest<TwapAlgo>;
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Algo", name = "twap_algo_order", response = "TwapAlgoOrder")]
+pub type TwapAlgoOrderRequest = AlgoOrderRequest;
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct TwapParams {
