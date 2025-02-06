@@ -8908,6 +8908,8 @@
               "NoExecutionVenue",
               "NoAccount",
               "NoCpty",
+              "UnsupportedOrderType",
+              "UnsupportedExecutionVenue",
               "Unknown"
             ]
           },
@@ -9880,6 +9882,8 @@
               "NoExecutionVenue",
               "NoAccount",
               "NoCpty",
+              "UnsupportedOrderType",
+              "UnsupportedExecutionVenue",
               "Unknown"
             ]
           },
@@ -10643,6 +10647,8 @@
               "NoExecutionVenue",
               "NoAccount",
               "NoCpty",
+              "UnsupportedOrderType",
+              "UnsupportedExecutionVenue",
               "Unknown"
             ]
           },
@@ -11306,6 +11312,8 @@
               "NoExecutionVenue",
               "NoAccount",
               "NoCpty",
+              "UnsupportedOrderType",
+              "UnsupportedExecutionVenue",
               "Unknown"
             ]
           },
@@ -11954,6 +11962,8 @@
               "NoExecutionVenue",
               "NoAccount",
               "NoCpty",
+              "UnsupportedOrderType",
+              "UnsupportedExecutionVenue",
               "Unknown"
             ]
           },
@@ -13725,6 +13735,8 @@
               "NoExecutionVenue",
               "NoAccount",
               "NoCpty",
+              "UnsupportedOrderType",
+              "UnsupportedExecutionVenue",
               "Unknown"
             ]
           },

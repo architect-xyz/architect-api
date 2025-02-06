@@ -238,6 +238,8 @@ pub enum OrderRejectReason {
     NoExecutionVenue,
     NoAccount,
     NoCpty,
+    UnsupportedOrderType,
+    UnsupportedExecutionVenue,
     #[serde(other)]
     Unknown,
 }
