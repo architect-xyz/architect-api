@@ -54,6 +54,7 @@ tokio = { workspace = true, optional = true }
 tokio-postgres = { workspace = true, optional = true }
 tonic = { workspace = true, optional = true }
 triomphe = { workspace = true }
+url = { workspace = true }
 uuid = { workspace = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }
 
