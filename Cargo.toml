@@ -27,6 +27,7 @@ crossbeam = { workspace = true }
 derive = { package = "architect-derive", version = "0.4.0", path = "../derive" }
 derive_builder = { workspace = true }
 derive_more = { workspace = true }
+dirs = { workspace = true }
 enumflags2 = { workspace = true }
 futures = { workspace = true }
 fxhash = { workspace = true }
