@@ -586,6 +586,14 @@ impl Ticker {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub enum TopTickersType {
+    VolumeDescending,
+    ChangeAscending,
+    ChangeDescending,
+    AbsChangeDescending,
+}
+
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "tickers", response = "TickersResponse")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -594,6 +602,10 @@ pub struct TickersRequest {
     pub venue: Option<MarketdataVenue>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub symbols: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub top_tickers_type: Option<TopTickersType>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub top_tickers_count: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

@@ -6682,10 +6682,39 @@
               "type": "string"
             }
           },
+          "top_tickers_count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "top_tickers_type": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/TopTickersType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "venue": {
             "type": [
               "string",
               "null"
+            ]
+          }
+        },
+        "definitions": {
+          "TopTickersType": {
+            "type": "string",
+            "enum": [
+              "VolumeDescending",
+              "ChangeAscending",
+              "ChangeDescending",
+              "AbsChangeDescending"
             ]
           }
         }
