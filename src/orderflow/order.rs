@@ -66,7 +66,7 @@ pub struct Order {
     #[serde(rename = "src")]
     #[schemars(title = "source")]
     pub source: OrderSource,
-    #[serde(rename = "x")]
+    #[serde(rename = "ve")]
     #[schemars(title = "execution_venue")]
     pub execution_venue: ExecutionVenue,
 }
@@ -379,7 +379,7 @@ mod tests {
           "po": false,
           "tif": "GTC",
           "src": 0,
-          "x": "BINANCE"
+          "ve": "BINANCE"
         }
         "###);
         let recv_time: DateTime<Utc> = "2025-01-01T04:20:00Z".parse().unwrap();
@@ -431,7 +431,7 @@ mod tests {
             "GTD": "2025-01-05T04:20:00Z"
           },
           "src": 5,
-          "x": "BINANCE"
+          "ve": "BINANCE"
         }
         "###);
     }

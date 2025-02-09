@@ -1,13 +1,19 @@
-use crate::{symbology::MarketdataVenue, Dir, SequenceIdAndNumber};
+use crate::{
+    symbology::MarketdataVenue, utils::pagination::OffsetAndLimit, Dir,
+    SequenceIdAndNumber,
+};
 use chrono::{DateTime, Utc};
 use derive::grpc;
+use derive_more::Deref;
 use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
 pub mod candle_width;
 pub use candle_width::CandleWidth;
+use strum::EnumString;
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "l1_book_snapshot", response = "L1BookSnapshot")]
@@ -560,9 +566,17 @@ impl TickerValues {
             && self.open_interest.is_none()
             && self.last_settlement_price.is_none()
     }
+
+    pub fn last_or_mid_price(&self) -> Option<Decimal> {
+        self.last_price.or_else(|| {
+            let bid_price = self.bid_price?;
+            let ask_price = self.ask_price?;
+            Some((bid_price + ask_price) / dec!(2))
+        })
+    }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Deref, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Ticker {
     #[serde(rename = "s")]
     #[schemars(title = "symbol")]
@@ -577,6 +591,7 @@ pub struct Ticker {
     #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
     #[serde(flatten)]
+    #[deref]
     pub values: TickerValues,
 }
 
@@ -586,12 +601,15 @@ impl Ticker {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub enum TopTickersType {
-    VolumeDescending,
-    ChangeAscending,
-    ChangeDescending,
-    AbsChangeDescending,
+#[derive(Debug, Copy, Clone, EnumString, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLEnum))]
+pub enum SortTickersBy {
+    VolumeDesc,
+    ChangeAsc,
+    ChangeDesc,
+    AbsChangeDesc,
 }
 
 #[grpc(package = "json.architect")]
@@ -602,10 +620,8 @@ pub struct TickersRequest {
     pub venue: Option<MarketdataVenue>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub symbols: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub top_tickers_type: Option<TopTickersType>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub top_tickers_count: Option<u32>,
+    #[serde(default, flatten)]
+    pub pagination: OffsetAndLimit<SortTickersBy>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

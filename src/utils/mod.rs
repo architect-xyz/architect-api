@@ -5,6 +5,7 @@ pub mod dir_pair;
 pub mod duration;
 pub mod json_schema;
 pub mod maybe_file;
+pub mod pagination;
 pub mod pool;
 #[cfg(feature = "postgres")]
 pub mod postgres;

@@ -6673,6 +6673,30 @@
         "title": "TickersRequest",
         "type": "object",
         "properties": {
+          "i": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "k": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/SortTickersBy"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "n": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
           "symbols": {
             "type": [
               "array",
@@ -6682,24 +6706,6 @@
               "type": "string"
             }
           },
-          "top_tickers_count": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint32",
-            "minimum": 0.0
-          },
-          "top_tickers_type": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/TopTickersType"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
           "venue": {
             "type": [
               "string",
@@ -6708,13 +6714,13 @@
           }
         },
         "definitions": {
-          "TopTickersType": {
+          "SortTickersBy": {
             "type": "string",
             "enum": [
-              "VolumeDescending",
-              "ChangeAscending",
-              "ChangeDescending",
-              "AbsChangeDescending"
+              "VOLUME_DESC",
+              "CHANGE_ASC",
+              "CHANGE_DESC",
+              "ABS_CHANGE_DESC"
             ]
           }
         }
@@ -8210,7 +8216,7 @@
               "tn",
               "ts",
               "u",
-              "x",
+              "ve",
               "xq"
             ],
             "properties": {
@@ -8320,7 +8326,7 @@
                   }
                 ]
               },
-              "x": {
+              "ve": {
                 "title": "execution_venue",
                 "type": "string"
               },
@@ -9184,7 +9190,7 @@
               "tn",
               "ts",
               "u",
-              "x",
+              "ve",
               "xq"
             ],
             "properties": {
@@ -9294,7 +9300,7 @@
                   }
                 ]
               },
-              "x": {
+              "ve": {
                 "title": "execution_venue",
                 "type": "string"
               },
@@ -10169,7 +10175,7 @@
               "tn",
               "ts",
               "u",
-              "x",
+              "ve",
               "xq"
             ],
             "properties": {
@@ -10279,7 +10285,7 @@
                   }
                 ]
               },
-              "x": {
+              "ve": {
                 "title": "execution_venue",
                 "type": "string"
               },
@@ -11174,7 +11180,7 @@
           "tn",
           "ts",
           "u",
-          "x",
+          "ve",
           "xq"
         ],
         "properties": {
@@ -11278,7 +11284,7 @@
               }
             ]
           },
-          "x": {
+          "ve": {
             "title": "execution_venue",
             "type": "string"
           },
@@ -11835,7 +11841,7 @@
               "tn",
               "ts",
               "u",
-              "x",
+              "ve",
               "xq"
             ],
             "properties": {
@@ -11939,7 +11945,7 @@
                   }
                 ]
               },
-              "x": {
+              "ve": {
                 "title": "execution_venue",
                 "type": "string"
               },
@@ -13608,7 +13614,7 @@
               "tn",
               "ts",
               "u",
-              "x",
+              "ve",
               "xq"
             ],
             "properties": {
@@ -13712,7 +13718,7 @@
                   }
                 ]
               },
-              "x": {
+              "ve": {
                 "title": "execution_venue",
                 "type": "string"
               },
