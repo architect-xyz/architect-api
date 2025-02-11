@@ -145,16 +145,105 @@ impl FromStr for Product {
     }
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
+pub struct ProductInfo {
+    pub product_type: ProductType,
+    pub primary_venue: Option<String>,
+}
+
+impl ProductInfo {
+    pub fn series(&self) -> Option<&str> {
+        match &self.product_type {
+            ProductType::Future { series, .. } => series.as_deref(),
+            _ => None,
+        }
+    }
+
+    pub fn multiplier(&self) -> Option<Decimal> {
+        match &self.product_type {
+            ProductType::Crypto
+            | ProductType::Fiat
+            | ProductType::Equity
+            | ProductType::Index
+            | ProductType::Commodity
+            | ProductType::Unknown
+            | ProductType::Option { .. }
+            | ProductType::EventContract { .. }
+            | ProductType::FutureSpread { .. } => None,
+            ProductType::Perpetual { multiplier, .. }
+            | ProductType::Future { multiplier, .. } => Some(*multiplier),
+        }
+    }
+
+    pub fn underlying(&self) -> Option<&Product> {
+        match &self.product_type {
+            ProductType::Crypto
+            | ProductType::Fiat
+            | ProductType::Equity
+            | ProductType::Index
+            | ProductType::Commodity
+            | ProductType::Unknown
+            | ProductType::Option { .. }
+            | ProductType::EventContract { .. }
+            | ProductType::FutureSpread { .. } => None,
+            ProductType::Perpetual { underlying, .. }
+            | ProductType::Future { underlying, .. } => underlying.as_ref(),
+        }
+    }
+
+    pub fn expiration(&self) -> Option<DateTime<Utc>> {
+        match &self.product_type {
+            ProductType::Crypto
+            | ProductType::Fiat
+            | ProductType::Equity
+            | ProductType::Index
+            | ProductType::Commodity
+            | ProductType::Unknown
+            | ProductType::Perpetual { .. }
+            | ProductType::FutureSpread { .. } => None,
+            ProductType::Option {
+                instance: OptionsSeriesInstance { expiration, .. },
+                ..
+            } => Some(*expiration),
+            ProductType::EventContract { instance, .. } => instance.expiration(),
+            ProductType::Future { expiration, .. } => Some(*expiration),
+        }
+    }
+
+    pub fn is_expired(&self, cutoff: DateTime<Utc>) -> bool {
+        if let Some(expiration) = self.expiration() {
+            expiration <= cutoff
+        } else {
+            false
+        }
+    }
+
+    pub fn derivative_kind(&self) -> Option<DerivativeKind> {
+        match &self.product_type {
+            ProductType::Future { derivative_kind, .. } => Some(*derivative_kind),
+            _ => None,
+        }
+    }
+
+    pub fn first_notice_date(&self) -> Option<NaiveDate> {
+        match &self.product_type {
+            ProductType::Future { first_notice_date, .. } => *first_notice_date,
+            _ => None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, IntoStaticStr, Deserialize, Serialize, JsonSchema)]
-#[serde(tag = "type")]
-pub enum ProductInfo {
+#[serde(tag = "product_type")]
+pub enum ProductType {
     Fiat,
     Commodity,
     Crypto,
     Equity,
     Index,
     Future {
-        underlying: Product,
+        series: Option<String>,
+        underlying: Option<Product>,
         multiplier: Decimal,
         expiration: DateTime<Utc>,
         derivative_kind: DerivativeKind,
@@ -165,7 +254,7 @@ pub enum ProductInfo {
         legs: Vec<SpreadLeg>,
     },
     Perpetual {
-        underlying: Product,
+        underlying: Option<Product>,
         multiplier: Decimal,
         derivative_kind: DerivativeKind,
     },
@@ -179,81 +268,6 @@ pub enum ProductInfo {
     },
     #[serde(other)]
     Unknown,
-}
-
-impl ProductInfo {
-    pub fn multiplier(&self) -> Option<Decimal> {
-        match self {
-            ProductInfo::Crypto
-            | ProductInfo::Fiat
-            | ProductInfo::Equity
-            | ProductInfo::Index
-            | ProductInfo::Commodity
-            | ProductInfo::Unknown
-            | ProductInfo::Option { .. }
-            | ProductInfo::EventContract { .. }
-            | ProductInfo::FutureSpread { .. } => None,
-            ProductInfo::Perpetual { multiplier, .. }
-            | ProductInfo::Future { multiplier, .. } => Some(*multiplier),
-        }
-    }
-
-    pub fn underlying(&self) -> Option<&Product> {
-        match self {
-            ProductInfo::Crypto
-            | ProductInfo::Fiat
-            | ProductInfo::Equity
-            | ProductInfo::Index
-            | ProductInfo::Commodity
-            | ProductInfo::Unknown
-            | ProductInfo::Option { .. }
-            | ProductInfo::EventContract { .. }
-            | ProductInfo::FutureSpread { .. } => None,
-            ProductInfo::Perpetual { underlying, .. }
-            | ProductInfo::Future { underlying, .. } => Some(underlying),
-        }
-    }
-
-    pub fn expiration(&self) -> Option<DateTime<Utc>> {
-        match self {
-            ProductInfo::Crypto
-            | ProductInfo::Fiat
-            | ProductInfo::Equity
-            | ProductInfo::Index
-            | ProductInfo::Commodity
-            | ProductInfo::Unknown
-            | ProductInfo::Perpetual { .. }
-            | ProductInfo::FutureSpread { .. } => None,
-            ProductInfo::Option {
-                instance: OptionsSeriesInstance { expiration, .. },
-                ..
-            } => Some(*expiration),
-            ProductInfo::EventContract { instance, .. } => instance.expiration(),
-            ProductInfo::Future { expiration, .. } => Some(*expiration),
-        }
-    }
-
-    pub fn is_expired(&self, cutoff: DateTime<Utc>) -> bool {
-        if let Some(expiration) = self.expiration() {
-            expiration <= cutoff
-        } else {
-            false
-        }
-    }
-
-    pub fn derivative_kind(&self) -> Option<DerivativeKind> {
-        match self {
-            ProductInfo::Future { derivative_kind, .. } => Some(*derivative_kind),
-            _ => None,
-        }
-    }
-
-    pub fn first_notice_date(&self) -> Option<NaiveDate> {
-        match self {
-            ProductInfo::Future { first_notice_date, .. } => *first_notice_date,
-            _ => None,
-        }
-    }
 }
 
 #[derive(
