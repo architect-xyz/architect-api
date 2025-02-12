@@ -12,6 +12,8 @@ impl<U: Clone + Ord, V: Clone + Ord> Bimap<U, V> {
     }
 
     pub fn insert(&mut self, u: U, v: V) {
+        self.remove(&u);
+        self.remove_rev(&v);
         self.map.insert(u.clone(), v.clone());
         self.rev.insert(v, u);
     }
