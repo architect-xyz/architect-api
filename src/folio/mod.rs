@@ -138,6 +138,8 @@ pub struct HistoricalFillsResponse {
 )]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct HistoricalOrdersRequest {
+    /// if order_ids is not empty, the limit field is ignored
+    pub order_ids: Option<Vec<OrderId>>,
     pub venue: Option<ExecutionVenue>,
     pub account: Option<AccountIdOrName>,
     pub trader: Option<TraderIdOrEmail>,

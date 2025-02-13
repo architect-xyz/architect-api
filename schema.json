@@ -13292,6 +13292,16 @@
             "format": "uint32",
             "minimum": 0.0
           },
+          "order_ids": {
+            "description": "if order_ids is not empty, the limit field is ignored",
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/definitions/OrderId"
+            }
+          },
           "parent_order_id": {
             "anyOf": [
               {
