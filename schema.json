@@ -8570,6 +8570,7 @@
               },
               "t": {
                 "title": "is_taker",
+                "default": null,
                 "type": "integer",
                 "format": "int"
               },
@@ -9544,6 +9545,7 @@
               },
               "t": {
                 "title": "is_taker",
+                "default": null,
                 "type": "integer",
                 "format": "int"
               },
@@ -10324,6 +10326,7 @@
               },
               "t": {
                 "title": "is_taker",
+                "default": null,
                 "type": "integer",
                 "format": "int"
               },
@@ -13100,7 +13103,6 @@
               "p",
               "q",
               "s",
-              "t",
               "tn",
               "ts",
               "x"
@@ -13205,6 +13207,7 @@
               },
               "t": {
                 "title": "is_taker",
+                "default": null,
                 "type": "integer",
                 "format": "int"
               },

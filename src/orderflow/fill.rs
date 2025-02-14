@@ -73,9 +73,9 @@ pub struct Fill {
     #[schemars(title = "price")]
     pub price: Decimal,
     #[serde(rename = "t")]
-    #[serde_as(as = "BoolFromInt")]
+    #[serde_as(as = "Option<BoolFromInt>")]
     #[schemars(title = "is_taker", with = "isize")]
-    pub is_taker: bool,
+    pub is_taker: Option<bool>,
     #[serde(rename = "f")]
     #[schemars(title = "fee")]
     pub fee: Option<Decimal>,
