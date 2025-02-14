@@ -14,6 +14,8 @@ pub struct ExecutionInfo {
     pub min_order_quantity: Decimal,
     pub min_order_quantity_unit: MinOrderQuantityUnit,
     pub is_delisted: bool,
+    pub initial_margin: Option<Decimal>,
+    pub maintenance_margin: Option<Decimal>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]

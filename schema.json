@@ -360,8 +360,28 @@
               "execution_venue": {
                 "type": "string"
               },
+              "initial_margin": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "is_delisted": {
                 "type": "boolean"
+              },
+              "maintenance_margin": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "min_order_quantity": {
                 "$ref": "#/definitions/Decimal"
@@ -1602,8 +1622,28 @@
               "execution_venue": {
                 "type": "string"
               },
+              "initial_margin": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "is_delisted": {
                 "type": "boolean"
+              },
+              "maintenance_margin": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "min_order_quantity": {
                 "$ref": "#/definitions/Decimal"
@@ -3102,8 +3142,28 @@
               "execution_venue": {
                 "type": "string"
               },
+              "initial_margin": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "is_delisted": {
                 "type": "boolean"
+              },
+              "maintenance_margin": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "min_order_quantity": {
                 "$ref": "#/definitions/Decimal"
