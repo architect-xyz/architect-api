@@ -313,3 +313,5 @@ impl std::str::FromStr for SpreadLeg {
         Ok(Self { product: product.parse()?, quantity: quantity.parse()? })
     }
 }
+
+pub type AliasKind = String;

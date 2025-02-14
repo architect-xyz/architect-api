@@ -236,6 +236,16 @@
               "$ref": "#/definitions/OptionsSeriesInfo"
             }
           },
+          "product_aliases": {
+            "default": {},
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
           "products": {
             "type": "object",
             "additionalProperties": {
@@ -1457,7 +1467,17 @@
           "options_series": {
             "anyOf": [
               {
-                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_OptionsSeriesInfo"
+                "$ref": "#/definitions/SnapshotOrUpdate1_for_String_and_OptionsSeriesInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "product_aliases": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_SnapshotOrUpdate_for_String_and_String"
               },
               {
                 "type": "null"
@@ -1467,7 +1487,7 @@
           "products": {
             "anyOf": [
               {
-                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_ProductInfo"
+                "$ref": "#/definitions/SnapshotOrUpdate1_for_String_and_ProductInfo"
               },
               {
                 "type": "null"
@@ -2197,6 +2217,98 @@
               "C"
             ]
           },
+          "SnapshotOrUpdate1_for_String_and_OptionsSeriesInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot",
+                  "type"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/OptionsSeriesInfo"
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "snapshot"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type",
+                  "updates"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "update"
+                    ]
+                  },
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/AddOrRemove_for_String_and_OptionsSeriesInfo"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "SnapshotOrUpdate1_for_String_and_ProductInfo": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot",
+                  "type"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/ProductInfo"
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "snapshot"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type",
+                  "updates"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "update"
+                    ]
+                  },
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/AddOrRemove_for_String_and_ProductInfo"
+                    }
+                  }
+                }
+              }
+            ]
+          },
           "SnapshotOrUpdate2_for_String_and_String_and_ExecutionInfo": {
             "oneOf": [
               {
@@ -2246,92 +2358,94 @@
               }
             ]
           },
-          "SnapshotOrUpdate_for_String_and_OptionsSeriesInfo": {
-            "oneOf": [
+          "SnapshotOrUpdate_for_String_and_SnapshotOrUpdate_for_String_and_String": {
+            "anyOf": [
               {
                 "type": "object",
                 "required": [
-                  "snapshot",
-                  "type"
+                  "snapshot"
                 ],
                 "properties": {
                   "snapshot": {
                     "type": "object",
                     "additionalProperties": {
-                      "$ref": "#/definitions/OptionsSeriesInfo"
+                      "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_String"
                     }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "snapshot"
-                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "type",
                   "updates"
                 ],
                 "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "update"
-                    ]
-                  },
                   "updates": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/AddOrRemove_for_String_and_OptionsSeriesInfo"
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_String"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      ],
+                      "maxItems": 2,
+                      "minItems": 2
                     }
                   }
                 }
               }
             ]
           },
-          "SnapshotOrUpdate_for_String_and_ProductInfo": {
-            "oneOf": [
+          "SnapshotOrUpdate_for_String_and_String": {
+            "anyOf": [
               {
                 "type": "object",
                 "required": [
-                  "snapshot",
-                  "type"
+                  "snapshot"
                 ],
                 "properties": {
                   "snapshot": {
                     "type": "object",
                     "additionalProperties": {
-                      "$ref": "#/definitions/ProductInfo"
+                      "type": "string"
                     }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "snapshot"
-                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "type",
                   "updates"
                 ],
                 "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "update"
-                    ]
-                  },
                   "updates": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/AddOrRemove_for_String_and_ProductInfo"
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      ],
+                      "maxItems": 2,
+                      "minItems": 2
                     }
                   }
                 }
@@ -3033,6 +3147,15 @@
             "type": "object",
             "additionalProperties": {
               "$ref": "#/definitions/OptionsSeriesInfo"
+            }
+          },
+          "product_aliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
             }
           },
           "products": {
