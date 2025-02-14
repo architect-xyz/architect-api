@@ -1457,7 +1457,7 @@
           "execution_info": {
             "anyOf": [
               {
-                "$ref": "#/definitions/SnapshotOrUpdate2_for_String_and_String_and_ExecutionInfo"
+                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_SnapshotOrUpdate_for_String_and_ExecutionInfo"
               },
               {
                 "type": "null"
@@ -1467,7 +1467,7 @@
           "options_series": {
             "anyOf": [
               {
-                "$ref": "#/definitions/SnapshotOrUpdate1_for_String_and_OptionsSeriesInfo"
+                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_OptionsSeriesInfo"
               },
               {
                 "type": "null"
@@ -1487,7 +1487,7 @@
           "products": {
             "anyOf": [
               {
-                "$ref": "#/definitions/SnapshotOrUpdate1_for_String_and_ProductInfo"
+                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_ProductInfo"
               },
               {
                 "type": "null"
@@ -1508,219 +1508,6 @@
           }
         },
         "definitions": {
-          "AddOrRemove2_for_String_and_String_and_ExecutionInfo": {
-            "oneOf": [
-              {
-                "description": "Information about a symbol related to its execution route.",
-                "type": "object",
-                "required": [
-                  "execution_venue",
-                  "is_delisted",
-                  "min_order_quantity",
-                  "min_order_quantity_unit",
-                  "step_size",
-                  "symbol",
-                  "tick_size",
-                  "type"
-                ],
-                "properties": {
-                  "execution_venue": {
-                    "type": "string"
-                  },
-                  "is_delisted": {
-                    "type": "boolean"
-                  },
-                  "min_order_quantity": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "min_order_quantity_unit": {
-                    "$ref": "#/definitions/MinOrderQuantityUnit"
-                  },
-                  "step_size": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "tick_size": {
-                    "$ref": "#/definitions/TickSize"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "add"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "symbol",
-                  "type",
-                  "venue"
-                ],
-                "properties": {
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "remove"
-                    ]
-                  },
-                  "venue": {
-                    "type": "string"
-                  }
-                }
-              }
-            ]
-          },
-          "AddOrRemove_for_String_and_OptionsSeriesInfo": {
-            "oneOf": [
-              {
-                "type": "object",
-                "required": [
-                  "derivative_kind",
-                  "exercise_type",
-                  "expiration_time_of_day",
-                  "expiration_time_zone",
-                  "is_cash_settled",
-                  "multiplier",
-                  "options_series",
-                  "quote_symbol",
-                  "strikes_by_expiration",
-                  "symbol",
-                  "type",
-                  "underlying"
-                ],
-                "properties": {
-                  "derivative_kind": {
-                    "$ref": "#/definitions/DerivativeKind"
-                  },
-                  "exercise_type": {
-                    "$ref": "#/definitions/OptionsExerciseType"
-                  },
-                  "expiration_time_of_day": {
-                    "type": "string",
-                    "format": "partial-date-time"
-                  },
-                  "expiration_time_zone": {
-                    "$ref": "#/definitions/TimeZone"
-                  },
-                  "is_cash_settled": {
-                    "type": "boolean"
-                  },
-                  "multiplier": {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  "options_series": {
-                    "type": "string"
-                  },
-                  "quote_symbol": {
-                    "type": "string"
-                  },
-                  "strikes_by_expiration": {
-                    "type": "object",
-                    "additionalProperties": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/Decimal"
-                      },
-                      "uniqueItems": true
-                    }
-                  },
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "add"
-                    ]
-                  },
-                  "underlying": {
-                    "type": "string"
-                  },
-                  "venue_discriminant": {
-                    "type": [
-                      "string",
-                      "null"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "symbol",
-                  "type"
-                ],
-                "properties": {
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "remove"
-                    ]
-                  }
-                }
-              }
-            ]
-          },
-          "AddOrRemove_for_String_and_ProductInfo": {
-            "oneOf": [
-              {
-                "type": "object",
-                "required": [
-                  "product_type",
-                  "symbol",
-                  "type"
-                ],
-                "properties": {
-                  "primary_venue": {
-                    "type": [
-                      "string",
-                      "null"
-                    ]
-                  },
-                  "product_type": {
-                    "$ref": "#/definitions/ProductType"
-                  },
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "add"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "symbol",
-                  "type"
-                ],
-                "properties": {
-                  "symbol": {
-                    "type": "string"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "remove"
-                    ]
-                  }
-                }
-              }
-            ]
-          },
           "Decimal": {
             "type": "string"
           },
@@ -2217,13 +2004,61 @@
               "C"
             ]
           },
-          "SnapshotOrUpdate1_for_String_and_OptionsSeriesInfo": {
-            "oneOf": [
+          "SnapshotOrUpdate_for_String_and_ExecutionInfo": {
+            "anyOf": [
               {
                 "type": "object",
                 "required": [
-                  "snapshot",
-                  "type"
+                  "snapshot"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/ExecutionInfo"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "updates"
+                ],
+                "properties": {
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/ExecutionInfo"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      ],
+                      "maxItems": 2,
+                      "minItems": 2
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "SnapshotOrUpdate_for_String_and_OptionsSeriesInfo": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot"
                 ],
                 "properties": {
                   "snapshot": {
@@ -2231,45 +2066,48 @@
                     "additionalProperties": {
                       "$ref": "#/definitions/OptionsSeriesInfo"
                     }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "snapshot"
-                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "type",
                   "updates"
                 ],
                 "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "update"
-                    ]
-                  },
                   "updates": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/AddOrRemove_for_String_and_OptionsSeriesInfo"
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/OptionsSeriesInfo"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      ],
+                      "maxItems": 2,
+                      "minItems": 2
                     }
                   }
                 }
               }
             ]
           },
-          "SnapshotOrUpdate1_for_String_and_ProductInfo": {
-            "oneOf": [
+          "SnapshotOrUpdate_for_String_and_ProductInfo": {
+            "anyOf": [
               {
                 "type": "object",
                 "required": [
-                  "snapshot",
-                  "type"
+                  "snapshot"
                 ],
                 "properties": {
                   "snapshot": {
@@ -2277,81 +2115,85 @@
                     "additionalProperties": {
                       "$ref": "#/definitions/ProductInfo"
                     }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "snapshot"
-                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "type",
                   "updates"
                 ],
                 "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "update"
-                    ]
-                  },
                   "updates": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/AddOrRemove_for_String_and_ProductInfo"
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/ProductInfo"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      ],
+                      "maxItems": 2,
+                      "minItems": 2
                     }
                   }
                 }
               }
             ]
           },
-          "SnapshotOrUpdate2_for_String_and_String_and_ExecutionInfo": {
-            "oneOf": [
+          "SnapshotOrUpdate_for_String_and_SnapshotOrUpdate_for_String_and_ExecutionInfo": {
+            "anyOf": [
               {
                 "type": "object",
                 "required": [
-                  "snapshot",
-                  "type"
+                  "snapshot"
                 ],
                 "properties": {
                   "snapshot": {
                     "type": "object",
                     "additionalProperties": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "$ref": "#/definitions/ExecutionInfo"
-                      }
+                      "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_ExecutionInfo"
                     }
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "snapshot"
-                    ]
                   }
                 }
               },
               {
                 "type": "object",
                 "required": [
-                  "type",
                   "updates"
                 ],
                 "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "update"
-                    ]
-                  },
                   "updates": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/AddOrRemove2_for_String_and_String_and_ExecutionInfo"
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_ExecutionInfo"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      ],
+                      "maxItems": 2,
+                      "minItems": 2
                     }
                   }
                 }

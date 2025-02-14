@@ -40,14 +40,15 @@ pub struct SymbologyUpdate {
     #[serde(flatten)]
     pub sequence: SequenceIdAndNumber,
     #[serde(default)]
-    pub products: Option<SnapshotOrUpdate1<Product, ProductInfo>>,
+    pub products: Option<SnapshotOrUpdate<Product, ProductInfo>>,
     #[serde(default)]
     pub product_aliases:
         Option<SnapshotOrUpdate<AliasKind, SnapshotOrUpdate<String, Product>>>,
     #[serde(default)]
-    pub options_series: Option<SnapshotOrUpdate1<OptionsSeries, OptionsSeriesInfo>>,
+    pub options_series: Option<SnapshotOrUpdate<OptionsSeries, OptionsSeriesInfo>>,
     #[serde(default)]
-    pub execution_info: Option<SnapshotOrUpdate2<String, ExecutionVenue, ExecutionInfo>>,
+    pub execution_info:
+        Option<SnapshotOrUpdate<String, SnapshotOrUpdate<ExecutionVenue, ExecutionInfo>>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -131,70 +132,6 @@ impl<K0: Eq + Ord, K1: Eq + Ord, V> SnapshotOrUpdate<K0, SnapshotOrUpdate<K1, V>
             }
         }
     }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[serde(tag = "type", rename_all = "snake_case")]
-pub enum AddOrRemove<Symbol, Info> {
-    Add {
-        symbol: Symbol,
-        #[serde(flatten)]
-        info: Info,
-    },
-    Remove {
-        symbol: Symbol,
-    },
-}
-
-// CR alee: deprecate in favor of `SnapshotOrUpdate`
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[serde(tag = "type", rename_all = "snake_case")]
-pub enum SnapshotOrUpdate1<Symbol: Eq + Ord, Info> {
-    Snapshot { snapshot: BTreeMap<Symbol, Info> },
-    Update { updates: Vec<AddOrRemove<Symbol, Info>> },
-}
-
-impl<Symbol: Eq + Ord, Info> SnapshotOrUpdate1<Symbol, Info> {
-    pub fn apply(self, map: &mut BTreeMap<Symbol, Info>) {
-        match self {
-            SnapshotOrUpdate1::Snapshot { snapshot } => {
-                *map = snapshot;
-            }
-            SnapshotOrUpdate1::Update { updates } => {
-                for action in updates {
-                    match action {
-                        AddOrRemove::Add { symbol, info } => {
-                            map.insert(symbol, info);
-                        }
-                        AddOrRemove::Remove { symbol } => {
-                            map.remove(&symbol);
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[serde(tag = "type", rename_all = "snake_case")]
-pub enum AddOrRemove2<Symbol, Venue, Info> {
-    Add {
-        symbol: Symbol,
-        #[serde(flatten)]
-        info: Info,
-    },
-    Remove {
-        symbol: Symbol,
-        venue: Venue,
-    },
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[serde(tag = "type", rename_all = "snake_case")]
-pub enum SnapshotOrUpdate2<Symbol: Eq + Ord, Venue: Eq + Ord, Info> {
-    Snapshot { snapshot: BTreeMap<Symbol, BTreeMap<Venue, Info>> },
-    Update { updates: Vec<AddOrRemove2<Symbol, Venue, Info>> },
 }
 
 #[grpc(package = "json.architect")]
