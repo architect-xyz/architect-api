@@ -10,7 +10,7 @@ schemars = { workspace = true }
 
 [package.metadata.cargo-machete]
 ignored = [
-    "architect_api", # PHONY 
+    "architect-api", # PHONY
     "schema_builder", # build.rs
     "schemars", # build.rs
 ]
