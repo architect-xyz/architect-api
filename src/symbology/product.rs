@@ -7,6 +7,7 @@ use derive_more::{AsRef, Deref, Display, From};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use serde_with::{DeserializeFromStr, SerializeDisplay};
 use std::str::FromStr;
 use strum_macros::{EnumString, IntoStaticStr};
 
@@ -149,6 +150,7 @@ impl FromStr for Product {
 pub struct ProductInfo {
     pub product_type: ProductType,
     pub primary_venue: Option<String>,
+    pub price_display_format: Option<PriceDisplayFormat>,
 }
 
 impl ProductInfo {
@@ -314,4 +316,87 @@ impl std::str::FromStr for SpreadLeg {
     }
 }
 
-pub type AliasKind = String;
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    EnumString,
+    IntoStaticStr,
+    Deserialize,
+    Serialize,
+    JsonSchema,
+)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
+pub enum AliasKind {
+    CmeGlobex,
+}
+
+#[cfg(feature = "postgres")]
+crate::to_sql_str!(AliasKind);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, DeserializeFromStr, SerializeDisplay)]
+pub enum PriceDisplayFormat {
+    CmeFractional {
+        main_fraction: i32,
+        sub_fraction: i32,  // 0 if no subfraction
+        tick_decimals: i32, // number of decimals to the right of the tick mark
+    },
+}
+
+impl PriceDisplayFormat {
+    pub fn main_fraction(&self) -> Option<i32> {
+        match self {
+            Self::CmeFractional { main_fraction, .. } => Some(*main_fraction),
+        }
+    }
+
+    pub fn tick_decimals(&self) -> Option<i32> {
+        match self {
+            Self::CmeFractional { tick_decimals, .. } => Some(*tick_decimals),
+        }
+    }
+}
+
+crate::json_schema_is_string!(PriceDisplayFormat);
+
+impl std::fmt::Display for PriceDisplayFormat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::CmeFractional { main_fraction, sub_fraction, tick_decimals } => {
+                write!(
+                    f,
+                    "CME_FRACTIONAL({main_fraction},{sub_fraction},{tick_decimals})"
+                )
+            }
+        }
+    }
+}
+
+impl std::str::FromStr for PriceDisplayFormat {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        if s.starts_with("CME_FRACTIONAL(") {
+            let s = s.trim_end_matches(')');
+            let parts: Vec<&str> = s["CME_FRACTIONAL(".len()..].split(',').collect();
+            if parts.len() != 3 {
+                return Err(anyhow!("invalid CME_FRACTIONAL format"));
+            }
+            let main_fraction = parts[0].parse()?;
+            let sub_fraction = parts[1].parse()?;
+            let tick_decimals = parts[2].parse()?;
+            Ok(Self::CmeFractional { main_fraction, sub_fraction, tick_decimals })
+        } else {
+            Err(anyhow!("invalid price display format"))
+        }
+    }
+}
+
+#[cfg(feature = "postgres")]
+crate::to_sql_display!(PriceDisplayFormat);

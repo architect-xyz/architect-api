@@ -211,7 +211,7 @@ mod tests {
             dir: Dir::Buy,
             quantity: dec!(1.5),
             price: dec!(50000),
-            is_taker: true,
+            is_taker: Some(true),
             fee: Some(dec!(0.001)),
             fee_currency: Some("BTC".to_string()),
             recv_time: Some(recv_time.timestamp()),

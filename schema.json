@@ -530,12 +530,25 @@
               }
             }
           },
+          "PriceDisplayFormat": {
+            "type": "string"
+          },
           "ProductInfo": {
             "type": "object",
             "required": [
               "product_type"
             ],
             "properties": {
+              "price_display_format": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/PriceDisplayFormat"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "primary_venue": {
                 "type": [
                   "string",
@@ -1497,7 +1510,7 @@
           "product_aliases": {
             "anyOf": [
               {
-                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_SnapshotOrUpdate_for_String_and_String"
+                "$ref": "#/definitions/SnapshotOrUpdate_for_AliasKind_and_SnapshotOrUpdate_for_String_and_String"
               },
               {
                 "type": "null"
@@ -1528,6 +1541,12 @@
           }
         },
         "definitions": {
+          "AliasKind": {
+            "type": "string",
+            "enum": [
+              "CME_GLOBEX"
+            ]
+          },
           "Decimal": {
             "type": "string"
           },
@@ -1792,12 +1811,25 @@
               }
             }
           },
+          "PriceDisplayFormat": {
+            "type": "string"
+          },
           "ProductInfo": {
             "type": "object",
             "required": [
               "product_type"
             ],
             "properties": {
+              "price_display_format": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/PriceDisplayFormat"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "primary_venue": {
                 "type": [
                   "string",
@@ -2044,6 +2076,55 @@
               "C"
             ]
           },
+          "SnapshotOrUpdate_for_AliasKind_and_SnapshotOrUpdate_for_String_and_String": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_String"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "updates"
+                ],
+                "properties": {
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "$ref": "#/definitions/AliasKind"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_String"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      ],
+                      "maxItems": 2,
+                      "minItems": 2
+                    }
+                  }
+                }
+              }
+            ]
+          },
           "SnapshotOrUpdate_for_String_and_ExecutionInfo": {
             "anyOf": [
               {
@@ -2225,55 +2306,6 @@
                           "anyOf": [
                             {
                               "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_ExecutionInfo"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      ],
-                      "maxItems": 2,
-                      "minItems": 2
-                    }
-                  }
-                }
-              }
-            ]
-          },
-          "SnapshotOrUpdate_for_String_and_SnapshotOrUpdate_for_String_and_String": {
-            "anyOf": [
-              {
-                "type": "object",
-                "required": [
-                  "snapshot"
-                ],
-                "properties": {
-                  "snapshot": {
-                    "type": "object",
-                    "additionalProperties": {
-                      "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_String"
-                    }
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "updates"
-                ],
-                "properties": {
-                  "updates": {
-                    "type": "array",
-                    "items": {
-                      "type": "array",
-                      "items": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "anyOf": [
-                            {
-                              "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_String"
                             },
                             {
                               "type": "null"
@@ -3312,12 +3344,25 @@
               }
             }
           },
+          "PriceDisplayFormat": {
+            "type": "string"
+          },
           "ProductInfo": {
             "type": "object",
             "required": [
               "product_type"
             ],
             "properties": {
+              "price_display_format": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/PriceDisplayFormat"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "primary_venue": {
                 "type": [
                   "string",
