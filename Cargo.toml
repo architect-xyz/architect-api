@@ -75,5 +75,6 @@ name = "order_id_benchmark"
 
 [package.metadata.cargo-machete]
 ignored = [
+    "schema_builder", # build.rs
     "tonic-build", # build.rs
 ]
