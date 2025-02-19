@@ -82,8 +82,8 @@ impl FromStr for CandleWidth {
     }
 }
 
-impl Into<TimeDelta> for CandleWidth {
-    fn into(self) -> TimeDelta {
-        TimeDelta::seconds(self.as_seconds())
+impl From<CandleWidth> for TimeDelta {
+    fn from(val: CandleWidth) -> Self {
+        TimeDelta::seconds(val.as_seconds())
     }
 }

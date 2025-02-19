@@ -59,10 +59,7 @@ impl TradableProduct {
     }
 
     pub fn quote(&self) -> Option<Product> {
-        match self.0.split_once('/') {
-            Some((_, quote)) => Some(Product(quote.to_string())),
-            None => None,
-        }
+        self.0.split_once('/').map(|(_, quote)| Product(quote.to_string()))
     }
 }
 

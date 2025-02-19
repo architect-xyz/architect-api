@@ -27,7 +27,7 @@ use std::{
 
 const TAG_MASK: usize = 0x8000_0000_0000_0000;
 const LEN_MASK: usize = 0x7F00_0000_0000_0000;
-const CHUNK_SIZE: usize = 1 * 1024 * 1024;
+const CHUNK_SIZE: usize = 1024 * 1024;
 
 struct Chunk {
     data: Vec<u8>,
@@ -72,7 +72,7 @@ static ROOT: Lazy<Mutex<Root>> =
 #[allow(dead_code)]
 struct StrVisitor;
 
-impl<'de> serde::de::Visitor<'de> for StrVisitor {
+impl serde::de::Visitor<'_> for StrVisitor {
     type Value = Str;
 
     fn expecting(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -122,7 +122,7 @@ unsafe impl Send for Str {}
 unsafe impl Sync for Str {}
 
 impl Str {
-    pub fn as_str<'a>(&'a self) -> &'a str {
+    pub fn as_str(&self) -> &str {
         unsafe {
             if self.0 & TAG_MASK > 0 {
                 #[cfg(target_endian = "little")]
@@ -330,7 +330,7 @@ impl Str {
         S: juniper::ScalarValue,
     {
         v.as_string_value()
-            .map(|s| Self::try_from(s))
+            .map(Self::try_from)
             .ok_or_else(|| format!("Expected `String`, found: {v}"))?
             .map_err(|e| e.to_string())
     }
@@ -411,7 +411,7 @@ mod test {
             let s = loop {
                 let len = thread_rng().gen_range(0..128);
                 let s = rand_unicode(len);
-                if s.as_bytes().len() < 256 {
+                if s.len() < 256 {
                     break s;
                 }
             };

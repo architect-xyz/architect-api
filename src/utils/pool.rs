@@ -157,7 +157,7 @@ impl<T: Poolable> Poolable for TArc<T> {
     }
 
     fn really_dropped(&self) -> bool {
-        TArc::is_unique(&self)
+        TArc::is_unique(self)
     }
 }
 

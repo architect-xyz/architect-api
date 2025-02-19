@@ -80,7 +80,7 @@ impl<T: Serialize + Zeroize + JsonSchema> JsonSchema for MaybeSecret<T> {
 
 impl<T: Display + Serialize + Zeroize> Display for MaybeSecret<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &*self {
+        match self {
             MaybeSecret::Secret(s) => write!(f, "secrets://{}", s),
             MaybeSecret::Plain(s) => {
                 write!(f, "{}", serde_json::to_string(&**s).map_err(|_| std::fmt::Error)?)
@@ -105,7 +105,7 @@ impl<T: Serialize + Zeroize> Serialize for MaybeSecret<T> {
     fn serialize<S: serde::Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
         match self {
             MaybeSecret::Secret(s) => ser.serialize_str(&format!("secrets://{}", s)),
-            MaybeSecret::Plain(t) => (&*t).serialize(ser),
+            MaybeSecret::Plain(t) => (*t).serialize(ser),
         }
     }
 }

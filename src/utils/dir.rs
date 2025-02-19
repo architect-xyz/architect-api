@@ -71,7 +71,7 @@ impl Dir {
         S: juniper::ScalarValue,
     {
         v.as_string_value()
-            .map(|s| Self::from_str_lowercase(s))
+            .map(Self::from_str_lowercase)
             .ok_or_else(|| format!("Expected `String`, found: {v}"))?
             .map_err(|e| e.to_string())
     }
@@ -161,9 +161,9 @@ impl From<Dir> for DirAsCharUpper {
     }
 }
 
-impl Into<Dir> for DirAsCharUpper {
-    fn into(self) -> Dir {
-        self.0
+impl From<DirAsCharUpper> for Dir {
+    fn from(val: DirAsCharUpper) -> Self {
+        val.0
     }
 }
 
@@ -181,7 +181,7 @@ impl Serialize for DirAsCharUpper {
 
 struct DirAsCharUpperVisitor;
 
-impl<'de> serde::de::Visitor<'de> for DirAsCharUpperVisitor {
+impl serde::de::Visitor<'_> for DirAsCharUpperVisitor {
     type Value = DirAsCharUpper;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {

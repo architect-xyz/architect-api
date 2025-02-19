@@ -48,7 +48,7 @@ impl Config {
 
 fn canonicalize(path: &Option<impl AsRef<Path>>) -> Result<Option<PathBuf>> {
     if let Some(path) = path {
-        let expanded = expand_tilde(&path).ok_or_else(|| {
+        let expanded = expand_tilde(path).ok_or_else(|| {
             anyhow!("while expanding tilde: {}", path.as_ref().display())
         })?;
         let canonicalized = std::fs::canonicalize(&expanded)

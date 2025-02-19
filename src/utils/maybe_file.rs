@@ -13,7 +13,7 @@ pub enum MaybeFile<T> {
 
 impl<T: Display> Display for MaybeFile<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &*self {
+        match self {
             MaybeFile::Value(v) => write!(f, "{}", v),
             MaybeFile::File(p) => write!(f, "{}", p.display()),
         }

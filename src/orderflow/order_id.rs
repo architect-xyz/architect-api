@@ -154,7 +154,7 @@ impl OrderId {
         S: juniper::ScalarValue,
     {
         v.as_string_value()
-            .map(|s| Self::from_str(s))
+            .map(Self::from_str)
             .ok_or_else(|| format!("Expected `String`, found: {v}"))?
             .map_err(|e| e.to_string())
     }

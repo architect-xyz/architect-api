@@ -118,8 +118,9 @@ impl Builder {
     /// with files named `<package_name>.<service_name>.sdk.rs`.
     pub fn compile(self, services: &[&manual::Service]) {
         let out_dir = if let Some(out_dir) = self.out_dir.as_ref() {
-            fs::create_dir_all(out_dir)
-                .expect(&format!("failed to create out dir: {}", out_dir.display()));
+            fs::create_dir_all(out_dir).unwrap_or_else(|_| {
+                panic!("failed to create out dir: {}", out_dir.display())
+            });
             out_dir.clone()
         } else {
             PathBuf::from(std::env::var("OUT_DIR").unwrap())
@@ -144,7 +145,7 @@ impl Builder {
 
             let out_file = out_dir.join(out_file(service));
             fs::write(&out_file, output)
-                .expect(&format!("failed to write: {}", out_file.display()));
+                .unwrap_or_else(|_| panic!("failed to write: {}", out_file.display()));
         }
 
         if self.emit_composite_package {
@@ -154,7 +155,7 @@ impl Builder {
             let code = prettyplease::unparse(&ast);
 
             fs::write(&out_file, code)
-                .expect(&format!("failed to write: {}", out_file.display()));
+                .unwrap_or_else(|_| panic!("failed to write: {}", out_file.display()));
         }
     }
 }
