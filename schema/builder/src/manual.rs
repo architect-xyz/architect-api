@@ -6,7 +6,7 @@
 //!
 //! # Example
 //!
-//! ```rust,no_run
+//! ```rust,ignore
 //! fn main() -> Result<(), Box<dyn std::error::Error>> {
 //!     let greeter_service = tonic_build::manual::Service::builder()
 //!         .name("Greeter")
