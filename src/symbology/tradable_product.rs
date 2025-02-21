@@ -33,7 +33,7 @@ use std::str::FromStr;
 #[cfg_attr(feature = "postgres", postgres(transparent))]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[cfg_attr(feature = "sqlx", sqlx(transparent))]
-pub struct TradableProduct(pub(crate) String);
+pub struct TradableProduct(pub String);
 
 impl TradableProduct {
     pub fn new(base: &Product, quote: Option<&Product>) -> Result<Self> {

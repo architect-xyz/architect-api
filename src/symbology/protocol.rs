@@ -31,7 +31,8 @@ pub struct SymbologySnapshot {
     #[serde(default)]
     pub product_aliases: BTreeMap<AliasKind, BTreeMap<String, Product>>,
     pub options_series: BTreeMap<OptionsSeries, OptionsSeriesInfo>,
-    pub execution_info: BTreeMap<String, BTreeMap<ExecutionVenue, ExecutionInfo>>,
+    pub execution_info:
+        BTreeMap<TradableProduct, BTreeMap<ExecutionVenue, ExecutionInfo>>,
 }
 
 #[skip_serializing_none]
@@ -47,8 +48,12 @@ pub struct SymbologyUpdate {
     #[serde(default)]
     pub options_series: Option<SnapshotOrUpdate<OptionsSeries, OptionsSeriesInfo>>,
     #[serde(default)]
-    pub execution_info:
-        Option<SnapshotOrUpdate<String, SnapshotOrUpdate<ExecutionVenue, ExecutionInfo>>>,
+    pub execution_info: Option<
+        SnapshotOrUpdate<
+            TradableProduct,
+            SnapshotOrUpdate<ExecutionVenue, ExecutionInfo>,
+        >,
+    >,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -159,7 +164,8 @@ pub struct UploadSymbologyRequest {
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub options_series: BTreeMap<OptionsSeries, OptionsSeriesInfo>,
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
-    pub execution_info: BTreeMap<String, BTreeMap<ExecutionVenue, ExecutionInfo>>,
+    pub execution_info:
+        BTreeMap<TradableProduct, BTreeMap<ExecutionVenue, ExecutionInfo>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
