@@ -222,7 +222,8 @@ impl ProductInfo {
 
     pub fn derivative_kind(&self) -> Option<DerivativeKind> {
         match &self.product_type {
-            ProductType::Future { derivative_kind, .. } => Some(*derivative_kind),
+            ProductType::Future { derivative_kind, .. }
+            | ProductType::Perpetual { derivative_kind, .. } => Some(*derivative_kind),
             _ => None,
         }
     }
