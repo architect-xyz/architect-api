@@ -11,6 +11,7 @@ use std::str::FromStr;
 
 #[derive(
     Debug,
+    Default,
     Display,
     Deref,
     From,

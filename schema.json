@@ -6410,8 +6410,38 @@
               }
             ]
           },
+          "fr": {
+            "title": "funding_rate",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ft": {
+            "title": "next_funding_time",
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
           "h": {
             "title": "high_24h",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ip": {
+            "title": "index_price",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6433,6 +6463,17 @@
             ]
           },
           "market_cap": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mp": {
+            "title": "mark_price",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -6772,8 +6813,38 @@
                   }
                 ]
               },
+              "fr": {
+                "title": "funding_rate",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ft": {
+                "title": "next_funding_time",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
               "h": {
                 "title": "high_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ip": {
+                "title": "index_price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -6795,6 +6866,17 @@
                 ]
               },
               "market_cap": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mp": {
+                "title": "mark_price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7078,8 +7160,38 @@
                   }
                 ]
               },
+              "fr": {
+                "title": "funding_rate",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ft": {
+                "title": "next_funding_time",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
               "h": {
                 "title": "high_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ip": {
+                "title": "index_price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7101,6 +7213,17 @@
                 ]
               },
               "market_cap": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mp": {
+                "title": "mark_price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7362,8 +7485,38 @@
                   }
                 ]
               },
+              "fr": {
+                "title": "funding_rate",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ft": {
+                "title": "next_funding_time",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
               "h": {
                 "title": "high_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ip": {
+                "title": "index_price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -7385,6 +7538,17 @@
                 ]
               },
               "market_cap": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mp": {
+                "title": "mark_price",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"

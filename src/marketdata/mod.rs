@@ -540,6 +540,18 @@ pub struct TickerValues {
     #[serde(rename = "sp")]
     #[schemars(title = "last_settlement_price")]
     pub last_settlement_price: Option<Decimal>,
+    #[serde(rename = "mp")]
+    #[schemars(title = "mark_price")]
+    pub mark_price: Option<Decimal>,
+    #[serde(rename = "ip")]
+    #[schemars(title = "index_price")]
+    pub index_price: Option<Decimal>,
+    #[serde(rename = "fr")]
+    #[schemars(title = "funding_rate")]
+    pub funding_rate: Option<Decimal>,
+    #[serde(rename = "ft")]
+    #[schemars(title = "next_funding_time")]
+    pub next_funding_time: Option<DateTime<Utc>>,
     pub market_cap: Option<Decimal>,
     pub price_to_earnings: Option<Decimal>,
     pub eps_adj: Option<Decimal>,
@@ -565,6 +577,10 @@ impl TickerValues {
             && self.volume_30d.is_none()
             && self.open_interest.is_none()
             && self.last_settlement_price.is_none()
+            && self.mark_price.is_none()
+            && self.index_price.is_none()
+            && self.funding_rate.is_none()
+            && self.next_funding_time.is_none()
     }
 
     pub fn last_or_mid_price(&self) -> Option<Decimal> {
