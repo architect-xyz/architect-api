@@ -100,8 +100,24 @@ impl Product {
         Self::new(&symbol, venue_discriminant, "Future")
     }
 
-    pub fn future_spread(symbol: &str, venue_discriminant: Option<&str>) -> Result<Self> {
-        Self::new(symbol, venue_discriminant, "Future Spread")
+    pub fn futures_spread<'a>(
+        legs: impl IntoIterator<Item = &'a str>,
+        ratios: Option<impl IntoIterator<Item = Decimal>>,
+        expiration: NaiveDate,
+        venue_discriminant: Option<&str>,
+    ) -> Result<Self> {
+        let legs_str = legs.into_iter().collect::<Vec<_>>().join("-");
+        let expiration_str = expiration.format("%Y%m%d");
+        let symbol = if let Some(ratios) = ratios {
+            format!(
+                "{legs_str} {} {}",
+                ratios.into_iter().map(|k| k.to_string()).collect::<Vec<_>>().join(":"),
+                expiration_str
+            )
+        } else {
+            format!("{legs_str} {expiration_str}")
+        };
+        Self::new(&symbol, venue_discriminant, "Futures Spread")
     }
 
     pub fn perpetual(symbol: &str, venue_discriminant: Option<&str>) -> Result<Self> {
