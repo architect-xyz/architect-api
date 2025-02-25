@@ -12365,12 +12365,6 @@
         "properties": {
           "account": {
             "$ref": "#/definitions/AccountIdOrName"
-          },
-          "venue": {
-            "type": [
-              "string",
-              "null"
-            ]
           }
         },
         "definitions": {
@@ -12562,7 +12556,6 @@
         "type": "object",
         "properties": {
           "accounts": {
-            "description": "If not provided, all accounts for venue will be returned.",
             "type": [
               "array",
               "null"
@@ -12579,12 +12572,6 @@
               {
                 "type": "null"
               }
-            ]
-          },
-          "venue": {
-            "type": [
-              "string",
-              "null"
             ]
           }
         },
@@ -12812,12 +12799,6 @@
               "null"
             ],
             "format": "date-time"
-          },
-          "venue": {
-            "type": [
-              "string",
-              "null"
-            ]
           }
         },
         "definitions": {

@@ -15,8 +15,6 @@ use std::collections::BTreeMap;
 #[grpc(service = "Folio", name = "account_summary", response = "AccountSummary")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct AccountSummaryRequest {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub venue: Option<ExecutionVenue>,
     pub account: AccountIdOrName,
 }
 
@@ -30,10 +28,8 @@ pub struct AccountSummaryRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct AccountSummariesRequest {
     #[serde(default)]
-    pub venue: Option<ExecutionVenue>,
-    #[serde(default)]
     pub trader: Option<TraderIdOrEmail>,
-    /// If not provided, all accounts for venue will be returned.
+    /// If trader and accounts are both None, return all accounts for the user
     #[serde(default)]
     pub accounts: Option<Vec<AccountIdOrName>>,
 }
@@ -95,7 +91,6 @@ pub struct AccountPosition {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct AccountHistoryRequest {
-    pub venue: Option<ExecutionVenue>,
     pub account: AccountIdOrName,
     pub from_inclusive: Option<DateTime<Utc>>,
     pub to_exclusive: Option<DateTime<Utc>>,
