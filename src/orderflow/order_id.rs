@@ -167,8 +167,8 @@ impl OrderId {
     }
 }
 
-impl rand::distributions::Distribution<OrderId> for rand::distributions::Standard {
+impl rand::distr::Distribution<OrderId> for rand::distr::StandardUniform {
     fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> OrderId {
-        OrderId { seqid: Uuid::new_v4(), seqno: rng.gen() }
+        OrderId { seqid: Uuid::new_v4(), seqno: rng.random() }
     }
 }
