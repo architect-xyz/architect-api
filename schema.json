@@ -12556,6 +12556,7 @@
         "type": "object",
         "properties": {
           "accounts": {
+            "description": "If trader and accounts are both None, return all accounts for the user",
             "type": [
               "array",
               "null"
