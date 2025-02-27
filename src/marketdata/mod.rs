@@ -315,11 +315,10 @@ pub struct SubscribeCurrentCandlesRequest {
     pub tick_period_ms: Option<u32>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, JsonSchema,
+)]
 pub struct Candle {
-    #[serde(rename = "s")]
-    #[schemars(title = "symbol")]
-    pub symbol: String,
     #[serde(rename = "ts")]
     #[schemars(title = "timestamp")]
     pub timestamp: i64,
@@ -329,6 +328,9 @@ pub struct Candle {
     #[serde(rename = "w")]
     #[schemars(title = "width")]
     pub width: CandleWidth,
+    #[serde(rename = "s")]
+    #[schemars(title = "symbol")]
+    pub symbol: String,
     #[serde(rename = "o")]
     #[schemars(title = "open")]
     pub open: Option<Decimal>,
@@ -389,6 +391,34 @@ pub struct Candle {
 }
 
 impl Candle {
+    pub fn default(timestamp: DateTime<Utc>, width: CandleWidth, symbol: String) -> Self {
+        Self {
+            timestamp: timestamp.timestamp(),
+            timestamp_ns: timestamp.timestamp_subsec_nanos(),
+            width,
+            symbol,
+            open: None,
+            high: None,
+            low: None,
+            close: None,
+            volume: dec!(0),
+            buy_volume: dec!(0),
+            sell_volume: dec!(0),
+            mid_open: None,
+            mid_close: None,
+            mid_high: None,
+            mid_low: None,
+            bid_open: None,
+            bid_close: None,
+            bid_high: None,
+            bid_low: None,
+            ask_open: None,
+            ask_close: None,
+            ask_high: None,
+            ask_low: None,
+        }
+    }
+
     pub fn timestamp(&self) -> Option<DateTime<Utc>> {
         DateTime::<Utc>::from_timestamp(self.timestamp, self.timestamp_ns)
     }
