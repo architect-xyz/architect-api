@@ -13,14 +13,14 @@ use url::Url;
 pub struct Config {
     /// TLS client identity to present to upstream Architect services;
     /// should point to the Architect license certificate file.
-    license: Option<PathBuf>,
+    pub license: Option<PathBuf>,
     /// TLS client identity key; if not specified, the corresponding
     /// private key will be looked for at the same path but with .key
     /// extension.
-    license_key: Option<PathBuf>,
+    pub license_key: Option<PathBuf>,
     /// If set, use a non-default secrets store path.
     #[serde(default)]
-    secrets: Option<PathBuf>,
+    pub secrets: Option<PathBuf>,
     #[serde(default)]
     pub userdb: Option<Url>,
     #[serde(default)]
