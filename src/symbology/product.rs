@@ -306,6 +306,7 @@ pub enum DerivativeKind {
 crate::to_sql_str!(DerivativeKind);
 
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct SpreadLeg {
     pub product: Product,
     /// Some spreads have different ratios for their legs, like buy 1 A, sell 2 B, buy 1 C;
