@@ -17,12 +17,12 @@ This is accomplished via two modules:
 * `schema` -- a stub crate/phony target that uses the generated schema definitions to build a schema.json file
 
 > [!NOTE]  
-> New gRPC stubs/services must be added to `schema/build.rs` as well as `build.rs` to be included in the generated `schema.json` file.
+> New gRPC stubs/services must be added to `schema/build.rs` to be included in the generated `schema.json` file.
 
 The dependency graph induces a build order: `schema/builder` -> `architect-api` -> `schema`.  This build order naturally regenerates the schema.json file whenever this crate changes.
 
 Downstream SDKs:
 
-* [architect-ts](https://github.com/architect-xyz/architect-ts) 
-* [architect-py](https://github.com/architect-xyz/architect-py) 
+* [architect-ts](https://github.com/architect-xyz/architect-ts)
+* [architect-py](https://github.com/architect-xyz/architect-py)
 
