@@ -51,8 +51,16 @@ fn canonicalize(path: &Option<impl AsRef<Path>>) -> Result<Option<PathBuf>> {
         let expanded = expand_tilde(path).ok_or_else(|| {
             anyhow!("while expanding tilde: {}", path.as_ref().display())
         })?;
-        let canonicalized = std::fs::canonicalize(&expanded)
-            .with_context(|| format!("while resolving path: {}", expanded.display()))?;
+        let canonicalized = match std::fs::canonicalize(&expanded)
+            .with_context(|| format!("while resolving path: {}", expanded.display()))
+        {
+            Ok(canon) => canon,
+            Err(_e) => {
+                // path doesn't exist, so it can't be a symlink/hardlink
+                // this isn't the only error case though
+                expanded
+            }
+        };
         Ok(Some(canonicalized))
     } else {
         Ok(None)
