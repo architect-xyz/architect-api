@@ -127,6 +127,12 @@ pub enum TimeInForce {
     #[serde(rename = "FOK")]
     #[strum(serialize = "FOK")]
     FillOrKill,
+    #[serde(rename = "ATO")]
+    #[strum(serialize = "ATO")]
+    AtTheOpen,
+    #[serde(rename = "ATC")]
+    #[strum(serialize = "ATC")]
+    AtTheClose,
 }
 
 impl TimeInForce {

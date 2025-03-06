@@ -8203,7 +8203,9 @@
                 "enum": [
                   "GTC",
                   "IOC",
-                  "FOK"
+                  "FOK",
+                  "ATO",
+                  "ATC"
                 ]
               },
               {
@@ -9169,7 +9171,9 @@
                 "enum": [
                   "GTC",
                   "IOC",
-                  "FOK"
+                  "FOK",
+                  "ATO",
+                  "ATC"
                 ]
               },
               {
@@ -10185,7 +10189,9 @@
                 "enum": [
                   "GTC",
                   "IOC",
-                  "FOK"
+                  "FOK",
+                  "ATO",
+                  "ATC"
                 ]
               },
               {
@@ -10962,7 +10968,9 @@
                 "enum": [
                   "GTC",
                   "IOC",
-                  "FOK"
+                  "FOK",
+                  "ATO",
+                  "ATC"
                 ]
               },
               {
@@ -11266,7 +11274,9 @@
                 "enum": [
                   "GTC",
                   "IOC",
-                  "FOK"
+                  "FOK",
+                  "ATO",
+                  "ATC"
                 ]
               },
               {
@@ -11638,7 +11648,9 @@
                 "enum": [
                   "GTC",
                   "IOC",
-                  "FOK"
+                  "FOK",
+                  "ATO",
+                  "ATC"
                 ]
               },
               {
@@ -12299,7 +12311,9 @@
                 "enum": [
                   "GTC",
                   "IOC",
-                  "FOK"
+                  "FOK",
+                  "ATO",
+                  "ATC"
                 ]
               },
               {
@@ -14111,7 +14125,9 @@
                 "enum": [
                   "GTC",
                   "IOC",
-                  "FOK"
+                  "FOK",
+                  "ATO",
+                  "ATC"
                 ]
               },
               {
