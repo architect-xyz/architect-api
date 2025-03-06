@@ -44,8 +44,8 @@ pub struct AccountSummariesResponse {
 pub struct AccountSummary {
     pub account: AccountId,
     pub timestamp: DateTime<Utc>,
-    pub balances: BTreeMap<Product, Decimal>,
-    pub positions: BTreeMap<TradableProduct, Vec<AccountPosition>>,
+    pub balances: AccountBalances,
+    pub positions: AccountPositions,
     pub equity: Option<Decimal>,
     /// Margin requirement calculated for worst-case based on open positions and working orders.
     pub total_margin: Option<Decimal>,
@@ -78,13 +78,21 @@ impl AccountSummary {
     }
 }
 
+pub type AccountBalances = BTreeMap<Product, Decimal>;
+
+pub type AccountPositions = BTreeMap<TradableProduct, Vec<AccountPosition>>;
+
+#[skip_serializing_none]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct AccountPosition {
     pub quantity: Decimal,
-    /// The meaning of this field varies by reporting venue.
+    /// NB: the meaning of this field varies by reporting venue
     pub trade_time: Option<DateTime<Utc>>,
+    /// Cost basis of the position, if known.
     pub cost_basis: Option<Decimal>,
+    /// Unrealized PNL of the position, if known.
+    pub unrealized_pnl: Option<Decimal>,
     pub break_even_price: Option<Decimal>,
     pub liquidation_price: Option<Decimal>,
 }

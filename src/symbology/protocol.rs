@@ -35,6 +35,23 @@ pub struct SymbologySnapshot {
         BTreeMap<TradableProduct, BTreeMap<ExecutionVenue, ExecutionInfo>>,
 }
 
+impl SymbologySnapshot {
+    pub fn exchange_symbols(
+        &self,
+        venue: &ExecutionVenue,
+    ) -> BTreeMap<TradableProduct, String> {
+        let mut map = BTreeMap::new();
+        for (symbol, infos) in &self.execution_info {
+            if let Some(exchange_symbol) =
+                infos.get(venue).and_then(|info| info.exchange_symbol.as_ref())
+            {
+                map.insert(symbol.clone(), exchange_symbol.clone());
+            }
+        }
+        map
+    }
+}
+
 #[skip_serializing_none]
 #[derive(Default, Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SymbologyUpdate {

@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::{borrow::Borrow, collections::BTreeMap};
 
 #[derive(Debug, Clone)]
 pub struct Bimap<U: Clone + Ord, V: Clone + Ord> {
@@ -22,7 +22,11 @@ impl<U: Clone + Ord, V: Clone + Ord> Bimap<U, V> {
         self.map.get(u)
     }
 
-    pub fn get_rev(&self, v: &V) -> Option<&U> {
+    pub fn get_rev<Q>(&self, v: &Q) -> Option<&U>
+    where
+        Q: ?Sized + Ord,
+        V: Borrow<Q> + Ord,
+    {
         self.rev.get(v)
     }
 

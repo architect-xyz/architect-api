@@ -21,6 +21,9 @@ pub struct Order {
     #[schemars(title = "parent_id")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<OrderId>,
+    #[serde(rename = "eid")]
+    #[schemars(title = "exchange_order_id")]
+    pub exchange_order_id: Option<String>,
     #[serde(rename = "ts")]
     #[schemars(title = "recv_time")]
     pub recv_time: i64,
@@ -185,14 +188,20 @@ pub enum OrderStatus {
     Out = 127,
     Canceling = 128,
     Canceled = 129,
+    ReconciledOut = 130,
     Stale = 254,
+    Unknown = 255,
 }
 
 impl OrderStatus {
     pub fn is_alive(&self) -> bool {
         match self {
-            Self::Pending | Self::Open | Self::Canceling | Self::Stale => true,
-            Self::Out | Self::Canceled | Self::Rejected => false,
+            Self::Pending
+            | Self::Open
+            | Self::Canceling
+            | Self::Stale
+            | Self::Unknown => true,
+            Self::Out | Self::Canceled | Self::Rejected | Self::ReconciledOut => false,
         }
     }
 
@@ -205,7 +214,11 @@ impl OrderStatus {
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 pub struct OrderAck {
     #[serde(rename = "id")]
+    #[schemars(title = "order_id")]
     pub order_id: OrderId,
+    #[serde(rename = "eid")]
+    #[schemars(title = "exchange_order_id")]
+    pub exchange_order_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -342,6 +355,7 @@ mod tests {
                 seqno: 123
             },
             parent_id: None,
+            exchange_order_id: None,
             recv_time: recv_time.timestamp(),
             recv_time_ns: recv_time.timestamp_subsec_nanos(),
             status: OrderStatus::Out,
@@ -364,6 +378,7 @@ mod tests {
         }, @r###"
         {
           "id": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:123",
+          "eid": null,
           "ts": 1735705200,
           "tn": 0,
           "o": 127,
@@ -389,6 +404,7 @@ mod tests {
                 seqid: "d3f97244-78e6-4549-abf6-90adfe0ab7fe".parse().unwrap(),
                 seqno: 456
             }),
+            exchange_order_id: None,
             recv_time: recv_time.timestamp(),
             recv_time_ns: recv_time.timestamp_subsec_nanos(),
             status: OrderStatus::Open,
@@ -414,6 +430,7 @@ mod tests {
         {
           "id": "123",
           "pid": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:456",
+          "eid": null,
           "ts": 1735705200,
           "tn": 0,
           "o": 1,

@@ -44,6 +44,8 @@ pub enum Orderflow {
     OrderReject(OrderReject),
     #[serde(rename = "o")]
     OrderOut(OrderOut),
+    #[serde(rename = "ox")]
+    OrderReconciledOut(OrderOut),
     #[serde(rename = "z")]
     OrderStale(OrderStale),
     #[serde(rename = "xc")]

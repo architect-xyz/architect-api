@@ -9,6 +9,8 @@ use strum_macros::{EnumString, IntoStaticStr};
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
 pub struct ExecutionInfo {
     pub execution_venue: ExecutionVenue,
+    /// If the execution venue has stable symbology, this may be populated
+    pub exchange_symbol: Option<String>,
     pub tick_size: TickSize,
     pub step_size: Decimal,
     pub min_order_quantity: Decimal,

@@ -357,6 +357,13 @@
               "tick_size"
             ],
             "properties": {
+              "exchange_symbol": {
+                "description": "If the execution venue has stable symbology, this may be populated",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "execution_venue": {
                 "type": "string"
               },
@@ -1638,6 +1645,13 @@
               "tick_size"
             ],
             "properties": {
+              "exchange_symbol": {
+                "description": "If the execution venue has stable symbology, this may be populated",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "execution_venue": {
                 "type": "string"
               },
@@ -3171,6 +3185,13 @@
               "tick_size"
             ],
             "properties": {
+              "exchange_symbol": {
+                "description": "If the execution venue has stable symbology, this may be populated",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "execution_venue": {
                 "type": "string"
               },
@@ -8342,6 +8363,13 @@
                   }
                 ]
               },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
@@ -8467,8 +8495,20 @@
               "t"
             ],
             "properties": {
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "id": {
-                "$ref": "#/definitions/OrderId"
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
               },
               "t": {
                 "type": "string",
@@ -8520,6 +8560,24 @@
                 "type": "string",
                 "enum": [
                   "o"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "t"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "ox"
                 ]
               }
             }
@@ -9088,7 +9146,9 @@
               127,
               128,
               129,
-              254
+              130,
+              254,
+              255
             ],
             "x-enumNames": [
               "Pending",
@@ -9097,7 +9157,9 @@
               "Out",
               "Canceling",
               "Canceled",
-              "Stale"
+              "ReconciledOut",
+              "Stale",
+              "Unknown"
             ]
           },
           "TimeInForce": {
@@ -9317,6 +9379,13 @@
                   }
                 ]
               },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
@@ -9442,8 +9511,20 @@
               "t"
             ],
             "properties": {
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "id": {
-                "$ref": "#/definitions/OrderId"
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
               },
               "t": {
                 "type": "string",
@@ -9495,6 +9576,24 @@
                 "type": "string",
                 "enum": [
                   "o"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "t"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "ox"
                 ]
               }
             }
@@ -10063,7 +10162,9 @@
               127,
               128,
               129,
-              254
+              130,
+              254,
+              255
             ],
             "x-enumNames": [
               "Pending",
@@ -10072,7 +10173,9 @@
               "Out",
               "Canceling",
               "Canceled",
-              "Stale"
+              "ReconciledOut",
+              "Stale",
+              "Unknown"
             ]
           },
           "TimeInForce": {
@@ -10303,6 +10406,13 @@
                   }
                 ]
               },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
@@ -10829,7 +10939,9 @@
               127,
               128,
               129,
-              254
+              130,
+              254,
+              255
             ],
             "x-enumNames": [
               "Pending",
@@ -10838,7 +10950,9 @@
               "Out",
               "Canceling",
               "Canceled",
-              "Stale"
+              "ReconciledOut",
+              "Stale",
+              "Unknown"
             ]
           },
           "TimeInForce": {
@@ -11309,6 +11423,13 @@
               }
             ]
           },
+          "eid": {
+            "title": "exchange_order_id",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "id": {
             "$ref": "#/definitions/OrderId"
           },
@@ -11494,7 +11615,9 @@
               127,
               128,
               129,
-              254
+              130,
+              254,
+              255
             ],
             "x-enumNames": [
               "Pending",
@@ -11503,7 +11626,9 @@
               "Out",
               "Canceling",
               "Canceled",
-              "Stale"
+              "ReconciledOut",
+              "Stale",
+              "Unknown"
             ]
           },
           "TimeInForce": {
@@ -11970,6 +12095,13 @@
                   }
                 ]
               },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
@@ -12144,7 +12276,9 @@
               127,
               128,
               129,
-              254
+              130,
+              254,
+              255
             ],
             "x-enumNames": [
               "Pending",
@@ -12153,7 +12287,9 @@
               "Out",
               "Canceling",
               "Canceled",
-              "Stale"
+              "ReconciledOut",
+              "Stale",
+              "Unknown"
             ]
           },
           "TimeInForce": {
@@ -12509,6 +12645,7 @@
                 ]
               },
               "cost_basis": {
+                "description": "Cost basis of the position, if known.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -12532,12 +12669,23 @@
                 "$ref": "#/definitions/Decimal"
               },
               "trade_time": {
-                "description": "The meaning of this field varies by reporting venue.",
+                "description": "NB: the meaning of this field varies by reporting venue",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "date-time"
+              },
+              "unrealized_pnl": {
+                "description": "Unrealized PNL of the position, if known.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             }
           },
@@ -12618,6 +12766,7 @@
                 ]
               },
               "cost_basis": {
+                "description": "Cost basis of the position, if known.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -12641,12 +12790,23 @@
                 "$ref": "#/definitions/Decimal"
               },
               "trade_time": {
-                "description": "The meaning of this field varies by reporting venue.",
+                "description": "NB: the meaning of this field varies by reporting venue",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "date-time"
+              },
+              "unrealized_pnl": {
+                "description": "Unrealized PNL of the position, if known.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             }
           },
@@ -12841,6 +13001,7 @@
                 ]
               },
               "cost_basis": {
+                "description": "Cost basis of the position, if known.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -12864,12 +13025,23 @@
                 "$ref": "#/definitions/Decimal"
               },
               "trade_time": {
-                "description": "The meaning of this field varies by reporting venue.",
+                "description": "NB: the meaning of this field varies by reporting venue",
                 "type": [
                   "string",
                   "null"
                 ],
                 "format": "date-time"
+              },
+              "unrealized_pnl": {
+                "description": "Unrealized PNL of the position, if known.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             }
           },
@@ -13735,6 +13907,13 @@
                   }
                 ]
               },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "id": {
                 "$ref": "#/definitions/OrderId"
               },
@@ -13909,7 +14088,9 @@
               127,
               128,
               129,
-              254
+              130,
+              254,
+              255
             ],
             "x-enumNames": [
               "Pending",
@@ -13918,7 +14099,9 @@
               "Out",
               "Canceling",
               "Canceled",
-              "Stale"
+              "ReconciledOut",
+              "Stale",
+              "Unknown"
             ]
           },
           "TimeInForce": {
