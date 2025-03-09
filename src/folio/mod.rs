@@ -5,6 +5,7 @@ use crate::{
 };
 use chrono::{DateTime, Utc};
 use derive::grpc;
+use derive_more::{Deref, DerefMut};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -40,12 +41,36 @@ pub struct AccountSummariesResponse {
 }
 
 #[skip_serializing_none]
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Deref, DerefMut, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct AccountSummary {
     pub account: AccountId,
     pub timestamp: DateTime<Utc>,
     pub balances: AccountBalances,
     pub positions: AccountPositions,
+    #[deref]
+    #[deref_mut]
+    #[serde(flatten)]
+    pub statistics: AccountStatistics,
+}
+
+impl AccountSummary {
+    pub fn new(account: AccountId, timestamp: DateTime<Utc>) -> Self {
+        Self {
+            account,
+            timestamp,
+            balances: BTreeMap::new(),
+            positions: BTreeMap::new(),
+            statistics: AccountStatistics::default(),
+        }
+    }
+}
+
+pub type AccountBalances = BTreeMap<Product, Decimal>;
+pub type AccountPositions = BTreeMap<TradableProduct, Vec<AccountPosition>>;
+
+#[skip_serializing_none]
+#[derive(Default, Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct AccountStatistics {
     pub equity: Option<Decimal>,
     /// Margin requirement calculated for worst-case based on open positions and working orders.
     pub total_margin: Option<Decimal>,
@@ -58,29 +83,6 @@ pub struct AccountSummary {
     pub realized_pnl: Option<Decimal>,
     pub yesterday_equity: Option<Decimal>,
 }
-
-impl AccountSummary {
-    pub fn new(account: AccountId, timestamp: DateTime<Utc>) -> Self {
-        Self {
-            account,
-            timestamp,
-            balances: BTreeMap::new(),
-            positions: BTreeMap::new(),
-            equity: None,
-            total_margin: None,
-            position_margin: None,
-            cash_excess: None,
-            purchasing_power: None,
-            unrealized_pnl: None,
-            realized_pnl: None,
-            yesterday_equity: None,
-        }
-    }
-}
-
-pub type AccountBalances = BTreeMap<Product, Decimal>;
-
-pub type AccountPositions = BTreeMap<TradableProduct, Vec<AccountPosition>>;
 
 #[skip_serializing_none]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

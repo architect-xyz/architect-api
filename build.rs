@@ -358,6 +358,21 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let json_cpty_service = tonic_build::manual::Service::builder()
+        .name("Cpty")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("cpty")
+                .route_name("Cpty")
+                .input_type("crate::cpty::CptyRequest")
+                .output_type("crate::cpty::CptyResponse")
+                .codec_path(json_codec)
+                .client_streaming()
+                .server_streaming()
+                .build(),
+        )
+        .build();
     let json_algo_service = tonic_build::manual::Service::builder()
         .name("Algo")
         .package("json.architect")
@@ -395,6 +410,7 @@ fn build_grpc_stubs() {
             &json_orderflow_service,
             &json_oms_service,
             &json_folio_service,
+            &json_cpty_service,
             &json_algo_service,
         ]);
     tonic_build::manual::Builder::new().out_dir(target_dir).compile(&[
@@ -405,6 +421,7 @@ fn build_grpc_stubs() {
         json_orderflow_service,
         json_oms_service,
         json_folio_service,
+        json_cpty_service,
         json_algo_service,
     ]);
 }

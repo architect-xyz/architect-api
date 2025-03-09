@@ -14164,6 +14164,1644 @@
 
 {
   "$schema": "jsonschema",
+  "name": "Cpty",
+  "rpcs": [
+    {
+      "type": "duplex_stream",
+      "route": "/json.architect.Cpty/Cpty",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "CptyRequest",
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "account",
+              "t",
+              "trader"
+            ],
+            "properties": {
+              "account": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "login"
+                ]
+              },
+              "trader": {
+                "$ref": "#/definitions/UserId"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "t"
+            ],
+            "properties": {
+              "t": {
+                "type": "string",
+                "enum": [
+                  "logout"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "STOP_LOSS_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "TAKE_PROFIT_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "required": [
+              "a",
+              "d",
+              "id",
+              "o",
+              "q",
+              "s",
+              "src",
+              "t",
+              "tif",
+              "tn",
+              "ts",
+              "u",
+              "ve",
+              "xq"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "type": "string",
+                "format": "uuid"
+              },
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "r": {
+                "title": "reject_reason",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "place_order"
+                ]
+              },
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "ve": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "cancel",
+              "t"
+            ],
+            "properties": {
+              "cancel": {
+                "$ref": "#/definitions/Cancel"
+              },
+              "original_order": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Order"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "cancel_order"
+                ]
+              }
+            }
+          }
+        ],
+        "definitions": {
+          "Cancel": {
+            "type": "object",
+            "required": [
+              "id",
+              "o",
+              "tn",
+              "ts",
+              "xid"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "o": {
+                "$ref": "#/definitions/CancelStatus"
+              },
+              "r": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tn": {
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "xid": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          "CancelStatus": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              127
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected",
+              "Out"
+            ]
+          },
+          "Decimal": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "Order": {
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "STOP_LOSS_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "TAKE_PROFIT_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "required": [
+              "a",
+              "d",
+              "id",
+              "o",
+              "q",
+              "s",
+              "src",
+              "tif",
+              "tn",
+              "ts",
+              "u",
+              "ve",
+              "xq"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "type": "string",
+                "format": "uuid"
+              },
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "r": {
+                "title": "reject_reason",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
+              },
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "ve": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              }
+            }
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "OrderRejectReason": {
+            "type": "string",
+            "enum": [
+              "DuplicateOrderId",
+              "NotAuthorized",
+              "NoExecutionVenue",
+              "NoAccount",
+              "NoCpty",
+              "UnsupportedOrderType",
+              "UnsupportedExecutionVenue",
+              "Unknown"
+            ]
+          },
+          "OrderSource": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              255
+            ],
+            "x-enumNames": [
+              "API",
+              "GUI",
+              "Algo",
+              "Reconciled",
+              "CLI",
+              "Telegram",
+              "Other"
+            ]
+          },
+          "OrderStatus": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              127,
+              128,
+              129,
+              130,
+              254,
+              255
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Open",
+              "Rejected",
+              "Out",
+              "Canceling",
+              "Canceled",
+              "ReconciledOut",
+              "Stale",
+              "Unknown"
+            ]
+          },
+          "TimeInForce": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "GTC",
+                  "IOC",
+                  "FOK",
+                  "ATO",
+                  "ATC"
+                ]
+              },
+              {
+                "type": "object",
+                "required": [
+                  "GTD"
+                ],
+                "properties": {
+                  "GTD": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "description": "Day order--the specific time which this expires will be dependent on the venue",
+                "type": "string",
+                "enum": [
+                  "DAY"
+                ]
+              }
+            ]
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "CptyResponse",
+        "oneOf": [
+          {
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "STOP_LOSS_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "TAKE_PROFIT_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "required": [
+              "a",
+              "d",
+              "id",
+              "o",
+              "q",
+              "s",
+              "src",
+              "t",
+              "tif",
+              "tn",
+              "ts",
+              "u",
+              "ve",
+              "xq"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "type": "string",
+                "format": "uuid"
+              },
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "r": {
+                "title": "reject_reason",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "ro"
+                ]
+              },
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "ve": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "orders",
+              "t"
+            ],
+            "properties": {
+              "orders": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Order"
+                }
+              },
+              "snapshot_for_account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "oo"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "account",
+              "is_snapshot",
+              "t",
+              "timestamp",
+              "timestamp_ns"
+            ],
+            "properties": {
+              "account": {
+                "$ref": "#/definitions/AccountIdOrName"
+              },
+              "balances": {
+                "default": null,
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "additionalProperties": {
+                  "$ref": "#/definitions/Decimal"
+                }
+              },
+              "is_snapshot": {
+                "type": "boolean"
+              },
+              "positions": {
+                "default": null,
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AccountPosition"
+                  }
+                }
+              },
+              "statistics": {
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountStatistics"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "as"
+                ]
+              },
+              "timestamp": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "timestamp_ns": {
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              }
+            }
+          }
+        ],
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "AccountPosition": {
+            "type": "object",
+            "required": [
+              "quantity"
+            ],
+            "properties": {
+              "break_even_price": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cost_basis": {
+                "description": "Cost basis of the position, if known.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "liquidation_price": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "quantity": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "trade_time": {
+                "description": "NB: the meaning of this field varies by reporting venue",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "unrealized_pnl": {
+                "description": "Unrealized PNL of the position, if known.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "AccountStatistics": {
+            "type": "object",
+            "properties": {
+              "cash_excess": {
+                "description": "Cash available to withdraw.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "equity": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "position_margin": {
+                "description": "Margin requirement based on current positions only.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "purchasing_power": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "realized_pnl": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "total_margin": {
+                "description": "Margin requirement calculated for worst-case based on open positions and working orders.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "unrealized_pnl": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "yesterday_equity": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "Decimal": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "Order": {
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "STOP_LOSS_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "TAKE_PROFIT_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Decimal"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "required": [
+              "a",
+              "d",
+              "id",
+              "o",
+              "q",
+              "s",
+              "src",
+              "tif",
+              "tn",
+              "ts",
+              "u",
+              "ve",
+              "xq"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "type": "string",
+                "format": "uuid"
+              },
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              },
+              "r": {
+                "title": "reject_reason",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
+              },
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "ve": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                ]
+              }
+            }
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "OrderRejectReason": {
+            "type": "string",
+            "enum": [
+              "DuplicateOrderId",
+              "NotAuthorized",
+              "NoExecutionVenue",
+              "NoAccount",
+              "NoCpty",
+              "UnsupportedOrderType",
+              "UnsupportedExecutionVenue",
+              "Unknown"
+            ]
+          },
+          "OrderSource": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              255
+            ],
+            "x-enumNames": [
+              "API",
+              "GUI",
+              "Algo",
+              "Reconciled",
+              "CLI",
+              "Telegram",
+              "Other"
+            ]
+          },
+          "OrderStatus": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              127,
+              128,
+              129,
+              130,
+              254,
+              255
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Open",
+              "Rejected",
+              "Out",
+              "Canceling",
+              "Canceled",
+              "ReconciledOut",
+              "Stale",
+              "Unknown"
+            ]
+          },
+          "TimeInForce": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "GTC",
+                  "IOC",
+                  "FOK",
+                  "ATO",
+                  "ATC"
+                ]
+              },
+              {
+                "type": "object",
+                "required": [
+                  "GTD"
+                ],
+                "properties": {
+                  "GTD": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "description": "Day order--the specific time which this expires will be dependent on the venue",
+                "type": "string",
+                "enum": [
+                  "DAY"
+                ]
+              }
+            ]
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    }
+  ]
+},
+
+{
+  "$schema": "jsonschema",
   "name": "Algo",
   "rpcs": [
     {

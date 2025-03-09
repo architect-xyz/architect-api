@@ -16,12 +16,7 @@ pub use order_id::*;
 pub use order_types::*;
 
 #[grpc(package = "json.architect")]
-#[grpc(
-    service = "Orderflow",
-    name = "orderflow",
-    response = "OrderflowResponse",
-    bidi_streaming
-)]
+#[grpc(service = "Orderflow", name = "orderflow", response = "Orderflow", bidi_streaming)]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
 pub enum OrderflowRequest {
@@ -67,10 +62,10 @@ pub enum Orderflow {
 #[grpc(
     service = "Orderflow",
     name = "subscribe_orderflow",
-    response = "OrderflowResponse",
+    response = "Orderflow",
     server_streaming
 )]
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeOrderflowRequest {
     #[serde(default)]
     pub execution_venue: Option<ExecutionVenue>,
@@ -81,12 +76,7 @@ pub struct SubscribeOrderflowRequest {
 }
 
 #[grpc(package = "json.architect")]
-#[grpc(
-    service = "Orderflow",
-    name = "dropcopy",
-    response = "DropcopyResponse",
-    server_streaming
-)]
+#[grpc(service = "Orderflow", name = "dropcopy", response = "Dropcopy", server_streaming)]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct DropcopyRequest {
     #[serde(default)]
