@@ -14977,6 +14977,20 @@
         "oneOf": [
           {
             "type": "object",
+            "required": [
+              "t"
+            ],
+            "properties": {
+              "t": {
+                "type": "string",
+                "enum": [
+                  "xs"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
             "oneOf": [
               {
                 "type": "object",
@@ -15489,6 +15503,97 @@
               "SELL"
             ]
           },
+          "ExecutionInfo": {
+            "description": "Information about a symbol related to its execution route.",
+            "type": "object",
+            "required": [
+              "execution_venue",
+              "is_delisted",
+              "min_order_quantity",
+              "min_order_quantity_unit",
+              "step_size",
+              "tick_size"
+            ],
+            "properties": {
+              "exchange_symbol": {
+                "description": "If the execution venue has stable symbology, this may be populated",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "execution_venue": {
+                "type": "string"
+              },
+              "initial_margin": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "is_delisted": {
+                "type": "boolean"
+              },
+              "maintenance_margin": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "min_order_quantity": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "min_order_quantity_unit": {
+                "$ref": "#/definitions/MinOrderQuantityUnit"
+              },
+              "step_size": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "tick_size": {
+                "$ref": "#/definitions/TickSize"
+              }
+            }
+          },
+          "MinOrderQuantityUnit": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "base"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ],
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "quote"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
           "Order": {
             "type": "object",
             "oneOf": [
@@ -15809,6 +15914,56 @@
               "ReconciledOut",
               "Stale",
               "Unknown"
+            ]
+          },
+          "TickSize": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "simple"
+                ],
+                "properties": {
+                  "simple": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "description": "List of (threshold, tick_size) pairs.  For price greater than or equal to each threshold, the tick size is the corresponding value.",
+                "type": "object",
+                "required": [
+                  "varying"
+                ],
+                "properties": {
+                  "varying": {
+                    "type": "object",
+                    "required": [
+                      "thresholds"
+                    ],
+                    "properties": {
+                      "thresholds": {
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "$ref": "#/definitions/Decimal"
+                            },
+                            {
+                              "$ref": "#/definitions/Decimal"
+                            }
+                          ],
+                          "maxItems": 2,
+                          "minItems": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
             ]
           },
           "TimeInForce": {

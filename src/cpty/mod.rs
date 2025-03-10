@@ -1,11 +1,13 @@
 use crate::{
     folio::{AccountBalances, AccountPositions, AccountStatistics},
     orderflow::{Cancel, Order},
+    symbology::{ExecutionInfo, ExecutionVenue, TradableProduct},
     AccountId, AccountIdOrName, UserId,
 };
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Cpty", name = "cpty", response = "CptyResponse", server_streaming)]
@@ -30,6 +32,8 @@ pub struct CptyLogoutRequest {}
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t", rename_all = "snake_case")]
 pub enum CptyResponse {
+    #[serde(rename = "xs")]
+    TradableProducts(BTreeMap<TradableProduct, BTreeMap<ExecutionVenue, ExecutionInfo>>),
     #[serde(rename = "ro")]
     ReconcileOrder(Order),
     #[serde(rename = "oo")]
