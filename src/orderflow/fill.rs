@@ -72,7 +72,7 @@ pub struct Fill {
     #[serde(rename = "p")]
     #[schemars(title = "price")]
     pub price: Decimal,
-    #[serde(rename = "t")]
+    #[serde(rename = "agg")]
     #[serde_as(as = "Option<BoolFromInt>")]
     #[schemars(title = "is_taker", with = "isize")]
     pub is_taker: Option<bool>,
@@ -232,7 +232,7 @@ mod tests {
           "d": "BUY",
           "q": "1.5",
           "p": "50000",
-          "t": 1,
+          "agg": 1,
           "f": "0.001",
           "fu": "BTC",
           "ats": 1609459200,

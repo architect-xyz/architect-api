@@ -19,41 +19,58 @@ pub use order_types::*;
 #[grpc(service = "Orderflow", name = "orderflow", response = "Orderflow", bidi_streaming)]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
+#[schemars(description = "<api>{tag: t}</api>")]
 pub enum OrderflowRequest {
     #[serde(rename = "p")]
+    #[schemars(title = "PlaceOrder|PlaceOrderRequest")]
     PlaceOrder(PlaceOrderRequest),
     #[serde(rename = "x")]
+    #[schemars(title = "CancelOrder|CancelOrderRequest")]
     CancelOrder(CancelOrderRequest),
     #[serde(rename = "xo")]
+    #[schemars(title = "CancelAllOrders|CancelAllOrdersRequest")]
     CancelAllOrders(CancelAllOrdersRequest),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
+#[schemars(description = "<api>{tag: t}</api>")]
 pub enum Orderflow {
     #[serde(rename = "w")]
+    #[schemars(title = "OrderPending|Order")]
     OrderPending(Order),
     #[serde(rename = "a")]
+    #[schemars(title = "OrderAck|OrderAck")]
     OrderAck(OrderAck),
     #[serde(rename = "r")]
+    #[schemars(title = "OrderReject|OrderReject")]
     OrderReject(OrderReject),
     #[serde(rename = "o")]
+    #[schemars(title = "OrderOut|OrderOut")]
     OrderOut(OrderOut),
     #[serde(rename = "ox")]
+    #[schemars(title = "OrderReconciledOut|OrderOut")]
     OrderReconciledOut(OrderOut),
     #[serde(rename = "z")]
+    #[schemars(title = "OrderStale|OrderStale")]
     OrderStale(OrderStale),
     #[serde(rename = "xc")]
+    #[schemars(title = "CancelPending|Cancel")]
     CancelPending(Cancel),
     #[serde(rename = "xr")]
+    #[schemars(title = "CancelReject|CancelReject")]
     CancelReject(CancelReject),
     #[serde(rename = "xa")]
+    #[schemars(title = "OrderCanceling|OrderCanceling")]
     OrderCanceling(OrderCanceling),
     #[serde(rename = "xx")]
+    #[schemars(title = "OrderCanceled|OrderCanceled")]
     OrderCanceled(OrderCanceled),
     #[serde(rename = "f")]
+    #[schemars(title = "Fill|Fill")]
     Fill(Fill),
     #[serde(rename = "af")]
+    #[schemars(title = "AberrantFill|AberrantFill")]
     AberrantFill(AberrantFill),
 }
 
@@ -101,11 +118,15 @@ impl DropcopyRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
+#[schemars(description = "<api>{tag: t}</api>")]
 pub enum Dropcopy {
     #[serde(rename = "o")]
+    #[schemars(title = "Order|Order")]
     Order(Order),
+    #[schemars(title = "Fill|Fill")]
     #[serde(rename = "f")]
     Fill(Fill),
     #[serde(rename = "af")]
+    #[schemars(title = "AbberantFill|AbberantFill")]
     AberrantFill(AberrantFill),
 }

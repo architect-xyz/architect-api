@@ -204,12 +204,13 @@ impl L2BookDiff {
 /// ```
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
+#[schemars(description = "<api>{tag: t}</api>")]
 pub enum L2BookUpdate {
     #[serde(rename = "s")]
-    #[schemars(title = "snapshot")]
+    #[schemars(title = "Snapshot|L2BookSnapshot")]
     Snapshot(L2BookSnapshot),
     #[serde(rename = "d")]
-    #[schemars(title = "diff")]
+    #[schemars(title = "Diff|L2BookDiff")]
     Diff(L2BookDiff),
 }
 
@@ -693,12 +694,13 @@ pub struct SubscribeTickersRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
+#[schemars(description = "<api>{tag: t}</api>")]
 pub enum TickerUpdate {
     #[serde(rename = "s")]
-    #[schemars(rename = "snapshot")]
+    #[schemars(title = "Snapshot|Ticker")]
     Snapshot(Ticker),
     #[serde(rename = "d")]
-    #[schemars(rename = "diff")]
+    #[schemars(title = "Diff|Ticker")]
     Diff(Ticker),
 }
 

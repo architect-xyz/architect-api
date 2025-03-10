@@ -4627,10 +4627,10 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "L2BookUpdate",
-        "description": "To build a book from a stream of updates, the client should first subscribe to this update stream, which then returns a stream starting with a snapshot and following with diffs.\n\nDiffs should be applied consecutively to the snapshot in order to reconstruct the state of the book.\n\n```rust # use architect_api::marketdata::*; # use std::collections::BTreeMap; # use rust_decimal::Decimal; # use rust_decimal_macros::dec;\n\n/// Suppose we receive this snapshot from the server: let snapshot: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"s\", \"ts\": 1729700837, \"tn\": 0, \"sid\": 123, \"sn\": 8999, \"b\": [[\"99.00\", \"3\"], [\"98.78\", \"2\"]], \"a\": [[\"100.00\", \"1\"], [\"100.10\", \"2\"]] }\"#)?;\n\n/// It corresponds to the following book: let mut book = BTreeMap::new(); book.insert(dec!(99.00), 3); book.insert(dec!(98.78), 2); book.insert(dec!(100.00), 1); book.insert(dec!(100.10), 2);\n\n/// Then we receive this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700839, \"tn\": 0, \"sid\": 123, \"sn\": 9000, \"b\": [[\"99.00\", \"1\"]], \"a\": [] }\"#)?;\n\n/// Verify that the sequence number is correct assert!(diff.sequence().is_next_in_sequence(&snapshot.sequence()));\n\n/// Apply the update to our book book.insert(dec!(99.00), 1);\n\n// Suppose we then receive this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700841, \"tn\": 0, \"sid\": 123, \"sn\": 9005, \"b\": [], \"a\": [[\"103.00\", \"1\"]] }\"#)?;\n\n/// We shouldn't apply this update because it's not next in sequence! assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);\n\n/// Or if we had received this update: let diff: L2BookUpdate = serde_json::from_str(r#\"{ \"t\": \"d\", \"ts\": 1729700841, \"tn\": 0, \"sid\": 170, \"sn\": 9001, \"b\": [], \"a\": [[\"103.00\", \"1\"]] }\"#)?;\n\n/// It appears that the sequence id is changed, signalling a new sequence. /// In this case, we should re-request the snapshot from the server. assert_eq!(diff.sequence().is_next_in_sequence(&snapshot.sequence()), false);\n\n# Ok::<(), anyhow::Error>(()) ```",
+        "description": "<api>{tag: t}</api>",
         "oneOf": [
           {
-            "title": "snapshot",
+            "title": "Snapshot|L2BookSnapshot",
             "description": "Unique sequence id and number.",
             "type": "object",
             "required": [
@@ -4709,7 +4709,7 @@
             }
           },
           {
-            "title": "diff",
+            "title": "Diff|L2BookDiff",
             "description": "Unique sequence id and number.",
             "type": "object",
             "required": [
@@ -7096,8 +7096,10 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "TickerUpdate",
+        "description": "<api>{tag: t}</api>",
         "oneOf": [
           {
+            "title": "Snapshot|Ticker",
             "type": "object",
             "required": [
               "s",
@@ -7336,7 +7338,7 @@
               "t": {
                 "type": "string",
                 "enum": [
-                  "snapshot"
+                  "s"
                 ]
               },
               "tn": {
@@ -7423,6 +7425,7 @@
             }
           },
           {
+            "title": "Diff|Ticker",
             "type": "object",
             "required": [
               "s",
@@ -7661,7 +7664,7 @@
               "t": {
                 "type": "string",
                 "enum": [
-                  "diff"
+                  "d"
                 ]
               },
               "tn": {
@@ -7855,8 +7858,10 @@
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "OrderflowRequest",
+        "description": "<api>{tag: t}</api>",
         "oneOf": [
           {
+            "title": "PlaceOrder|PlaceOrderRequest",
             "type": "object",
             "oneOf": [
               {
@@ -8063,6 +8068,7 @@
             }
           },
           {
+            "title": "CancelOrder|CancelOrderRequest",
             "type": "object",
             "required": [
               "id",
@@ -8096,6 +8102,7 @@
             }
           },
           {
+            "title": "CancelAllOrders|CancelAllOrdersRequest",
             "type": "object",
             "required": [
               "id",
@@ -8238,8 +8245,10 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Orderflow",
+        "description": "<api>{tag: t}</api>",
         "oneOf": [
           {
+            "title": "OrderPending|Order",
             "type": "object",
             "oneOf": [
               {
@@ -8491,6 +8500,7 @@
             }
           },
           {
+            "title": "OrderAck|OrderAck",
             "type": "object",
             "required": [
               "id",
@@ -8521,6 +8531,7 @@
             }
           },
           {
+            "title": "OrderReject|OrderReject",
             "type": "object",
             "required": [
               "id",
@@ -8549,6 +8560,7 @@
             }
           },
           {
+            "title": "OrderOut|OrderOut",
             "type": "object",
             "required": [
               "id",
@@ -8567,6 +8579,7 @@
             }
           },
           {
+            "title": "OrderReconciledOut|OrderOut",
             "type": "object",
             "required": [
               "id",
@@ -8585,6 +8598,7 @@
             }
           },
           {
+            "title": "OrderStale|OrderStale",
             "type": "object",
             "required": [
               "id",
@@ -8603,6 +8617,7 @@
             }
           },
           {
+            "title": "CancelPending|Cancel",
             "type": "object",
             "required": [
               "id",
@@ -8647,6 +8662,7 @@
             }
           },
           {
+            "title": "CancelReject|CancelReject",
             "type": "object",
             "required": [
               "id",
@@ -8676,6 +8692,7 @@
             }
           },
           {
+            "title": "OrderCanceling|OrderCanceling",
             "type": "object",
             "required": [
               "id",
@@ -8701,6 +8718,7 @@
             }
           },
           {
+            "title": "OrderCanceled|OrderCanceled",
             "type": "object",
             "required": [
               "id",
@@ -8726,6 +8744,7 @@
             }
           },
           {
+            "title": "Fill|Fill",
             "type": "object",
             "required": [
               "d",
@@ -8747,6 +8766,12 @@
                   "null"
                 ],
                 "format": "uuid"
+              },
+              "agg": {
+                "title": "is_taker",
+                "default": null,
+                "type": "integer",
+                "format": "int"
               },
               "atn": {
                 "title": "recv_time_ns",
@@ -8838,10 +8863,10 @@
                 "type": "string"
               },
               "t": {
-                "title": "is_taker",
-                "default": null,
-                "type": "integer",
-                "format": "int"
+                "type": "string",
+                "enum": [
+                  "f"
+                ]
               },
               "tn": {
                 "title": "trade_time_ns",
@@ -8880,6 +8905,7 @@
             }
           },
           {
+            "title": "AberrantFill|AberrantFill",
             "description": "Fills which we received but couldn't parse fully, return details best effort",
             "type": "object",
             "required": [
@@ -9256,8 +9282,10 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Orderflow",
+        "description": "<api>{tag: t}</api>",
         "oneOf": [
           {
+            "title": "OrderPending|Order",
             "type": "object",
             "oneOf": [
               {
@@ -9509,6 +9537,7 @@
             }
           },
           {
+            "title": "OrderAck|OrderAck",
             "type": "object",
             "required": [
               "id",
@@ -9539,6 +9568,7 @@
             }
           },
           {
+            "title": "OrderReject|OrderReject",
             "type": "object",
             "required": [
               "id",
@@ -9567,6 +9597,7 @@
             }
           },
           {
+            "title": "OrderOut|OrderOut",
             "type": "object",
             "required": [
               "id",
@@ -9585,6 +9616,7 @@
             }
           },
           {
+            "title": "OrderReconciledOut|OrderOut",
             "type": "object",
             "required": [
               "id",
@@ -9603,6 +9635,7 @@
             }
           },
           {
+            "title": "OrderStale|OrderStale",
             "type": "object",
             "required": [
               "id",
@@ -9621,6 +9654,7 @@
             }
           },
           {
+            "title": "CancelPending|Cancel",
             "type": "object",
             "required": [
               "id",
@@ -9665,6 +9699,7 @@
             }
           },
           {
+            "title": "CancelReject|CancelReject",
             "type": "object",
             "required": [
               "id",
@@ -9694,6 +9729,7 @@
             }
           },
           {
+            "title": "OrderCanceling|OrderCanceling",
             "type": "object",
             "required": [
               "id",
@@ -9719,6 +9755,7 @@
             }
           },
           {
+            "title": "OrderCanceled|OrderCanceled",
             "type": "object",
             "required": [
               "id",
@@ -9744,6 +9781,7 @@
             }
           },
           {
+            "title": "Fill|Fill",
             "type": "object",
             "required": [
               "d",
@@ -9765,6 +9803,12 @@
                   "null"
                 ],
                 "format": "uuid"
+              },
+              "agg": {
+                "title": "is_taker",
+                "default": null,
+                "type": "integer",
+                "format": "int"
               },
               "atn": {
                 "title": "recv_time_ns",
@@ -9856,10 +9900,10 @@
                 "type": "string"
               },
               "t": {
-                "title": "is_taker",
-                "default": null,
-                "type": "integer",
-                "format": "int"
+                "type": "string",
+                "enum": [
+                  "f"
+                ]
               },
               "tn": {
                 "title": "trade_time_ns",
@@ -9898,6 +9942,7 @@
             }
           },
           {
+            "title": "AberrantFill|AberrantFill",
             "description": "Fills which we received but couldn't parse fully, return details best effort",
             "type": "object",
             "required": [
@@ -10285,8 +10330,10 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Dropcopy",
+        "description": "<api>{tag: t}</api>",
         "oneOf": [
           {
+            "title": "Order|Order",
             "type": "object",
             "oneOf": [
               {
@@ -10538,6 +10585,7 @@
             }
           },
           {
+            "title": "Fill|Fill",
             "type": "object",
             "required": [
               "d",
@@ -10559,6 +10607,12 @@
                   "null"
                 ],
                 "format": "uuid"
+              },
+              "agg": {
+                "title": "is_taker",
+                "default": null,
+                "type": "integer",
+                "format": "int"
               },
               "atn": {
                 "title": "recv_time_ns",
@@ -10650,10 +10704,10 @@
                 "type": "string"
               },
               "t": {
-                "title": "is_taker",
-                "default": null,
-                "type": "integer",
-                "format": "int"
+                "type": "string",
+                "enum": [
+                  "f"
+                ]
               },
               "tn": {
                 "title": "trade_time_ns",
@@ -10692,6 +10746,7 @@
             }
           },
           {
+            "title": "AbberantFill|AbberantFill",
             "description": "Fills which we received but couldn't parse fully, return details best effort",
             "type": "object",
             "required": [
@@ -13493,6 +13548,12 @@
                 ],
                 "format": "uuid"
               },
+              "agg": {
+                "title": "is_taker",
+                "default": null,
+                "type": "integer",
+                "format": "int"
+              },
               "atn": {
                 "title": "recv_time_ns",
                 "type": [
@@ -13581,12 +13642,6 @@
               "s": {
                 "title": "symbol",
                 "type": "string"
-              },
-              "t": {
-                "title": "is_taker",
-                "default": null,
-                "type": "integer",
-                "format": "int"
               },
               "tn": {
                 "title": "trade_time_ns",
