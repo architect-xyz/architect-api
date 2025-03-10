@@ -204,7 +204,7 @@ impl L2BookDiff {
 /// ```
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
-#[schemars(description = "<api>{tag: t}</api>")]
+/// <!-- py: tag=t -->
 pub enum L2BookUpdate {
     #[serde(rename = "s")]
     #[schemars(title = "Snapshot|L2BookSnapshot")]
@@ -694,7 +694,8 @@ pub struct SubscribeTickersRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
-#[schemars(description = "<api>{tag: t}</api>")]
+/// <!-- py: tag=t -->
+
 pub enum TickerUpdate {
     #[serde(rename = "s")]
     #[schemars(title = "Snapshot|Ticker")]

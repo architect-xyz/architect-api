@@ -19,7 +19,7 @@ pub use order_types::*;
 #[grpc(service = "Orderflow", name = "orderflow", response = "Orderflow", bidi_streaming)]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
-#[schemars(description = "<api>{tag: t}</api>")]
+/// <!-- py: tag=t -->
 pub enum OrderflowRequest {
     #[serde(rename = "p")]
     #[schemars(title = "PlaceOrder|PlaceOrderRequest")]
@@ -34,7 +34,7 @@ pub enum OrderflowRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
-#[schemars(description = "<api>{tag: t}</api>")]
+/// <!-- py: tag=t -->
 pub enum Orderflow {
     #[serde(rename = "w")]
     #[schemars(title = "OrderPending|Order")]
@@ -118,7 +118,7 @@ impl DropcopyRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
-#[schemars(description = "<api>{tag: t}</api>")]
+/// <!-- py: tag=t -->
 pub enum Dropcopy {
     #[serde(rename = "o")]
     #[schemars(title = "Order|Order")]
@@ -127,6 +127,6 @@ pub enum Dropcopy {
     #[serde(rename = "f")]
     Fill(Fill),
     #[serde(rename = "af")]
-    #[schemars(title = "AbberantFill|AbberantFill")]
+    #[schemars(title = "AberrantFill|AberrantFill")]
     AberrantFill(AberrantFill),
 }
