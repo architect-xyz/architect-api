@@ -14227,8 +14227,10 @@
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "CptyRequest",
+        "description": "<!-- py: tag=t -->",
         "oneOf": [
           {
+            "title": "Login|CptyLoginRequest",
             "type": "object",
             "required": [
               "account",
@@ -14252,6 +14254,7 @@
             }
           },
           {
+            "title": "Logout|CptyLogoutRequest",
             "type": "object",
             "required": [
               "t"
@@ -14266,6 +14269,7 @@
             }
           },
           {
+            "title": "PlaceOrder|Order",
             "type": "object",
             "oneOf": [
               {
@@ -14517,6 +14521,7 @@
             }
           },
           {
+            "title": "CancelOrder",
             "type": "object",
             "required": [
               "cancel",
@@ -14974,8 +14979,10 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "CptyResponse",
+        "description": "<!-- py: tag=t -->",
         "oneOf": [
           {
+            "title": "TradableProducts",
             "type": "object",
             "required": [
               "t"
@@ -14990,6 +14997,7 @@
             }
           },
           {
+            "title": "ReconcileOrder|Order",
             "type": "object",
             "oneOf": [
               {
@@ -15241,6 +15249,7 @@
             }
           },
           {
+            "title": "ReconcileOpenOrder",
             "type": "object",
             "required": [
               "orders",
@@ -15272,6 +15281,7 @@
             }
           },
           {
+            "title": "UpdateAccountSummary",
             "type": "object",
             "required": [
               "account",
