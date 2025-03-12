@@ -11,7 +11,7 @@ use zeroize::{Zeroize, Zeroizing};
 
 /// A type that is either a reference to a secret, serialized as
 /// a URI string like secrets://<key>, or a plain literal.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Zeroize)]
 pub enum MaybeSecret<T: Zeroize> {
     Secret(String),
     Plain(Zeroizing<T>),
