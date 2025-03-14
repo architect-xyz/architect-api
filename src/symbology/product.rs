@@ -255,11 +255,17 @@ impl ProductInfo {
 #[derive(Debug, Clone, IntoStaticStr, Deserialize, Serialize, JsonSchema)]
 #[serde(tag = "product_type")]
 pub enum ProductType {
+    #[schemars(title = "Fiat")]
     Fiat,
+    #[schemars(title = "Commodity")]
     Commodity,
+    #[schemars(title = "Crypto")]
     Crypto,
+    #[schemars(title = "Equity")]
     Equity,
+    #[schemars(title = "Index")]
     Index,
+    #[schemars(title = "Future")]
     Future {
         series: Option<String>,
         underlying: Option<Product>,
@@ -269,23 +275,20 @@ pub enum ProductType {
         #[serde(default)]
         first_notice_date: Option<NaiveDate>,
     },
-    FutureSpread {
-        legs: Vec<SpreadLeg>,
-    },
+    #[schemars(title = "FutureSpread")]
+    FutureSpread { legs: Vec<SpreadLeg> },
+    #[schemars(title = "Perpetual")]
     Perpetual {
         underlying: Option<Product>,
         multiplier: Decimal,
         derivative_kind: DerivativeKind,
     },
-    Option {
-        series: OptionsSeries,
-        instance: OptionsSeriesInstance,
-    },
-    EventContract {
-        series: EventContractSeries,
-        instance: EventContractSeriesInstance,
-    },
+    #[schemars(title = "Option")]
+    Option { series: OptionsSeries, instance: OptionsSeriesInstance },
+    #[schemars(title = "EventContract")]
+    EventContract { series: EventContractSeries, instance: EventContractSeriesInstance },
     #[serde(other)]
+    #[schemars(title = "Unknown")]
     Unknown,
 }
 

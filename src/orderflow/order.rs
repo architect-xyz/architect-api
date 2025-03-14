@@ -112,26 +112,33 @@ impl OrderUpdate {
 pub enum TimeInForce {
     #[serde(rename = "GTC")]
     #[strum(serialize = "GTC")]
+    #[schemars(title = "GoodTilCancel")]
     GoodTilCancel,
     #[serde(rename = "GTD")]
     #[strum(serialize = "GTD")]
+    #[schemars(title = "GoodTilDate")]
     GoodTilDate(DateTime<Utc>),
     /// Day order--the specific time which this expires
     /// will be dependent on the venue
     #[serde(rename = "DAY")]
     #[strum(serialize = "DAY")]
+    #[schemars(title = "GoodTilDay")]
     GoodTilDay,
     #[serde(rename = "IOC")]
     #[strum(serialize = "IOC")]
+    #[schemars(title = "ImmediateOrCancel")]
     ImmediateOrCancel,
     #[serde(rename = "FOK")]
     #[strum(serialize = "FOK")]
+    #[schemars(title = "FillOrKill")]
     FillOrKill,
     #[serde(rename = "ATO")]
     #[strum(serialize = "ATO")]
+    #[schemars(title = "AtTheOpen")]
     AtTheOpen,
     #[serde(rename = "ATC")]
     #[strum(serialize = "ATC")]
+    #[schemars(title = "AtTheClose")]
     AtTheClose,
 }
 

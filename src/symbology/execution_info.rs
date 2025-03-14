@@ -23,12 +23,12 @@ pub struct ExecutionInfo {
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum TickSize {
+    #[schemars(title = "Simple|Decimal")]
     Simple(Decimal),
     /// List of (threshold, tick_size) pairs.  For price greater than or equal
     /// to each threshold, the tick size is the corresponding value.
-    Varying {
-        thresholds: Vec<(Decimal, Decimal)>,
-    },
+    #[schemars(title = "Varying")]
+    Varying { thresholds: Vec<(Decimal, Decimal)> },
 }
 
 impl TickSize {
@@ -55,7 +55,9 @@ impl TickSize {
 #[strum(serialize_all = "snake_case")]
 pub enum MinOrderQuantityUnit {
     #[default]
+    #[schemars(title = "Base")]
     Base,
+    #[schemars(title = "Quote")]
     Quote,
 }
 
