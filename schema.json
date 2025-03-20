@@ -1566,7 +1566,8 @@
           "AliasKind": {
             "type": "string",
             "enum": [
-              "CME_GLOBEX"
+              "CME_GLOBEX",
+              "CFE"
             ]
           },
           "Decimal": {

@@ -356,6 +356,7 @@ impl std::str::FromStr for SpreadLeg {
 #[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
 pub enum AliasKind {
     CmeGlobex,
+    Cfe,
 }
 
 #[cfg(feature = "postgres")]
