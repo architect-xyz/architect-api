@@ -72,6 +72,9 @@ pub struct Order {
     #[serde(rename = "ve")]
     #[schemars(title = "execution_venue")]
     pub execution_venue: ExecutionVenue,
+    #[serde(rename = "ss", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "is_short_sale")]
+    pub is_short_sale: Option<bool>,
 }
 
 impl Order {
@@ -266,6 +269,9 @@ pub enum OrderRejectReason {
     NoCpty,
     UnsupportedOrderType,
     UnsupportedExecutionVenue,
+    InsufficientCash,
+    InsufficientMargin,
+    NotEasyToBorrow,
     #[serde(other)]
     Unknown,
 }
@@ -387,7 +393,8 @@ mod tests {
             }),
             time_in_force: TimeInForce::GoodTilCancel,
             source: OrderSource::API,
-            execution_venue: "BINANCE".into(), 
+            execution_venue: "BINANCE".into(),
+            is_short_sale: None,
         }, @r###"
         {
           "id": "d3f97244-78e6-4549-abf6-90adfe0ab7fe:123",
@@ -439,6 +446,7 @@ mod tests {
             ),
             source: OrderSource::Telegram,
             execution_venue: "BINANCE".into(),
+            is_short_sale: None,
         }, @r###"
         {
           "id": "123",

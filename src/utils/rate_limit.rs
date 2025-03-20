@@ -1,10 +1,10 @@
-use crate::NonZeroDurationAsStr;
-use anyhow::Result;
+use crate::{utils::duration::parse_duration, NonZeroDurationAsStr};
+use anyhow::{anyhow, Result};
 use governor::Quota;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, serde_conv};
-use std::{num::NonZeroU32, time::Duration};
+use std::{num::NonZeroU32, str::FromStr, time::Duration};
 
 #[serde_as]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
@@ -26,6 +26,19 @@ impl RateLimit {
 impl From<&Quota> for RateLimit {
     fn from(quota: &Quota) -> Self {
         RateLimit { max: quota.burst_size(), per: quota.replenish_interval() }
+    }
+}
+
+impl FromStr for RateLimit {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let (max, per) =
+            s.split_once('/').ok_or_else(|| anyhow!("invalid rate limit"))?;
+        Ok(RateLimit {
+            max: max.trim().parse()?,
+            per: parse_duration(per.trim())?.to_std()?,
+        })
     }
 }
 

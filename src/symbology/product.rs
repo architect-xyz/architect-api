@@ -181,7 +181,7 @@ impl ProductInfo {
         match &self.product_type {
             ProductType::Crypto
             | ProductType::Fiat
-            | ProductType::Equity
+            | ProductType::Equity { .. }
             | ProductType::Index
             | ProductType::Commodity
             | ProductType::Unknown
@@ -197,7 +197,7 @@ impl ProductInfo {
         match &self.product_type {
             ProductType::Crypto
             | ProductType::Fiat
-            | ProductType::Equity
+            | ProductType::Equity { .. }
             | ProductType::Index
             | ProductType::Commodity
             | ProductType::Unknown
@@ -213,7 +213,7 @@ impl ProductInfo {
         match &self.product_type {
             ProductType::Crypto
             | ProductType::Fiat
-            | ProductType::Equity
+            | ProductType::Equity { .. }
             | ProductType::Index
             | ProductType::Commodity
             | ProductType::Unknown
@@ -250,6 +250,13 @@ impl ProductInfo {
             _ => None,
         }
     }
+
+    pub fn easy_to_borrow(&self) -> Option<bool> {
+        match &self.product_type {
+            ProductType::Equity { easy_to_borrow, .. } => *easy_to_borrow,
+            _ => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, IntoStaticStr, Deserialize, Serialize, JsonSchema)]
@@ -262,7 +269,7 @@ pub enum ProductType {
     #[schemars(title = "Crypto")]
     Crypto,
     #[schemars(title = "Equity")]
-    Equity,
+    Equity { easy_to_borrow: Option<bool> },
     #[schemars(title = "Index")]
     Index,
     #[schemars(title = "Future")]

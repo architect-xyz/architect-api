@@ -623,6 +623,12 @@
                   "product_type"
                 ],
                 "properties": {
+                  "easy_to_borrow": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
                   "product_type": {
                     "type": "string",
                     "enum": [
@@ -1927,6 +1933,12 @@
                   "product_type"
                 ],
                 "properties": {
+                  "easy_to_borrow": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
                   "product_type": {
                     "type": "string",
                     "enum": [
@@ -3482,6 +3494,12 @@
                   "product_type"
                 ],
                 "properties": {
+                  "easy_to_borrow": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
                   "product_type": {
                     "type": "string",
                     "enum": [
@@ -8514,6 +8532,13 @@
                   }
                 ]
               },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
               "t": {
                 "type": "string",
                 "enum": [
@@ -9214,6 +9239,9 @@
               "NoCpty",
               "UnsupportedOrderType",
               "UnsupportedExecutionVenue",
+              "InsufficientCash",
+              "InsufficientMargin",
+              "NotEasyToBorrow",
               "Unknown"
             ]
           },
@@ -9578,6 +9606,13 @@
                   }
                 ]
               },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
               "t": {
                 "type": "string",
                 "enum": [
@@ -10278,6 +10313,9 @@
               "NoCpty",
               "UnsupportedOrderType",
               "UnsupportedExecutionVenue",
+              "InsufficientCash",
+              "InsufficientMargin",
+              "NotEasyToBorrow",
               "Unknown"
             ]
           },
@@ -10653,6 +10691,13 @@
                   }
                 ]
               },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
               "t": {
                 "type": "string",
                 "enum": [
@@ -11094,6 +11139,9 @@
               "NoCpty",
               "UnsupportedOrderType",
               "UnsupportedExecutionVenue",
+              "InsufficientCash",
+              "InsufficientMargin",
+              "NotEasyToBorrow",
               "Unknown"
             ]
           },
@@ -11736,6 +11784,13 @@
               }
             ]
           },
+          "ss": {
+            "title": "is_short_sale",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
           "tif": {
             "title": "time_in_force",
             "allOf": [
@@ -11828,6 +11883,9 @@
               "NoCpty",
               "UnsupportedOrderType",
               "UnsupportedExecutionVenue",
+              "InsufficientCash",
+              "InsufficientMargin",
+              "NotEasyToBorrow",
               "Unknown"
             ]
           },
@@ -12437,6 +12495,13 @@
                   }
                 ]
               },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
               "tif": {
                 "title": "time_in_force",
                 "allOf": [
@@ -12518,6 +12583,9 @@
               "NoCpty",
               "UnsupportedOrderType",
               "UnsupportedExecutionVenue",
+              "InsufficientCash",
+              "InsufficientMargin",
+              "NotEasyToBorrow",
               "Unknown"
             ]
           },
@@ -12846,6 +12914,7 @@
             ]
           },
           "equity": {
+            "description": "Total account equity; net liquidation value.",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -12876,6 +12945,7 @@
             }
           },
           "purchasing_power": {
+            "description": "Total purchasing power; post-multiplied. (e.g. for cash margin account could be 2x available cash)",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -12921,6 +12991,7 @@
             ]
           },
           "yesterday_equity": {
+            "description": "Yesterday total account equity.",
             "anyOf": [
               {
                 "$ref": "#/definitions/Decimal"
@@ -13145,6 +13216,7 @@
                 ]
               },
               "equity": {
+                "description": "Total account equity; net liquidation value.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -13175,6 +13247,7 @@
                 }
               },
               "purchasing_power": {
+                "description": "Total purchasing power; post-multiplied. (e.g. for cash margin account could be 2x available cash)",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -13220,6 +13293,7 @@
                 ]
               },
               "yesterday_equity": {
+                "description": "Yesterday total account equity.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -13380,6 +13454,7 @@
                 ]
               },
               "equity": {
+                "description": "Total account equity; net liquidation value.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -13410,6 +13485,7 @@
                 }
               },
               "purchasing_power": {
+                "description": "Total purchasing power; post-multiplied. (e.g. for cash margin account could be 2x available cash)",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -13455,6 +13531,7 @@
                 ]
               },
               "yesterday_equity": {
+                "description": "Yesterday total account equity.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -14278,6 +14355,13 @@
                   }
                 ]
               },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
               "tif": {
                 "title": "time_in_force",
                 "allOf": [
@@ -14359,6 +14443,9 @@
               "NoCpty",
               "UnsupportedOrderType",
               "UnsupportedExecutionVenue",
+              "InsufficientCash",
+              "InsufficientMargin",
+              "NotEasyToBorrow",
               "Unknown"
             ]
           },
@@ -14724,6 +14811,13 @@
                   }
                 ]
               },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
               "t": {
                 "type": "string",
                 "enum": [
@@ -15068,6 +15162,13 @@
                   }
                 ]
               },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
               "tif": {
                 "title": "time_in_force",
                 "allOf": [
@@ -15149,6 +15250,9 @@
               "NoCpty",
               "UnsupportedOrderType",
               "UnsupportedExecutionVenue",
+              "InsufficientCash",
+              "InsufficientMargin",
+              "NotEasyToBorrow",
               "Unknown"
             ]
           },
@@ -15479,6 +15583,13 @@
                   }
                 ]
               },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
               "t": {
                 "type": "string",
                 "enum": [
@@ -15718,6 +15829,7 @@
                 ]
               },
               "equity": {
+                "description": "Total account equity; net liquidation value.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -15739,6 +15851,7 @@
                 ]
               },
               "purchasing_power": {
+                "description": "Total purchasing power; post-multiplied. (e.g. for cash margin account could be 2x available cash)",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -15780,6 +15893,7 @@
                 ]
               },
               "yesterday_equity": {
+                "description": "Yesterday total account equity.",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
@@ -16087,6 +16201,13 @@
                   }
                 ]
               },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
               "tif": {
                 "title": "time_in_force",
                 "allOf": [
@@ -16168,6 +16289,9 @@
               "NoCpty",
               "UnsupportedOrderType",
               "UnsupportedExecutionVenue",
+              "InsufficientCash",
+              "InsufficientMargin",
+              "NotEasyToBorrow",
               "Unknown"
             ]
           },

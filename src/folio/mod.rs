@@ -71,16 +71,21 @@ pub type AccountPositions = BTreeMap<TradableProduct, Vec<AccountPosition>>;
 #[skip_serializing_none]
 #[derive(Default, Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct AccountStatistics {
+    /// Total account equity; net liquidation value.
     pub equity: Option<Decimal>,
     /// Margin requirement calculated for worst-case based on open positions and working orders.
     pub total_margin: Option<Decimal>,
     /// Margin requirement based on current positions only.
     pub position_margin: Option<Decimal>,
+    // CR alee: rename to withdrawable_cash
     /// Cash available to withdraw.
     pub cash_excess: Option<Decimal>,
+    /// Total purchasing power; post-multiplied.
+    /// (e.g. for cash margin account could be 2x available cash)
     pub purchasing_power: Option<Decimal>,
     pub unrealized_pnl: Option<Decimal>,
     pub realized_pnl: Option<Decimal>,
+    /// Yesterday total account equity.
     pub yesterday_equity: Option<Decimal>,
 }
 

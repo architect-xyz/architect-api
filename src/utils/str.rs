@@ -363,12 +363,12 @@ impl postgres_types::ToSql for Str {
 #[cfg(test)]
 mod test {
     use super::*;
-    use rand::{thread_rng, Rng};
+    use rand::{rng, Rng};
 
     fn rand_ascii(size: usize) -> String {
         let mut s = String::new();
         for _ in 0..size {
-            s.push(thread_rng().gen_range(' '..'~'))
+            s.push(rng().random_range(' '..'~'))
         }
         s
     }
@@ -376,7 +376,7 @@ mod test {
     fn rand_unicode(size: usize) -> String {
         let mut s = String::new();
         for _ in 0..size {
-            s.push(thread_rng().gen())
+            s.push(rng().random())
         }
         s
     }
@@ -384,7 +384,7 @@ mod test {
     #[test]
     fn immediates() {
         for _ in 0..10000 {
-            let len = thread_rng().gen_range(0..8);
+            let len = rng().random_range(0..8);
             let s = rand_ascii(len);
             let t0 = Str::try_from(s.as_str()).unwrap();
             assert_eq!(&*t0, &*s);
@@ -396,7 +396,7 @@ mod test {
     #[test]
     fn mixed() {
         for _ in 0..10000 {
-            let len = thread_rng().gen_range(0..256);
+            let len = rng().random_range(0..256);
             let s = rand_ascii(len);
             let t0 = Str::try_from(s.as_str()).unwrap();
             assert_eq!(&*t0, &*s);
@@ -409,7 +409,7 @@ mod test {
     fn unicode() {
         for _ in 0..10000 {
             let s = loop {
-                let len = thread_rng().gen_range(0..128);
+                let len = rng().random_range(0..128);
                 let s = rand_unicode(len);
                 if s.len() < 256 {
                     break s;
