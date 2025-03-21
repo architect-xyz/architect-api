@@ -11,6 +11,12 @@
         "title": "HealthCheckRequest",
         "type": "object",
         "properties": {
+          "include_metrics": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
           "service": {
             "description": "The service to check status for; if not provided, status of the queried server overall is returned.\n\nGenerally, this will only be set when querying the API gateway.  It's not recommended to rely on internal subservice names being stable.",
             "type": [
@@ -28,11 +34,65 @@
           "status"
         ],
         "properties": {
+          "metrics": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": {
+              "$ref": "#/definitions/HealthMetric"
+            }
+          },
           "status": {
             "$ref": "#/definitions/HealthStatus"
           }
         },
         "definitions": {
+          "HealthMetric": {
+            "type": "object",
+            "required": [
+              "timestamp",
+              "value"
+            ],
+            "properties": {
+              "should_be_greater_than": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "format": "double"
+              },
+              "should_be_greater_than_or_equal_to": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "format": "double"
+              },
+              "should_be_less_than": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "format": "double"
+              },
+              "should_be_less_than_or_equal_to": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "format": "double"
+              },
+              "timestamp": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "value": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          },
           "HealthStatus": {
             "type": "string",
             "enum": [

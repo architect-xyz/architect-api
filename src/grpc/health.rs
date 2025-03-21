@@ -1,6 +1,7 @@
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 #[grpc(
     package = "json.architect",
@@ -17,11 +18,14 @@ pub struct HealthCheckRequest {
     /// the API gateway.  It's not recommended to rely on
     /// internal subservice names being stable.
     pub service: Option<String>,
+    pub include_metrics: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct HealthCheckResponse {
     pub status: HealthStatus,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<BTreeMap<String, HealthMetric>>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
@@ -31,4 +35,18 @@ pub enum HealthStatus {
     Serving,
     NotServing,
     ServiceUnknown,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+pub struct HealthMetric {
+    pub timestamp: i32,
+    pub value: f64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub should_be_greater_than: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub should_be_less_than: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub should_be_greater_than_or_equal_to: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub should_be_less_than_or_equal_to: Option<f64>,
 }
