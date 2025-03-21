@@ -39,8 +39,11 @@ pub struct CptyLogoutRequest {}
 /// <!-- py: tag=t -->
 pub enum CptyResponse {
     #[serde(rename = "xs")]
-    #[schemars(title = "TradableProducts")]
-    TradableProducts(BTreeMap<TradableProduct, BTreeMap<ExecutionVenue, ExecutionInfo>>),
+    #[schemars(title = "Symbology")]
+    Symbology {
+        execution_info:
+            BTreeMap<TradableProduct, BTreeMap<ExecutionVenue, ExecutionInfo>>,
+    },
     #[serde(rename = "ro")]
     #[schemars(title = "ReconcileOrder|Order")]
     ReconcileOrder(Order),

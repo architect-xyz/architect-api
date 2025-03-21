@@ -15435,12 +15435,22 @@
         "description": "<!-- py: tag=t -->",
         "oneOf": [
           {
-            "title": "TradableProducts",
+            "title": "Symbology",
             "type": "object",
             "required": [
+              "execution_info",
               "t"
             ],
             "properties": {
+              "execution_info": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/definitions/ExecutionInfo"
+                  }
+                }
+              },
               "t": {
                 "type": "string",
                 "enum": [
