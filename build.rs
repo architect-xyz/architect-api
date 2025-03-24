@@ -372,6 +372,24 @@ fn build_grpc_stubs() {
                 .server_streaming()
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("cpty_status")
+                .route_name("CptyStatus")
+                .input_type("crate::cpty::CptyStatusRequest")
+                .output_type("crate::cpty::CptyStatus")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("cptys")
+                .route_name("Cptys")
+                .input_type("crate::cpty::CptysRequest")
+                .output_type("crate::cpty::CptysResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let json_algo_service = tonic_build::manual::Service::builder()
         .name("Algo")

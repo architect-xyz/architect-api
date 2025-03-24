@@ -68,3 +68,33 @@ pub enum CptyResponse {
         is_snapshot: bool,
     },
 }
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Cpty", name = "cpty_status", response = "CptyStatus")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct CptyStatusRequest {
+    pub kind: String,
+    pub instance: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct CptyStatus {
+    pub kind: String,
+    pub instance: Option<String>,
+    pub connected: bool,
+    pub logged_in: bool,
+    /// UNIX epoch time or -1 for never
+    pub last_heartbeat: i64,
+    /// Stale threshold in seconds, or -1 for never stale
+    pub last_heartbeat_stale_threshold: i64,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Cpty", name = "cptys", response = "CptysResponse")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct CptysRequest {}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct CptysResponse {
+    pub cptys: Vec<CptyStatus>,
+}
