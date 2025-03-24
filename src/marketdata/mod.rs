@@ -2,7 +2,7 @@ use crate::{
     symbology::MarketdataVenue, utils::pagination::OffsetAndLimit, Dir,
     SequenceIdAndNumber,
 };
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDate, Utc};
 use derive::grpc;
 use derive_more::Deref;
 use rust_decimal::Decimal;
@@ -571,6 +571,9 @@ pub struct TickerValues {
     #[serde(rename = "sp")]
     #[schemars(title = "last_settlement_price")]
     pub last_settlement_price: Option<Decimal>,
+    #[serde(rename = "sd")]
+    #[schemars(title = "last_settlement_date")]
+    pub last_settlement_date: Option<NaiveDate>,
     #[serde(rename = "mp")]
     #[schemars(title = "mark_price")]
     pub mark_price: Option<Decimal>,

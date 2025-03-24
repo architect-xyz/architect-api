@@ -6686,6 +6686,14 @@
             "title": "symbol",
             "type": "string"
           },
+          "sd": {
+            "title": "last_settlement_date",
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
           "shares_outstanding_weighted_adj": {
             "anyOf": [
               {
@@ -7089,6 +7097,14 @@
                 "title": "symbol",
                 "type": "string"
               },
+              "sd": {
+                "title": "last_settlement_date",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
               "shares_outstanding_weighted_adj": {
                 "anyOf": [
                   {
@@ -7438,6 +7454,14 @@
                 "title": "symbol",
                 "type": "string"
               },
+              "sd": {
+                "title": "last_settlement_date",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
               "shares_outstanding_weighted_adj": {
                 "anyOf": [
                   {
@@ -7763,6 +7787,14 @@
               "s": {
                 "title": "symbol",
                 "type": "string"
+              },
+              "sd": {
+                "title": "last_settlement_date",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
               },
               "shares_outstanding_weighted_adj": {
                 "anyOf": [
