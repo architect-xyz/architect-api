@@ -48,7 +48,7 @@ pub enum CptyResponse {
     #[schemars(title = "ReconcileOrder|Order")]
     ReconcileOrder(Order),
     #[serde(rename = "oo")]
-    #[schemars(title = "ReconcileOpenOrder")]
+    #[schemars(title = "ReconcileOpenOrders")]
     ReconcileOpenOrders {
         orders: Vec<Order>,
         snapshot_for_account: Option<AccountIdOrName>,
