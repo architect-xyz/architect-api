@@ -306,6 +306,16 @@
               }
             }
           },
+          "product_catalog": {
+            "default": {},
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/ProductCatalogInfo"
+              }
+            }
+          },
           "products": {
             "type": "object",
             "additionalProperties": {
@@ -601,6 +611,96 @@
           },
           "PriceDisplayFormat": {
             "type": "string"
+          },
+          "ProductCatalogInfo": {
+            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.",
+            "type": "object",
+            "required": [
+              "exchange",
+              "exchange_product"
+            ],
+            "properties": {
+              "category": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cqg_contract_symbol": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "exchange": {
+                "type": "string"
+              },
+              "exchange_product": {
+                "description": "Could be anything really",
+                "type": "string"
+              },
+              "info_url": {
+                "description": "URL to more product info",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "long_description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "multiplier": {
+                "description": "For derivatives contracts, the multiplier",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_display_format": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "quote_currency": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "schedule_description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "settle_method": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "short_description": {
+                "description": "Short description of the product, suitable for display in a bubble, for example",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "sub_category": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
           },
           "ProductInfo": {
             "type": "object",
@@ -1606,6 +1706,16 @@
               }
             ]
           },
+          "product_catalog": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_SnapshotOrUpdate_for_String_and_ProductCatalogInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "products": {
             "anyOf": [
               {
@@ -1912,6 +2022,96 @@
           },
           "PriceDisplayFormat": {
             "type": "string"
+          },
+          "ProductCatalogInfo": {
+            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.",
+            "type": "object",
+            "required": [
+              "exchange",
+              "exchange_product"
+            ],
+            "properties": {
+              "category": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cqg_contract_symbol": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "exchange": {
+                "type": "string"
+              },
+              "exchange_product": {
+                "description": "Could be anything really",
+                "type": "string"
+              },
+              "info_url": {
+                "description": "URL to more product info",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "long_description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "multiplier": {
+                "description": "For derivatives contracts, the multiplier",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_display_format": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "quote_currency": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "schedule_description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "settle_method": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "short_description": {
+                "description": "Short description of the product, suitable for display in a bubble, for example",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "sub_category": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
           },
           "ProductInfo": {
             "type": "object",
@@ -2339,6 +2539,55 @@
               }
             ]
           },
+          "SnapshotOrUpdate_for_String_and_ProductCatalogInfo": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/ProductCatalogInfo"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "updates"
+                ],
+                "properties": {
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/ProductCatalogInfo"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      ],
+                      "maxItems": 2,
+                      "minItems": 2
+                    }
+                  }
+                }
+              }
+            ]
+          },
           "SnapshotOrUpdate_for_String_and_ProductInfo": {
             "anyOf": [
               {
@@ -2422,6 +2671,55 @@
                           "anyOf": [
                             {
                               "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_ExecutionInfo"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      ],
+                      "maxItems": 2,
+                      "minItems": 2
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "SnapshotOrUpdate_for_String_and_SnapshotOrUpdate_for_String_and_ProductCatalogInfo": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "snapshot"
+                ],
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_ProductCatalogInfo"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "updates"
+                ],
+                "properties": {
+                  "updates": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/SnapshotOrUpdate_for_String_and_ProductCatalogInfo"
                             },
                             {
                               "type": "null"
@@ -4458,6 +4756,258 @@
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "PruneExpiredSymbolsResponse",
         "type": "object"
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Symbology/UploadProductCatalog",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "UploadProductCatalogRequest",
+        "type": "object",
+        "required": [
+          "exchange",
+          "product_catalog"
+        ],
+        "properties": {
+          "exchange": {
+            "type": "string"
+          },
+          "product_catalog": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ProductCatalogInfo"
+            }
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "ProductCatalogInfo": {
+            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.",
+            "type": "object",
+            "required": [
+              "exchange",
+              "exchange_product"
+            ],
+            "properties": {
+              "category": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cqg_contract_symbol": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "exchange": {
+                "type": "string"
+              },
+              "exchange_product": {
+                "description": "Could be anything really",
+                "type": "string"
+              },
+              "info_url": {
+                "description": "URL to more product info",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "long_description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "multiplier": {
+                "description": "For derivatives contracts, the multiplier",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_display_format": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "quote_currency": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "schedule_description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "settle_method": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "short_description": {
+                "description": "Short description of the product, suitable for display in a bubble, for example",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "sub_category": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "UploadProductCatalogResponse",
+        "type": "object"
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Symbology/DownloadProductCatalog",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "DownloadProductCatalogRequest",
+        "type": "object",
+        "required": [
+          "exchange"
+        ],
+        "properties": {
+          "exchange": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "DownloadProductCatalogResponse",
+        "type": "object",
+        "required": [
+          "product_catalog"
+        ],
+        "properties": {
+          "product_catalog": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ProductCatalogInfo"
+            }
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "ProductCatalogInfo": {
+            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.",
+            "type": "object",
+            "required": [
+              "exchange",
+              "exchange_product"
+            ],
+            "properties": {
+              "category": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cqg_contract_symbol": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "exchange": {
+                "type": "string"
+              },
+              "exchange_product": {
+                "description": "Could be anything really",
+                "type": "string"
+              },
+              "info_url": {
+                "description": "URL to more product info",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "long_description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "multiplier": {
+                "description": "For derivatives contracts, the multiplier",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_display_format": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "quote_currency": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "schedule_description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "settle_method": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "short_description": {
+                "description": "Short description of the product, suitable for display in a bubble, for example",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "sub_category": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
       }
     }
   ]

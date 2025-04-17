@@ -30,6 +30,8 @@ pub struct SymbologySnapshot {
     pub products: BTreeMap<Product, ProductInfo>,
     #[serde(default)]
     pub product_aliases: BTreeMap<AliasKind, BTreeMap<String, Product>>,
+    #[serde(default)]
+    pub product_catalog: BTreeMap<ExecutionVenue, BTreeMap<String, ProductCatalogInfo>>,
     pub options_series: BTreeMap<OptionsSeries, OptionsSeriesInfo>,
     pub execution_info:
         BTreeMap<TradableProduct, BTreeMap<ExecutionVenue, ExecutionInfo>>,
@@ -62,6 +64,10 @@ pub struct SymbologyUpdate {
     #[serde(default)]
     pub product_aliases:
         Option<SnapshotOrUpdate<AliasKind, SnapshotOrUpdate<String, Product>>>,
+    #[serde(default)]
+    pub product_catalog: Option<
+        SnapshotOrUpdate<ExecutionVenue, SnapshotOrUpdate<String, ProductCatalogInfo>>,
+    >,
     #[serde(default)]
     pub options_series: Option<SnapshotOrUpdate<OptionsSeries, OptionsSeriesInfo>>,
     #[serde(default)]
@@ -210,3 +216,34 @@ impl PruneExpiredSymbolsRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct PruneExpiredSymbolsResponse {}
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Symbology",
+    name = "upload_product_catalog",
+    response = "UploadProductCatalogResponse"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct UploadProductCatalogRequest {
+    pub exchange: ExecutionVenue,
+    pub product_catalog: Vec<ProductCatalogInfo>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct UploadProductCatalogResponse {}
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Symbology",
+    name = "download_product_catalog",
+    response = "DownloadProductCatalogResponse"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct DownloadProductCatalogRequest {
+    pub exchange: ExecutionVenue,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct DownloadProductCatalogResponse {
+    pub product_catalog: Vec<ProductCatalogInfo>,
+}

@@ -77,6 +77,24 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("upload_product_catalog")
+                .route_name("UploadProductCatalog")
+                .input_type("crate::symbology::protocol::UploadProductCatalogRequest")
+                .output_type("crate::symbology::protocol::UploadProductCatalogResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("download_product_catalog")
+                .route_name("DownloadProductCatalog")
+                .input_type("crate::symbology::protocol::DownloadProductCatalogRequest")
+                .output_type("crate::symbology::protocol::DownloadProductCatalogResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let json_marketdata_service = tonic_build::manual::Service::builder()
         .name("Marketdata")
