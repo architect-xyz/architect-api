@@ -5077,6 +5077,24 @@
             "maxItems": 2,
             "minItems": 2
           },
+          "rt": {
+            "title": "recv_time",
+            "description": "Time that Architect feed received the message; only set if streaming from direct L1 feeds",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "rtn": {
+            "title": "recv_time_ns",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint32",
+            "minimum": 0.0
+          },
           "s": {
             "title": "symbol",
             "type": "string"
@@ -5172,6 +5190,24 @@
                 "maxItems": 2,
                 "minItems": 2
               },
+              "rt": {
+                "title": "recv_time",
+                "description": "Time that Architect feed received the message; only set if streaming from direct L1 feeds",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "rtn": {
+                "title": "recv_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
               "s": {
                 "title": "symbol",
                 "type": "string"
@@ -5255,6 +5291,24 @@
             ],
             "maxItems": 2,
             "minItems": 2
+          },
+          "rt": {
+            "title": "recv_time",
+            "description": "Time that Architect feed received the message; only set if streaming from direct L1 feeds",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "rtn": {
+            "title": "recv_time_ns",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint32",
+            "minimum": 0.0
           },
           "s": {
             "title": "symbol",

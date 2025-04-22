@@ -57,6 +57,14 @@ pub struct L1BookSnapshot {
     #[serde(rename = "tn")]
     #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
+    /// Time that Architect feed received the message;
+    /// only set if streaming from direct L1 feeds
+    #[serde(rename = "rt", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "recv_time")]
+    pub recv_time: Option<i64>,
+    #[serde(rename = "rtn", default, skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "recv_time_ns")]
+    pub recv_time_ns: Option<u32>,
     #[serde(rename = "b")]
     #[schemars(title = "best_bid")]
     pub best_bid: Option<(Decimal, Decimal)>,
@@ -68,6 +76,13 @@ pub struct L1BookSnapshot {
 impl L1BookSnapshot {
     pub fn timestamp(&self) -> Option<DateTime<Utc>> {
         chrono::DateTime::from_timestamp(self.timestamp, self.timestamp_ns)
+    }
+
+    pub fn recv_time(&self) -> Option<DateTime<Utc>> {
+        match (self.recv_time, self.recv_time_ns) {
+            (Some(ts), Some(ns)) => chrono::DateTime::from_timestamp(ts, ns),
+            _ => None,
+        }
     }
 }
 
