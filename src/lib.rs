@@ -2,6 +2,7 @@ pub mod accounts;
 pub mod algo;
 pub mod auth;
 pub mod config;
+pub mod core;
 pub mod cpty;
 pub mod folio;
 #[cfg(feature = "tonic")]

@@ -10,15 +10,17 @@ use rust_decimal_macros::dec;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
+use strum::EnumString;
 
 pub mod candle_width;
 pub use candle_width::CandleWidth;
-use strum::EnumString;
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "l1_book_snapshot", response = "L1BookSnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L1BookSnapshotRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
     pub symbol: String,
 }
 
@@ -26,6 +28,8 @@ pub struct L1BookSnapshotRequest {
 #[grpc(service = "Marketdata", name = "l1_book_snapshots", response = "L1BookSnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct L1BookSnapshotsRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub symbols: Option<Vec<String>>,
 }
@@ -41,6 +45,8 @@ pub type L1BookSnapshots = Vec<L1BookSnapshot>;
 )]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SubscribeL1BookSnapshotsRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
     /// If None, subscribe from all symbols on the feed
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub symbols: Option<Vec<String>>,

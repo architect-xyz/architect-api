@@ -110,6 +110,81 @@
 
 {
   "$schema": "jsonschema",
+  "name": "Auth",
+  "rpcs": [
+    {
+      "type": "unary",
+      "route": "/json.architect.Auth/CreateJwt",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "CreateJwtRequest",
+        "description": "Create a session JWT to use for authentication with upstream gRPC services.",
+        "type": "object",
+        "required": [
+          "api_key",
+          "api_secret"
+        ],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "api_secret": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "CreateJwtResponse",
+        "type": "object",
+        "required": [
+          "jwt"
+        ],
+        "properties": {
+          "jwt": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+},
+
+{
+  "$schema": "jsonschema",
+  "name": "Core",
+  "rpcs": [
+    {
+      "type": "unary",
+      "route": "/json.architect.Core/Config",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ConfigRequest",
+        "type": "object"
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ConfigResponse",
+        "type": "object",
+        "required": [
+          "marketdata"
+        ],
+        "properties": {
+          "marketdata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    }
+  ]
+},
+
+{
+  "$schema": "jsonschema",
   "name": "Accounts",
   "rpcs": [
     {
@@ -5030,6 +5105,12 @@
         "properties": {
           "symbol": {
             "type": "string"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -5134,6 +5215,12 @@
             "items": {
               "type": "string"
             }
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -5245,6 +5332,12 @@
             "items": {
               "type": "string"
             }
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },

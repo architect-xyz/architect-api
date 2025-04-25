@@ -13,6 +13,8 @@ pub type SubscriptionStream<T> = Pin<Box<dyn Stream<Item = Result<T, Status>> + 
 #[rustfmt::skip]
 pub mod json_service {
     include!("generated/json.architect.Health.rs");
+    include!("generated/json.architect.Auth.rs");
+    include!("generated/json.architect.Core.rs");
     include!("generated/json.architect.Symbology.rs");
     include!("generated/json.architect.Marketdata.rs");
     include!("generated/json.architect.Orderflow.rs");

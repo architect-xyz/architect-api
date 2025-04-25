@@ -15,6 +15,32 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let json_auth_service = tonic_build::manual::Service::builder()
+        .name("Auth")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("create_jwt")
+                .route_name("CreateJwt")
+                .input_type("crate::auth::CreateJwtRequest")
+                .output_type("crate::auth::CreateJwtResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
+    let json_core_service = tonic_build::manual::Service::builder()
+        .name("Core")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("config")
+                .route_name("Config")
+                .input_type("crate::core::ConfigRequest")
+                .output_type("crate::core::ConfigResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let json_accounts_service = tonic_build::manual::Service::builder()
         .name("Accounts")
         .package("json.architect")
@@ -440,6 +466,8 @@ fn build_grpc_stubs() {
         .emit_composite_package(true)
         .compile(&[
             &json_health_service,
+            &json_auth_service,
+            &json_core_service,
             &json_accounts_service,
             &json_symbology_service,
             &json_marketdata_service,
@@ -451,6 +479,8 @@ fn build_grpc_stubs() {
         ]);
     tonic_build::manual::Builder::new().out_dir(target_dir).compile(&[
         json_health_service,
+        json_auth_service,
+        json_core_service,
         json_accounts_service,
         json_symbology_service,
         json_marketdata_service,
