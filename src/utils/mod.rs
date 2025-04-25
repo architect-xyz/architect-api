@@ -1,5 +1,6 @@
 pub mod amount;
 pub mod bimap;
+pub mod chrono;
 pub mod dir;
 pub mod dir_pair;
 pub mod duration;

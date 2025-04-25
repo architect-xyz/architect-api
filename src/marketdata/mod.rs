@@ -1,6 +1,7 @@
 use crate::{
-    symbology::MarketdataVenue, utils::pagination::OffsetAndLimit, Dir,
-    SequenceIdAndNumber,
+    symbology::MarketdataVenue,
+    utils::{chrono::DateTimeOrUtc, pagination::OffsetAndLimit},
+    Dir, SequenceIdAndNumber,
 };
 use chrono::{DateTime, NaiveDate, Utc};
 use derive::grpc;
@@ -9,7 +10,7 @@ use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
+use serde_with::{serde_as, skip_serializing_none};
 use strum::EnumString;
 
 pub mod candle_width;
@@ -453,11 +454,18 @@ impl Candle {
     name = "historical_candles",
     response = "HistoricalCandlesResponse"
 )]
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct HistoricalCandlesRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<MarketdataVenue>,
     pub symbol: String,
     pub candle_width: CandleWidth,
+    #[serde_as(as = "DateTimeOrUtc")]
+    #[schemars(with = "DateTimeOrUtc")]
     pub start_date: DateTime<Utc>,
+    #[serde_as(as = "DateTimeOrUtc")]
+    #[schemars(with = "DateTimeOrUtc")]
     pub end_date: DateTime<Utc>,
 }
 

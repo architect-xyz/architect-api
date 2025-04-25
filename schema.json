@@ -6695,15 +6695,19 @@
             "$ref": "#/definitions/CandleWidth"
           },
           "end_date": {
-            "type": "string",
-            "format": "date-time"
+            "$ref": "#/definitions/DateTimeOrUtc"
           },
           "start_date": {
-            "type": "string",
-            "format": "date-time"
+            "$ref": "#/definitions/DateTimeOrUtc"
           },
           "symbol": {
             "type": "string"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "definitions": {
@@ -6725,6 +6729,10 @@
               "OneHour",
               "OneDay"
             ]
+          },
+          "DateTimeOrUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
