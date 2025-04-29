@@ -5,7 +5,7 @@ use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// List all symbols
 #[grpc(package = "json.architect")]
@@ -51,6 +51,42 @@ impl SymbologySnapshot {
             }
         }
         map
+    }
+
+    pub fn filter_venue(mut self, venue: &ExecutionVenue) -> Self {
+        let mut out = Self::default();
+        let mut products = BTreeSet::default();
+        for (symbol, infos) in self.execution_info {
+            for (venue_key, info) in infos {
+                if &venue_key != venue {
+                    continue;
+                }
+                out.execution_info
+                    .entry(symbol.clone())
+                    .or_default()
+                    .insert(venue.clone(), info);
+                products.insert(symbol.base());
+                if let Some(quote) = symbol.quote() {
+                    products.insert(quote);
+                }
+            }
+        }
+        for (alias_kind, alias_map) in self.product_aliases {
+            for (alias, product) in alias_map {
+                if products.contains(&product) {
+                    out.product_aliases
+                        .entry(alias_kind)
+                        .or_default()
+                        .insert(alias, product);
+                }
+            }
+        }
+        for product in products {
+            if let Some(info) = self.products.remove(&product) {
+                out.products.insert(product, info);
+            }
+        }
+        out
     }
 }
 
