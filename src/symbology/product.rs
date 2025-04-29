@@ -42,7 +42,7 @@ impl Product {
         product_kind: &str,
     ) -> Result<Self> {
         if symbol.contains('/')
-            || venue_discriminant.map_or(false, |v| v.contains('/'))
+            || venue_discriminant.is_some_and(|v| v.contains('/'))
             || product_kind.contains('/')
         {
             bail!("product symbol cannot contain the forward slash character '/'");

@@ -235,7 +235,7 @@ impl Eq for Str {}
 
 impl PartialOrd for Str {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.as_str().partial_cmp(other.as_str())
+        Some(self.cmp(other))
     }
 }
 
@@ -321,6 +321,7 @@ impl TryFrom<Cow<'_, str>> for Str {
 
 #[cfg(feature = "juniper")]
 impl Str {
+    #[allow(clippy::wrong_self_convention)]
     fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
         juniper::Value::scalar(self.as_str().to_string())
     }

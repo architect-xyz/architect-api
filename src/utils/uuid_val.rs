@@ -95,6 +95,7 @@ macro_rules! uuid_val {
 
         #[cfg(feature = "juniper")]
         impl $name {
+            #[allow(clippy::wrong_self_convention)]
             fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
                 juniper::Value::scalar(self.0.to_string())
             }

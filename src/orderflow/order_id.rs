@@ -145,6 +145,7 @@ where
 
 #[cfg(feature = "juniper")]
 impl OrderId {
+    #[allow(clippy::wrong_self_convention)]
     fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
         juniper::Value::scalar(self.to_string())
     }

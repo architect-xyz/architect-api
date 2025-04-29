@@ -62,6 +62,7 @@ impl tokio_postgres::types::ToSql for Dir {
 
 #[cfg(feature = "juniper")]
 impl Dir {
+    #[allow(clippy::wrong_self_convention)]
     fn to_output<S: juniper::ScalarValue>(&self) -> juniper::Value<S> {
         juniper::Value::scalar(self.to_str_lowercase().to_string())
     }

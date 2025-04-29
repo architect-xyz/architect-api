@@ -727,7 +727,6 @@ pub struct SubscribeTickersRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "t")]
 /// <!-- py: tag=t -->
-
 pub enum TickerUpdate {
     #[serde(rename = "s")]
     #[schemars(title = "Snapshot|Ticker")]

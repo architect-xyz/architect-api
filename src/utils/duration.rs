@@ -99,8 +99,8 @@ impl FromStr for AbsoluteOrRelativeTime {
     fn from_str(s: &str) -> Result<Self> {
         if s == "now" {
             Ok(Self::Now)
-        } else if s.starts_with('+') {
-            Ok(Self::RelativeFuture(parse_duration(&s[1..])?))
+        } else if let Some(rest) = s.strip_prefix('+') {
+            Ok(Self::RelativeFuture(parse_duration(rest)?))
         } else if s.starts_with('_') || s.starts_with("~") {
             // CR-someday alee: clap is actually a bad library in a lot of ways, including
             // not understanding a leading '-' in argument value following a flag

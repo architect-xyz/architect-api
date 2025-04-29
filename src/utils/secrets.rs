@@ -93,8 +93,8 @@ impl<T: FromStr + Zeroize> FromStr for MaybeSecret<T> {
     type Err = <T as FromStr>::Err;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s.starts_with("secrets://") {
-            Ok(MaybeSecret::Secret(s[10..].to_string()))
+        if let Some(key) = s.strip_prefix("secrets://") {
+            Ok(MaybeSecret::Secret(key.to_string()))
         } else {
             Ok(MaybeSecret::Plain(Zeroizing::new(s.parse()?)))
         }
@@ -123,8 +123,8 @@ impl<'de, T: DeserializeOwned + FromStr + Zeroize> Deserialize<'de> for MaybeSec
         }
         match Format::<T>::deserialize(de)? {
             Format::SecretOrString(s) => {
-                if s.starts_with("secrets://") {
-                    Ok(MaybeSecret::Secret(s[10..].to_string()))
+                if let Some(key) = s.strip_prefix("secrets://") {
+                    Ok(MaybeSecret::Secret(key.to_string()))
                 } else {
                     // using FromStr here is hacky but it works for the
                     // important cases of T = String, &str, etc... at

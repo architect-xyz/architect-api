@@ -86,7 +86,7 @@ impl EventContractSeries {
     }
 
     pub fn new(name: &str, venue_discriminant: Option<&str>) -> Result<Self> {
-        if name.contains('/') || venue_discriminant.map_or(false, |v| v.contains('/')) {
+        if name.contains('/') || venue_discriminant.is_some_and(|v| v.contains('/')) {
             bail!("Event contract series name cannot contain the forward slash character '/'");
         }
         let inner = match venue_discriminant {

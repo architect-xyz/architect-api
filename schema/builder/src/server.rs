@@ -128,6 +128,7 @@ fn generate_methods<T: Service>(
     (schema_stream, definition_stream)
 }
 
+#[allow(clippy::too_many_arguments)]
 fn generate_unary<T: Method>(
     method: &T,
     crate_name: &str,
