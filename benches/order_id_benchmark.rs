@@ -7,11 +7,11 @@ use uuid::Uuid;
 fn build_simple_oid_table(n: usize) -> FxHashMap<u64, u64> {
     // create a hashmap of size n filled with random data
     let mut table = FxHashMap::default();
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     for i in 0..n {
         // order ids in order, which is reasonable-ish workload
         // generate random value
-        table.insert(i as u64, rng.gen());
+        table.insert(i as u64, rng.random());
     }
     table
 }
@@ -49,12 +49,12 @@ struct CompoundOrderIdMap {
 fn build_compound_oid_table(n: usize, session_id: Uuid) -> CompoundOrderIdMap {
     let mut slow_map = FxHashMap::default();
     let mut fast_map = FxHashMap::default();
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     for i in 0..n {
         let order_id = i as u64;
         let compound_order_id = CompoundOrderId { session_id, order_id };
-        slow_map.insert(compound_order_id, rng.gen());
-        fast_map.insert(order_id, rng.gen());
+        slow_map.insert(compound_order_id, rng.random());
+        fast_map.insert(order_id, rng.random());
     }
     CompoundOrderIdMap { slow_map, fast_map }
 }
