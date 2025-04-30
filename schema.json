@@ -8714,6 +8714,577 @@
 
 {
   "$schema": "jsonschema",
+  "name": "OptionsMarketdata",
+  "rpcs": [
+    {
+      "type": "unary",
+      "route": "/json.architect.OptionsMarketdata/OptionsExpirations",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsExpirationsRequest",
+        "type": "object",
+        "required": [
+          "underlying"
+        ],
+        "properties": {
+          "underlying": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsExpirations",
+        "type": "object",
+        "required": [
+          "expirations",
+          "underlying"
+        ],
+        "properties": {
+          "expirations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "underlying": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.OptionsMarketdata/OptionsChain",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsChainRequest",
+        "type": "object",
+        "required": [
+          "expiration",
+          "underlying"
+        ],
+        "properties": {
+          "expiration": {
+            "type": "string",
+            "format": "date"
+          },
+          "underlying": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsChain",
+        "type": "object",
+        "required": [
+          "calls",
+          "puts"
+        ],
+        "properties": {
+          "calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/OptionsContract"
+            }
+          },
+          "puts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/OptionsContract"
+            }
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "OptionsContract": {
+            "type": "object",
+            "required": [
+              "expiration",
+              "put_or_call",
+              "strike",
+              "ticker",
+              "underlying"
+            ],
+            "properties": {
+              "expiration": {
+                "type": "string",
+                "format": "date"
+              },
+              "in_the_money": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "put_or_call": {
+                "$ref": "#/definitions/PutOrCall"
+              },
+              "strike": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "ticker": {
+                "$ref": "#/definitions/Ticker"
+              },
+              "underlying": {
+                "type": "string"
+              }
+            }
+          },
+          "PutOrCall": {
+            "type": "string",
+            "enum": [
+              "P",
+              "C"
+            ]
+          },
+          "Ticker": {
+            "type": "object",
+            "required": [
+              "s",
+              "tn",
+              "ts",
+              "ve"
+            ],
+            "properties": {
+              "ap": {
+                "title": "ask_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "as": {
+                "title": "ask_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bp": {
+                "title": "bid_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bs": {
+                "title": "bid_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dividend": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dividend_yield": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "eps_adj": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fr": {
+                "title": "funding_rate",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ft": {
+                "title": "next_funding_time",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "h": {
+                "title": "high_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ip": {
+                "title": "index_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "l": {
+                "title": "low_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "market_cap": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mp": {
+                "title": "mark_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "o": {
+                "title": "open_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "oi": {
+                "title": "open_interest",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "p": {
+                "title": "last_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_to_earnings": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "last_size",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "sd": {
+                "title": "last_settlement_date",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "shares_outstanding_weighted_adj": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sp": {
+                "title": "last_settlement_price",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "timestamp_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "timestamp",
+                "type": "integer",
+                "format": "int64"
+              },
+              "v": {
+                "title": "volume_24h",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ve": {
+                "title": "venue",
+                "type": "string"
+              },
+              "vm": {
+                "title": "volume_30d",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xh": {
+                "title": "session_high",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xl": {
+                "title": "session_low",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xo": {
+                "title": "session_open",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "xv": {
+                "title": "session_volume",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.OptionsMarketdata/OptionsChainGreeks",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsChainGreeksRequest",
+        "type": "object",
+        "required": [
+          "expiration",
+          "underlying"
+        ],
+        "properties": {
+          "expiration": {
+            "type": "string",
+            "format": "date"
+          },
+          "underlying": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsChainGreeks",
+        "type": "object",
+        "required": [
+          "calls",
+          "puts"
+        ],
+        "properties": {
+          "calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/OptionsGreeks"
+            }
+          },
+          "puts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/OptionsGreeks"
+            }
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "OptionsGreeks": {
+            "type": "object",
+            "required": [
+              "delta",
+              "expiration",
+              "gamma",
+              "implied_volatility",
+              "put_or_call",
+              "rho",
+              "strike",
+              "symbol",
+              "theta",
+              "underlying",
+              "vega"
+            ],
+            "properties": {
+              "delta": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "expiration": {
+                "type": "string",
+                "format": "date"
+              },
+              "gamma": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "implied_volatility": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "put_or_call": {
+                "$ref": "#/definitions/PutOrCall"
+              },
+              "rho": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "strike": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "theta": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "underlying": {
+                "type": "string"
+              },
+              "vega": {
+                "$ref": "#/definitions/Decimal"
+              }
+            }
+          },
+          "PutOrCall": {
+            "type": "string",
+            "enum": [
+              "P",
+              "C"
+            ]
+          }
+        }
+      }
+    }
+  ]
+},
+
+{
+  "$schema": "jsonschema",
   "name": "Orderflow",
   "rpcs": [
     {

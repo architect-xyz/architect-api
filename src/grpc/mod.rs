@@ -17,6 +17,7 @@ pub mod json_service {
     include!("generated/json.architect.Core.rs");
     include!("generated/json.architect.Symbology.rs");
     include!("generated/json.architect.Marketdata.rs");
+    include!("generated/json.architect.OptionsMarketdata.rs");
     include!("generated/json.architect.Orderflow.rs");
     include!("generated/json.architect.Oms.rs");
     include!("generated/json.architect.Folio.rs");

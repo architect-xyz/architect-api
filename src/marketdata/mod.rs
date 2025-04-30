@@ -15,6 +15,7 @@ use strum::EnumString;
 
 pub mod candle_width;
 pub use candle_width::CandleWidth;
+pub mod options_marketdata;
 
 #[grpc(package = "json.architect")]
 #[grpc(service = "Marketdata", name = "l1_book_snapshot", response = "L1BookSnapshot")]

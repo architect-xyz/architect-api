@@ -269,6 +269,41 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let json_options_marketdata_service = tonic_build::manual::Service::builder()
+        .name("OptionsMarketdata")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("options_expirations")
+                .route_name("OptionsExpirations")
+                .input_type(
+                    "crate::marketdata::options_marketdata::OptionsExpirationsRequest",
+                )
+                .output_type("crate::marketdata::options_marketdata::OptionsExpirations")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("options_chain")
+                .route_name("OptionsChain")
+                .input_type("crate::marketdata::options_marketdata::OptionsChainRequest")
+                .output_type("crate::marketdata::options_marketdata::OptionsChain")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("options_chain_greeks")
+                .route_name("OptionsChainGreeks")
+                .input_type(
+                    "crate::marketdata::options_marketdata::OptionsChainGreeksRequest",
+                )
+                .output_type("crate::marketdata::options_marketdata::OptionsChainGreeks")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let json_orderflow_service = tonic_build::manual::Service::builder()
         .name("Orderflow")
         .package("json.architect")
@@ -471,6 +506,7 @@ fn build_grpc_stubs() {
             &json_accounts_service,
             &json_symbology_service,
             &json_marketdata_service,
+            &json_options_marketdata_service,
             &json_orderflow_service,
             &json_oms_service,
             &json_folio_service,
@@ -484,6 +520,7 @@ fn build_grpc_stubs() {
         json_accounts_service,
         json_symbology_service,
         json_marketdata_service,
+        json_options_marketdata_service,
         json_orderflow_service,
         json_oms_service,
         json_folio_service,
