@@ -23,4 +23,5 @@ pub mod json_service {
     include!("generated/json.architect.Folio.rs");
     include!("generated/json.architect.Algo.rs");
     include!("generated/json.architect.Cpty.rs");
+    include!("generated/json.architect.Boss.rs");
 }

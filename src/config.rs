@@ -30,6 +30,8 @@ pub struct Config {
     /// Connect to the specified Architect core
     #[serde(default)]
     pub core: Option<Url>,
+    #[serde(default)]
+    pub boss: Option<Url>,
 }
 
 impl Config {

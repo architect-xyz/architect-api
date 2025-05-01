@@ -492,6 +492,28 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let json_boss_service = tonic_build::manual::Service::builder()
+        .name("Boss")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("statements")
+                .route_name("Statements")
+                .input_type("crate::boss::protocol::StatementsRequest")
+                .output_type("crate::boss::protocol::StatementsResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("statement_url")
+                .route_name("StatementUrl")
+                .input_type("crate::boss::protocol::StatementUrlRequest")
+                .output_type("crate::boss::protocol::StatementUrlResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let target_dir = "src/grpc/generated";
     let mut schema_gen_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     schema_gen_dir.push(target_dir);
@@ -512,6 +534,7 @@ fn build_grpc_stubs() {
             &json_folio_service,
             &json_cpty_service,
             &json_algo_service,
+            &json_boss_service,
         ]);
     tonic_build::manual::Builder::new().out_dir(target_dir).compile(&[
         json_health_service,
@@ -526,6 +549,7 @@ fn build_grpc_stubs() {
         json_folio_service,
         json_cpty_service,
         json_algo_service,
+        json_boss_service,
     ]);
 }
 

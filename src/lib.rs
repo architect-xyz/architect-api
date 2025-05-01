@@ -1,6 +1,7 @@
 pub mod accounts;
 pub mod algo;
 pub mod auth;
+pub mod boss;
 pub mod config;
 pub mod core;
 pub mod cpty;

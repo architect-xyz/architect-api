@@ -18599,5 +18599,112 @@
       }
     }
   ]
+},
+
+{
+  "$schema": "jsonschema",
+  "name": "Boss",
+  "rpcs": [
+    {
+      "type": "unary",
+      "route": "/json.architect.Boss/Statements",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "StatementsRequest",
+        "type": "object",
+        "required": [
+          "account_id"
+        ],
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "StatementsResponse",
+        "type": "object",
+        "required": [
+          "statements"
+        ],
+        "properties": {
+          "statements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Statement"
+            }
+          }
+        },
+        "definitions": {
+          "Statement": {
+            "type": "object",
+            "required": [
+              "account",
+              "clearing_firm",
+              "filename",
+              "statement_type",
+              "statement_uuid",
+              "timestamp"
+            ],
+            "properties": {
+              "account": {
+                "type": "string"
+              },
+              "clearing_firm": {
+                "type": "string"
+              },
+              "filename": {
+                "type": "string"
+              },
+              "statement_type": {
+                "type": "string"
+              },
+              "statement_uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Boss/StatementUrl",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "StatementUrlRequest",
+        "type": "object",
+        "required": [
+          "statement_uuid"
+        ],
+        "properties": {
+          "statement_uuid": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "StatementUrlResponse",
+        "type": "object",
+        "required": [
+          "statement_url"
+        ],
+        "properties": {
+          "statement_url": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
 }
 ]
