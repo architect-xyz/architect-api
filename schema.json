@@ -18704,6 +18704,623 @@
           }
         }
       }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Boss/RqdAccountStatistics",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "RqdAccountStatisticsRequest",
+        "type": "object",
+        "required": [
+          "account_id"
+        ],
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "RqdAccountStatisticsResponse",
+        "type": "object",
+        "required": [
+          "rqd_account_statistics"
+        ],
+        "properties": {
+          "rqd_account_statistics": {
+            "$ref": "#/definitions/RqdAccountStatistics"
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "RqdAccountStatistics": {
+            "type": "object",
+            "required": [
+              "account_number"
+            ],
+            "properties": {
+              "account_number": {
+                "type": "string"
+              },
+              "account_type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "as_of_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "available_cash_balance": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cash_available_for_withdrawal": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cumulative_day_trade_pnl": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "day_trading_buying_power": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "day_trading_buying_power_high_water_mark": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "day_trading_buying_power_maintenance_margin_multiplier": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "day_trading_house_minimum_equity_marign_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "day_trading_margin_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "day_trading_minimum_equity_marign_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "excess_sma_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "house_initial_margin_requirement_adjustment_factor": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "house_margin_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "house_margin_requirement": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "house_margin_requirement_adjustment_factor": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "is_day_trader": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "maintenance_margin_requirement": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "margin_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "marginable_equity": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "market_value_adjustment_factor": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "number_open_day_trading_margin_calls": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "option_only_maintenance_margin_requirement": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "option_trade_date_short_market_value": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "overall_current_sma_balance": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "overnight_buying_power": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reg_t_initial_margin_requirement": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reg_t_margin_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reg_t_mentainance_margin_requirement_adjustment_factor": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "settlement_date_cash_balance": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "settlement_date_long_market_value": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "settlement_date_option_long_market_value": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "settlement_date_option_short_market_value": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "settlement_date_short_market_value": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "start_of_day_day_trading_buying_power": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "start_of_day_day_trading_buying_power_margin_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "start_of_day_house_margin_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "start_of_day_maintenance_margin_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "start_of_day_reg_t_margin_call_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "strategy_based_relief_adjustment_factor": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "total_equity": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "trade_date_cash_balance": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "trade_date_option_long_market_value": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "trade_date_total_long_market_value": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "trade_date_total_short_market_value": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "usable_sma_balance": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Boss/Deposits",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "DepositsRequest",
+        "type": "object",
+        "required": [
+          "account_id"
+        ],
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "DepositsResponse",
+        "type": "object",
+        "required": [
+          "deposits"
+        ],
+        "properties": {
+          "deposits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Deposit"
+            }
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "Deposit": {
+            "type": "object",
+            "required": [
+              "account",
+              "amount",
+              "description",
+              "timestamp"
+            ],
+            "properties": {
+              "account": {
+                "type": "string"
+              },
+              "amount": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "description": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Boss/Withdrawals",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "WithdrawalsRequest",
+        "type": "object",
+        "required": [
+          "account_id"
+        ],
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "WithdrawalsResponse",
+        "type": "object",
+        "required": [
+          "withdrawals"
+        ],
+        "properties": {
+          "withdrawals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Withdrawal"
+            }
+          }
+        },
+        "definitions": {
+          "Decimal": {
+            "type": "string"
+          },
+          "Withdrawal": {
+            "type": "object",
+            "required": [
+              "account",
+              "amount",
+              "description",
+              "timestamp"
+            ],
+            "properties": {
+              "account": {
+                "type": "string"
+              },
+              "amount": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "description": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

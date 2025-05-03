@@ -513,6 +513,33 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("rqd_account_statistics")
+                .route_name("RqdAccountStatistics")
+                .input_type("crate::boss::protocol::RqdAccountStatisticsRequest")
+                .output_type("crate::boss::protocol::RqdAccountStatisticsResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("deposits")
+                .route_name("Deposits")
+                .input_type("crate::boss::protocol::DepositsRequest")
+                .output_type("crate::boss::protocol::DepositsResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("withdrawals")
+                .route_name("Withdrawals")
+                .input_type("crate::boss::protocol::WithdrawalsRequest")
+                .output_type("crate::boss::protocol::WithdrawalsResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let target_dir = "src/grpc/generated";
     let mut schema_gen_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
