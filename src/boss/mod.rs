@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDate, Utc};
 use juniper::GraphQLObject;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
@@ -13,7 +13,7 @@ pub struct Statement {
     pub account: String,
     pub statement_type: String,
     pub clearing_firm: String,
-    pub timestamp: DateTime<Utc>,
+    pub statement_date: NaiveDate,
     pub filename: String,
 }
 

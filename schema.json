@@ -18644,9 +18644,9 @@
               "account",
               "clearing_firm",
               "filename",
+              "statement_date",
               "statement_type",
-              "statement_uuid",
-              "timestamp"
+              "statement_uuid"
             ],
             "properties": {
               "account": {
@@ -18658,16 +18658,16 @@
               "filename": {
                 "type": "string"
               },
+              "statement_date": {
+                "type": "string",
+                "format": "date"
+              },
               "statement_type": {
                 "type": "string"
               },
               "statement_uuid": {
                 "type": "string",
                 "format": "uuid"
-              },
-              "timestamp": {
-                "type": "string",
-                "format": "date-time"
               }
             }
           }
