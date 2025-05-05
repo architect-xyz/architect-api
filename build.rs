@@ -475,19 +475,82 @@ fn build_grpc_stubs() {
         .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
-                .name("create_twap_algo_order")
-                .route_name("CreateTwapAlgoOrder")
-                .input_type("crate::algo::twap::CreateTwapAlgoOrderRequest")
-                .output_type("crate::algo::twap::TwapAlgoOrder")
+                .name("start_algo")
+                .route_name("StartAlgo")
+                .input_type("crate::algo::StartAlgoRequest")
+                .output_type("crate::algo::StartAlgoResponse")
                 .codec_path(json_codec)
                 .build(),
         )
         .method(
             tonic_build::manual::Method::builder()
-                .name("modify_twap_algo_order")
-                .route_name("ModifyTwapAlgoOrder")
-                .input_type("crate::algo::twap::ModifyTwapAlgoOrderRequest")
-                .output_type("crate::algo::twap::TwapAlgoOrder")
+                .name("pause_algo")
+                .route_name("PauseAlgo")
+                .input_type("crate::algo::PauseAlgoRequest")
+                .output_type("crate::algo::PauseAlgoResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("stop_algo")
+                .route_name("StopAlgo")
+                .input_type("crate::algo::StopAlgoRequest")
+                .output_type("crate::algo::StopAlgoResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("algo_order")
+                .route_name("AlgoOrder")
+                .input_type("crate::algo::AlgoOrderRequest")
+                .output_type("crate::algo::AlgoOrder<()>")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("algo_orders")
+                .route_name("AlgoOrders")
+                .input_type("crate::algo::AlgoOrdersRequest")
+                .output_type("crate::algo::AlgoOrdersResponse<()>")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("create_twap_order")
+                .route_name("CreateTwapOrder")
+                .input_type("crate::algo::twap::CreateTwapOrderRequest")
+                .output_type("crate::algo::twap::TwapOrder")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("modify_twap_order")
+                .route_name("ModifyTwapOrder")
+                .input_type("crate::algo::twap::ModifyTwapOrderRequest")
+                .output_type("crate::algo::twap::TwapOrder")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("twap_order")
+                .route_name("TwapOrder")
+                .input_type("crate::algo::twap::TwapOrderRequest")
+                .output_type("crate::algo::twap::TwapOrder")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("twap_orders")
+                .route_name("TwapOrders")
+                .input_type("crate::algo::twap::TwapOrdersRequest")
+                .output_type("crate::algo::twap::TwapOrdersResponse")
                 .codec_path(json_codec)
                 .build(),
         )

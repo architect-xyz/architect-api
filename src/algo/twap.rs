@@ -1,44 +1,58 @@
-use super::*;
-use crate::{symbology::ExecutionVenue, Dir, HumanDuration};
+use super::{common_params::TakeThrough, *};
+use crate::{
+    symbology::{ExecutionVenue, MarketdataVenue},
+    AccountIdOrName, Dir, HumanDuration,
+};
 use anyhow::{bail, Result};
 use chrono::{DateTime, Utc};
 use derive::grpc;
 use rust_decimal::Decimal;
-use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-pub struct TwapAlgo;
+pub struct Twap;
 
-impl Algo for TwapAlgo {
+impl Algo for Twap {
+    const NAME: &'static str = "TWAP";
+
     type Params = TwapParams;
     type Status = TwapStatus;
 }
 
-pub type TwapAlgoOrder = AlgoOrder<TwapAlgo>;
+pub type TwapOrder = AlgoOrder<Twap>;
 
 #[grpc(package = "json.architect")]
-#[grpc(service = "Algo", name = "create_twap_algo_order", response = "TwapAlgoOrder")]
-pub type CreateTwapAlgoOrderRequest = CreateAlgoOrderRequest<TwapAlgo>;
+#[grpc(service = "Algo", name = "create_twap_order", response = "TwapOrder")]
+pub type CreateTwapOrderRequest = CreateAlgoOrderRequest<Twap>;
 
 #[grpc(package = "json.architect")]
-#[grpc(service = "Algo", name = "modify_twap_algo_order", response = "TwapAlgoOrder")]
-pub type ModifyTwapAlgoOrderRequest = ModifyAlgoOrderRequest<TwapAlgo>;
+#[grpc(service = "Algo", name = "modify_twap_order", response = "TwapOrder")]
+pub type ModifyTwapOrderRequest = ModifyAlgoOrderRequest<Twap>;
 
 #[grpc(package = "json.architect")]
-#[grpc(service = "Algo", name = "twap_algo_order", response = "TwapAlgoOrder")]
-pub type TwapAlgoOrderRequest = AlgoOrderRequest;
+#[grpc(service = "Algo", name = "twap_order", response = "TwapOrder")]
+pub type TwapOrderRequest = AlgoOrderRequest;
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Algo", name = "twap_orders", response = "TwapOrdersResponse")]
+pub type TwapOrdersRequest = AlgoOrdersRequest;
+
+pub type TwapOrdersResponse = AlgoOrdersResponse<Twap>;
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct TwapParams {
     pub symbol: String,
+    pub marketdata_venue: MarketdataVenue,
     pub execution_venue: ExecutionVenue,
+    pub account: Option<AccountIdOrName>,
     pub dir: Dir,
     pub quantity: Decimal,
     pub interval: HumanDuration,
+    /// The TWAP will finish within 1 interval of the end time.
     pub end_time: DateTime<Utc>,
     pub reject_lockout: HumanDuration,
-    pub take_through_frac: Option<Decimal>,
+    /// When placing an order, how aggressively to take.
+    pub take_through: TakeThrough,
 }
 
 impl Validate for TwapParams {
@@ -49,16 +63,11 @@ impl Validate for TwapParams {
         if self.interval.num_milliseconds() < 100 {
             bail!("interval must be >= 100ms");
         }
-        if self.reject_lockout.num_milliseconds() < 500
-            || self.reject_lockout.num_seconds() > 300
-        {
-            bail!("reject lockout must be between 0.5 seconds and 300 seconds");
-        }
-        if let Some(take_through_frac) = self.take_through_frac {
-            if take_through_frac.is_sign_negative() || take_through_frac > dec!(0.05) {
-                bail!("take_through_frac must be between 0 and 5%");
-            }
-        }
+        // if self.reject_lockout.num_milliseconds() < 500
+        //     || self.reject_lockout.num_seconds() > 300
+        // {
+        //     bail!("reject lockout must be between 0.5 seconds and 300 seconds");
+        // }
         Ok(())
     }
 }

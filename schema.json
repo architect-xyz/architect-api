@@ -17977,75 +17977,20 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Algo/CreateTwapAlgoOrder",
+      "route": "/json.architect.Algo/StartAlgo",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "CreateAlgoOrderRequest_for_TwapAlgo",
+        "title": "StartAlgoRequest",
         "type": "object",
         "required": [
-          "algo_name",
-          "params"
+          "algo_order_id"
         ],
         "properties": {
-          "account": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid"
-          },
-          "algo_name": {
-            "type": "string"
-          },
           "algo_order_id": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/OrderId"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "params": {
-            "$ref": "#/definitions/TwapParams"
-          },
-          "parent_order_id": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/OrderId"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "trader": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/UserId"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/definitions/OrderId"
           }
         },
         "definitions": {
-          "Decimal": {
-            "type": "string"
-          },
-          "Dir": {
-            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
-            "type": "string",
-            "enum": [
-              "BUY",
-              "SELL"
-            ]
-          },
-          "HumanDuration": {
-            "type": "string"
-          },
           "OrderId": {
             "description": "System-unique, persistent order identifiers",
             "type": "object",
@@ -18064,84 +18009,152 @@
                 "minimum": 0.0
               }
             }
-          },
-          "TwapParams": {
-            "type": "object",
-            "required": [
-              "dir",
-              "end_time",
-              "execution_venue",
-              "interval",
-              "quantity",
-              "reject_lockout",
-              "symbol"
-            ],
-            "properties": {
-              "dir": {
-                "$ref": "#/definitions/Dir"
-              },
-              "end_time": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "execution_venue": {
-                "type": "string"
-              },
-              "interval": {
-                "$ref": "#/definitions/HumanDuration"
-              },
-              "quantity": {
-                "$ref": "#/definitions/Decimal"
-              },
-              "reject_lockout": {
-                "$ref": "#/definitions/HumanDuration"
-              },
-              "symbol": {
-                "type": "string"
-              },
-              "take_through_frac": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              }
-            }
-          },
-          "UserId": {
-            "type": "string",
-            "format": "uuid"
           }
         }
       },
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "AlgoOrder_for_TwapAlgo",
+        "title": "StartAlgoResponse",
+        "type": "object"
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Algo/PauseAlgo",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "PauseAlgoRequest",
         "type": "object",
         "required": [
-          "account",
-          "algo_name",
-          "algo_order_id",
+          "algo_order_id"
+        ],
+        "properties": {
+          "algo_order_id": {
+            "$ref": "#/definitions/OrderId"
+          }
+        },
+        "definitions": {
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "PauseAlgoResponse",
+        "type": "object"
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Algo/StopAlgo",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "StopAlgoRequest",
+        "type": "object",
+        "required": [
+          "algo_order_id"
+        ],
+        "properties": {
+          "algo_order_id": {
+            "$ref": "#/definitions/OrderId"
+          }
+        },
+        "definitions": {
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "StopAlgoResponse",
+        "type": "object"
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Algo/AlgoOrder",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrderRequest",
+        "description": "Get generic algo run status",
+        "type": "object",
+        "required": [
+          "algo_order_id"
+        ],
+        "properties": {
+          "algo_order_id": {
+            "$ref": "#/definitions/OrderId"
+          }
+        },
+        "definitions": {
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrder_for_Null",
+        "type": "object",
+        "required": [
           "create_time",
+          "id",
           "params",
-          "state",
           "status",
+          "status_details",
           "trader"
         ],
         "properties": {
-          "account": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "algo_name": {
-            "type": "string"
-          },
-          "algo_order_id": {
-            "$ref": "#/definitions/OrderId"
-          },
           "create_time": {
             "type": "string",
             "format": "date-time"
@@ -18155,21 +18168,119 @@
               "type": "string"
             }
           },
-          "last_error": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "last_error_time": {
+          "finish_time": {
             "type": [
               "string",
               "null"
             ],
             "format": "date-time"
           },
+          "id": {
+            "$ref": "#/definitions/OrderId"
+          },
           "params": {
-            "$ref": "#/definitions/TwapParams"
+            "type": "null"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reject_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "$ref": "#/definitions/AlgoOrderStatus"
+          },
+          "status_details": {
+            "type": "null"
+          },
+          "trader": {
+            "$ref": "#/definitions/UserId"
+          },
+          "working_progress": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          }
+        },
+        "definitions": {
+          "AlgoOrderStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "working",
+              "rejected",
+              "paused",
+              "pausing",
+              "stopped",
+              "stopping"
+            ]
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Algo/AlgoOrders",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrdersRequest",
+        "type": "object",
+        "properties": {
+          "display_symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "from_inclusive": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "limit": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint32",
+            "minimum": 0.0
           },
           "parent_order_id": {
             "anyOf": [
@@ -18181,23 +18292,480 @@
               }
             ]
           },
-          "state": {
-            "$ref": "#/definitions/AlgoState"
+          "status": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/definitions/AlgoOrderStatus"
+            }
+          },
+          "to_exclusive": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "trader": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/TraderIdOrEmail"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "definitions": {
+          "AlgoOrderStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "working",
+              "rejected",
+              "paused",
+              "pausing",
+              "stopped",
+              "stopping"
+            ]
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrdersResponse_for_Null",
+        "type": "object",
+        "required": [
+          "algo_orders"
+        ],
+        "properties": {
+          "algo_orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/AlgoOrder_for_Null"
+            }
+          }
+        },
+        "definitions": {
+          "AlgoOrderStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "working",
+              "rejected",
+              "paused",
+              "pausing",
+              "stopped",
+              "stopping"
+            ]
+          },
+          "AlgoOrder_for_Null": {
+            "type": "object",
+            "required": [
+              "create_time",
+              "id",
+              "params",
+              "status",
+              "status_details",
+              "trader"
+            ],
+            "properties": {
+              "create_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "display_symbols": {
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "finish_time": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "params": {
+                "type": "null"
+              },
+              "parent_id": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reject_reason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "$ref": "#/definitions/AlgoOrderStatus"
+              },
+              "status_details": {
+                "type": "null"
+              },
+              "trader": {
+                "$ref": "#/definitions/UserId"
+              },
+              "working_progress": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "format": "double"
+              }
+            }
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Algo/CreateTwapOrder",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "CreateAlgoOrderRequest_for_Twap",
+        "type": "object",
+        "required": [
+          "params"
+        ],
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "params": {
+            "$ref": "#/definitions/TwapParams"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trader": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/TraderIdOrEmail"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "Decimal": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "HumanDuration": {
+            "type": "string"
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "TakeThrough": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "Fraction"
+                ],
+                "properties": {
+                  "Fraction": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Percent"
+                ],
+                "properties": {
+                  "Percent": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Price"
+                ],
+                "properties": {
+                  "Price": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Ticks"
+                ],
+                "properties": {
+                  "Ticks": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
+          },
+          "TwapParams": {
+            "type": "object",
+            "required": [
+              "dir",
+              "end_time",
+              "execution_venue",
+              "interval",
+              "marketdata_venue",
+              "quantity",
+              "reject_lockout",
+              "symbol",
+              "take_through"
+            ],
+            "properties": {
+              "account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dir": {
+                "$ref": "#/definitions/Dir"
+              },
+              "end_time": {
+                "description": "The TWAP will finish within 1 interval of the end time.",
+                "type": "string",
+                "format": "date-time"
+              },
+              "execution_venue": {
+                "type": "string"
+              },
+              "interval": {
+                "$ref": "#/definitions/HumanDuration"
+              },
+              "marketdata_venue": {
+                "type": "string"
+              },
+              "quantity": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "reject_lockout": {
+                "$ref": "#/definitions/HumanDuration"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "take_through": {
+                "description": "When placing an order, how aggressively to take.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TakeThrough"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrder_for_Twap",
+        "type": "object",
+        "required": [
+          "create_time",
+          "id",
+          "params",
+          "status",
+          "status_details",
+          "trader"
+        ],
+        "properties": {
+          "create_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "display_symbols": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "finish_time": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "id": {
+            "$ref": "#/definitions/OrderId"
+          },
+          "params": {
+            "$ref": "#/definitions/TwapParams"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reject_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status": {
+            "$ref": "#/definitions/AlgoOrderStatus"
+          },
+          "status_details": {
             "$ref": "#/definitions/TwapStatus"
           },
           "trader": {
             "$ref": "#/definitions/UserId"
+          },
+          "working_progress": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
           }
         },
         "definitions": {
-          "AlgoState": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "AlgoOrderStatus": {
             "type": "string",
             "enum": [
-              "Pending",
-              "Running",
-              "Stopped"
+              "pending",
+              "working",
+              "rejected",
+              "paused",
+              "pausing",
+              "stopped",
+              "stopping"
             ]
           },
           "Decimal": {
@@ -18233,6 +18801,58 @@
               }
             }
           },
+          "TakeThrough": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "Fraction"
+                ],
+                "properties": {
+                  "Fraction": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Percent"
+                ],
+                "properties": {
+                  "Percent": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Price"
+                ],
+                "properties": {
+                  "Price": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Ticks"
+                ],
+                "properties": {
+                  "Ticks": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          },
           "TwapParams": {
             "type": "object",
             "required": [
@@ -18240,15 +18860,28 @@
               "end_time",
               "execution_venue",
               "interval",
+              "marketdata_venue",
               "quantity",
               "reject_lockout",
-              "symbol"
+              "symbol",
+              "take_through"
             ],
             "properties": {
+              "account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "dir": {
                 "$ref": "#/definitions/Dir"
               },
               "end_time": {
+                "description": "The TWAP will finish within 1 interval of the end time.",
                 "type": "string",
                 "format": "date-time"
               },
@@ -18257,6 +18890,9 @@
               },
               "interval": {
                 "$ref": "#/definitions/HumanDuration"
+              },
+              "marketdata_venue": {
+                "type": "string"
               },
               "quantity": {
                 "$ref": "#/definitions/Decimal"
@@ -18267,13 +18903,11 @@
               "symbol": {
                 "type": "string"
               },
-              "take_through_frac": {
-                "anyOf": [
+              "take_through": {
+                "description": "When placing an order, how aggressively to take.",
+                "allOf": [
                   {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
+                    "$ref": "#/definitions/TakeThrough"
                   }
                 ]
               }
@@ -18309,10 +18943,10 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Algo/ModifyTwapAlgoOrder",
+      "route": "/json.architect.Algo/ModifyTwapOrder",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "ModifyAlgoOrderRequest_for_TwapAlgo",
+        "title": "ModifyAlgoOrderRequest_for_Twap",
         "type": "object",
         "required": [
           "algo_order_id",
@@ -18327,6 +18961,9 @@
           }
         },
         "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
           "Decimal": {
             "type": "string"
           },
@@ -18360,6 +18997,58 @@
               }
             }
           },
+          "TakeThrough": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "Fraction"
+                ],
+                "properties": {
+                  "Fraction": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Percent"
+                ],
+                "properties": {
+                  "Percent": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Price"
+                ],
+                "properties": {
+                  "Price": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Ticks"
+                ],
+                "properties": {
+                  "Ticks": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          },
           "TwapParams": {
             "type": "object",
             "required": [
@@ -18367,15 +19056,28 @@
               "end_time",
               "execution_venue",
               "interval",
+              "marketdata_venue",
               "quantity",
               "reject_lockout",
-              "symbol"
+              "symbol",
+              "take_through"
             ],
             "properties": {
+              "account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "dir": {
                 "$ref": "#/definitions/Dir"
               },
               "end_time": {
+                "description": "The TWAP will finish within 1 interval of the end time.",
                 "type": "string",
                 "format": "date-time"
               },
@@ -18384,6 +19086,9 @@
               },
               "interval": {
                 "$ref": "#/definitions/HumanDuration"
+              },
+              "marketdata_venue": {
+                "type": "string"
               },
               "quantity": {
                 "$ref": "#/definitions/Decimal"
@@ -18394,13 +19099,11 @@
               "symbol": {
                 "type": "string"
               },
-              "take_through_frac": {
-                "anyOf": [
+              "take_through": {
+                "description": "When placing an order, how aggressively to take.",
+                "allOf": [
                   {
-                    "$ref": "#/definitions/Decimal"
-                  },
-                  {
-                    "type": "null"
+                    "$ref": "#/definitions/TakeThrough"
                   }
                 ]
               }
@@ -18410,29 +19113,17 @@
       },
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "AlgoOrder_for_TwapAlgo",
+        "title": "AlgoOrder_for_Twap",
         "type": "object",
         "required": [
-          "account",
-          "algo_name",
-          "algo_order_id",
           "create_time",
+          "id",
           "params",
-          "state",
           "status",
+          "status_details",
           "trader"
         ],
         "properties": {
-          "account": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "algo_name": {
-            "type": "string"
-          },
-          "algo_order_id": {
-            "$ref": "#/definitions/OrderId"
-          },
           "create_time": {
             "type": "string",
             "format": "date-time"
@@ -18446,23 +19137,20 @@
               "type": "string"
             }
           },
-          "last_error": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "last_error_time": {
+          "finish_time": {
             "type": [
               "string",
               "null"
             ],
             "format": "date-time"
           },
+          "id": {
+            "$ref": "#/definitions/OrderId"
+          },
           "params": {
             "$ref": "#/definitions/TwapParams"
           },
-          "parent_order_id": {
+          "parent_id": {
             "anyOf": [
               {
                 "$ref": "#/definitions/OrderId"
@@ -18472,23 +19160,43 @@
               }
             ]
           },
-          "state": {
-            "$ref": "#/definitions/AlgoState"
+          "reject_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status": {
+            "$ref": "#/definitions/AlgoOrderStatus"
+          },
+          "status_details": {
             "$ref": "#/definitions/TwapStatus"
           },
           "trader": {
             "$ref": "#/definitions/UserId"
+          },
+          "working_progress": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
           }
         },
         "definitions": {
-          "AlgoState": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "AlgoOrderStatus": {
             "type": "string",
             "enum": [
-              "Pending",
-              "Running",
-              "Stopped"
+              "pending",
+              "working",
+              "rejected",
+              "paused",
+              "pausing",
+              "stopped",
+              "stopping"
             ]
           },
           "Decimal": {
@@ -18524,6 +19232,58 @@
               }
             }
           },
+          "TakeThrough": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "Fraction"
+                ],
+                "properties": {
+                  "Fraction": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Percent"
+                ],
+                "properties": {
+                  "Percent": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Price"
+                ],
+                "properties": {
+                  "Price": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Ticks"
+                ],
+                "properties": {
+                  "Ticks": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          },
           "TwapParams": {
             "type": "object",
             "required": [
@@ -18531,15 +19291,28 @@
               "end_time",
               "execution_venue",
               "interval",
+              "marketdata_venue",
               "quantity",
               "reject_lockout",
-              "symbol"
+              "symbol",
+              "take_through"
             ],
             "properties": {
+              "account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "dir": {
                 "$ref": "#/definitions/Dir"
               },
               "end_time": {
+                "description": "The TWAP will finish within 1 interval of the end time.",
                 "type": "string",
                 "format": "date-time"
               },
@@ -18548,6 +19321,9 @@
               },
               "interval": {
                 "$ref": "#/definitions/HumanDuration"
+              },
+              "marketdata_venue": {
+                "type": "string"
               },
               "quantity": {
                 "$ref": "#/definitions/Decimal"
@@ -18558,13 +19334,688 @@
               "symbol": {
                 "type": "string"
               },
-              "take_through_frac": {
+              "take_through": {
+                "description": "When placing an order, how aggressively to take.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TakeThrough"
+                  }
+                ]
+              }
+            }
+          },
+          "TwapStatus": {
+            "type": "object",
+            "required": [
+              "quantity_filled"
+            ],
+            "properties": {
+              "quantity_filled": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "realized_twap": {
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Decimal"
                   },
                   {
                     "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Algo/TwapOrder",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrderRequest",
+        "description": "Get generic algo run status",
+        "type": "object",
+        "required": [
+          "algo_order_id"
+        ],
+        "properties": {
+          "algo_order_id": {
+            "$ref": "#/definitions/OrderId"
+          }
+        },
+        "definitions": {
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrder_for_Twap",
+        "type": "object",
+        "required": [
+          "create_time",
+          "id",
+          "params",
+          "status",
+          "status_details",
+          "trader"
+        ],
+        "properties": {
+          "create_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "display_symbols": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "finish_time": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "id": {
+            "$ref": "#/definitions/OrderId"
+          },
+          "params": {
+            "$ref": "#/definitions/TwapParams"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reject_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "$ref": "#/definitions/AlgoOrderStatus"
+          },
+          "status_details": {
+            "$ref": "#/definitions/TwapStatus"
+          },
+          "trader": {
+            "$ref": "#/definitions/UserId"
+          },
+          "working_progress": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "AlgoOrderStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "working",
+              "rejected",
+              "paused",
+              "pausing",
+              "stopped",
+              "stopping"
+            ]
+          },
+          "Decimal": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "HumanDuration": {
+            "type": "string"
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "TakeThrough": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "Fraction"
+                ],
+                "properties": {
+                  "Fraction": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Percent"
+                ],
+                "properties": {
+                  "Percent": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Price"
+                ],
+                "properties": {
+                  "Price": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Ticks"
+                ],
+                "properties": {
+                  "Ticks": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          },
+          "TwapParams": {
+            "type": "object",
+            "required": [
+              "dir",
+              "end_time",
+              "execution_venue",
+              "interval",
+              "marketdata_venue",
+              "quantity",
+              "reject_lockout",
+              "symbol",
+              "take_through"
+            ],
+            "properties": {
+              "account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dir": {
+                "$ref": "#/definitions/Dir"
+              },
+              "end_time": {
+                "description": "The TWAP will finish within 1 interval of the end time.",
+                "type": "string",
+                "format": "date-time"
+              },
+              "execution_venue": {
+                "type": "string"
+              },
+              "interval": {
+                "$ref": "#/definitions/HumanDuration"
+              },
+              "marketdata_venue": {
+                "type": "string"
+              },
+              "quantity": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "reject_lockout": {
+                "$ref": "#/definitions/HumanDuration"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "take_through": {
+                "description": "When placing an order, how aggressively to take.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TakeThrough"
+                  }
+                ]
+              }
+            }
+          },
+          "TwapStatus": {
+            "type": "object",
+            "required": [
+              "quantity_filled"
+            ],
+            "properties": {
+              "quantity_filled": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "realized_twap": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/Decimal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Algo/TwapOrders",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrdersRequest",
+        "type": "object",
+        "properties": {
+          "display_symbol": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "from_inclusive": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "limit": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "parent_order_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/definitions/AlgoOrderStatus"
+            }
+          },
+          "to_exclusive": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "trader": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/TraderIdOrEmail"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "definitions": {
+          "AlgoOrderStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "working",
+              "rejected",
+              "paused",
+              "pausing",
+              "stopped",
+              "stopping"
+            ]
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrdersResponse_for_Twap",
+        "type": "object",
+        "required": [
+          "algo_orders"
+        ],
+        "properties": {
+          "algo_orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/AlgoOrder_for_Twap"
+            }
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "AlgoOrderStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "working",
+              "rejected",
+              "paused",
+              "pausing",
+              "stopped",
+              "stopping"
+            ]
+          },
+          "AlgoOrder_for_Twap": {
+            "type": "object",
+            "required": [
+              "create_time",
+              "id",
+              "params",
+              "status",
+              "status_details",
+              "trader"
+            ],
+            "properties": {
+              "create_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "display_symbols": {
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "finish_time": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "params": {
+                "$ref": "#/definitions/TwapParams"
+              },
+              "parent_id": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reject_reason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "$ref": "#/definitions/AlgoOrderStatus"
+              },
+              "status_details": {
+                "$ref": "#/definitions/TwapStatus"
+              },
+              "trader": {
+                "$ref": "#/definitions/UserId"
+              },
+              "working_progress": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "format": "double"
+              }
+            }
+          },
+          "Decimal": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "HumanDuration": {
+            "type": "string"
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "TakeThrough": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "Fraction"
+                ],
+                "properties": {
+                  "Fraction": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Percent"
+                ],
+                "properties": {
+                  "Percent": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Price"
+                ],
+                "properties": {
+                  "Price": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "Ticks"
+                ],
+                "properties": {
+                  "Ticks": {
+                    "$ref": "#/definitions/Decimal"
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          },
+          "TwapParams": {
+            "type": "object",
+            "required": [
+              "dir",
+              "end_time",
+              "execution_venue",
+              "interval",
+              "marketdata_venue",
+              "quantity",
+              "reject_lockout",
+              "symbol",
+              "take_through"
+            ],
+            "properties": {
+              "account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dir": {
+                "$ref": "#/definitions/Dir"
+              },
+              "end_time": {
+                "description": "The TWAP will finish within 1 interval of the end time.",
+                "type": "string",
+                "format": "date-time"
+              },
+              "execution_venue": {
+                "type": "string"
+              },
+              "interval": {
+                "$ref": "#/definitions/HumanDuration"
+              },
+              "marketdata_venue": {
+                "type": "string"
+              },
+              "quantity": {
+                "$ref": "#/definitions/Decimal"
+              },
+              "reject_lockout": {
+                "$ref": "#/definitions/HumanDuration"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "take_through": {
+                "description": "When placing an order, how aggressively to take.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TakeThrough"
                   }
                 ]
               }

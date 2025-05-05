@@ -1,7 +1,7 @@
 use crate::{
     symbology::MarketdataVenue,
     utils::{chrono::DateTimeOrUtc, pagination::OffsetAndLimit},
-    Dir, SequenceIdAndNumber,
+    Dir, DirPair, SequenceIdAndNumber,
 };
 use chrono::{DateTime, NaiveDate, Utc};
 use derive::grpc;
@@ -84,6 +84,13 @@ pub struct L1BookSnapshot {
 impl L1BookSnapshot {
     pub fn timestamp(&self) -> Option<DateTime<Utc>> {
         chrono::DateTime::from_timestamp(self.timestamp, self.timestamp_ns)
+    }
+
+    pub fn bbo(&self) -> DirPair<Option<Decimal>> {
+        DirPair {
+            buy: self.best_bid.map(|(px, _)| px),
+            sell: self.best_ask.map(|(px, _)| px),
+        }
     }
 
     pub fn recv_time(&self) -> Option<DateTime<Utc>> {
