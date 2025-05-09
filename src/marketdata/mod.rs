@@ -73,9 +73,11 @@ pub struct L1BookSnapshot {
     #[serde(rename = "rtn", default, skip_serializing_if = "Option::is_none")]
     #[schemars(title = "recv_time_ns")]
     pub recv_time_ns: Option<u32>,
+    /// (price, quantity)
     #[serde(rename = "b")]
     #[schemars(title = "best_bid")]
     pub best_bid: Option<(Decimal, Decimal)>,
+    /// (price, quantity)
     #[serde(rename = "a")]
     #[schemars(title = "best_ask")]
     pub best_ask: Option<(Decimal, Decimal)>,

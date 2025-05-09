@@ -242,8 +242,10 @@ pub struct OrderReject {
     #[serde(rename = "id")]
     pub order_id: OrderId,
     #[serde(rename = "r")]
+    #[schemars(title = "reject_reason")]
     pub reason: OrderRejectReason,
     #[serde(rename = "rm", skip_serializing_if = "Option::is_none")]
+    #[schemars(title = "message")]
     pub message: Option<String>,
 }
 

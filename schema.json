@@ -195,6 +195,10 @@
         "title": "AccountsRequest",
         "type": "object",
         "properties": {
+          "paper": {
+            "default": false,
+            "type": "boolean"
+          },
           "trader": {
             "description": "Request accounts from the perspective of this trader; if not specified, defaults to the caller user.",
             "anyOf": [
@@ -5126,6 +5130,7 @@
         "properties": {
           "a": {
             "title": "best_ask",
+            "description": "(price, quantity)",
             "type": [
               "array",
               "null"
@@ -5143,6 +5148,7 @@
           },
           "b": {
             "title": "best_bid",
+            "description": "(price, quantity)",
             "type": [
               "array",
               "null"
@@ -5245,6 +5251,7 @@
             "properties": {
               "a": {
                 "title": "best_ask",
+                "description": "(price, quantity)",
                 "type": [
                   "array",
                   "null"
@@ -5262,6 +5269,7 @@
               },
               "b": {
                 "title": "best_bid",
+                "description": "(price, quantity)",
                 "type": [
                   "array",
                   "null"
@@ -5353,6 +5361,7 @@
         "properties": {
           "a": {
             "title": "best_ask",
+            "description": "(price, quantity)",
             "type": [
               "array",
               "null"
@@ -5370,6 +5379,7 @@
           },
           "b": {
             "title": "best_bid",
+            "description": "(price, quantity)",
             "type": [
               "array",
               "null"
@@ -5758,11 +5768,11 @@
             "type": "integer",
             "enum": [
               1,
-              2,
-              4,
-              8,
-              16,
-              32
+              5,
+              60,
+              900,
+              3600,
+              86400
             ],
             "x-enumNames": [
               "OneSecond",
@@ -6018,11 +6028,11 @@
             "type": "integer",
             "enum": [
               1,
-              2,
-              4,
-              8,
-              16,
-              32
+              5,
+              60,
+              900,
+              3600,
+              86400
             ],
             "x-enumNames": [
               "OneSecond",
@@ -6075,11 +6085,11 @@
             "type": "integer",
             "enum": [
               1,
-              2,
-              4,
-              8,
-              16,
-              32
+              5,
+              60,
+              900,
+              3600,
+              86400
             ],
             "x-enumNames": [
               "OneSecond",
@@ -6335,11 +6345,11 @@
             "type": "integer",
             "enum": [
               1,
-              2,
-              4,
-              8,
-              16,
-              32
+              5,
+              60,
+              900,
+              3600,
+              86400
             ],
             "x-enumNames": [
               "OneSecond",
@@ -6396,11 +6406,11 @@
             "type": "integer",
             "enum": [
               1,
-              2,
-              4,
-              8,
-              16,
-              32
+              5,
+              60,
+              900,
+              3600,
+              86400
             ],
             "x-enumNames": [
               "OneSecond",
@@ -6656,11 +6666,11 @@
             "type": "integer",
             "enum": [
               1,
-              2,
-              4,
-              8,
-              16,
-              32
+              5,
+              60,
+              900,
+              3600,
+              86400
             ],
             "x-enumNames": [
               "OneSecond",
@@ -6715,11 +6725,11 @@
             "type": "integer",
             "enum": [
               1,
-              2,
-              4,
-              8,
-              16,
-              32
+              5,
+              60,
+              900,
+              3600,
+              86400
             ],
             "x-enumNames": [
               "OneSecond",
@@ -6993,11 +7003,11 @@
             "type": "integer",
             "enum": [
               1,
-              2,
-              4,
-              8,
-              16,
-              32
+              5,
+              60,
+              900,
+              3600,
+              86400
             ],
             "x-enumNames": [
               "OneSecond",
@@ -9599,7 +9609,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -10012,9 +10022,15 @@
                 "$ref": "#/definitions/OrderId"
               },
               "r": {
-                "$ref": "#/definitions/OrderRejectReason"
+                "title": "reject_reason",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  }
+                ]
               },
               "rm": {
+                "title": "message",
                 "type": [
                   "string",
                   "null"
@@ -10098,12 +10114,23 @@
             ],
             "properties": {
               "id": {
-                "$ref": "#/definitions/OrderId"
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
               },
               "o": {
-                "$ref": "#/definitions/CancelStatus"
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/CancelStatus"
+                  }
+                ]
               },
               "r": {
+                "title": "reject_reason",
                 "type": [
                   "string",
                   "null"
@@ -10116,15 +10143,18 @@
                 ]
               },
               "tn": {
+                "title": "recv_time_ns",
                 "type": "integer",
                 "format": "uint32",
                 "minimum": 0.0
               },
               "ts": {
+                "title": "recv_time",
                 "type": "integer",
                 "format": "int64"
               },
               "xid": {
+                "title": "cancel_id",
                 "type": "string",
                 "format": "uuid"
               }
@@ -10582,7 +10612,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -11086,9 +11116,15 @@
                 "$ref": "#/definitions/OrderId"
               },
               "r": {
-                "$ref": "#/definitions/OrderRejectReason"
+                "title": "reject_reason",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  }
+                ]
               },
               "rm": {
+                "title": "message",
                 "type": [
                   "string",
                   "null"
@@ -11172,12 +11208,23 @@
             ],
             "properties": {
               "id": {
-                "$ref": "#/definitions/OrderId"
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
               },
               "o": {
-                "$ref": "#/definitions/CancelStatus"
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/CancelStatus"
+                  }
+                ]
               },
               "r": {
+                "title": "reject_reason",
                 "type": [
                   "string",
                   "null"
@@ -11190,15 +11237,18 @@
                 ]
               },
               "tn": {
+                "title": "recv_time_ns",
                 "type": "integer",
                 "format": "uint32",
                 "minimum": 0.0
               },
               "ts": {
+                "title": "recv_time",
                 "type": "integer",
                 "format": "int64"
               },
               "xid": {
+                "title": "cancel_id",
                 "type": "string",
                 "format": "uuid"
               }
@@ -11656,7 +11706,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -12482,7 +12532,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -12856,7 +12906,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -13226,7 +13276,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -13406,7 +13456,7 @@
         },
         "definitions": {
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -13439,27 +13489,41 @@
         ],
         "properties": {
           "id": {
-            "$ref": "#/definitions/OrderId"
+            "title": "order_id",
+            "allOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              }
+            ]
           },
           "o": {
-            "$ref": "#/definitions/CancelStatus"
+            "title": "status",
+            "allOf": [
+              {
+                "$ref": "#/definitions/CancelStatus"
+              }
+            ]
           },
           "r": {
+            "title": "reject_reason",
             "type": [
               "string",
               "null"
             ]
           },
           "tn": {
+            "title": "recv_time_ns",
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
           },
           "ts": {
+            "title": "recv_time",
             "type": "integer",
             "format": "int64"
           },
           "xid": {
+            "title": "cancel_id",
             "type": "string",
             "format": "uuid"
           }
@@ -13481,7 +13545,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -13624,7 +13688,7 @@
             "type": "string"
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -13926,7 +13990,7 @@
             }
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -14161,27 +14225,41 @@
             ],
             "properties": {
               "id": {
-                "$ref": "#/definitions/OrderId"
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
               },
               "o": {
-                "$ref": "#/definitions/CancelStatus"
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/CancelStatus"
+                  }
+                ]
               },
               "r": {
+                "title": "reject_reason",
                 "type": [
                   "string",
                   "null"
                 ]
               },
               "tn": {
+                "title": "recv_time_ns",
                 "type": "integer",
                 "format": "uint32",
                 "minimum": 0.0
               },
               "ts": {
+                "title": "recv_time",
                 "type": "integer",
                 "format": "int64"
               },
               "xid": {
+                "title": "cancel_id",
                 "type": "string",
                 "format": "uuid"
               }
@@ -14203,7 +14281,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -14993,7 +15071,7 @@
             "type": "string"
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -15376,7 +15454,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -15484,7 +15562,7 @@
             "type": "string"
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -15786,7 +15864,7 @@
             }
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -16289,27 +16367,41 @@
             ],
             "properties": {
               "id": {
-                "$ref": "#/definitions/OrderId"
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
               },
               "o": {
-                "$ref": "#/definitions/CancelStatus"
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/CancelStatus"
+                  }
+                ]
               },
               "r": {
+                "title": "reject_reason",
                 "type": [
                   "string",
                   "null"
                 ]
               },
               "tn": {
+                "title": "recv_time_ns",
                 "type": "integer",
                 "format": "uint32",
                 "minimum": 0.0
               },
               "ts": {
+                "title": "recv_time",
                 "type": "integer",
                 "format": "int64"
               },
               "xid": {
+                "title": "cancel_id",
                 "type": "string",
                 "format": "uuid"
               }
@@ -16593,7 +16685,7 @@
             }
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -17642,7 +17734,7 @@
             }
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -17992,7 +18084,7 @@
         },
         "definitions": {
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -18035,7 +18127,7 @@
         },
         "definitions": {
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -18078,7 +18170,7 @@
         },
         "definitions": {
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -18122,7 +18214,7 @@
         },
         "definitions": {
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -18228,7 +18320,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -18333,7 +18425,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -18456,7 +18548,7 @@
             }
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -18545,7 +18637,7 @@
             "type": "string"
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -18783,7 +18875,7 @@
             "type": "string"
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -18979,7 +19071,7 @@
             "type": "string"
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -19214,7 +19306,7 @@
             "type": "string"
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -19390,7 +19482,7 @@
         },
         "definitions": {
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -19513,7 +19605,7 @@
             "type": "string"
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -19751,7 +19843,7 @@
             ]
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",
@@ -19891,7 +19983,7 @@
             "type": "string"
           },
           "OrderId": {
-            "description": "System-unique, persistent order identifiers",
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
             "type": "object",
             "required": [
               "seqid",

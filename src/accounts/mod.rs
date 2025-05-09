@@ -13,6 +13,8 @@ pub struct AccountsRequest {
     /// Request accounts from the perspective of this trader;
     /// if not specified, defaults to the caller user.
     pub trader: Option<TraderIdOrEmail>,
+    #[serde(default)]
+    pub paper: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]

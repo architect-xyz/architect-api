@@ -10,16 +10,22 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Cancel {
     #[serde(rename = "xid")]
+    #[schemars(title = "cancel_id")]
     pub cancel_id: Uuid,
     #[serde(rename = "id")]
+    #[schemars(title = "order_id")]
     pub order_id: OrderId,
     #[serde(rename = "ts")]
+    #[schemars(title = "recv_time")]
     pub recv_time: i64,
     #[serde(rename = "tn")]
+    #[schemars(title = "recv_time_ns")]
     pub recv_time_ns: u32,
     #[serde(rename = "o")]
+    #[schemars(title = "status")]
     pub status: CancelStatus,
     #[serde(rename = "r")]
+    #[schemars(title = "reject_reason")]
     pub reject_reason: Option<String>,
 }
 

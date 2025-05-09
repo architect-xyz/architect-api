@@ -9,6 +9,7 @@ use std::{fmt, str::FromStr};
 use uuid::Uuid;
 
 /// System-unique, persistent order identifiers
+/// <!-- py: type=string -->
 #[derive(
     Debug,
     Clone,

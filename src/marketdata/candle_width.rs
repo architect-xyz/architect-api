@@ -1,34 +1,35 @@
 use anyhow::anyhow;
 use chrono::TimeDelta;
-use enumflags2::bitflags;
+use derive_more::Display;
 use schemars::JsonSchema_repr;
-use serde::{Deserialize, Serialize};
 use serde_json::json;
+use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::str::FromStr;
 
 #[derive(
     Debug,
+    Display,
     Clone,
     Copy,
-    Deserialize,
     PartialEq,
     Eq,
     PartialOrd,
     Ord,
+    strum::EnumIter,
     Hash,
-    Serialize,
+    Serialize_repr,
+    Deserialize_repr,
     JsonSchema_repr,
 )]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
-#[bitflags]
-#[repr(u8)]
+#[repr(i32)]
 pub enum CandleWidth {
-    OneSecond,
-    FiveSecond,
-    OneMinute,
-    FifteenMinute,
-    OneHour,
-    OneDay,
+    OneSecond = 1,
+    FiveSecond = 5,
+    OneMinute = 60,
+    FifteenMinute = 900,
+    OneHour = 3600,
+    OneDay = 86400,
 }
 
 impl CandleWidth {
