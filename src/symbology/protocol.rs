@@ -19,6 +19,23 @@ pub struct SymbolsResponse {
 }
 
 #[grpc(package = "json.architect")]
+#[grpc(
+    service = "Symbology",
+    name = "execution_info",
+    response = "ExecutionInfoResponse"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct ExecutionInfoRequest {
+    pub symbol: String,
+    pub execution_venue: Option<ExecutionVenue>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct ExecutionInfoResponse {
+    pub execution_info: BTreeMap<ExecutionVenue, ExecutionInfo>,
+}
+
+#[grpc(package = "json.architect")]
 #[grpc(service = "Symbology", name = "symbology", response = "SymbologySnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SymbologyRequest {}

@@ -5,7 +5,6 @@ use crate::{
 };
 use anyhow::{bail, Result};
 use chrono::{DateTime, Utc};
-use derive::grpc;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
@@ -18,26 +17,6 @@ impl Algo for Twap {
     type Params = TwapParams;
     type Status = TwapStatus;
 }
-
-pub type TwapOrder = AlgoOrder<Twap>;
-
-#[grpc(package = "json.architect")]
-#[grpc(service = "Algo", name = "create_twap_order", response = "TwapOrder")]
-pub type CreateTwapOrderRequest = CreateAlgoOrderRequest<Twap>;
-
-#[grpc(package = "json.architect")]
-#[grpc(service = "Algo", name = "modify_twap_order", response = "TwapOrder")]
-pub type ModifyTwapOrderRequest = ModifyAlgoOrderRequest<Twap>;
-
-#[grpc(package = "json.architect")]
-#[grpc(service = "Algo", name = "twap_order", response = "TwapOrder")]
-pub type TwapOrderRequest = AlgoOrderRequest;
-
-#[grpc(package = "json.architect")]
-#[grpc(service = "Algo", name = "twap_orders", response = "TwapOrdersResponse")]
-pub type TwapOrdersRequest = AlgoOrdersRequest;
-
-pub type TwapOrdersResponse = AlgoOrdersResponse<Twap>;
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct TwapParams {
@@ -53,6 +32,12 @@ pub struct TwapParams {
     pub reject_lockout: HumanDuration,
     /// When placing an order, how aggressively to take.
     pub take_through: TakeThrough,
+}
+
+impl DisplaySymbols for TwapParams {
+    fn display_symbols(&self) -> Option<Vec<String>> {
+        Some(vec![self.symbol.clone()])
+    }
 }
 
 impl Validate for TwapParams {
@@ -72,7 +57,7 @@ impl Validate for TwapParams {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct TwapStatus {
     pub realized_twap: Option<Decimal>,
     pub quantity_filled: Decimal,

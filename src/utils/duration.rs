@@ -17,7 +17,7 @@ serde_conv!(
     parse_nonzero_duration
 );
 
-fn format_nonzero_duration(dur: &std::time::Duration) -> String {
+pub fn format_nonzero_duration(dur: &std::time::Duration) -> String {
     let secs = dur.as_secs();
     let nanos = dur.subsec_nanos();
     format!("{}.{:09}s", secs, nanos)
@@ -101,7 +101,7 @@ impl FromStr for AbsoluteOrRelativeTime {
             Ok(Self::Now)
         } else if let Some(rest) = s.strip_prefix('+') {
             Ok(Self::RelativeFuture(parse_duration(rest)?))
-        } else if s.starts_with('_') || s.starts_with("~") {
+        } else if s.starts_with('_') || s.starts_with("~") || s.starts_with('-') {
             // CR-someday alee: clap is actually a bad library in a lot of ways, including
             // not understanding a leading '-' in argument value following a flag
             Ok(Self::RelativePast(parse_duration(&s[1..])?))
