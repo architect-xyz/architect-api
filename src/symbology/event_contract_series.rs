@@ -166,6 +166,7 @@ pub enum EventContractOutcomes {
     },
     OptionLike {
         expiration_time_of_day: NaiveTime,
+        #[schemars(with = "String")]
         expiration_time_zone: chrono_tz::Tz,
         strikes_by_expiration: BTreeMap<DateTime<Utc>, BTreeSet<Decimal>>,
     },

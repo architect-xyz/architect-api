@@ -56,6 +56,7 @@ pub struct OptionsSeriesInfo {
     pub underlying: Product,
     pub multiplier: Decimal,
     pub expiration_time_of_day: NaiveTime,
+    #[schemars(with = "String")]
     pub expiration_time_zone: chrono_tz::Tz,
     pub strikes_by_expiration: BTreeMap<NaiveDate, BTreeSet<Decimal>>,
     pub derivative_kind: DerivativeKind,
@@ -159,6 +160,7 @@ pub struct OptionsExpirations {
     pub end: NaiveDate,
     pub stride_days: u32,
     pub time_of_day: NaiveTime,
+    #[schemars(with = "String")]
     pub time_zone: chrono_tz::Tz,
 }
 

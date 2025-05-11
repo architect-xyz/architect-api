@@ -2,7 +2,6 @@ use crate::OrderId;
 use chrono::{DateTime, Utc};
 use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use serde_with::skip_serializing_none;
 use uuid::Uuid;
