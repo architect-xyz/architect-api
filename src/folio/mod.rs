@@ -124,6 +124,7 @@ pub struct AccountHistoryResponse {
 )]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct HistoricalFillsRequest {
+    pub symbol: Option<TradableProduct>,
     pub venue: Option<ExecutionVenue>,
     pub account: Option<AccountIdOrName>,
     pub trader: Option<TraderIdOrEmail>,
