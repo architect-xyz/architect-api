@@ -648,6 +648,7 @@ impl TickerValues {
             && self.high_24h.is_none()
             && self.volume_24h.is_none()
             && self.volume_30d.is_none()
+            && self.session_volume.is_none()
             && self.open_interest.is_none()
             && self.last_settlement_price.is_none()
             && self.mark_price.is_none()
