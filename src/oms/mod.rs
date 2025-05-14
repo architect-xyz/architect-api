@@ -14,6 +14,7 @@ use uuid::Uuid;
 #[grpc(package = "json.architect")]
 #[grpc(service = "Oms", name = "place_order", response = "Order")]
 #[derive(Builder, Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+/// <!-- py: unflatten=k/order_type/OrderType, tag=k -->
 pub struct PlaceOrderRequest {
     /// If not specified, one will be generated for you; note, in that case,
     /// you won't know for sure if the specific request went through.

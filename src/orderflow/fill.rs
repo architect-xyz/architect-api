@@ -63,7 +63,7 @@ pub struct Fill {
     #[schemars(title = "symbol")]
     pub symbol: TradableProduct,
     #[serde(rename = "d")]
-    #[schemars(title = "direction")]
+    #[schemars(title = "dir")]
     pub dir: Dir,
     #[serde(rename = "q")]
     #[schemars(title = "quantity")]
@@ -141,7 +141,7 @@ pub struct AberrantFill {
     #[schemars(title = "symbol")]
     pub symbol: Option<String>,
     #[serde(rename = "d")]
-    #[schemars(title = "direction")]
+    #[schemars(title = "dir")]
     pub dir: Option<Dir>,
     #[serde(rename = "q")]
     #[schemars(title = "quantity")]

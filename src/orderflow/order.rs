@@ -14,6 +14,7 @@ use strum::{FromRepr, IntoStaticStr};
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+/// <!-- py: unflatten=k/order_type/OrderType, tag=k -->
 pub struct Order {
     pub id: OrderId,
     #[serde(rename = "pid")]

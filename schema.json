@@ -7007,6 +7007,7 @@
         "oneOf": [
           {
             "title": "PlaceOrder|PlaceOrderRequest",
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
@@ -7400,6 +7401,7 @@
         "oneOf": [
           {
             "title": "OrderPending|Order",
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
@@ -7946,7 +7948,7 @@
                 "format": "int64"
               },
               "d": {
-                "title": "direction",
+                "title": "dir",
                 "allOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -8085,7 +8087,7 @@
                 "format": "int64"
               },
               "d": {
-                "title": "direction",
+                "title": "dir",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -8449,6 +8451,7 @@
         "oneOf": [
           {
             "title": "OrderPending|Order",
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
@@ -8995,7 +8998,7 @@
                 "format": "int64"
               },
               "d": {
-                "title": "direction",
+                "title": "dir",
                 "allOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -9134,7 +9137,7 @@
                 "format": "int64"
               },
               "d": {
-                "title": "direction",
+                "title": "dir",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -9509,6 +9512,7 @@
         "oneOf": [
           {
             "title": "Order|Order",
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
@@ -9791,7 +9795,7 @@
                 "format": "int64"
               },
               "d": {
-                "title": "direction",
+                "title": "dir",
                 "allOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -9930,7 +9934,7 @@
                 "format": "int64"
               },
               "d": {
-                "title": "direction",
+                "title": "dir",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -10237,6 +10241,7 @@
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "PlaceOrderRequest",
+        "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
         "type": "object",
         "oneOf": [
           {
@@ -10537,6 +10542,7 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Order",
+        "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
         "type": "object",
         "oneOf": [
           {
@@ -11232,6 +11238,7 @@
             ]
           },
           "Order": {
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
@@ -12515,7 +12522,7 @@
                 "format": "int64"
               },
               "d": {
-                "title": "direction",
+                "title": "dir",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -12686,7 +12693,7 @@
                 "format": "int64"
               },
               "d": {
-                "title": "direction",
+                "title": "dir",
                 "allOf": [
                   {
                     "$ref": "#/definitions/Dir"
@@ -12953,6 +12960,7 @@
             ]
           },
           "Order": {
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
@@ -13384,6 +13392,7 @@
           },
           {
             "title": "PlaceOrder|Order",
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
@@ -13723,6 +13732,7 @@
             ]
           },
           "Order": {
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
@@ -14129,6 +14139,7 @@
           },
           {
             "title": "ReconcileOrder|Order",
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
@@ -14683,6 +14694,7 @@
             ]
           },
           "Order": {
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
               {
