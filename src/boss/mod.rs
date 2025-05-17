@@ -1,5 +1,4 @@
 use chrono::{DateTime, NaiveDate, Utc};
-use juniper::GraphQLObject;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -7,7 +6,8 @@ use uuid::Uuid;
 
 pub mod protocol;
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, GraphQLObject)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct Statement {
     pub statement_uuid: Uuid,
     pub account: String,
@@ -17,7 +17,8 @@ pub struct Statement {
     pub filename: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, GraphQLObject)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct Deposit {
     pub account: String,
     pub amount: Decimal,
@@ -25,7 +26,8 @@ pub struct Deposit {
     pub description: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, GraphQLObject)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct Withdrawal {
     pub account: String,
     pub amount: Decimal,
@@ -33,7 +35,8 @@ pub struct Withdrawal {
     pub description: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, GraphQLObject)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
 pub struct RqdAccountStatistics {
     pub account_number: String,
     pub available_cash_balance: Option<Decimal>,

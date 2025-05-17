@@ -2,7 +2,6 @@ use super::{DerivativeKind, Product, TradableProduct};
 use anyhow::{anyhow, bail, Result};
 use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use derive_more::Display;
-use juniper::GraphQLEnum;
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -179,18 +178,8 @@ pub enum OptionsExerciseType {
 #[cfg(feature = "postgres")]
 crate::to_sql_str!(OptionsExerciseType);
 
-#[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    GraphQLEnum,
-    Hash,
-    Deserialize,
-    Serialize,
-    JsonSchema,
-)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLEnum))]
 pub enum PutOrCall {
     #[serde(rename = "P")]
     Put,
