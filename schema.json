@@ -7016,6 +7016,20 @@
               {
                 "type": "object",
                 "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
                   "k",
                   "p",
                   "po"
@@ -7407,6 +7421,20 @@
             "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
               {
                 "type": "object",
                 "required": [
@@ -8457,6 +8485,20 @@
             "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
               {
                 "type": "object",
                 "required": [
@@ -9521,6 +9563,20 @@
               {
                 "type": "object",
                 "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
                   "k",
                   "p",
                   "po"
@@ -10250,6 +10306,20 @@
           {
             "type": "object",
             "required": [
+              "k"
+            ],
+            "properties": {
+              "k": {
+                "type": "string",
+                "enum": [
+                  "MARKET"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
               "k",
               "p",
               "po"
@@ -10548,6 +10618,20 @@
         "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
         "type": "object",
         "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "k"
+            ],
+            "properties": {
+              "k": {
+                "type": "string",
+                "enum": [
+                  "MARKET"
+                ]
+              }
+            }
+          },
           {
             "type": "object",
             "required": [
@@ -11244,6 +11328,20 @@
             "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
               {
                 "type": "object",
                 "required": [
@@ -12969,6 +13067,20 @@
               {
                 "type": "object",
                 "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
                   "k",
                   "p",
                   "po"
@@ -13401,6 +13513,20 @@
               {
                 "type": "object",
                 "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
                   "k",
                   "p",
                   "po"
@@ -13738,6 +13864,20 @@
             "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
               {
                 "type": "object",
                 "required": [
@@ -14145,6 +14285,20 @@
             "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
               {
                 "type": "object",
                 "required": [
@@ -14700,6 +14854,20 @@
             "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
             "type": "object",
             "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
               {
                 "type": "object",
                 "required": [

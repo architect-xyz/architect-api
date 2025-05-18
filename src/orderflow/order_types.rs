@@ -9,6 +9,7 @@ use strum::IntoStaticStr;
 #[serde(tag = "k", rename_all = "SCREAMING_SNAKE_CASE")]
 #[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
 pub enum OrderType {
+    Market,
     Limit(LimitOrderType),
     StopLossLimit(StopLossLimitOrderType),
     TakeProfitLimit(TakeProfitLimitOrderType),
@@ -20,6 +21,7 @@ impl OrderType {
             OrderType::Limit(limit) => Some(limit.limit_price),
             OrderType::StopLossLimit(stop_loss) => Some(stop_loss.limit_price),
             OrderType::TakeProfitLimit(take_profit) => Some(take_profit.limit_price),
+            OrderType::Market => None,
         }
     }
 
@@ -28,6 +30,7 @@ impl OrderType {
             OrderType::Limit(limit) => Some(limit.post_only),
             OrderType::StopLossLimit(_) => None,
             OrderType::TakeProfitLimit(_) => None,
+            OrderType::Market => None,
         }
     }
 
@@ -36,6 +39,7 @@ impl OrderType {
             OrderType::Limit(_) => None,
             OrderType::StopLossLimit(stop_loss) => Some(stop_loss.trigger_price),
             OrderType::TakeProfitLimit(take_profit) => Some(take_profit.trigger_price),
+            OrderType::Market => None,
         }
     }
 }
