@@ -179,6 +179,28 @@
           }
         }
       }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Core/RestartCpty",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "RestartCptyRequest",
+        "type": "object",
+        "required": [
+          "cpty"
+        ],
+        "properties": {
+          "cpty": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "RestartCptyResponse",
+        "type": "object"
+      }
     }
   ]
 },

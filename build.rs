@@ -40,6 +40,15 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("restart_cpty")
+                .route_name("RestartCpty")
+                .input_type("crate::core::RestartCptyRequest")
+                .output_type("crate::core::RestartCptyResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let json_accounts_service = tonic_build::manual::Service::builder()
         .name("Accounts")

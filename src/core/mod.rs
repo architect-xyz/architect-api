@@ -12,9 +12,17 @@ use url::Url;
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct ConfigRequest {}
 
-#[grpc(package = "json.architect")]
-#[grpc(service = "Core", name = "config", response = "ConfigResponse")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct ConfigResponse {
     pub marketdata: BTreeMap<MarketdataVenue, Url>,
 }
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Core", name = "config", response = "RestartCptyResponse")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct RestartCptyRequest {
+    pub cpty: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct RestartCptyResponse {}
