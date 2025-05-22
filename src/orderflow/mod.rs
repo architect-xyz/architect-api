@@ -74,6 +74,25 @@ pub enum Orderflow {
     AberrantFill(AberrantFill),
 }
 
+impl Orderflow {
+    pub fn order_id(&self) -> Option<OrderId> {
+        match self {
+            Orderflow::OrderPending(order) => Some(order.id),
+            Orderflow::OrderAck(ack) => Some(ack.order_id),
+            Orderflow::OrderReject(reject) => Some(reject.order_id),
+            Orderflow::OrderOut(out) => Some(out.order_id),
+            Orderflow::OrderReconciledOut(out) => Some(out.order_id),
+            Orderflow::OrderStale(stale) => Some(stale.order_id),
+            Orderflow::CancelPending(cancel) => Some(cancel.order_id),
+            Orderflow::CancelReject(reject) => Some(reject.order_id),
+            Orderflow::OrderCanceling(canceling) => Some(canceling.order_id),
+            Orderflow::OrderCanceled(canceled) => Some(canceled.order_id),
+            Orderflow::Fill(fill) => fill.order_id,
+            Orderflow::AberrantFill(aberrant_fill) => aberrant_fill.order_id,
+        }
+    }
+}
+
 /// Subscribe/listen to orderflow events.
 #[grpc(package = "json.architect")]
 #[grpc(
