@@ -613,6 +613,9 @@ pub struct TickerValues {
     #[serde(rename = "sd")]
     #[schemars(title = "last_settlement_date")]
     pub last_settlement_date: Option<NaiveDate>,
+    #[serde(rename = "isp")]
+    #[schemars(title = "indicative_settlement_price")]
+    pub indicative_settlement_price: Option<Decimal>,
     #[serde(rename = "mp")]
     #[schemars(title = "mark_price")]
     pub mark_price: Option<Decimal>,
