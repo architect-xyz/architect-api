@@ -23,8 +23,8 @@ pub fn format_nonzero_duration(dur: &std::time::Duration) -> String {
     format!("{}.{:09}s", secs, nanos)
 }
 
-fn parse_nonzero_duration(s: &str) -> Result<std::time::Duration> {
-    let dur = parse_duration(s)?;
+fn parse_nonzero_duration(s: String) -> Result<std::time::Duration> {
+    let dur = parse_duration(&s)?;
     if dur.is_zero() {
         bail!("duration must be non-zero");
     }

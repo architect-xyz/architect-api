@@ -7,7 +7,7 @@ use serde_with::{serde_as, serde_conv};
 use std::{num::NonZeroU32, str::FromStr, time::Duration};
 
 #[serde_as]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct RateLimit {
     pub max: NonZeroU32,
     #[serde_as(as = "NonZeroDurationAsStr")]
@@ -51,4 +51,36 @@ serde_conv!(
 
 fn try_into_quota(rate_limit: RateLimit) -> Result<Quota, std::convert::Infallible> {
     Ok(rate_limit.as_quota())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_serde_rate_limit() {
+        let rate_limit = RateLimit {
+            max: NonZeroU32::new(100).unwrap(),
+            per: Duration::from_secs(60 * 5),
+        };
+        insta::assert_json_snapshot!(rate_limit, @r#"
+        {
+          "max": 100,
+          "per": "300.000000000s"
+        }
+        "#);
+        let parsed_rate_limit = r#"
+        {
+          "max": 100,
+          "per": "300.000000000s"
+        }
+        "#;
+        let parsed_rate_limit: RateLimit =
+            serde_json::from_str(parsed_rate_limit).unwrap();
+        assert_eq!(rate_limit, parsed_rate_limit);
+        // test roundtrip of serde_json::Value
+        let json_value = serde_json::to_value(rate_limit).unwrap();
+        let parsed: RateLimit = serde_json::from_value(json_value).unwrap();
+        assert_eq!(rate_limit, parsed);
+    }
 }
