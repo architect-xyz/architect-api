@@ -500,6 +500,17 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        /*
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("modify_algo_order")
+                .route_name("ModifyAlgoOrder")
+                .input_type("crate::algo::ModifyAlgoOrderRequest")
+                .output_type("crate::algo::AlgoOrder")
+                .codec_path(json_codec)
+                .build(),
+        )
+        */
         .method(
             tonic_build::manual::Method::builder()
                 .name("start_algo")

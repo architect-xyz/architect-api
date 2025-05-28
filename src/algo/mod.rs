@@ -12,6 +12,7 @@ use strum::FromRepr;
 pub mod builder;
 pub mod common_params;
 pub mod release_at_time;
+pub mod spreader;
 pub mod twap;
 
 pub trait Algo {
@@ -174,6 +175,7 @@ pub struct AlgoOrder {
     Deserialize_repr,
     JsonSchema_repr,
 )]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLEnum))]
 #[serde(rename_all = "snake_case")]
 #[repr(u8)]
 pub enum AlgoOrderStatus {
