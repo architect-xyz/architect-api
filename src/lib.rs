@@ -14,7 +14,7 @@ pub mod orderflow;
 pub mod symbology;
 pub mod utils;
 
-pub use accounts::{account::*, trader::*};
+pub use accounts::{account::*, clearing_account::*, trader::*};
 pub use auth::user_id::*;
 pub use config::Config;
 pub use orderflow::OrderId;

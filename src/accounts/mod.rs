@@ -4,6 +4,7 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 pub mod account;
+pub mod clearing_account;
 pub mod trader;
 
 #[grpc(package = "json.architect")]
