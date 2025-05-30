@@ -1,4 +1,5 @@
 use anyhow::{bail, Result};
+use base64::{engine::general_purpose::URL_SAFE, Engine as _};
 #[cfg(feature = "tokio-postgres")]
 use bytes::BytesMut;
 use schemars::JsonSchema;
@@ -43,6 +44,11 @@ impl OrderId {
         Self { seqid: Uuid::new_v4(), seqno: 0 }
     }
 
+    pub fn exchange(namespace: &Uuid, exchange_id: impl AsRef<[u8]>) -> Self {
+        let seqid = Uuid::new_v5(namespace, exchange_id.as_ref());
+        Self { seqid, seqno: 0 }
+    }
+
     pub fn as_bytes(&self) -> &[u8] {
         bytemuck::bytes_of(self)
     }
@@ -52,6 +58,15 @@ impl OrderId {
             Ok(oid) => Ok(*oid),
             Err(e) => bail!("casting bytes to OrderId: {e}"),
         }
+    }
+
+    pub fn encode_base64(&self) -> String {
+        URL_SAFE.encode(bytemuck::bytes_of(self))
+    }
+
+    pub fn decode_base64(s: impl AsRef<[u8]>) -> Result<Self> {
+        let bytes = URL_SAFE.decode(s.as_ref())?;
+        Ok(Self::try_from_bytes(bytes)?)
     }
 }
 

@@ -70,6 +70,16 @@ impl SymbologySnapshot {
         map
     }
 
+    pub fn exchange_symbol(
+        &self,
+        venue: &str,
+        symbol: &TradableProduct,
+    ) -> Option<&String> {
+        self.execution_info.get(symbol).and_then(|infos| {
+            infos.get(venue).and_then(|info| info.exchange_symbol.as_ref())
+        })
+    }
+
     pub fn filter_venue(mut self, venue: &ExecutionVenue) -> Self {
         let mut out = Self::default();
         let mut products = BTreeSet::default();

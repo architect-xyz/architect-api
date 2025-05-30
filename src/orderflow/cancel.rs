@@ -29,6 +29,10 @@ pub struct Cancel {
 }
 
 impl Cancel {
+    pub fn reject(&self, message: Option<String>) -> CancelReject {
+        CancelReject { cancel_id: self.cancel_id, order_id: self.order_id, message }
+    }
+
     pub fn recv_time(&self) -> Option<DateTime<Utc>> {
         DateTime::from_timestamp(self.recv_time, self.recv_time_ns)
     }

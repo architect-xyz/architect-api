@@ -24,6 +24,10 @@ pub struct Order {
     #[serde(rename = "eid")]
     #[schemars(title = "exchange_order_id")]
     pub exchange_order_id: Option<String>,
+    /// Timestamp that the Architect OMS first received the order.
+    ///
+    /// For reconciled orders, this could be very far in the future
+    /// relative to the exchange order timestamp.
     #[serde(rename = "ts")]
     #[schemars(title = "recv_time")]
     pub recv_time: i64,

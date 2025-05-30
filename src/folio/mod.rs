@@ -100,6 +100,7 @@ pub struct AccountPosition {
     pub cost_basis: Option<Decimal>,
     /// Unrealized PNL of the position, if known.
     pub unrealized_pnl: Option<Decimal>,
+    // CR alee: rename break_even_price to entry_price
     pub break_even_price: Option<Decimal>,
     pub liquidation_price: Option<Decimal>,
 }

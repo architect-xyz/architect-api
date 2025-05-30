@@ -7698,6 +7698,7 @@
               },
               "ts": {
                 "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
                 "type": "integer",
                 "format": "int64"
               },
@@ -8762,6 +8763,7 @@
               },
               "ts": {
                 "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
                 "type": "integer",
                 "format": "int64"
               },
@@ -9837,6 +9839,7 @@
               },
               "ts": {
                 "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
                 "type": "integer",
                 "format": "int64"
               },
@@ -10888,6 +10891,7 @@
           },
           "ts": {
             "title": "recv_time",
+            "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
             "type": "integer",
             "format": "int64"
           },
@@ -11598,6 +11602,7 @@
               },
               "ts": {
                 "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
                 "type": "integer",
                 "format": "int64"
               },
@@ -13334,6 +13339,7 @@
               },
               "ts": {
                 "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
                 "type": "integer",
                 "format": "int64"
               },
@@ -13787,6 +13793,7 @@
               },
               "ts": {
                 "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
                 "type": "integer",
                 "format": "int64"
               },
@@ -14134,6 +14141,7 @@
               },
               "ts": {
                 "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
                 "type": "integer",
                 "format": "int64"
               },
@@ -14562,6 +14570,7 @@
               },
               "ts": {
                 "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
                 "type": "integer",
                 "format": "int64"
               },
@@ -15124,6 +15133,7 @@
               },
               "ts": {
                 "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
                 "type": "integer",
                 "format": "int64"
               },
@@ -15386,14 +15396,19 @@
         "type": "object",
         "required": [
           "connected",
+          "connections",
           "kind",
-          "last_heartbeat",
-          "last_heartbeat_stale_threshold",
-          "logged_in"
+          "stale"
         ],
         "properties": {
           "connected": {
             "type": "boolean"
+          },
+          "connections": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/definitions/ConnectionStatus"
+            }
           },
           "instance": {
             "type": [
@@ -15404,18 +15419,47 @@
           "kind": {
             "type": "string"
           },
-          "last_heartbeat": {
-            "description": "UNIX epoch time or -1 for never",
-            "type": "integer",
-            "format": "int64"
-          },
-          "last_heartbeat_stale_threshold": {
-            "description": "Stale threshold in seconds, or -1 for never stale",
-            "type": "integer",
-            "format": "int64"
-          },
           "logged_in": {
+            "description": "Not applicable to cpty if None",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "stale": {
             "type": "boolean"
+          }
+        },
+        "definitions": {
+          "ConnectionStatus": {
+            "type": "object",
+            "required": [
+              "connected",
+              "last_heartbeat",
+              "last_heartbeat_stale_threshold"
+            ],
+            "properties": {
+              "connected": {
+                "type": "boolean"
+              },
+              "last_heartbeat": {
+                "description": "UNIX epoch time or -1 for never",
+                "type": "integer",
+                "format": "int64"
+              },
+              "last_heartbeat_stale_threshold": {
+                "description": "Stale threshold in seconds, or -1 for never stale",
+                "type": "integer",
+                "format": "int64"
+              },
+              "logged_in": {
+                "description": "Not applicable to connection if None",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
           }
         }
       }
@@ -15444,27 +15488,16 @@
           }
         },
         "definitions": {
-          "CptyStatus": {
+          "ConnectionStatus": {
             "type": "object",
             "required": [
               "connected",
-              "kind",
               "last_heartbeat",
-              "last_heartbeat_stale_threshold",
-              "logged_in"
+              "last_heartbeat_stale_threshold"
             ],
             "properties": {
               "connected": {
                 "type": "boolean"
-              },
-              "instance": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "kind": {
-                "type": "string"
               },
               "last_heartbeat": {
                 "description": "UNIX epoch time or -1 for never",
@@ -15477,6 +15510,49 @@
                 "format": "int64"
               },
               "logged_in": {
+                "description": "Not applicable to connection if None",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          },
+          "CptyStatus": {
+            "type": "object",
+            "required": [
+              "connected",
+              "connections",
+              "kind",
+              "stale"
+            ],
+            "properties": {
+              "connected": {
+                "type": "boolean"
+              },
+              "connections": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/definitions/ConnectionStatus"
+                }
+              },
+              "instance": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "kind": {
+                "type": "string"
+              },
+              "logged_in": {
+                "description": "Not applicable to cpty if None",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "stale": {
                 "type": "boolean"
               }
             }

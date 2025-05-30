@@ -9,6 +9,10 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
+pub mod cpty_id;
+
+pub use cpty_id::CptyId;
+
 #[grpc(package = "json.architect")]
 #[grpc(service = "Cpty", name = "cpty", response = "CptyResponse", server_streaming)]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -82,7 +86,30 @@ pub struct CptyStatus {
     pub kind: String,
     pub instance: Option<String>,
     pub connected: bool,
-    pub logged_in: bool,
+    /// Not applicable to cpty if None
+    pub logged_in: Option<bool>,
+    pub stale: bool,
+    pub connections: BTreeMap<String, ConnectionStatus>,
+}
+
+impl CptyStatus {
+    pub fn new(id: CptyId) -> Self {
+        Self {
+            kind: id.kind.to_string(),
+            instance: id.instance.map(|s| s.to_string()),
+            connected: true,
+            logged_in: None,
+            stale: false,
+            connections: BTreeMap::new(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct ConnectionStatus {
+    pub connected: bool,
+    /// Not applicable to connection if None
+    pub logged_in: Option<bool>,
     /// UNIX epoch time or -1 for never
     pub last_heartbeat: i64,
     /// Stale threshold in seconds, or -1 for never stale
