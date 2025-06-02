@@ -171,6 +171,16 @@ impl AccountPermissions {
             && !self.set_limits
     }
 
+    pub fn read_only() -> Self {
+        Self {
+            list: true,
+            view: true,
+            trade: false,
+            reduce_or_close: false,
+            set_limits: false,
+        }
+    }
+
     pub fn list(&self) -> bool {
         self.list
     }
