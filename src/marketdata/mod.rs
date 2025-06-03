@@ -52,6 +52,9 @@ pub struct SubscribeL1BookSnapshotsRequest {
     /// If None, subscribe from all symbols on the feed
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub symbols: Option<Vec<String>>,
+    /// If true, send an initial snapshot to subscribers on symbol subscription
+    #[serde(default)]
+    pub send_initial_snapshots: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
