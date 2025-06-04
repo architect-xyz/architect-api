@@ -718,6 +718,8 @@ pub struct TickersRequest {
     pub symbols: Option<Vec<String>>,
     #[serde(default, flatten)]
     pub pagination: OffsetAndLimit<SortTickersBy>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub include_options: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
