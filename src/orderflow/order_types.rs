@@ -11,8 +11,8 @@ use strum::IntoStaticStr;
 pub enum OrderType {
     Market,
     Limit(LimitOrderType),
-    StopLossLimit(StopLossLimitOrderType),
-    TakeProfitLimit(TakeProfitLimitOrderType),
+    StopLossLimit(TriggerLimitOrderType),
+    TakeProfitLimit(TriggerLimitOrderType),
 }
 
 impl OrderType {
@@ -57,18 +57,7 @@ pub struct LimitOrderType {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-pub struct StopLossLimitOrderType {
-    #[serde(rename = "p")]
-    #[schemars(title = "limit_price")]
-    pub limit_price: Decimal,
-    #[serde(rename = "tp")]
-    #[schemars(title = "trigger_price")]
-    pub trigger_price: Decimal,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
-#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-pub struct TakeProfitLimitOrderType {
+pub struct TriggerLimitOrderType {
     #[serde(rename = "p")]
     #[schemars(title = "limit_price")]
     pub limit_price: Decimal,

@@ -278,6 +278,7 @@ pub enum OrderRejectReason {
     InsufficientCash,
     InsufficientMargin,
     NotEasyToBorrow,
+    InvalidOrder,
     #[serde(other)]
     Unknown,
 }
@@ -443,7 +444,7 @@ mod tests {
             quantity: dec!(0.7050),
             filled_quantity: dec!(0.7050),
             average_fill_price: Some(dec!(4250)),
-            order_type: OrderType::StopLossLimit(StopLossLimitOrderType {
+            order_type: OrderType::StopLossLimit(TriggerLimitOrderType {
                 limit_price: dec!(4500),
                 trigger_price: dec!(4000),
             }),

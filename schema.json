@@ -8384,6 +8384,7 @@
               "InsufficientCash",
               "InsufficientMargin",
               "NotEasyToBorrow",
+              "InvalidOrder",
               "Unknown"
             ]
           },
@@ -9449,6 +9450,7 @@
               "InsufficientCash",
               "InsufficientMargin",
               "NotEasyToBorrow",
+              "InvalidOrder",
               "Unknown"
             ]
           },
@@ -10246,6 +10248,7 @@
               "InsufficientCash",
               "InsufficientMargin",
               "NotEasyToBorrow",
+              "InvalidOrder",
               "Unknown"
             ]
           },
@@ -10973,6 +10976,7 @@
               "InsufficientCash",
               "InsufficientMargin",
               "NotEasyToBorrow",
+              "InvalidOrder",
               "Unknown"
             ]
           },
@@ -11676,6 +11680,7 @@
               "InsufficientCash",
               "InsufficientMargin",
               "NotEasyToBorrow",
+              "InvalidOrder",
               "Unknown"
             ]
           },
@@ -13413,6 +13418,7 @@
               "InsufficientCash",
               "InsufficientMargin",
               "NotEasyToBorrow",
+              "InvalidOrder",
               "Unknown"
             ]
           },
@@ -14215,6 +14221,7 @@
               "InsufficientCash",
               "InsufficientMargin",
               "NotEasyToBorrow",
+              "InvalidOrder",
               "Unknown"
             ]
           },
@@ -15207,6 +15214,7 @@
               "InsufficientCash",
               "InsufficientMargin",
               "NotEasyToBorrow",
+              "InvalidOrder",
               "Unknown"
             ]
           },
