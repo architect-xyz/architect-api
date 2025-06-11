@@ -13,6 +13,7 @@ pub enum OrderType {
     Limit(LimitOrderType),
     StopLossLimit(TriggerLimitOrderType),
     TakeProfitLimit(TriggerLimitOrderType),
+    Bracket(BracketOrderType),
 }
 
 impl OrderType {
@@ -22,6 +23,7 @@ impl OrderType {
             OrderType::StopLossLimit(stop_loss) => Some(stop_loss.limit_price),
             OrderType::TakeProfitLimit(take_profit) => Some(take_profit.limit_price),
             OrderType::Market => None,
+            OrderType::Bracket(bracket) => Some(bracket.limit_price),
         }
     }
 
@@ -31,6 +33,7 @@ impl OrderType {
             OrderType::StopLossLimit(_) => None,
             OrderType::TakeProfitLimit(_) => None,
             OrderType::Market => None,
+            OrderType::Bracket(br) => Some(br.post_only),
         }
     }
 
@@ -40,6 +43,9 @@ impl OrderType {
             OrderType::StopLossLimit(stop_loss) => Some(stop_loss.trigger_price),
             OrderType::TakeProfitLimit(take_profit) => Some(take_profit.trigger_price),
             OrderType::Market => None,
+            OrderType::Bracket(bracket) => {
+                bracket.stop_loss.as_ref().map(|sl| sl.trigger_price)
+            }
         }
     }
 }
@@ -64,4 +70,32 @@ pub struct TriggerLimitOrderType {
     #[serde(rename = "tp")]
     #[schemars(title = "trigger_price")]
     pub trigger_price: Decimal,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct BracketOrderType {
+    #[serde(rename = "p")]
+    #[schemars(title = "limit_price")]
+    pub limit_price: Decimal,
+    #[serde(rename = "po")]
+    #[schemars(title = "post_only")]
+    pub post_only: bool,
+    #[serde(rename = "tpp")]
+    #[schemars(title = "take_profit_price")]
+    pub take_profit_price: Option<Decimal>,
+
+    #[serde(rename = "sl")]
+    #[schemars(title = "bracket_order_stop_loss")]
+    pub stop_loss: Option<TriggerLimitOrderType>,
+}
+
+impl BracketOrderType {
+    pub fn has_take_profit(&self) -> bool {
+        self.take_profit_price.is_some()
+    }
+
+    pub fn has_stop_loss(&self) -> bool {
+        self.stop_loss.is_some()
+    }
 }

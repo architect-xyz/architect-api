@@ -10,10 +10,11 @@ use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use serde_with::skip_serializing_none;
+use std::hash::{Hash, Hasher};
 use strum::{FromRepr, IntoStaticStr};
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
 /// <!-- py: unflatten=k/order_type/OrderType, tag=k -->
 pub struct Order {
     pub id: OrderId,
@@ -84,6 +85,12 @@ pub struct Order {
 impl Order {
     pub fn recv_time(&self) -> Option<DateTime<Utc>> {
         DateTime::from_timestamp(self.recv_time, self.recv_time_ns)
+    }
+}
+
+impl Hash for Order {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.id.hash(state);
     }
 }
 
@@ -264,7 +271,18 @@ impl OrderReject {
     }
 }
 
-#[derive(Debug, Display, FromStr, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+#[derive(
+    Debug,
+    Display,
+    FromStr,
+    Clone,
+    Copy,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+    PartialEq,
+    Eq,
+)]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[cfg_attr(feature = "sqlx", sqlx(type_name = "TEXT"))]
 pub enum OrderRejectReason {

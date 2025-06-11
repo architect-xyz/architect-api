@@ -7176,6 +7176,50 @@
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
               }
             ],
             "required": [
@@ -7481,6 +7525,25 @@
           },
           "TraderIdOrEmail": {
             "type": "string"
+          },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
           }
         }
       },
@@ -7581,6 +7644,50 @@
                   "tp": {
                     "title": "trigger_price",
                     "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
@@ -8494,6 +8601,25 @@
                 ]
               }
             ]
+          },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
           },
           "UserId": {
             "type": "string",
@@ -8650,6 +8776,50 @@
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
               }
             ],
             "required": [
@@ -9560,6 +9730,25 @@
                 ]
               }
             ]
+          },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
           },
           "UserId": {
             "type": "string",
@@ -9727,6 +9916,50 @@
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
               }
             ],
             "required": [
@@ -10359,6 +10592,25 @@
               }
             ]
           },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
           "UserId": {
             "type": "string",
             "format": "uuid"
@@ -10469,6 +10721,50 @@
               "tp": {
                 "title": "trigger_price",
                 "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "k",
+              "p",
+              "po"
+            ],
+            "properties": {
+              "k": {
+                "type": "string",
+                "enum": [
+                  "BRACKET"
+                ]
+              },
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "po": {
+                "title": "post_only",
+                "type": "boolean"
+              },
+              "sl": {
+                "title": "bracket_order_stop_loss",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/TriggerLimitOrderType"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "tpp": {
+                "title": "take_profit_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
                 "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               }
             }
@@ -10688,6 +10984,25 @@
           },
           "TraderIdOrEmail": {
             "type": "string"
+          },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
           }
         }
       },
@@ -10784,6 +11099,50 @@
               "tp": {
                 "title": "trigger_price",
                 "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "k",
+              "p",
+              "po"
+            ],
+            "properties": {
+              "k": {
+                "type": "string",
+                "enum": [
+                  "BRACKET"
+                ]
+              },
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "po": {
+                "title": "post_only",
+                "type": "boolean"
+              },
+              "sl": {
+                "title": "bracket_order_stop_loss",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/TriggerLimitOrderType"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "tpp": {
+                "title": "take_profit_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
                 "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               }
             }
@@ -11086,6 +11445,25 @@
                 ]
               }
             ]
+          },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
           },
           "UserId": {
             "type": "string",
@@ -11499,6 +11877,50 @@
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
               }
             ],
             "required": [
@@ -11790,6 +12212,25 @@
                 ]
               }
             ]
+          },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
           },
           "UserId": {
             "type": "string",
@@ -13237,6 +13678,50 @@
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
               }
             ],
             "required": [
@@ -13529,6 +14014,25 @@
               }
             ]
           },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
           "UserId": {
             "type": "string",
             "format": "uuid"
@@ -13682,6 +14186,50 @@
                   "tp": {
                     "title": "trigger_price",
                     "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
@@ -14040,6 +14588,50 @@
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
               }
             ],
             "required": [
@@ -14332,6 +14924,25 @@
               }
             ]
           },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
           "UserId": {
             "type": "string",
             "format": "uuid"
@@ -14460,6 +15071,50 @@
                   "tp": {
                     "title": "trigger_price",
                     "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
@@ -15033,6 +15688,50 @@
                     "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
                   }
                 }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "bracket_order_stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
               }
             ],
             "required": [
@@ -15379,6 +16078,25 @@
                 ]
               }
             ]
+          },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
           },
           "UserId": {
             "type": "string",
