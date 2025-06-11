@@ -5,8 +5,7 @@ fn build_grpc_stubs() {
     let msgpack_codec = "crate::grpc::msgpack_codec::MsgPackCodec";
     let health_service = tonic_build::manual::Service::builder()
         .name("Health")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("check")
@@ -20,8 +19,7 @@ fn build_grpc_stubs() {
         .build();
     let auth_service = tonic_build::manual::Service::builder()
         .name("Auth")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("create_jwt")
@@ -34,8 +32,7 @@ fn build_grpc_stubs() {
         .build();
     let core_service = tonic_build::manual::Service::builder()
         .name("Core")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("config")
@@ -57,8 +54,7 @@ fn build_grpc_stubs() {
         .build();
     let accounts_service = tonic_build::manual::Service::builder()
         .name("Accounts")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("accounts")
@@ -71,8 +67,7 @@ fn build_grpc_stubs() {
         .build();
     let symbology_service = tonic_build::manual::Service::builder()
         .name("Symbology")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("symbols")
@@ -149,8 +144,7 @@ fn build_grpc_stubs() {
         .build();
     let marketdata_service = tonic_build::manual::Service::builder()
         .name("Marketdata")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("l1_book_snapshot")
@@ -297,8 +291,7 @@ fn build_grpc_stubs() {
         .build();
     let options_marketdata_service = tonic_build::manual::Service::builder()
         .name("OptionsMarketdata")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("options_expirations")
@@ -333,8 +326,7 @@ fn build_grpc_stubs() {
         .build();
     let orderflow_service = tonic_build::manual::Service::builder()
         .name("Orderflow")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("orderflow")
@@ -369,8 +361,7 @@ fn build_grpc_stubs() {
         .build();
     let oms_service = tonic_build::manual::Service::builder()
         .name("Oms")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("place_order")
@@ -419,8 +410,7 @@ fn build_grpc_stubs() {
         .build();
     let folio_service = tonic_build::manual::Service::builder()
         .name("Folio")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("account_summary")
@@ -469,8 +459,7 @@ fn build_grpc_stubs() {
         .build();
     let cpty_service = tonic_build::manual::Service::builder()
         .name("Cpty")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("cpty")
@@ -503,8 +492,7 @@ fn build_grpc_stubs() {
         .build();
     let algo_service = tonic_build::manual::Service::builder()
         .name("Algo")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("create_algo_order")
@@ -573,8 +561,7 @@ fn build_grpc_stubs() {
         .build();
     let boss_service = tonic_build::manual::Service::builder()
         .name("Boss")
-        .package("architect")
-        .deprecating_packages(["json.architect"])
+        .package("json.architect")
         .method(
             tonic_build::manual::Method::builder()
                 .name("statements")
