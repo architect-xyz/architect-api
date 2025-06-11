@@ -5,7 +5,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Health/Check",
+      "route": "/architect.Health/Check",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "HealthCheckRequest",
@@ -114,7 +114,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Auth/CreateJwt",
+      "route": "/architect.Auth/CreateJwt",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "CreateJwtRequest",
@@ -156,7 +156,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Core/Config",
+      "route": "/architect.Core/Config",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "ConfigRequest",
@@ -182,7 +182,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Core/RestartCpty",
+      "route": "/architect.Core/RestartCpty",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "RestartCptyRequest",
@@ -211,7 +211,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Accounts/Accounts",
+      "route": "/architect.Accounts/Accounts",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "AccountsRequest",
@@ -337,7 +337,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Symbology/Symbols",
+      "route": "/architect.Symbology/Symbols",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SymbolsRequest",
@@ -363,7 +363,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Symbology/ExecutionInfo",
+      "route": "/architect.Symbology/ExecutionInfo",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "ExecutionInfoRequest",
@@ -548,7 +548,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Symbology/Symbology",
+      "route": "/architect.Symbology/Symbology",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SymbologyRequest",
@@ -1340,7 +1340,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Symbology/SubscribeSymbology",
+      "route": "/architect.Symbology/SubscribeSymbology",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeSymbology",
@@ -2533,7 +2533,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Symbology/UploadSymbology",
+      "route": "/architect.Symbology/UploadSymbology",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "UploadSymbologyRequest",
@@ -3207,7 +3207,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Symbology/PruneExpiredSymbols",
+      "route": "/architect.Symbology/PruneExpiredSymbols",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "PruneExpiredSymbolsRequest",
@@ -3231,7 +3231,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Symbology/UploadProductCatalog",
+      "route": "/architect.Symbology/UploadProductCatalog",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "UploadProductCatalogRequest",
@@ -3349,7 +3349,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Symbology/DownloadProductCatalog",
+      "route": "/architect.Symbology/DownloadProductCatalog",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "DownloadProductCatalogRequest",
@@ -3478,7 +3478,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Marketdata/L1BookSnapshot",
+      "route": "/architect.Marketdata/L1BookSnapshot",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "L1BookSnapshotRequest",
@@ -3550,7 +3550,7 @@
           },
           "rt": {
             "title": "recv_time",
-            "description": "Time that Architect feed received the message; only set if streaming from direct L1 feeds",
+            "description": "Time that Architect feed received the message that updated the BBO",
             "type": [
               "integer",
               "null"
@@ -3578,6 +3578,7 @@
           },
           "ts": {
             "title": "timestamp",
+            "description": "Time that the exchange stamped the message",
             "type": "integer",
             "format": "int64"
           }
@@ -3586,7 +3587,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Marketdata/L1BookSnapshots",
+      "route": "/architect.Marketdata/L1BookSnapshots",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "L1BookSnapshotsRequest",
@@ -3667,7 +3668,7 @@
               },
               "rt": {
                 "title": "recv_time",
-                "description": "Time that Architect feed received the message; only set if streaming from direct L1 feeds",
+                "description": "Time that Architect feed received the message that updated the BBO",
                 "type": [
                   "integer",
                   "null"
@@ -3695,6 +3696,7 @@
               },
               "ts": {
                 "title": "timestamp",
+                "description": "Time that the exchange stamped the message",
                 "type": "integer",
                 "format": "int64"
               }
@@ -3705,7 +3707,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Marketdata/SubscribeL1BookSnapshots",
+      "route": "/architect.Marketdata/SubscribeL1BookSnapshots",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeL1BookSnapshotsRequest",
@@ -3786,7 +3788,7 @@
           },
           "rt": {
             "title": "recv_time",
-            "description": "Time that Architect feed received the message; only set if streaming from direct L1 feeds",
+            "description": "Time that Architect feed received the message that updated the BBO",
             "type": [
               "integer",
               "null"
@@ -3814,6 +3816,7 @@
           },
           "ts": {
             "title": "timestamp",
+            "description": "Time that the exchange stamped the message",
             "type": "integer",
             "format": "int64"
           }
@@ -3822,7 +3825,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Marketdata/SubscribeL2BookUpdates",
+      "route": "/architect.Marketdata/SubscribeL2BookUpdates",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeL2BookUpdatesRequest",
@@ -4020,7 +4023,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Marketdata/L2BookSnapshot",
+      "route": "/architect.Marketdata/L2BookSnapshot",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "L2BookSnapshotRequest",
@@ -4120,7 +4123,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Marketdata/SubscribeCandles",
+      "route": "/architect.Marketdata/SubscribeCandles",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeCandlesRequest",
@@ -4377,7 +4380,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Marketdata/SubscribeManyCandles",
+      "route": "/architect.Marketdata/SubscribeManyCandles",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeManyCandlesRequest",
@@ -4634,7 +4637,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Marketdata/SubscribeCurrentCandles",
+      "route": "/architect.Marketdata/SubscribeCurrentCandles",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeCurrentCandlesRequest",
@@ -4895,7 +4898,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Marketdata/HistoricalCandles",
+      "route": "/architect.Marketdata/HistoricalCandles",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "HistoricalCandlesRequest",
@@ -5172,7 +5175,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Marketdata/SubscribeTrades",
+      "route": "/architect.Marketdata/SubscribeTrades",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeTradesRequest",
@@ -5256,7 +5259,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Marketdata/MarketStatus",
+      "route": "/architect.Marketdata/MarketStatus",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "MarketStatusRequest",
@@ -5305,7 +5308,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Marketdata/Ticker",
+      "route": "/architect.Marketdata/Ticker",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "TickerRequest",
@@ -5586,7 +5589,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Marketdata/Tickers",
+      "route": "/architect.Marketdata/Tickers",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "TickersRequest",
@@ -5930,7 +5933,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Marketdata/SubscribeTickers",
+      "route": "/architect.Marketdata/SubscribeTickers",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeTickersRequest",
@@ -6487,7 +6490,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Marketdata/SubscribeLiquidations",
+      "route": "/architect.Marketdata/SubscribeLiquidations",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeLiquidationsRequest",
@@ -6572,7 +6575,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.OptionsMarketdata/OptionsExpirations",
+      "route": "/architect.OptionsMarketdata/OptionsExpirations",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "OptionsExpirationsRequest",
@@ -6610,7 +6613,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.OptionsMarketdata/OptionsChain",
+      "route": "/architect.OptionsMarketdata/OptionsChain",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "OptionsChainRequest",
@@ -6955,7 +6958,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.OptionsMarketdata/OptionsChainGreeks",
+      "route": "/architect.OptionsMarketdata/OptionsChainGreeks",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "OptionsChainGreeksRequest",
@@ -7075,7 +7078,7 @@
   "rpcs": [
     {
       "type": "duplex_stream",
-      "route": "/json.architect.Orderflow/Orderflow",
+      "route": "/architect.Orderflow/Orderflow",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "OrderflowRequest",
@@ -8630,7 +8633,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Orderflow/SubscribeOrderflow",
+      "route": "/architect.Orderflow/SubscribeOrderflow",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "SubscribeOrderflowRequest",
@@ -9759,7 +9762,7 @@
     },
     {
       "type": "stream",
-      "route": "/json.architect.Orderflow/Dropcopy",
+      "route": "/architect.Orderflow/Dropcopy",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "DropcopyRequest",
@@ -10627,7 +10630,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Oms/PlaceOrder",
+      "route": "/architect.Oms/PlaceOrder",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "PlaceOrderRequest",
@@ -11474,7 +11477,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Oms/CancelOrder",
+      "route": "/architect.Oms/CancelOrder",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "CancelOrderRequest",
@@ -11616,7 +11619,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Oms/CancelAllOrders",
+      "route": "/architect.Oms/CancelAllOrders",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "CancelAllOrdersRequest",
@@ -11673,7 +11676,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Oms/OpenOrders",
+      "route": "/architect.Oms/OpenOrders",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "OpenOrdersRequest",
@@ -12241,7 +12244,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Oms/PendingCancels",
+      "route": "/architect.Oms/PendingCancels",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "PendingCancelsRequest",
@@ -12412,7 +12415,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Folio/AccountSummary",
+      "route": "/architect.Folio/AccountSummary",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "AccountSummaryRequest",
@@ -12585,7 +12588,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Folio/AccountSummaries",
+      "route": "/architect.Folio/AccountSummaries",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "AccountSummariesRequest",
@@ -12789,7 +12792,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Folio/AccountHistory",
+      "route": "/architect.Folio/AccountHistory",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "AccountHistoryRequest",
@@ -12990,7 +12993,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Folio/HistoricalFills",
+      "route": "/architect.Folio/HistoricalFills",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "HistoricalFillsRequest",
@@ -13456,7 +13459,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Folio/HistoricalOrders",
+      "route": "/architect.Folio/HistoricalOrders",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "HistoricalOrdersRequest",
@@ -14049,7 +14052,7 @@
   "rpcs": [
     {
       "type": "duplex_stream",
-      "route": "/json.architect.Cpty/Cpty",
+      "route": "/architect.Cpty/Cpty",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "CptyRequest",
@@ -16107,7 +16110,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Cpty/CptyStatus",
+      "route": "/architect.Cpty/CptyStatus",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "CptyStatusRequest",
@@ -16203,7 +16206,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Cpty/Cptys",
+      "route": "/architect.Cpty/Cptys",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "CptysRequest",
@@ -16306,7 +16309,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Algo/CreateAlgoOrder",
+      "route": "/architect.Algo/CreateAlgoOrder",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "CreateAlgoOrderRequest",
@@ -16526,7 +16529,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Algo/StartAlgo",
+      "route": "/architect.Algo/StartAlgo",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "StartAlgoRequest",
@@ -16569,7 +16572,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Algo/PauseAlgo",
+      "route": "/architect.Algo/PauseAlgo",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "PauseAlgoRequest",
@@ -16612,7 +16615,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Algo/StopAlgo",
+      "route": "/architect.Algo/StopAlgo",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "StopAlgoRequest",
@@ -16655,7 +16658,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Algo/AlgoOrder",
+      "route": "/architect.Algo/AlgoOrder",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "AlgoOrderRequest",
@@ -16841,7 +16844,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Algo/AlgoOrders",
+      "route": "/architect.Algo/AlgoOrders",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "AlgoOrdersRequest",
@@ -17123,7 +17126,7 @@
   "rpcs": [
     {
       "type": "unary",
-      "route": "/json.architect.Boss/Statements",
+      "route": "/architect.Boss/Statements",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "StatementsRequest",
@@ -17192,7 +17195,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Boss/StatementUrl",
+      "route": "/architect.Boss/StatementUrl",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "StatementUrlRequest",
@@ -17223,7 +17226,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Boss/RqdAccountStatistics",
+      "route": "/architect.Boss/RqdAccountStatistics",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "RqdAccountStatisticsRequest",
@@ -17585,7 +17588,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Boss/Deposits",
+      "route": "/architect.Boss/Deposits",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "DepositsRequest",
@@ -17646,7 +17649,7 @@
     },
     {
       "type": "unary",
-      "route": "/json.architect.Boss/Withdrawals",
+      "route": "/architect.Boss/Withdrawals",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "WithdrawalsRequest",

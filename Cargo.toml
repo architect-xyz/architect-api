@@ -40,6 +40,8 @@ parking_lot = { workspace = true }
 postgres-types = { workspace = true, optional = true }
 rand = { workspace = true }
 regex = { workspace = true }
+# rmp = { workspace = true }
+rmp-serde = { workspace = true }
 rusqlite = { workspace = true, optional = true }
 rust_decimal = { workspace = true }
 rust_decimal_macros = { workspace = true }
@@ -68,7 +70,7 @@ zeroize = { workspace = true, features = ["zeroize_derive"] }
 
 [build-dependencies]
 schema_builder = { package = "architect-api-schema-builder", version = "0.3.0", path = "./schema/builder" }
-tonic-build = { workspace = true, optional = true }
+tonic-build = { package = "architect-tonic-build", version = "0.13.1", path = "../vendor/tonic-build", optional = true }
 
 [[bench]]
 harness = false

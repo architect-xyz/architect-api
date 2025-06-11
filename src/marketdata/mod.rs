@@ -62,14 +62,14 @@ pub struct L1BookSnapshot {
     #[serde(rename = "s")]
     #[schemars(title = "symbol")]
     pub symbol: String,
+    /// Time that the exchange stamped the message
     #[serde(rename = "ts")]
     #[schemars(title = "timestamp")]
     pub timestamp: i64,
     #[serde(rename = "tn")]
     #[schemars(title = "timestamp_ns")]
     pub timestamp_ns: u32,
-    /// Time that Architect feed received the message;
-    /// only set if streaming from direct L1 feeds
+    /// Time that Architect feed received the message that updated the BBO
     #[serde(rename = "rt", default, skip_serializing_if = "Option::is_none")]
     #[schemars(title = "recv_time")]
     pub recv_time: Option<i64>,
