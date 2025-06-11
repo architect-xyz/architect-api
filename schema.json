@@ -146,6 +146,48 @@
           }
         }
       }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Auth/AuthInfo",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AuthInfoRequest",
+        "type": "object"
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AuthInfoResponse",
+        "type": "object",
+        "properties": {
+          "original_user_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/UserId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/UserId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "definitions": {
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
     }
   ]
 },

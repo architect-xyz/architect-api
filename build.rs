@@ -29,6 +29,15 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("auth_info")
+                .route_name("AuthInfo")
+                .input_type("crate::auth::AuthInfoRequest")
+                .output_type("crate::auth::AuthInfoResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let core_service = tonic_build::manual::Service::builder()
         .name("Core")

@@ -1,3 +1,4 @@
+use crate::UserId;
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -17,4 +18,13 @@ pub struct CreateJwtRequest {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct CreateJwtResponse {
     pub jwt: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct AuthInfoRequest {}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct AuthInfoResponse {
+    pub user_id: Option<UserId>,
+    pub original_user_id: Option<UserId>,
 }
