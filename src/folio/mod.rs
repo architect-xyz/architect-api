@@ -3,7 +3,7 @@ use crate::{
     symbology::{ExecutionVenue, Product, TradableProduct},
     AccountId, AccountIdOrName, OrderId, TraderIdOrEmail,
 };
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveTime, Utc};
 use derive::grpc;
 use derive_more::{Deref, DerefMut};
 use rust_decimal::Decimal;
@@ -105,11 +105,29 @@ pub struct AccountPosition {
     pub liquidation_price: Option<Decimal>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
+pub enum AccountHistoryGranularity {
+    FiveMinutes,
+    Hourly,
+    Daily,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct AccountHistoryRequest {
     pub account: AccountIdOrName,
     pub from_inclusive: Option<DateTime<Utc>>,
     pub to_exclusive: Option<DateTime<Utc>>,
+    /// Default maximum of 100 data points.  If the number of data points
+    /// between from_inclusive and to_exclusive exceeds the limit, the
+    /// response will be truncated.  Data is always returned in descending
+    /// timestamp order.
+    pub limit: Option<i32>,
+    pub granularity: Option<AccountHistoryGranularity>,
+    /// For daily granularity, the UTC time of day to use for each day.
+    ///
+    /// Currently the seconds and subseconds parts are ignored.
+    pub time_of_day: Option<NaiveTime>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
