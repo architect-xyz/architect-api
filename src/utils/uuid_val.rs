@@ -4,7 +4,7 @@ macro_rules! uuid_val {
     ($name:ident, $ns:ident) => {
         uuid_val!($name, $ns, {});
     };
-    ($name:ident, $ns:ident, { $($key:expr => $value:expr),* $(,)? }) => {
+    ($name:ident, $ns:ident, { $($key:expr_2021 => $value:expr_2021),* $(,)? }) => {
         /// Wrapper type around a UUIDv5 for a given namespace.  These types are
         /// parseable from either the UUIDv5 string representation, or from the
         /// name itself, as they are 1-1.
@@ -127,9 +127,9 @@ macro_rules! uuid_val {
             }
 
             fn json_schema(
-                gen: &mut schemars::gen::SchemaGenerator,
+                r#gen: &mut schemars::r#gen::SchemaGenerator,
             ) -> schemars::schema::Schema {
-                uuid::Uuid::json_schema(gen)
+                uuid::Uuid::json_schema(r#gen)
             }
         }
 

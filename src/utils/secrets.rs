@@ -1,7 +1,7 @@
 //! Types for working with the secret store
 
 use schemars::{
-    gen::SchemaGenerator,
+    r#gen::SchemaGenerator,
     schema::{InstanceType, Schema, SchemaObject},
     JsonSchema,
 };

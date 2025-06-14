@@ -27,13 +27,13 @@ use triomphe::Arc as TArc;
 /// the pool.
 #[macro_export]
 macro_rules! pool {
-    ($vis:vis, $name:ident, $ty:ty, $max_capacity:expr, $max_elt_size:expr) => {
+    ($vis:vis, $name:ident, $ty:ty, $max_capacity:expr_2021, $max_elt_size:expr_2021) => {
         $vis fn $name() -> &'static api::utils::pool::Pool<$ty> {
             static POOL: once_cell::race::OnceBox<api::utils::pool::Pool<$ty>> = once_cell::race::OnceBox::new();
             POOL.get_or_init(|| Box::new(api::utils::pool::Pool::new($max_capacity, $max_elt_size)))
         }
     };
-    ($name:ident, $ty:ty, $max_capacity:expr, $max_elt_size:expr) => {
+    ($name:ident, $ty:ty, $max_capacity:expr_2021, $max_elt_size:expr_2021) => {
         fn $name() -> &'static api::utils::pool::Pool<$ty> {
             static POOL: once_cell::race::OnceBox<api::utils::pool::Pool<$ty>> = once_cell::race::OnceBox::new();
             POOL.get_or_init(|| Box::new(api::utils::pool::Pool::new($max_capacity, $max_elt_size)))
@@ -289,7 +289,7 @@ impl<T: Poolable + Send + 'static> Pooled<T> {
     #[inline(always)]
     fn get(&self) -> &T {
         match &self.object {
-            Some(ref t) => t,
+            Some(t) => t,
             None => unreachable!(),
         }
     }
@@ -297,7 +297,7 @@ impl<T: Poolable + Send + 'static> Pooled<T> {
     #[inline(always)]
     fn get_mut(&mut self) -> &mut T {
         match &mut self.object {
-            Some(ref mut t) => t,
+            Some(t) => t,
             None => unreachable!(),
         }
     }
@@ -447,7 +447,7 @@ impl<T: Poolable + Send + 'static + JsonSchema> JsonSchema for Pooled<T> {
     }
 
     fn json_schema(
-        _gen: &mut schemars::gen::SchemaGenerator,
+        _gen: &mut schemars::r#gen::SchemaGenerator,
     ) -> schemars::schema::Schema {
         // FIXME probably
         schemars::schema::SchemaObject {

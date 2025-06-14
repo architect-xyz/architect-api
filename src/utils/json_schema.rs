@@ -7,7 +7,7 @@ macro_rules! json_schema_is_string {
             }
 
             fn json_schema(
-                _gen: &mut schemars::gen::SchemaGenerator,
+                _gen: &mut schemars::r#gen::SchemaGenerator,
             ) -> schemars::schema::Schema {
                 schemars::schema::SchemaObject {
                     instance_type: Some(schemars::schema::InstanceType::String.into()),
@@ -28,7 +28,7 @@ macro_rules! json_schema_is_string {
             }
 
             fn json_schema(
-                _gen: &mut schemars::gen::SchemaGenerator,
+                _gen: &mut schemars::r#gen::SchemaGenerator,
             ) -> schemars::schema::Schema {
                 schemars::schema::SchemaObject {
                     instance_type: Some(schemars::schema::InstanceType::String.into()),
