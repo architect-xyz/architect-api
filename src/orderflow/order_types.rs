@@ -86,7 +86,7 @@ pub struct BracketOrderType {
     pub take_profit_price: Option<Decimal>,
 
     #[serde(rename = "sl")]
-    #[schemars(title = "bracket_order_stop_loss")]
+    #[schemars(title = "stop_loss")]
     pub stop_loss: Option<TriggerLimitOrderType>,
 }
 

@@ -8,7 +8,6 @@ use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::value::RawValue;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use strum::FromRepr;
-
 pub mod builder;
 pub mod common_params;
 pub mod release_at_time;
@@ -53,6 +52,14 @@ pub struct CreateAlgoOrderRequest {
     pub parent_id: Option<OrderId>,
     pub trader: Option<TraderIdOrEmail>,
     pub params: Box<RawValue>,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "AlgoHelper", name = "_algo_param_types", response = "AlgoParamTypes")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+/// this is used to coerce creation of the params in the schema.json
+pub struct AlgoParamTypes {
+    pub spreader: (spreader::SpreaderParams, spreader::SpreaderStatus),
 }
 
 impl CreateAlgoOrderRequest {

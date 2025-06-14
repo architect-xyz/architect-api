@@ -499,6 +499,19 @@ fn build_grpc_stubs() {
                 .build(),
         )
         .build();
+    let algo_service_helper = tonic_build::manual::Service::builder()
+        .name("AlgoHelper")
+        .package("json.architect")
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("_algo_param_types")
+                .route_name("_AlgoParamTypes")
+                .input_type("crate::algo::AlgoParamTypes")
+                .output_type("crate::algo::AlgoParamTypes")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .build();
     let algo_service = tonic_build::manual::Service::builder()
         .name("Algo")
         .package("json.architect")
@@ -637,6 +650,7 @@ fn build_grpc_stubs() {
             &folio_service,
             &cpty_service,
             &algo_service,
+            &algo_service_helper,
             &boss_service,
         ]);
     tonic_build::manual::Builder::new().out_dir(target_dir).compile(&[

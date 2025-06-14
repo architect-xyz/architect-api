@@ -7278,7 +7278,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -7749,7 +7749,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -8878,7 +8878,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -10018,7 +10018,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -10826,7 +10826,7 @@
                 "type": "boolean"
               },
               "sl": {
-                "title": "bracket_order_stop_loss",
+                "title": "stop_loss",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/TriggerLimitOrderType"
@@ -11204,7 +11204,7 @@
                 "type": "boolean"
               },
               "sl": {
-                "title": "bracket_order_stop_loss",
+                "title": "stop_loss",
                 "anyOf": [
                   {
                     "$ref": "#/definitions/TriggerLimitOrderType"
@@ -11979,7 +11979,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -13814,7 +13814,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -14325,7 +14325,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -14724,7 +14724,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -15210,7 +15210,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -15824,7 +15824,7 @@
                     "type": "boolean"
                   },
                   "sl": {
-                    "title": "bracket_order_stop_loss",
+                    "title": "stop_loss",
                     "anyOf": [
                       {
                         "$ref": "#/definitions/TriggerLimitOrderType"
@@ -17221,6 +17221,385 @@
           "UserId": {
             "type": "string",
             "format": "uuid"
+          }
+        }
+      }
+    }
+  ]
+},
+
+{
+  "$schema": "jsonschema",
+  "name": "AlgoHelper",
+  "rpcs": [
+    {
+      "type": "unary",
+      "route": "/json.architect.AlgoHelper/_AlgoParamTypes",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoParamTypes",
+        "description": "this is used to coerce creation of the params in the schema.json",
+        "type": "object",
+        "required": [
+          "spreader"
+        ],
+        "properties": {
+          "spreader": {
+            "type": "array",
+            "items": [
+              {
+                "$ref": "#/definitions/SpreaderParams"
+              },
+              {
+                "$ref": "#/definitions/SpreaderStatus"
+              }
+            ],
+            "maxItems": 2,
+            "minItems": 2
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "HumanDuration": {
+            "type": "string"
+          },
+          "SpreaderParams": {
+            "type": "object",
+            "required": [
+              "dir",
+              "leg1_marketdata_venue",
+              "leg1_price_offset",
+              "leg1_price_ratio",
+              "leg1_quantity_ratio",
+              "leg1_symbol",
+              "leg2_marketdata_venue",
+              "leg2_price_offset",
+              "leg2_price_ratio",
+              "leg2_quantity_ratio",
+              "leg2_symbol",
+              "limit_price",
+              "order_lockout",
+              "quantity"
+            ],
+            "properties": {
+              "dir": {
+                "$ref": "#/definitions/Dir"
+              },
+              "leg1_account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "leg1_execution_venue": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "leg1_marketdata_venue": {
+                "type": "string"
+              },
+              "leg1_price_offset": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg1_price_ratio": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg1_quantity_ratio": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg1_symbol": {
+                "type": "string"
+              },
+              "leg2_account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "leg2_execution_venue": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "leg2_marketdata_venue": {
+                "type": "string"
+              },
+              "leg2_price_offset": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg2_price_ratio": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg2_quantity_ratio": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg2_symbol": {
+                "type": "string"
+              },
+              "limit_price": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "order_lockout": {
+                "$ref": "#/definitions/HumanDuration"
+              },
+              "quantity": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
+          "SpreaderPhase": {
+            "type": "string",
+            "enum": [
+              "ScanningForTakes",
+              "AwaitingOrderResults",
+              "OrderLockout",
+              "NoBbo",
+              "NotEnoughBboSize",
+              "DoneOverfilled",
+              "DoneAndFullyHedged",
+              "DoneAndGivingUp"
+            ]
+          },
+          "SpreaderStatus": {
+            "type": "object",
+            "required": [
+              "current_spreader_phase",
+              "leg1_fill_quantity",
+              "leg2_fill_quantity"
+            ],
+            "properties": {
+              "current_spreader_phase": {
+                "$ref": "#/definitions/SpreaderPhase"
+              },
+              "implied_spread_vwap": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg1_fill_quantity": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg2_fill_quantity": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoParamTypes",
+        "description": "this is used to coerce creation of the params in the schema.json",
+        "type": "object",
+        "required": [
+          "spreader"
+        ],
+        "properties": {
+          "spreader": {
+            "type": "array",
+            "items": [
+              {
+                "$ref": "#/definitions/SpreaderParams"
+              },
+              {
+                "$ref": "#/definitions/SpreaderStatus"
+              }
+            ],
+            "maxItems": 2,
+            "minItems": 2
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "HumanDuration": {
+            "type": "string"
+          },
+          "SpreaderParams": {
+            "type": "object",
+            "required": [
+              "dir",
+              "leg1_marketdata_venue",
+              "leg1_price_offset",
+              "leg1_price_ratio",
+              "leg1_quantity_ratio",
+              "leg1_symbol",
+              "leg2_marketdata_venue",
+              "leg2_price_offset",
+              "leg2_price_ratio",
+              "leg2_quantity_ratio",
+              "leg2_symbol",
+              "limit_price",
+              "order_lockout",
+              "quantity"
+            ],
+            "properties": {
+              "dir": {
+                "$ref": "#/definitions/Dir"
+              },
+              "leg1_account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "leg1_execution_venue": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "leg1_marketdata_venue": {
+                "type": "string"
+              },
+              "leg1_price_offset": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg1_price_ratio": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg1_quantity_ratio": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg1_symbol": {
+                "type": "string"
+              },
+              "leg2_account": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "leg2_execution_venue": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "leg2_marketdata_venue": {
+                "type": "string"
+              },
+              "leg2_price_offset": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg2_price_ratio": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg2_quantity_ratio": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg2_symbol": {
+                "type": "string"
+              },
+              "limit_price": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "order_lockout": {
+                "$ref": "#/definitions/HumanDuration"
+              },
+              "quantity": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
+          "SpreaderPhase": {
+            "type": "string",
+            "enum": [
+              "ScanningForTakes",
+              "AwaitingOrderResults",
+              "OrderLockout",
+              "NoBbo",
+              "NotEnoughBboSize",
+              "DoneOverfilled",
+              "DoneAndFullyHedged",
+              "DoneAndGivingUp"
+            ]
+          },
+          "SpreaderStatus": {
+            "type": "object",
+            "required": [
+              "current_spreader_phase",
+              "leg1_fill_quantity",
+              "leg2_fill_quantity"
+            ],
+            "properties": {
+              "current_spreader_phase": {
+                "$ref": "#/definitions/SpreaderPhase"
+              },
+              "implied_spread_vwap": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg1_fill_quantity": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "leg2_fill_quantity": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
           }
         }
       }
