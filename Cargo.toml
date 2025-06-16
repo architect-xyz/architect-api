@@ -9,7 +9,7 @@ homepage = "https://www.architect.xyz"
 keywords = ["crypto", "hft", "trading", "finance"]
 license = "AGPL-3.0-only"
 name = "architect-api"
-version = "10.22.6"
+version = "10.22.7"
 
 [features]
 all = ["graphql", "grpc", "postgres"]
