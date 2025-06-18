@@ -14,6 +14,8 @@ pub struct ConfigRequest {}
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct ConfigResponse {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbology: Option<Url>,
     pub marketdata: BTreeMap<MarketdataVenue, Url>,
 }
 
