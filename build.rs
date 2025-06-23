@@ -629,6 +629,15 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("options_transactions")
+                .route_name("OptionsTransactions")
+                .input_type("crate::boss::protocol::OptionsTransactionsRequest")
+                .output_type("crate::boss::protocol::OptionsTransactionsResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let target_dir = "src/grpc/generated";
     let mut schema_gen_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());

@@ -68,3 +68,19 @@ pub struct WithdrawalsRequest {
 pub struct WithdrawalsResponse {
     pub withdrawals: Vec<Withdrawal>,
 }
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Boss",
+    name = "options_transactions",
+    response = "OptionsTransactionsResponse"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct OptionsTransactionsRequest {
+    pub account_id: AccountId,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct OptionsTransactionsResponse {
+    pub options_transactions: Vec<OptionsTransaction>,
+}

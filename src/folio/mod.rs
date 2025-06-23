@@ -46,6 +46,7 @@ pub struct AccountSummary {
     pub account: AccountId,
     pub timestamp: DateTime<Utc>,
     pub balances: AccountBalances,
+    /// map from TradableProduct to a list of AccountPosition
     pub positions: AccountPositions,
     #[deref]
     #[deref_mut]

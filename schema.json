@@ -12562,6 +12562,7 @@
             "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
           },
           "positions": {
+            "description": "map from TradableProduct to a list of AccountPosition",
             "type": "object",
             "additionalProperties": {
               "type": "array",
@@ -12816,6 +12817,7 @@
                 "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "positions": {
+                "description": "map from TradableProduct to a list of AccountPosition",
                 "type": "object",
                 "additionalProperties": {
                   "type": "array",
@@ -13051,6 +13053,7 @@
                 "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "positions": {
+                "description": "map from TradableProduct to a list of AccountPosition",
                 "type": "object",
                 "additionalProperties": {
                   "type": "array",
@@ -18196,6 +18199,78 @@
               "timestamp": {
                 "type": "string",
                 "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Boss/OptionsTransactions",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsTransactionsRequest",
+        "type": "object",
+        "required": [
+          "account_id"
+        ],
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsTransactionsResponse",
+        "type": "object",
+        "required": [
+          "options_transactions"
+        ],
+        "properties": {
+          "options_transactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/OptionsTransaction"
+            }
+          }
+        },
+        "definitions": {
+          "OptionsTransaction": {
+            "type": "object",
+            "required": [
+              "clearing_firm_account",
+              "quantity",
+              "timestamp",
+              "tradable_product",
+              "transaction_type"
+            ],
+            "properties": {
+              "clearing_firm_account": {
+                "type": "string"
+              },
+              "price": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "quantity": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "tradable_product": {
+                "type": "string"
+              },
+              "transaction_type": {
+                "type": "string"
               }
             }
           }

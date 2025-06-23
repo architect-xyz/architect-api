@@ -1,3 +1,4 @@
+use crate::symbology::TradableProduct;
 use chrono::{DateTime, NaiveDate, Utc};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
@@ -85,4 +86,15 @@ pub struct RqdAccountStatistics {
     pub trade_date_total_short_market_value: Option<Decimal>,
     pub as_of_date: Option<String>,
     pub trade_date_cash_balance: Option<Decimal>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
+pub struct OptionsTransaction {
+    pub timestamp: DateTime<Utc>,
+    pub transaction_type: String,
+    pub clearing_firm_account: String,
+    pub tradable_product: TradableProduct,
+    pub quantity: Decimal,
+    pub price: Option<Decimal>,
 }
