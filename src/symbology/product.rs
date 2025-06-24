@@ -143,6 +143,18 @@ impl Product {
     // pub fn is_series(&self) -> bool {
     //     self.0.ends_with("Option") || self.0.ends_with("Event Contract")
     // }
+
+    /// For futures products, return the expiration date indicated by the
+    /// symbol itself, e.g. by parsing rather than looking up the product
+    /// information from a catalog.
+    pub fn nominative_expiration(&self) -> Option<NaiveDate> {
+        if self.ends_with(" Future") {
+            let date_part = self.split(' ').nth(1)?;
+            NaiveDate::parse_from_str(date_part, "%Y%m%d").ok()
+        } else {
+            None
+        }
+    }
 }
 
 impl std::borrow::Borrow<str> for Product {
