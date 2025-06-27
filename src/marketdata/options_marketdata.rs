@@ -1,5 +1,5 @@
 use super::Ticker;
-use crate::symbology::PutOrCall;
+use crate::symbology::{PutOrCall, TradableProduct};
 use chrono::NaiveDate;
 use derive::grpc;
 use rust_decimal::Decimal;
@@ -15,12 +15,34 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsExpirationsRequest {
     pub underlying: String,
+    pub wrap: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsExpirations {
     pub underlying: String,
+    pub wrap: String,
     pub expirations: Vec<NaiveDate>,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "options_wraps", response = "OptionsWraps")]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
+pub struct OptionsWrapsRequest {
+    pub underlying: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
+pub struct OptionsWraps {
+    pub underlying: String,
+    pub wraps: Vec<String>,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Marketdata", name = "options_contract", response = "OptionsContract")]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
+pub struct OptionsContractRequest {
+    pub tradable_product: TradableProduct,
 }
 
 #[grpc(package = "json.architect")]
@@ -28,6 +50,7 @@ pub struct OptionsExpirations {
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsChainRequest {
     pub underlying: String,
+    pub wrap: Option<String>,
     pub expiration: NaiveDate,
 }
 
@@ -50,12 +73,24 @@ pub struct OptionsContract {
 #[grpc(package = "json.architect")]
 #[grpc(
     service = "Marketdata",
+    name = "options_contract_greeks",
+    response = "OptionsGreeks"
+)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
+pub struct OptionsContractGreeksRequest {
+    pub tradable_product: TradableProduct,
+}
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Marketdata",
     name = "options_chain_greeks",
     response = "OptionsChainGreeks"
 )]
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsChainGreeksRequest {
     pub underlying: String,
+    pub wrap: Option<String>,
     pub expiration: NaiveDate,
 }
 

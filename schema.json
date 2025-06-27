@@ -6667,6 +6667,12 @@
         "properties": {
           "underlying": {
             "type": "string"
+          },
+          "wrap": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -6676,7 +6682,8 @@
         "type": "object",
         "required": [
           "expirations",
-          "underlying"
+          "underlying",
+          "wrap"
         ],
         "properties": {
           "expirations": {
@@ -6688,6 +6695,365 @@
           },
           "underlying": {
             "type": "string"
+          },
+          "wrap": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.OptionsMarketdata/OptionsWraps",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsWrapsRequest",
+        "type": "object",
+        "required": [
+          "underlying"
+        ],
+        "properties": {
+          "underlying": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsWraps",
+        "type": "object",
+        "required": [
+          "underlying",
+          "wraps"
+        ],
+        "properties": {
+          "underlying": {
+            "type": "string"
+          },
+          "wraps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.OptionsMarketdata/OptionsContract",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsContractRequest",
+        "type": "object",
+        "required": [
+          "tradable_product"
+        ],
+        "properties": {
+          "tradable_product": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsContract",
+        "type": "object",
+        "required": [
+          "expiration",
+          "put_or_call",
+          "strike",
+          "ticker",
+          "underlying"
+        ],
+        "properties": {
+          "expiration": {
+            "type": "string",
+            "format": "date"
+          },
+          "in_the_money": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "put_or_call": {
+            "$ref": "#/definitions/PutOrCall"
+          },
+          "strike": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "ticker": {
+            "$ref": "#/definitions/Ticker"
+          },
+          "underlying": {
+            "type": "string"
+          }
+        },
+        "definitions": {
+          "PutOrCall": {
+            "type": "string",
+            "enum": [
+              "P",
+              "C"
+            ]
+          },
+          "Ticker": {
+            "type": "object",
+            "required": [
+              "s",
+              "tn",
+              "ts",
+              "ve"
+            ],
+            "properties": {
+              "ap": {
+                "title": "ask_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "as": {
+                "title": "ask_size",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "bp": {
+                "title": "bid_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "bs": {
+                "title": "bid_size",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "dividend": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "dividend_yield": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "eps_adj": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "fr": {
+                "title": "funding_rate",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "ft": {
+                "title": "next_funding_time",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "h": {
+                "title": "high_24h",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "ip": {
+                "title": "index_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "isp": {
+                "title": "indicative_settlement_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "l": {
+                "title": "low_24h",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "market_cap": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "mp": {
+                "title": "mark_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "o": {
+                "title": "open_24h",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "oi": {
+                "title": "open_interest",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "p": {
+                "title": "last_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "price_to_earnings": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "q": {
+                "title": "last_size",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "sd": {
+                "title": "last_settlement_date",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "shares_outstanding_weighted_adj": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "sp": {
+                "title": "last_settlement_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tn": {
+                "title": "timestamp_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "timestamp",
+                "type": "integer",
+                "format": "int64"
+              },
+              "v": {
+                "title": "volume_24h",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "ve": {
+                "title": "venue",
+                "type": "string"
+              },
+              "vm": {
+                "title": "volume_30d",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "xh": {
+                "title": "session_high",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "xl": {
+                "title": "session_low",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "xo": {
+                "title": "session_open",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "xv": {
+                "title": "session_volume",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
           }
         }
       }
@@ -6710,6 +7076,12 @@
           },
           "underlying": {
             "type": "string"
+          },
+          "wrap": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -7039,6 +7411,93 @@
     },
     {
       "type": "unary",
+      "route": "/json.architect.OptionsMarketdata/OptionsContractGreeks",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsContractGreeksRequest",
+        "type": "object",
+        "required": [
+          "tradable_product"
+        ],
+        "properties": {
+          "tradable_product": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OptionsGreeks",
+        "type": "object",
+        "required": [
+          "delta",
+          "expiration",
+          "gamma",
+          "implied_volatility",
+          "put_or_call",
+          "rho",
+          "strike",
+          "symbol",
+          "theta",
+          "underlying",
+          "vega"
+        ],
+        "properties": {
+          "delta": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "expiration": {
+            "type": "string",
+            "format": "date"
+          },
+          "gamma": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "implied_volatility": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "put_or_call": {
+            "$ref": "#/definitions/PutOrCall"
+          },
+          "rho": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "strike": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "theta": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "underlying": {
+            "type": "string"
+          },
+          "vega": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          }
+        },
+        "definitions": {
+          "PutOrCall": {
+            "type": "string",
+            "enum": [
+              "P",
+              "C"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
       "route": "/json.architect.OptionsMarketdata/OptionsChainGreeks",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -7055,6 +7514,12 @@
           },
           "underlying": {
             "type": "string"
+          },
+          "wrap": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },

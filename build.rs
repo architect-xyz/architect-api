@@ -314,10 +314,41 @@ fn build_grpc_stubs() {
         )
         .method(
             tonic_build::manual::Method::builder()
+                .name("options_wraps")
+                .route_name("OptionsWraps")
+                .input_type("crate::marketdata::options_marketdata::OptionsWrapsRequest")
+                .output_type("crate::marketdata::options_marketdata::OptionsWraps")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("options_contract")
+                .route_name("OptionsContract")
+                .input_type(
+                    "crate::marketdata::options_marketdata::OptionsContractRequest",
+                )
+                .output_type("crate::marketdata::options_marketdata::OptionsContract")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
                 .name("options_chain")
                 .route_name("OptionsChain")
                 .input_type("crate::marketdata::options_marketdata::OptionsChainRequest")
                 .output_type("crate::marketdata::options_marketdata::OptionsChain")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("options_contract_greeks")
+                .route_name("OptionsContractGreeks")
+                .input_type(
+                    "crate::marketdata::options_marketdata::OptionsContractGreeksRequest",
+                )
+                .output_type("crate::marketdata::options_marketdata::OptionsGreeks")
                 .codec_path(json_codec)
                 .build(),
         )
