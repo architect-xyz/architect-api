@@ -1,4 +1,4 @@
-use crate::{Account, AccountPermissions, TraderIdOrEmail, UserId};
+use crate::{Account, AccountIdOrName, AccountPermissions, TraderIdOrEmail, UserId};
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -30,3 +30,20 @@ pub struct AccountWithPermissions {
     pub trader: UserId,
     pub permissions: AccountPermissions,
 }
+
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Accounts",
+    name = "reset_paper_account",
+    response = "ResetPaperAccountResponse"
+)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ResetPaperAccountRequest {
+    /// The trader for whom to reset paper accounts.
+    /// If not specified, defaults to the caller user.
+    pub account: AccountIdOrName,
+    pub balance: Option<u64>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ResetPaperAccountResponse {}

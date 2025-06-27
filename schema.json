@@ -376,6 +376,46 @@
           }
         }
       }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Accounts/ResetPaperAccount",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ResetPaperAccountRequest",
+        "type": "object",
+        "required": [
+          "account"
+        ],
+        "properties": {
+          "account": {
+            "description": "The trader for whom to reset paper accounts. If not specified, defaults to the caller user.",
+            "allOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              }
+            ]
+          },
+          "balance": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint64",
+            "minimum": 0.0
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ResetPaperAccountResponse",
+        "type": "object"
+      }
     }
   ]
 },

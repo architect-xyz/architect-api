@@ -104,6 +104,13 @@ impl L1BookSnapshot {
             _ => None,
         }
     }
+
+    pub fn mid_price(&self) -> Option<Decimal> {
+        match (self.best_bid, self.best_ask) {
+            (Some((bid_px, _)), Some((ask_px, _))) => Some((bid_px + ask_px) / dec!(2)),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

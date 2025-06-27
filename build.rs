@@ -73,6 +73,15 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("reset_paper_account")
+                .route_name("ResetPaperAccount")
+                .input_type("crate::accounts::ResetPaperAccountRequest")
+                .output_type("crate::accounts::ResetPaperAccountResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let symbology_service = tonic_build::manual::Service::builder()
         .name("Symbology")
