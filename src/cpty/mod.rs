@@ -8,6 +8,7 @@ use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+use uuid::Uuid;
 
 pub mod cpty_id;
 
@@ -27,6 +28,12 @@ pub enum CptyRequest {
     PlaceOrder(Order),
     #[schemars(title = "CancelOrder")]
     CancelOrder { cancel: Cancel, original_order: Option<Order> },
+    #[schemars(title = "CancelAllOrders")]
+    CancelAllOrders {
+        cancel_id: Uuid,
+        trader: Option<UserId>,
+        account: Option<AccountId>,
+    },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

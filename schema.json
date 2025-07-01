@@ -15043,6 +15043,43 @@
                 ]
               }
             }
+          },
+          {
+            "title": "CancelAllOrders",
+            "type": "object",
+            "required": [
+              "cancel_id",
+              "t"
+            ],
+            "properties": {
+              "account": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              },
+              "cancel_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "cancel_all_orders"
+                ]
+              },
+              "trader": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
           }
         ],
         "definitions": {
