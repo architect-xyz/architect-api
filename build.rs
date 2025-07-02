@@ -678,6 +678,15 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("margin_calls")
+                .route_name("MarginCalls")
+                .input_type("crate::boss::protocol::MarginCallsRequest")
+                .output_type("crate::boss::protocol::MarginCallsResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let target_dir = "src/grpc/generated";
     let mut schema_gen_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());

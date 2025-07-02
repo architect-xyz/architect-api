@@ -98,3 +98,20 @@ pub struct OptionsTransaction {
     pub quantity: Decimal,
     pub price: Option<Decimal>,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "graphql", derive(juniper::GraphQLObject))]
+pub struct MarginCall {
+    pub account_number: String,
+    pub call_type: String,
+    pub description: String,
+    pub call_amount: Decimal,
+    pub satisfied_amount: Decimal,
+    pub status: String,
+    pub remarks: String,
+    pub due_date: Option<DateTime<Utc>>,
+    pub create_date: Option<DateTime<Utc>>,
+    pub correspondent_id: String,
+    pub office: String,
+    pub system_date: Option<String>,
+}

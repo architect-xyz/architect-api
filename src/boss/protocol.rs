@@ -84,3 +84,16 @@ pub struct OptionsTransactionsRequest {
 pub struct OptionsTransactionsResponse {
     pub options_transactions: Vec<OptionsTransaction>,
 }
+
+#[grpc(package = "json.architect")]
+#[grpc(service = "Boss", name = "margin_calls", response = "MarginCallsResponse")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct MarginCallsRequest {
+    pub account_id: Option<AccountId>,
+    pub system_date: Option<NaiveDate>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct MarginCallsResponse {
+    pub margin_calls: Vec<MarginCall>,
+}

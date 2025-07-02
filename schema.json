@@ -18818,6 +18818,114 @@
           }
         }
       }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Boss/MarginCalls",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "MarginCallsRequest",
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "system_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "MarginCallsResponse",
+        "type": "object",
+        "required": [
+          "margin_calls"
+        ],
+        "properties": {
+          "margin_calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/MarginCall"
+            }
+          }
+        },
+        "definitions": {
+          "MarginCall": {
+            "type": "object",
+            "required": [
+              "account_number",
+              "call_amount",
+              "call_type",
+              "correspondent_id",
+              "description",
+              "office",
+              "remarks",
+              "satisfied_amount",
+              "status"
+            ],
+            "properties": {
+              "account_number": {
+                "type": "string"
+              },
+              "call_amount": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "call_type": {
+                "type": "string"
+              },
+              "correspondent_id": {
+                "type": "string"
+              },
+              "create_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "description": {
+                "type": "string"
+              },
+              "due_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "office": {
+                "type": "string"
+              },
+              "remarks": {
+                "type": "string"
+              },
+              "satisfied_amount": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "status": {
+                "type": "string"
+              },
+              "system_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }
