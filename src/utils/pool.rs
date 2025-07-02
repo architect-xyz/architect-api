@@ -34,9 +34,9 @@ macro_rules! pool {
         }
     };
     ($name:ident, $ty:ty, $max_capacity:expr_2021, $max_elt_size:expr_2021) => {
-        fn $name() -> &'static api::utils::pool::Pool<$ty> {
-            static POOL: once_cell::race::OnceBox<api::utils::pool::Pool<$ty>> = once_cell::race::OnceBox::new();
-            POOL.get_or_init(|| Box::new(api::utils::pool::Pool::new($max_capacity, $max_elt_size)))
+        fn $name() -> &'static $crate::utils::pool::Pool<$ty> {
+            static POOL: once_cell::race::OnceBox<$crate::utils::pool::Pool<$ty>> = once_cell::race::OnceBox::new();
+            POOL.get_or_init(|| Box::new($crate::utils::pool::Pool::new($max_capacity, $max_elt_size)))
         }
     }
 }
