@@ -36,6 +36,24 @@ pub struct ExecutionInfoResponse {
 }
 
 #[grpc(package = "json.architect")]
+#[grpc(
+    service = "Symbology",
+    name = "futures_series",
+    response = "FuturesSeriesResponse"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct FuturesSeriesRequest {
+    pub series_symbol: String,
+    #[serde(default)]
+    pub include_expired: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct FuturesSeriesResponse {
+    pub futures: Vec<Product>,
+}
+
+#[grpc(package = "json.architect")]
 #[grpc(service = "Symbology", name = "symbology", response = "SymbologySnapshot")]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct SymbologyRequest {}

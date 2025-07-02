@@ -106,6 +106,15 @@ fn build_grpc_stubs() {
         )
         .method(
             tonic_build::manual::Method::builder()
+                .name("futures_series")
+                .route_name("FuturesSeries")
+                .input_type("crate::symbology::protocol::FuturesSeriesRequest")
+                .output_type("crate::symbology::protocol::FuturesSeriesResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
                 .name("symbology")
                 .route_name("Symbology")
                 .input_type("crate::symbology::protocol::SymbologyRequest")

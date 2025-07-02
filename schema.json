@@ -637,6 +637,43 @@
     },
     {
       "type": "unary",
+      "route": "/json.architect.Symbology/FuturesSeries",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "FuturesSeriesRequest",
+        "type": "object",
+        "required": [
+          "series_symbol"
+        ],
+        "properties": {
+          "include_expired": {
+            "default": false,
+            "type": "boolean"
+          },
+          "series_symbol": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "FuturesSeriesResponse",
+        "type": "object",
+        "required": [
+          "futures"
+        ],
+        "properties": {
+          "futures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
       "route": "/json.architect.Symbology/Symbology",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
