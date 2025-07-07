@@ -1,4 +1,5 @@
 use crate::UserId;
+use chrono::{DateTime, Utc};
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -34,4 +35,16 @@ pub struct AuthInfoRequest {}
 pub struct AuthInfoResponse {
     pub user_id: Option<UserId>,
     pub original_user_id: Option<UserId>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct LicenseInfoRequest {}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct LicenseInfoResponse {
+    pub subject: String,
+    /// PEM-encoded public key
+    pub pubkey: String,
+    pub not_before: DateTime<Utc>,
+    pub not_after: DateTime<Utc>,
 }
