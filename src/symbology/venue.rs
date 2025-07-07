@@ -1,9 +1,10 @@
-use derive_more::{Deref, Display, From, FromStr};
+use derive_more::{AsRef, Deref, Display, From, FromStr};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// A venue that provides marketdata, e.g. COINBASE, DATABENTO, XIGNITE, etc.
 #[derive(
+    AsRef,
     Debug,
     Display,
     Deref,
@@ -51,6 +52,7 @@ impl PartialEq<ExecutionVenue> for MarketdataVenue {
 
 /// A venue that provides execution, e.g. CME, CBOE, NYSE, etc.
 #[derive(
+    AsRef,
     Debug,
     Display,
     Deref,

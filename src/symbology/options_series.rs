@@ -1,7 +1,7 @@
 use super::{DerivativeKind, Product, TradableProduct};
 use anyhow::{anyhow, bail, Result};
 use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
-use derive_more::Display;
+use derive_more::{AsRef, Display};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -15,6 +15,7 @@ use strum_macros::{EnumString, IntoStaticStr};
 
 /// e.g. "AAPL US Options"
 #[derive(
+    AsRef,
     Debug,
     Display,
     Clone,

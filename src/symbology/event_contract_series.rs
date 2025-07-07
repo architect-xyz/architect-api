@@ -52,7 +52,7 @@
 use super::Product;
 use anyhow::{bail, Result};
 use chrono::{DateTime, NaiveTime, Utc};
-use derive_more::Display;
+use derive_more::{AsRef, Display};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -63,6 +63,7 @@ use std::{
 use strum_macros::{EnumString, IntoStaticStr};
 
 #[derive(
+    AsRef,
     Debug,
     Display,
     Clone,
