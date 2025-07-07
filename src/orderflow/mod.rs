@@ -24,6 +24,9 @@ pub enum OrderflowRequest {
     #[serde(rename = "p")]
     #[schemars(title = "PlaceOrder|PlaceOrderRequest")]
     PlaceOrder(PlaceOrderRequest),
+    #[serde(rename = "pp")]
+    #[schemars(title = "PlaceBatchOrder|PlaceBatchOrderRequest")]
+    PlaceBatchOrder(PlaceBatchOrderRequest),
     #[serde(rename = "x")]
     #[schemars(title = "CancelOrder|CancelOrderRequest")]
     CancelOrder(CancelOrderRequest),

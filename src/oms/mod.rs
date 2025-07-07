@@ -1,8 +1,9 @@
 use crate::{
-    orderflow::{order_types::*, Cancel, Order, OrderSource, TimeInForce},
+    orderflow::{order_types::*, Cancel, Order, OrderReject, OrderSource, TimeInForce},
     symbology::ExecutionVenue,
     AccountIdOrName, Dir, OrderId, TraderIdOrEmail,
 };
+use chrono::{DateTime, Utc};
 use derive::grpc;
 use derive_builder::Builder;
 use rust_decimal::Decimal;
@@ -57,6 +58,19 @@ pub struct PlaceOrderRequest {
 }
 
 #[grpc(package = "json.architect")]
+#[grpc(service = "Oms", name = "place_batch_order", response = "PlaceBatchOrderResponse")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct PlaceBatchOrderRequest {
+    pub place_orders: Vec<PlaceOrderRequest>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct PlaceBatchOrderResponse {
+    pub pending_orders: Vec<Order>,
+    pub order_rejects: Vec<OrderReject>,
+}
+
+#[grpc(package = "json.architect")]
 #[grpc(service = "Oms", name = "cancel_order", response = "Cancel")]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
 pub struct CancelOrderRequest {
@@ -99,6 +113,12 @@ pub struct OpenOrdersRequest {
     pub symbol: Option<String>,
     pub parent_order_id: Option<OrderId>,
     pub order_ids: Option<Vec<OrderId>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from_inclusive: Option<DateTime<Utc>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub to_exclusive: Option<DateTime<Utc>>,
+    #[serde(default)]
+    pub limit: Option<i32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -122,3 +142,16 @@ pub struct PendingCancelsRequest {
 pub struct PendingCancelsResponse {
     pub pending_cancels: Vec<Cancel>,
 }
+
+/// Manually reconcile out orders.  Useful for clearing stuck orders
+/// or stale orders when a human wants to intervene.
+#[grpc(package = "json.architect")]
+#[grpc(service = "Oms", name = "reconcile_out", response = "ReconcileOutResponse")]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct ReconcileOutRequest {
+    pub order_id: Option<OrderId>,
+    pub order_ids: Option<Vec<OrderId>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct ReconcileOutResponse {}

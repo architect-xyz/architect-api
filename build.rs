@@ -474,6 +474,15 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("reconcile_out")
+                .route_name("ReconcileOut")
+                .input_type("crate::oms::ReconcileOutRequest")
+                .output_type("crate::oms::ReconcileOutResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
         .build();
     let folio_service = tonic_build::manual::Service::builder()
         .name("Folio")

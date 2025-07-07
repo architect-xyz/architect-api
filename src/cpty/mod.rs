@@ -26,6 +26,8 @@ pub enum CptyRequest {
     Logout(CptyLogoutRequest),
     #[schemars(title = "PlaceOrder|Order")]
     PlaceOrder(Order),
+    #[schemars(title = "PlaceBatchOrder|BatchOrder")]
+    PlaceBatchOrder { orders: Vec<Order> },
     #[schemars(title = "CancelOrder")]
     CancelOrder { cancel: Cancel, original_order: Option<Order> },
     #[schemars(title = "CancelAllOrders")]

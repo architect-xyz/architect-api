@@ -8040,6 +8040,28 @@
             }
           },
           {
+            "title": "PlaceBatchOrder|PlaceBatchOrderRequest",
+            "type": "object",
+            "required": [
+              "place_orders",
+              "t"
+            ],
+            "properties": {
+              "place_orders": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/PlaceOrderRequest"
+                }
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "pp"
+                ]
+              }
+            }
+          },
+          {
             "title": "CancelOrder|CancelOrderRequest",
             "type": "object",
             "required": [
@@ -8171,6 +8193,246 @@
               "Telegram",
               "Other"
             ]
+          },
+          "PlaceOrderRequest": {
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "STOP_LOSS_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "TAKE_PROFIT_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              }
+            ],
+            "required": [
+              "d",
+              "q",
+              "s",
+              "tif"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "id": {
+                "description": "If not specified, one will be generated for you; note, in that case, you won't know for sure if the specific request went through.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "quantity",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "src": {
+                "title": "source",
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "u": {
+                "title": "trader",
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/TraderIdOrEmail"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "default": null,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
           },
           "TimeInForce": {
             "oneOf": [
@@ -12399,6 +12661,20 @@
               }
             ]
           },
+          "from_inclusive": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "limit": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
           "order_ids": {
             "type": [
               "array",
@@ -12423,6 +12699,13 @@
               "string",
               "null"
             ]
+          },
+          "to_exclusive": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
           },
           "trader": {
             "anyOf": [
@@ -13111,6 +13394,63 @@
             }
           }
         }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Oms/ReconcileOut",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ReconcileOutRequest",
+        "description": "Manually reconcile out orders.  Useful for clearing stuck orders or stale orders when a human wants to intervene.",
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "order_ids": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/definitions/OrderId"
+            }
+          }
+        },
+        "definitions": {
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ReconcileOutResponse",
+        "type": "object"
       }
     }
   ]
@@ -15133,6 +15473,28 @@
                 "title": "filled_quantity",
                 "type": "string",
                 "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
+          {
+            "title": "PlaceBatchOrder|BatchOrder",
+            "type": "object",
+            "required": [
+              "orders",
+              "t"
+            ],
+            "properties": {
+              "orders": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Order"
+                }
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "place_batch_order"
+                ]
               }
             }
           },
