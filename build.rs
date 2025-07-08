@@ -440,6 +440,15 @@ fn build_grpc_stubs() {
         )
         .method(
             tonic_build::manual::Method::builder()
+                .name("place_batch_order")
+                .route_name("PlaceBatchOrder")
+                .input_type("crate::oms::PlaceBatchOrderRequest")
+                .output_type("crate::oms::PlaceBatchOrderResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
                 .name("cancel_order")
                 .route_name("CancelOrder")
                 .input_type("crate::oms::CancelOrderRequest")

@@ -12446,6 +12446,915 @@
     },
     {
       "type": "unary",
+      "route": "/json.architect.Oms/PlaceBatchOrder",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "PlaceBatchOrderRequest",
+        "type": "object",
+        "required": [
+          "place_orders"
+        ],
+        "properties": {
+          "place_orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/PlaceOrderRequest"
+            }
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          },
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "OrderSource": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              255
+            ],
+            "x-enumNames": [
+              "API",
+              "GUI",
+              "Algo",
+              "Reconciled",
+              "CLI",
+              "Telegram",
+              "Other"
+            ]
+          },
+          "PlaceOrderRequest": {
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "STOP_LOSS_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "TAKE_PROFIT_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              }
+            ],
+            "required": [
+              "d",
+              "q",
+              "s",
+              "tif"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "id": {
+                "description": "If not specified, one will be generated for you; note, in that case, you won't know for sure if the specific request went through.",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "quantity",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "src": {
+                "title": "source",
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "u": {
+                "title": "trader",
+                "default": null,
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/TraderIdOrEmail"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "default": null,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "TimeInForce": {
+            "oneOf": [
+              {
+                "title": "GoodTilCancel",
+                "type": "string",
+                "enum": [
+                  "GTC"
+                ]
+              },
+              {
+                "title": "GoodTilDate",
+                "type": "object",
+                "required": [
+                  "GTD"
+                ],
+                "properties": {
+                  "GTD": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "title": "GoodTilDay",
+                "description": "Day order--the specific time which this expires will be dependent on the venue",
+                "type": "string",
+                "enum": [
+                  "DAY"
+                ]
+              },
+              {
+                "title": "ImmediateOrCancel",
+                "type": "string",
+                "enum": [
+                  "IOC"
+                ]
+              },
+              {
+                "title": "FillOrKill",
+                "type": "string",
+                "enum": [
+                  "FOK"
+                ]
+              },
+              {
+                "title": "AtTheOpen",
+                "type": "string",
+                "enum": [
+                  "ATO"
+                ]
+              },
+              {
+                "title": "AtTheClose",
+                "type": "string",
+                "enum": [
+                  "ATC"
+                ]
+              }
+            ]
+          },
+          "TraderIdOrEmail": {
+            "type": "string"
+          },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "PlaceBatchOrderResponse",
+        "type": "object",
+        "required": [
+          "order_rejects",
+          "pending_orders"
+        ],
+        "properties": {
+          "order_rejects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/OrderReject"
+            }
+          },
+          "pending_orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Order"
+            }
+          }
+        },
+        "definitions": {
+          "Dir": {
+            "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "Order": {
+            "description": "<!-- py: unflatten=k/order_type/OrderType, tag=k -->",
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "k"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "MARKET"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "STOP_LOSS_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "tp"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "TAKE_PROFIT_LIMIT"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "tp": {
+                    "title": "trigger_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "k",
+                  "p",
+                  "po"
+                ],
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "enum": [
+                      "BRACKET"
+                    ]
+                  },
+                  "p": {
+                    "title": "limit_price",
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  },
+                  "po": {
+                    "title": "post_only",
+                    "type": "boolean"
+                  },
+                  "sl": {
+                    "title": "stop_loss",
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/TriggerLimitOrderType"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tpp": {
+                    "title": "take_profit_price",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+                  }
+                }
+              }
+            ],
+            "required": [
+              "a",
+              "d",
+              "id",
+              "o",
+              "q",
+              "s",
+              "src",
+              "tif",
+              "tn",
+              "ts",
+              "u",
+              "ve",
+              "xq"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "type": "string",
+                "format": "uuid"
+              },
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "eid": {
+                "title": "exchange_order_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderStatus"
+                  }
+                ]
+              },
+              "pid": {
+                "title": "parent_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q": {
+                "title": "quantity",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "r": {
+                "title": "reject_reason",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rm": {
+                "title": "reject_message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "src": {
+                "title": "source",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderSource"
+                  }
+                ]
+              },
+              "ss": {
+                "title": "is_short_sale",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "tif": {
+                "title": "time_in_force",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/TimeInForce"
+                  }
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "description": "Timestamp that the Architect OMS first received the order.\n\nFor reconciled orders, this could be very far in the future relative to the exchange order timestamp.",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  }
+                ]
+              },
+              "ve": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xp": {
+                "title": "average_fill_price",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "xq": {
+                "title": "filled_quantity",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "OrderReject": {
+            "type": "object",
+            "required": [
+              "id",
+              "r"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "r": {
+                "title": "reject_reason",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderRejectReason"
+                  }
+                ]
+              },
+              "rm": {
+                "title": "message",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "OrderRejectReason": {
+            "type": "string",
+            "enum": [
+              "DuplicateOrderId",
+              "NotAuthorized",
+              "NoExecutionVenue",
+              "NoAccount",
+              "NoCpty",
+              "UnsupportedOrderType",
+              "UnsupportedExecutionVenue",
+              "InsufficientCash",
+              "InsufficientMargin",
+              "NotEasyToBorrow",
+              "InvalidOrder",
+              "Unknown"
+            ]
+          },
+          "OrderSource": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              255
+            ],
+            "x-enumNames": [
+              "API",
+              "GUI",
+              "Algo",
+              "Reconciled",
+              "CLI",
+              "Telegram",
+              "Other"
+            ]
+          },
+          "OrderStatus": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              127,
+              128,
+              129,
+              130,
+              254,
+              255
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Open",
+              "Rejected",
+              "Out",
+              "Canceling",
+              "Canceled",
+              "ReconciledOut",
+              "Stale",
+              "Unknown"
+            ]
+          },
+          "TimeInForce": {
+            "oneOf": [
+              {
+                "title": "GoodTilCancel",
+                "type": "string",
+                "enum": [
+                  "GTC"
+                ]
+              },
+              {
+                "title": "GoodTilDate",
+                "type": "object",
+                "required": [
+                  "GTD"
+                ],
+                "properties": {
+                  "GTD": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "title": "GoodTilDay",
+                "description": "Day order--the specific time which this expires will be dependent on the venue",
+                "type": "string",
+                "enum": [
+                  "DAY"
+                ]
+              },
+              {
+                "title": "ImmediateOrCancel",
+                "type": "string",
+                "enum": [
+                  "IOC"
+                ]
+              },
+              {
+                "title": "FillOrKill",
+                "type": "string",
+                "enum": [
+                  "FOK"
+                ]
+              },
+              {
+                "title": "AtTheOpen",
+                "type": "string",
+                "enum": [
+                  "ATO"
+                ]
+              },
+              {
+                "title": "AtTheClose",
+                "type": "string",
+                "enum": [
+                  "ATC"
+                ]
+              }
+            ]
+          },
+          "TriggerLimitOrderType": {
+            "type": "object",
+            "required": [
+              "p",
+              "tp"
+            ],
+            "properties": {
+              "p": {
+                "title": "limit_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "tp": {
+                "title": "trigger_price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
       "route": "/json.architect.Oms/CancelOrder",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
