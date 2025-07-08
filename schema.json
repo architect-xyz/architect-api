@@ -1106,13 +1106,20 @@
             "type": "string"
           },
           "ProductCatalogInfo": {
-            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.",
+            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.\n\nNumeric data is very rough and not at all precise in time. These fields, such as eps_adj, dividend_yield, etc. should be considered almost cosmetic.  They can still be useful for rough purposes.",
             "type": "object",
             "required": [
               "exchange",
               "exchange_product"
             ],
             "properties": {
+              "as_of_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
               "category": {
                 "type": [
                   "string",
@@ -1124,6 +1131,28 @@
                   "string",
                   "null"
                 ]
+              },
+              "dividend": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "dividend_yield": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "eps_adj": {
+                "description": "For stocks, adjusted earnings per share",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "exchange": {
                 "type": "string"
@@ -1139,11 +1168,25 @@
                   "null"
                 ]
               },
+              "last_updated": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
               "long_description": {
                 "type": [
                   "string",
                   "null"
                 ]
+              },
+              "market_cap": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "multiplier": {
                 "description": "For derivatives contracts, the multiplier",
@@ -1158,6 +1201,13 @@
                   "string",
                   "null"
                 ]
+              },
+              "price_to_earnings": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "quote_currency": {
                 "type": [
@@ -1176,6 +1226,13 @@
                   "string",
                   "null"
                 ]
+              },
+              "shared_outstanding_weighted_adj": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "short_description": {
                 "description": "Short description of the product, suitable for display in a bubble, for example",
@@ -1911,13 +1968,20 @@
             "type": "string"
           },
           "ProductCatalogInfo": {
-            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.",
+            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.\n\nNumeric data is very rough and not at all precise in time. These fields, such as eps_adj, dividend_yield, etc. should be considered almost cosmetic.  They can still be useful for rough purposes.",
             "type": "object",
             "required": [
               "exchange",
               "exchange_product"
             ],
             "properties": {
+              "as_of_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
               "category": {
                 "type": [
                   "string",
@@ -1929,6 +1993,28 @@
                   "string",
                   "null"
                 ]
+              },
+              "dividend": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "dividend_yield": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "eps_adj": {
+                "description": "For stocks, adjusted earnings per share",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "exchange": {
                 "type": "string"
@@ -1944,11 +2030,25 @@
                   "null"
                 ]
               },
+              "last_updated": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
               "long_description": {
                 "type": [
                   "string",
                   "null"
                 ]
+              },
+              "market_cap": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "multiplier": {
                 "description": "For derivatives contracts, the multiplier",
@@ -1963,6 +2063,13 @@
                   "string",
                   "null"
                 ]
+              },
+              "price_to_earnings": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "quote_currency": {
                 "type": [
@@ -1981,6 +2088,13 @@
                   "string",
                   "null"
                 ]
+              },
+              "shared_outstanding_weighted_adj": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "short_description": {
                 "description": "Short description of the product, suitable for display in a bubble, for example",
@@ -3463,13 +3577,20 @@
         },
         "definitions": {
           "ProductCatalogInfo": {
-            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.",
+            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.\n\nNumeric data is very rough and not at all precise in time. These fields, such as eps_adj, dividend_yield, etc. should be considered almost cosmetic.  They can still be useful for rough purposes.",
             "type": "object",
             "required": [
               "exchange",
               "exchange_product"
             ],
             "properties": {
+              "as_of_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
               "category": {
                 "type": [
                   "string",
@@ -3481,6 +3602,28 @@
                   "string",
                   "null"
                 ]
+              },
+              "dividend": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "dividend_yield": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "eps_adj": {
+                "description": "For stocks, adjusted earnings per share",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "exchange": {
                 "type": "string"
@@ -3496,11 +3639,25 @@
                   "null"
                 ]
               },
+              "last_updated": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
               "long_description": {
                 "type": [
                   "string",
                   "null"
                 ]
+              },
+              "market_cap": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "multiplier": {
                 "description": "For derivatives contracts, the multiplier",
@@ -3515,6 +3672,13 @@
                   "string",
                   "null"
                 ]
+              },
+              "price_to_earnings": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "quote_currency": {
                 "type": [
@@ -3533,6 +3697,13 @@
                   "string",
                   "null"
                 ]
+              },
+              "shared_outstanding_weighted_adj": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "short_description": {
                 "description": "Short description of the product, suitable for display in a bubble, for example",
@@ -3590,13 +3761,20 @@
         },
         "definitions": {
           "ProductCatalogInfo": {
-            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.",
+            "description": "Loosely normalized information about exchange products; used to seed symbology loaders and populate extended product info;\n\nSymbology loaders will use catalog fields to augment and/or cross-check any other load source.\n\nNumeric data is very rough and not at all precise in time. These fields, such as eps_adj, dividend_yield, etc. should be considered almost cosmetic.  They can still be useful for rough purposes.",
             "type": "object",
             "required": [
               "exchange",
               "exchange_product"
             ],
             "properties": {
+              "as_of_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
               "category": {
                 "type": [
                   "string",
@@ -3608,6 +3786,28 @@
                   "string",
                   "null"
                 ]
+              },
+              "dividend": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "dividend_yield": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "eps_adj": {
+                "description": "For stocks, adjusted earnings per share",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "exchange": {
                 "type": "string"
@@ -3623,11 +3823,25 @@
                   "null"
                 ]
               },
+              "last_updated": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
               "long_description": {
                 "type": [
                   "string",
                   "null"
                 ]
+              },
+              "market_cap": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "multiplier": {
                 "description": "For derivatives contracts, the multiplier",
@@ -3642,6 +3856,13 @@
                   "string",
                   "null"
                 ]
+              },
+              "price_to_earnings": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "quote_currency": {
                 "type": [
@@ -3660,6 +3881,13 @@
                   "string",
                   "null"
                 ]
+              },
+              "shared_outstanding_weighted_adj": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
               },
               "short_description": {
                 "description": "Short description of the product, suitable for display in a bubble, for example",
