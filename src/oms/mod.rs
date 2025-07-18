@@ -1,5 +1,7 @@
 use crate::{
-    orderflow::{order_types::*, Cancel, Order, OrderReject, OrderSource, TimeInForce},
+    orderflow::{
+        order_types::*, Cancel, Modify, Order, OrderReject, OrderSource, TimeInForce,
+    },
     symbology::ExecutionVenue,
     AccountIdOrName, Dir, OrderId, TraderIdOrEmail,
 };
@@ -84,6 +86,30 @@ pub struct CancelOrderRequest {
     pub order_id: OrderId,
 }
 
+/// The ModifyOrderRequest will cause the order to get a new OrderId
+#[grpc(package = "json.architect")]
+#[grpc(service = "Oms", name = "modify_order", response = "Modify")]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+pub struct ModifyOrderRequest {
+    /// If not specified, one will be generated for you; note, in that case,
+    /// you won't know for sure if the specific request went through.
+    #[serde(rename = "mid", default)]
+    #[schemars(title = "modify_id")]
+    pub modify_id: Option<Uuid>,
+
+    #[serde(rename = "id")]
+    #[schemars(title = "order_id")]
+    pub order_id: OrderId,
+
+    #[serde(rename = "q")]
+    #[schemars(title = "new_quantity")]
+    pub new_quantity: Option<Decimal>,
+
+    #[serde(rename = "p")]
+    #[schemars(title = "new_price")]
+    pub new_price: Option<Decimal>,
+}
+
 #[grpc(package = "json.architect")]
 #[grpc(service = "Oms", name = "cancel_all_orders", response = "CancelAllOrdersResponse")]
 #[skip_serializing_none]
@@ -143,6 +169,22 @@ pub struct PendingCancelsResponse {
     pub pending_cancels: Vec<Cancel>,
 }
 
+#[grpc(package = "json.architect")]
+#[grpc(service = "Oms", name = "pending_modifies", response = "PendingModifiesResponse")]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct PendingModifiesRequest {
+    pub venue: Option<ExecutionVenue>,
+    pub account: Option<AccountIdOrName>,
+    pub trader: Option<TraderIdOrEmail>,
+    pub symbol: Option<String>,
+    pub modify_ids: Option<Vec<Uuid>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct PendingModifiesResponse {
+    pub pending_modifies: Vec<Modify>,
+}
 /// Manually reconcile out orders.  Useful for clearing stuck orders
 /// or stale orders when a human wants to intervene.
 #[grpc(package = "json.architect")]

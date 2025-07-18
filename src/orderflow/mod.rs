@@ -5,12 +5,14 @@ use serde::{Deserialize, Serialize};
 
 pub mod cancel;
 pub mod fill;
+pub mod modify;
 pub mod order;
 pub mod order_id;
 pub mod order_types;
 
 pub use cancel::*;
 pub use fill::*;
+pub use modify::*;
 pub use order::*;
 pub use order_id::*;
 pub use order_types::*;
@@ -33,6 +35,9 @@ pub enum OrderflowRequest {
     #[serde(rename = "xo")]
     #[schemars(title = "CancelAllOrders|CancelAllOrdersRequest")]
     CancelAllOrders(CancelAllOrdersRequest),
+    #[serde(rename = "modify_order")]
+    #[schemars(title = "ModifyOrder|ModifyOrderRequest")]
+    ModifyOrder(ModifyOrderRequest),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -69,6 +74,15 @@ pub enum Orderflow {
     #[serde(rename = "xx")]
     #[schemars(title = "OrderCanceled|OrderCanceled")]
     OrderCanceled(OrderCanceled),
+    #[serde(rename = "mp")]
+    #[schemars(title = "ModifyPending|ModifyPending")]
+    ModifyPending(Modify),
+    #[serde(rename = "mr")]
+    #[schemars(title = "ModifyReject|ModifyReject")]
+    ModifyReject(ModifyReject),
+    #[serde(rename = "mm")]
+    #[schemars(title = "OrderModified|OrderModified")]
+    OrderModified(OrderModified),
     #[serde(rename = "f")]
     #[schemars(title = "Fill|Fill")]
     Fill(Fill),
@@ -92,6 +106,9 @@ impl Orderflow {
             Orderflow::OrderCanceled(canceled) => Some(canceled.order_id),
             Orderflow::Fill(fill) => fill.order_id,
             Orderflow::AberrantFill(aberrant_fill) => aberrant_fill.order_id,
+            Orderflow::ModifyPending(modify) => Some(modify.order_id),
+            Orderflow::ModifyReject(modify_reject) => Some(modify_reject.order_id),
+            Orderflow::OrderModified(order_modified) => Some(order_modified.order_id),
         }
     }
 }

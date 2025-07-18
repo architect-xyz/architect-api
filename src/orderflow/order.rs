@@ -216,6 +216,7 @@ pub enum OrderStatus {
     Canceling = 128,
     Canceled = 129,
     ReconciledOut = 130,
+    ModifiedOut = 131,
     Stale = 254,
     Unknown = 255,
 }
@@ -228,7 +229,11 @@ impl OrderStatus {
             | Self::Canceling
             | Self::Stale
             | Self::Unknown => true,
-            Self::Out | Self::Canceled | Self::Rejected | Self::ReconciledOut => false,
+            Self::Out
+            | Self::Canceled
+            | Self::Rejected
+            | Self::ReconciledOut
+            | Self::ModifiedOut => false,
         }
     }
 
@@ -320,6 +325,17 @@ pub struct OrderCanceled {
     pub order_id: OrderId,
     #[serde(rename = "xid", skip_serializing_if = "Option::is_none")]
     pub cancel_id: Option<Uuid>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+pub struct OrderModified {
+    #[serde(rename = "o")]
+    pub order_id: OrderId,
+    #[serde(rename = "n")]
+    pub new_order_id: OrderId,
+    #[serde(rename = "mid")]
+    pub modify_id: Uuid,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

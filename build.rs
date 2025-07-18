@@ -467,6 +467,15 @@ fn build_grpc_stubs() {
         )
         .method(
             tonic_build::manual::Method::builder()
+                .name("modify_order")
+                .route_name("ModifyOrder")
+                .input_type("crate::oms::ModifyOrderRequest")
+                .output_type("crate::orderflow::Modify")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
                 .name("open_orders")
                 .route_name("OpenOrders")
                 .input_type("crate::oms::OpenOrdersRequest")
@@ -480,6 +489,15 @@ fn build_grpc_stubs() {
                 .route_name("PendingCancels")
                 .input_type("crate::oms::PendingCancelsRequest")
                 .output_type("crate::oms::PendingCancelsResponse")
+                .codec_path(json_codec)
+                .build(),
+        )
+        .method(
+            tonic_build::manual::Method::builder()
+                .name("pending_modifies")
+                .route_name("PendingModifies")
+                .input_type("crate::oms::PendingModifiesRequest")
+                .output_type("crate::oms::PendingModifiesResponse")
                 .codec_path(json_codec)
                 .build(),
         )
