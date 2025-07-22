@@ -32,6 +32,8 @@ pub struct OptionsWrapsRequest {
     pub underlying: String,
 }
 
+/// used for disambiguation of underlying symbols that have multiple series
+/// e.g. TSLA vs 2TSLA
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, JsonSchema)]
 pub struct OptionsWraps {
     pub underlying: String,

@@ -7110,6 +7110,7 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "OptionsWraps",
+        "description": "used for disambiguation of underlying symbols that have multiple series e.g. TSLA vs 2TSLA",
         "type": "object",
         "required": [
           "underlying",
