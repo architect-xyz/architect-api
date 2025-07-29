@@ -35,6 +35,9 @@ pub enum OrderflowRequest {
     #[serde(rename = "xo")]
     #[schemars(title = "CancelAllOrders|CancelAllOrdersRequest")]
     CancelAllOrders(CancelAllOrdersRequest),
+    #[serde(rename = "xb")]
+    #[schemars(title = "BatchCancelOrders|BatchCancelOrdersRequest")]
+    BatchCancelOrders(BatchCancelOrdersRequest),
     #[serde(rename = "modify_order")]
     #[schemars(title = "ModifyOrder|ModifyOrderRequest")]
     ModifyOrder(ModifyOrderRequest),

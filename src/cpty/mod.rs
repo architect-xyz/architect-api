@@ -36,6 +36,8 @@ pub enum CptyRequest {
         trader: Option<UserId>,
         account: Option<AccountId>,
     },
+    #[schemars(title = "BatchCancelOrders")]
+    BatchCancelOrders { cancels: Vec<Cancel>, original_orders: Vec<Option<Order>> },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]

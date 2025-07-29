@@ -8371,6 +8371,29 @@
             }
           },
           {
+            "title": "BatchCancelOrders|BatchCancelOrdersRequest",
+            "description": "Batch cancel orders.  Depending on the cpty, their may be different semantics on how the batch cancel is handled.",
+            "type": "object",
+            "required": [
+              "cancel_orders",
+              "t"
+            ],
+            "properties": {
+              "cancel_orders": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/CancelOrderRequest"
+                }
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "xb"
+                ]
+              }
+            }
+          },
+          {
             "title": "ModifyOrder|ModifyOrderRequest",
             "description": "The ModifyOrderRequest will cause the order to get a new OrderId",
             "type": "object",
@@ -8425,6 +8448,32 @@
         "definitions": {
           "AccountIdOrName": {
             "type": "string"
+          },
+          "CancelOrderRequest": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
+              },
+              "xid": {
+                "title": "cancel_id",
+                "description": "If not specified, one will be generated for you; note, in that case, you won't know for sure if the specific request went through.",
+                "default": null,
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              }
+            }
           },
           "Dir": {
             "description": "An order side/direction or a trade execution side/direction. In GraphQL these are serialized as \"buy\" or \"sell\".",
@@ -14160,6 +14209,206 @@
     },
     {
       "type": "unary",
+      "route": "/json.architect.Oms/BatchCancelOrders",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "BatchCancelOrdersRequest",
+        "description": "Batch cancel orders.  Depending on the cpty, their may be different semantics on how the batch cancel is handled.",
+        "type": "object",
+        "required": [
+          "cancel_orders"
+        ],
+        "properties": {
+          "cancel_orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/CancelOrderRequest"
+            }
+          }
+        },
+        "definitions": {
+          "CancelOrderRequest": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
+              },
+              "xid": {
+                "title": "cancel_id",
+                "description": "If not specified, one will be generated for you; note, in that case, you won't know for sure if the specific request went through.",
+                "default": null,
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              }
+            }
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "BatchCancelOrdersResponse",
+        "type": "object",
+        "required": [
+          "cancel_rejects",
+          "cancels"
+        ],
+        "properties": {
+          "cancel_rejects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/CancelReject"
+            }
+          },
+          "cancels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Cancel"
+            }
+          }
+        },
+        "definitions": {
+          "Cancel": {
+            "type": "object",
+            "required": [
+              "id",
+              "o",
+              "tn",
+              "ts",
+              "xid"
+            ],
+            "properties": {
+              "id": {
+                "title": "order_id",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  }
+                ]
+              },
+              "o": {
+                "title": "status",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/CancelStatus"
+                  }
+                ]
+              },
+              "r": {
+                "title": "reject_reason",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tn": {
+                "title": "recv_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "recv_time",
+                "type": "integer",
+                "format": "int64"
+              },
+              "xid": {
+                "title": "cancel_id",
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          "CancelReject": {
+            "type": "object",
+            "required": [
+              "id",
+              "xid"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/OrderId"
+              },
+              "rm": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "xid": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          "CancelStatus": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              127
+            ],
+            "x-enumNames": [
+              "Pending",
+              "Acked",
+              "Rejected",
+              "Out"
+            ]
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
       "route": "/json.architect.Oms/ModifyOrder",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -17454,6 +17703,42 @@
                   {
                     "type": "null"
                   }
+                ]
+              }
+            }
+          },
+          {
+            "title": "BatchCancelOrders",
+            "type": "object",
+            "required": [
+              "cancels",
+              "original_orders",
+              "t"
+            ],
+            "properties": {
+              "cancels": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Cancel"
+                }
+              },
+              "original_orders": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/Order"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "batch_cancel_orders"
                 ]
               }
             }

@@ -1,6 +1,7 @@
 use crate::{
     orderflow::{
-        order_types::*, Cancel, Modify, Order, OrderReject, OrderSource, TimeInForce,
+        order_types::*, Cancel, CancelReject, Modify, Order, OrderReject, OrderSource,
+        TimeInForce,
     },
     symbology::ExecutionVenue,
     AccountIdOrName, Dir, OrderId, TraderIdOrEmail,
@@ -84,6 +85,25 @@ pub struct CancelOrderRequest {
     #[serde(rename = "id")]
     #[schemars(title = "order_id")]
     pub order_id: OrderId,
+}
+
+/// Batch cancel orders.  Depending on the cpty, their may be different
+/// semantics on how the batch cancel is handled.
+#[grpc(package = "json.architect")]
+#[grpc(
+    service = "Oms",
+    name = "batch_cancel_orders",
+    response = "BatchCancelOrdersResponse"
+)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct BatchCancelOrdersRequest {
+    pub cancel_orders: Vec<CancelOrderRequest>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct BatchCancelOrdersResponse {
+    pub cancels: Vec<Cancel>,
+    pub cancel_rejects: Vec<CancelReject>,
 }
 
 /// The ModifyOrderRequest will cause the order to get a new OrderId
