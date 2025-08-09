@@ -498,7 +498,115 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "ResetPaperAccountResponse",
-        "type": "object"
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "error": {
+            "description": "Error message if the operation failed",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Accounts/OpenPaperAccount",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OpenPaperAccountRequest",
+        "type": "object",
+        "required": [
+          "account_name"
+        ],
+        "properties": {
+          "account_name": {
+            "description": "The name for the new paper account (will be prefixed with PAPER:{email}:)",
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "OpenPaperAccountResponse",
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "account_id": {
+            "description": "The ID of the newly created paper account (None if failed)",
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "error": {
+            "description": "Error message if the operation failed",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
+      "route": "/json.architect.Accounts/ClosePaperAccount",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ClosePaperAccountRequest",
+        "type": "object",
+        "required": [
+          "account"
+        ],
+        "properties": {
+          "account": {
+            "description": "The account to close (by ID or name)",
+            "allOf": [
+              {
+                "$ref": "#/definitions/AccountIdOrName"
+              }
+            ]
+          }
+        },
+        "definitions": {
+          "AccountIdOrName": {
+            "type": "string"
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ClosePaperAccountResponse",
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "error": {
+            "description": "Error message if the operation failed",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
       }
     }
   ]
