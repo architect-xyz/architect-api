@@ -2,7 +2,7 @@
 
 use super::*;
 use anyhow::{anyhow, bail, Result};
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Datelike, NaiveDate, Utc};
 use derive_more::{AsRef, Deref, Display, From};
 use rust_decimal::Decimal;
 use schemars::JsonSchema;
@@ -124,7 +124,7 @@ impl Product {
         Self::new(symbol, venue_discriminant, "Perpetual")
     }
 
-    /// E.g. "AAPL US 20241227 300 C Option"
+    /// E.g. "AAPL  241227C00300000 Option" (OSI format)
     pub fn option(
         stem: &str,
         expiration: NaiveDate,
@@ -132,12 +132,24 @@ impl Product {
         put_or_call: PutOrCall,
         venue_discriminant: Option<&str>,
     ) -> Result<Self> {
-        let symbol = format!(
-            "{stem} {} {} {put_or_call}",
-            expiration.format("%Y%m%d"),
-            strike.normalize()
+        let strike_str = strike.to_string();
+        let (dollar_part, decimal_part) =
+            strike_str.split_once('.').unwrap_or((&strike_str, "000"));
+        let put_or_call_char = match put_or_call {
+            PutOrCall::Put => "P",
+            PutOrCall::Call => "C",
+        };
+        let osi_symbol = format!(
+            "{:<6}{:02}{:02}{:02}{}{:0>5}{:0<3}",
+            stem,
+            expiration.year() % 100,
+            expiration.month(),
+            expiration.day(),
+            put_or_call_char,
+            dollar_part,
+            &decimal_part[..decimal_part.len().min(3)]
         );
-        Self::new(&symbol, venue_discriminant, "Option")
+        Self::new(&osi_symbol, venue_discriminant, "Option")
     }
 
     // pub fn is_series(&self) -> bool {
