@@ -100,15 +100,6 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
-        .method(
-            tonic_build::manual::Method::builder()
-                .name("close_paper_account")
-                .route_name("ClosePaperAccount")
-                .input_type("crate::accounts::ClosePaperAccountRequest")
-                .output_type("crate::accounts::ClosePaperAccountResponse")
-                .codec_path(json_codec)
-                .build(),
-        )
         .build();
     let symbology_service = tonic_build::manual::Service::builder()
         .name("Symbology")

@@ -480,13 +480,14 @@
               }
             ]
           },
-          "balance": {
+          "usd_balance_cents": {
+            "description": "Balance to reset paper account to in USD cents",
+            "default": null,
             "type": [
               "integer",
               "null"
             ],
-            "format": "uint64",
-            "minimum": 0.0
+            "format": "int32"
           }
         },
         "definitions": {
@@ -498,22 +499,7 @@
       "response_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "ResetPaperAccountResponse",
-        "type": "object",
-        "required": [
-          "success"
-        ],
-        "properties": {
-          "error": {
-            "description": "Error message if the operation failed",
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "success": {
-            "type": "boolean"
-          }
-        }
+        "type": "object"
       }
     },
     {
@@ -523,13 +509,21 @@
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "OpenPaperAccountRequest",
         "type": "object",
-        "required": [
-          "account_name"
-        ],
         "properties": {
           "account_name": {
-            "description": "The name for the new paper account (will be prefixed with PAPER:{email}:)",
-            "type": "string"
+            "description": "The name for the new paper account (will be of the form \"PAPER:{email}:{account_name}\") If not specified, the default account will be created \"PAPER:{email}\" Note that you cannot close a paper account once you open it.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "usd_balance_cents": {
+            "description": "Balance to open paper account with in USD cents",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -538,73 +532,37 @@
         "title": "OpenPaperAccountResponse",
         "type": "object",
         "required": [
-          "success"
-        ],
-        "properties": {
-          "account_id": {
-            "description": "The ID of the newly created paper account (None if failed)",
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid"
-          },
-          "error": {
-            "description": "Error message if the operation failed",
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "success": {
-            "type": "boolean"
-          }
-        }
-      }
-    },
-    {
-      "type": "unary",
-      "route": "/json.architect.Accounts/ClosePaperAccount",
-      "request_type": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "ClosePaperAccountRequest",
-        "type": "object",
-        "required": [
           "account"
         ],
         "properties": {
           "account": {
-            "description": "The account to close (by ID or name)",
+            "description": "The newly created paper account",
             "allOf": [
               {
-                "$ref": "#/definitions/AccountIdOrName"
+                "$ref": "#/definitions/Account"
               }
             ]
           }
         },
         "definitions": {
-          "AccountIdOrName": {
-            "type": "string"
-          }
-        }
-      },
-      "response_type": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "ClosePaperAccountResponse",
-        "type": "object",
-        "required": [
-          "success"
-        ],
-        "properties": {
-          "error": {
-            "description": "Error message if the operation failed",
-            "type": [
-              "string",
-              "null"
-            ]
+          "Account": {
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "$ref": "#/definitions/AccountName"
+              }
+            }
           },
-          "success": {
-            "type": "boolean"
+          "AccountName": {
+            "type": "string"
           }
         }
       }

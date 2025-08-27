@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
 use std::{borrow::Borrow, collections::BTreeMap};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Bimap<U: Clone + Ord, V: Clone + Ord> {
     map: BTreeMap<U, V>,
     rev: BTreeMap<V, U>,

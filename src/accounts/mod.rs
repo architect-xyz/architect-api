@@ -1,6 +1,4 @@
-use crate::{
-    Account, AccountId, AccountIdOrName, AccountPermissions, TraderIdOrEmail, UserId,
-};
+use crate::{Account, AccountIdOrName, AccountPermissions, TraderIdOrEmail, UserId};
 use derive::grpc;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -44,15 +42,13 @@ pub struct ResetPaperAccountRequest {
     /// The trader for whom to reset paper accounts.
     /// If not specified, defaults to the caller user.
     pub account: AccountIdOrName,
-    pub balance: Option<u64>,
+    /// Balance to reset paper account to in USD cents
+    #[serde(default)]
+    pub usd_balance_cents: Option<i32>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-pub struct ResetPaperAccountResponse {
-    pub success: bool,
-    /// Error message if the operation failed
-    pub error: Option<String>,
-}
+pub struct ResetPaperAccountResponse {}
 
 #[grpc(package = "json.architect")]
 #[grpc(
@@ -62,34 +58,16 @@ pub struct ResetPaperAccountResponse {
 )]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct OpenPaperAccountRequest {
-    /// The name for the new paper account (will be prefixed with PAPER:{email}:)
-    pub account_name: String,
+    /// The name for the new paper account (will be of the form "PAPER:{email}:{account_name}")
+    /// If not specified, the default account will be created "PAPER:{email}"
+    /// Note that you cannot close a paper account once you open it.
+    pub account_name: Option<String>,
+    /// Balance to open paper account with in USD cents
+    pub usd_balance_cents: Option<i32>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct OpenPaperAccountResponse {
-    /// The ID of the newly created paper account (None if failed)
-    pub account_id: Option<AccountId>,
-    pub success: bool,
-    /// Error message if the operation failed
-    pub error: Option<String>,
-}
-
-#[grpc(package = "json.architect")]
-#[grpc(
-    service = "Accounts",
-    name = "close_paper_account",
-    response = "ClosePaperAccountResponse"
-)]
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-pub struct ClosePaperAccountRequest {
-    /// The account to close (by ID or name)
-    pub account: AccountIdOrName,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-pub struct ClosePaperAccountResponse {
-    pub success: bool,
-    /// Error message if the operation failed
-    pub error: Option<String>,
+    /// The newly created paper account
+    pub account: Account,
 }

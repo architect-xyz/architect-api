@@ -21,6 +21,18 @@ pub struct CptyId {
     pub instance: Option<EcoString>,
 }
 
+impl CptyId {
+    pub const fn inline(kind: &'static str, instance: Option<&'static str>) -> Self {
+        Self {
+            kind: EcoString::inline(kind),
+            instance: match instance {
+                Some(s) => Some(EcoString::inline(s)),
+                None => None,
+            },
+        }
+    }
+}
+
 impl std::fmt::Display for CptyId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.kind)?;
