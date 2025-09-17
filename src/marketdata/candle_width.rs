@@ -82,6 +82,8 @@ impl FromStr for CandleWidth {
             "1s" => Ok(Self::OneSecond),
             "5s" => Ok(Self::FiveSecond),
             "1m" => Ok(Self::OneMinute),
+            "2m" => Ok(Self::TwoMinute),
+            "3m" => Ok(Self::ThreeMinute),
             "15m" => Ok(Self::FifteenMinute),
             "1h" => Ok(Self::OneHour),
             "1d" => Ok(Self::OneDay),
