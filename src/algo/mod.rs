@@ -10,6 +10,7 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 use strum::FromRepr;
 pub mod builder;
 pub mod common_params;
+pub mod quote_one_side;
 pub mod release_at_time;
 pub mod spreader;
 pub mod twap;
@@ -60,6 +61,8 @@ pub struct CreateAlgoOrderRequest {
 /// this is used to coerce creation of the params in the schema.json
 pub struct AlgoParamTypes {
     pub spreader: (spreader::SpreaderParams, spreader::SpreaderStatus),
+    pub quote_one_side:
+        (quote_one_side::QuoteOneSideParams, quote_one_side::QuoteOneSideStatus),
 }
 
 impl CreateAlgoOrderRequest {
