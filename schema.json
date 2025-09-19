@@ -19884,12 +19884,14 @@
               1,
               2,
               63,
+              128,
               127
             ],
             "x-enumNames": [
               "Working",
               "Rejected",
               "Paused",
+              "Stopping",
               "Stopped"
             ]
           },
@@ -20199,12 +20201,14 @@
               1,
               2,
               63,
+              128,
               127
             ],
             "x-enumNames": [
               "Working",
               "Rejected",
               "Paused",
+              "Stopping",
               "Stopped"
             ]
           },
@@ -20314,12 +20318,14 @@
               1,
               2,
               63,
+              128,
               127
             ],
             "x-enumNames": [
               "Working",
               "Rejected",
               "Paused",
+              "Stopping",
               "Stopped"
             ]
           },
@@ -20474,12 +20480,14 @@
               1,
               2,
               63,
+              128,
               127
             ],
             "x-enumNames": [
               "Working",
               "Rejected",
               "Paused",
+              "Stopping",
               "Stopped"
             ]
           },

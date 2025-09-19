@@ -191,13 +191,18 @@ pub enum AlgoOrderStatus {
     Rejected = 2,
     Paused = 63,
     // Pausing = 64,
-    // Stopping = 128,
+    Stopping = 128,
     Stopped = 127, // same as paused but final
 }
 
 impl AlgoOrderStatus {
     pub fn is_alive(&self) -> bool {
-        matches!(self, AlgoOrderStatus::Working | AlgoOrderStatus::Paused)
+        matches!(
+            self,
+            AlgoOrderStatus::Working
+                | AlgoOrderStatus::Paused
+                | AlgoOrderStatus::Stopping
+        )
     }
 }
 
