@@ -19923,6 +19923,195 @@
     },
     {
       "type": "unary",
+      "route": "/json.architect.Algo/ModifyAlgoOrder",
+      "request_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ModifyAlgoOrderRequest",
+        "type": "object",
+        "required": [
+          "algo_order_id",
+          "params"
+        ],
+        "properties": {
+          "algo_order_id": {
+            "$ref": "#/definitions/OrderId"
+          },
+          "params": true
+        },
+        "definitions": {
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          }
+        }
+      },
+      "response_type": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "AlgoOrder",
+        "type": "object",
+        "required": [
+          "algo",
+          "create_time",
+          "id",
+          "num_errors",
+          "num_open_orders",
+          "num_rejects",
+          "num_sent_orders",
+          "params",
+          "status",
+          "status_details",
+          "trader"
+        ],
+        "properties": {
+          "algo": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "display_symbols": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "finish_success": {
+            "description": "If the algo order is stopped, whether the stop was successful.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "finish_time": {
+            "description": "If the algo order is stopped, the time at which it was stopped.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "id": {
+            "$ref": "#/definitions/OrderId"
+          },
+          "num_errors": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "num_open_orders": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "num_rejects": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "num_sent_orders": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "params": true,
+          "parent_id": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/OrderId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reject_or_error_reason": {
+            "description": "If algo order status is rejected, contains the reject reason; for algo orders that finished unsuccessfully, contains the error reason.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "$ref": "#/definitions/AlgoOrderStatus"
+          },
+          "status_details": true,
+          "trader": {
+            "$ref": "#/definitions/UserId"
+          },
+          "working_progress": {
+            "description": "Progress of the algo, 0.0 to 1.0, if computable",
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          }
+        },
+        "definitions": {
+          "AlgoOrderStatus": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              63,
+              128,
+              127
+            ],
+            "x-enumNames": [
+              "Working",
+              "Rejected",
+              "Paused",
+              "Stopping",
+              "Stopped"
+            ]
+          },
+          "OrderId": {
+            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
+            "type": "object",
+            "required": [
+              "seqid",
+              "seqno"
+            ],
+            "properties": {
+              "seqid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "seqno": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    {
+      "type": "unary",
       "route": "/json.architect.Algo/StartAlgo",
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",

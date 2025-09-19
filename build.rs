@@ -636,7 +636,6 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
-        /*
         .method(
             tonic_build::manual::Method::builder()
                 .name("modify_algo_order")
@@ -646,7 +645,6 @@ fn build_grpc_stubs() {
                 .codec_path(json_codec)
                 .build(),
         )
-        */
         .method(
             tonic_build::manual::Method::builder()
                 .name("start_algo")
