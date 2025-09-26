@@ -117,7 +117,11 @@ impl Builder {
     /// Generated services will be output into the directory specified by `out_dir`
     /// with files named `<package_name>.<service_name>.sdk.rs`.
     pub fn compile(self, services: &[&manual::Service]) {
-        let out_dir = if let Some(out_dir) = self.out_dir.as_ref() {
+        let out_dir = if std::env::var("DOCS_RS").is_ok() {
+            // On docs.rs: always use OUT_DIR (writable)
+            PathBuf::from(std::env::var("OUT_DIR").unwrap())
+        } else if let Some(out_dir) = self.out_dir.as_ref() {
+            // Normal builds: use the specified directory
             fs::create_dir_all(out_dir).unwrap_or_else(|_| {
                 panic!("failed to create out dir: {}", out_dir.display())
             });
@@ -125,7 +129,6 @@ impl Builder {
         } else {
             PathBuf::from(std::env::var("OUT_DIR").unwrap())
         };
-
         // If provided, rewrites `crate::mod::Type` references to `{name}::mod::Type`
         let rewrite_crate_name = if let Some(name) = self.rewrite_crate_name.as_ref() {
             name
