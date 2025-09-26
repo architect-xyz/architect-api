@@ -355,50 +355,65 @@ impl ExecutionInfo {
 
     /// Round quantity to the nearest valid step size without checking minimum
     pub fn round_quantity(&self, quantity: Decimal) -> Decimal {
-        if self.step_size.is_zero() {
-            return quantity;
-        }
-        let remainder = quantity % self.step_size;
-        if remainder.is_zero() {
-            quantity
-        } else {
-            let half_step = self.step_size / Decimal::from(2);
-            if remainder >= half_step {
-                // Round up
-                quantity - remainder + self.step_size
-            } else {
-                // Round down
-                quantity - remainder
-            }
-        }
+        round_quantity_with_step(quantity, self.step_size)
     }
 
     /// Round quantity up to the next valid step size without respecting minimum order quantity
     pub fn round_quantity_up(&self, quantity: Decimal) -> Decimal {
-        if self.step_size.is_zero() {
-            return quantity;
-        }
-
-        let remainder = quantity % self.step_size;
-        if remainder.is_zero() {
-            quantity
-        } else {
-            quantity - remainder + self.step_size
-        }
+        round_quantity_up_with_step(quantity, self.step_size)
     }
 
     /// Round quantity down to the previous valid step size without respecting minimum order quantity
     pub fn round_quantity_down(&self, quantity: Decimal) -> Decimal {
-        if self.step_size.is_zero() {
-            return quantity;
-        }
+        round_quantity_down_with_step(quantity, self.step_size)
+    }
+}
 
-        let remainder = quantity % self.step_size;
-        if remainder.is_zero() {
-            quantity
+/// Round quantity to the nearest valid step size
+pub fn round_quantity_with_step(quantity: Decimal, step_size: Decimal) -> Decimal {
+    if step_size.is_zero() {
+        return quantity;
+    }
+    let remainder = quantity % step_size;
+    if remainder.is_zero() {
+        quantity
+    } else {
+        let half_step = step_size / Decimal::from(2);
+        if remainder >= half_step {
+            // Round up
+            quantity - remainder + step_size
         } else {
+            // Round down
             quantity - remainder
         }
+    }
+}
+
+/// Round quantity up to the next valid step size
+pub fn round_quantity_up_with_step(quantity: Decimal, step_size: Decimal) -> Decimal {
+    if step_size.is_zero() {
+        return quantity;
+    }
+
+    let remainder = quantity % step_size;
+    if remainder.is_zero() {
+        quantity
+    } else {
+        quantity - remainder + step_size
+    }
+}
+
+/// Round quantity down to the previous valid step size
+pub fn round_quantity_down_with_step(quantity: Decimal, step_size: Decimal) -> Decimal {
+    if step_size.is_zero() {
+        return quantity;
+    }
+
+    let remainder = quantity % step_size;
+    if remainder.is_zero() {
+        quantity
+    } else {
+        quantity - remainder
     }
 }
 
@@ -436,29 +451,19 @@ mod tests {
 
     #[test]
     fn test_round_quantity() {
-        let info = ExecutionInfo {
-            execution_venue: ExecutionVenue::new("test".to_string()),
-            exchange_symbol: None,
-            tick_size: TickSize::Simple(dec!(0.01)),
-            step_size: dec!(0.1),
-            min_order_quantity: dec!(1.0),
-            min_order_quantity_unit: MinOrderQuantityUnit::Base,
-            is_delisted: false,
-            initial_margin: None,
-            maintenance_margin: None,
-        };
+        let step_size = dec!(0.1);
 
-        assert_eq!(info.round_quantity(dec!(1.24)), dec!(1.2));
-        assert_eq!(info.round_quantity(dec!(1.25)), dec!(1.3));
-        assert_eq!(info.round_quantity(dec!(0.04)), dec!(0.0));
+        assert_eq!(round_quantity_with_step(dec!(1.24), step_size), dec!(1.2));
+        assert_eq!(round_quantity_with_step(dec!(1.25), step_size), dec!(1.3));
+        assert_eq!(round_quantity_with_step(dec!(0.04), step_size), dec!(0.0));
 
-        assert_eq!(info.round_quantity_up(dec!(1.21)), dec!(1.3));
-        assert_eq!(info.round_quantity_up(dec!(0.01)), dec!(0.1));
-        assert_eq!(info.round_quantity_up(dec!(0.0)), dec!(0.0));
+        assert_eq!(round_quantity_up_with_step(dec!(1.21), step_size), dec!(1.3));
+        assert_eq!(round_quantity_up_with_step(dec!(0.01), step_size), dec!(0.1));
+        assert_eq!(round_quantity_up_with_step(dec!(0.0), step_size), dec!(0.0));
 
-        assert_eq!(info.round_quantity_down(dec!(1.29)), dec!(1.2));
-        assert_eq!(info.round_quantity_down(dec!(0.09)), dec!(0.0));
-        assert_eq!(info.round_quantity_down(dec!(0.0)), dec!(0.0));
+        assert_eq!(round_quantity_down_with_step(dec!(1.29), step_size), dec!(1.2));
+        assert_eq!(round_quantity_down_with_step(dec!(0.09), step_size), dec!(0.0));
+        assert_eq!(round_quantity_down_with_step(dec!(0.0), step_size), dec!(0.0));
     }
 
     #[test]

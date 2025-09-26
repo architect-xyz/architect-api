@@ -7,7 +7,10 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "tokio-postgres")]
 use std::error::Error;
-use std::{ops::Deref, str::FromStr};
+use std::{
+    ops::{Deref, Mul},
+    str::FromStr,
+};
 
 /// An order side/direction or a trade execution side/direction.
 /// In GraphQL these are serialized as "buy" or "sell".
@@ -24,6 +27,19 @@ pub enum Dir {
     Buy,
     #[serde(alias = "Sell", alias = "sell", alias = "SELL")]
     Sell,
+}
+
+impl Mul<Dir> for Dir {
+    type Output = Dir;
+
+    fn mul(self, rhs: Dir) -> Dir {
+        match (self, rhs) {
+            (Dir::Buy, Dir::Buy) => Dir::Buy,
+            (Dir::Sell, Dir::Sell) => Dir::Buy,
+            (Dir::Buy, Dir::Sell) => Dir::Sell,
+            (Dir::Sell, Dir::Buy) => Dir::Sell,
+        }
+    }
 }
 
 #[cfg(feature = "rusqlite")]
@@ -141,6 +157,17 @@ impl Dir {
             Self::Buy => dec!(1),
             Self::Sell => dec!(-1),
         }
+    }
+
+    #[inline]
+    pub fn sign(value: Decimal) -> Option<Dir> {
+        if value.is_sign_positive() {
+            return Some(Dir::Buy);
+        }
+        if value.is_zero() {
+            return None;
+        }
+        Some(Dir::Sell)
     }
 }
 
