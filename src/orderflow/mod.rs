@@ -92,6 +92,16 @@ pub enum Orderflow {
     #[serde(rename = "af")]
     #[schemars(title = "AberrantFill|AberrantFill")]
     AberrantFill(AberrantFill),
+    #[serde(rename = "df")]
+    #[schemars(title = "DescendantFill|Fill")]
+    /// For parent algos with child algos, the parent algo will also receive copies
+    /// of fills from its descendants.  The fills will be modified such that their
+    /// order_id is set to the immediate child algo's order ID.
+    ///
+    /// For example, suppose algo order A spawns child algo order B, whose
+    /// suborder O receives fill F.  F's order_id is O.  A should also hear about
+    /// this fill as a DescendantFill F_desc where F_desc's order_id is B.
+    DescendantFill(Fill),
 }
 
 impl Orderflow {
@@ -112,6 +122,7 @@ impl Orderflow {
             Orderflow::ModifyPending(modify) => Some(modify.order_id),
             Orderflow::ModifyReject(modify_reject) => Some(modify_reject.order_id),
             Orderflow::OrderModified(order_modified) => Some(order_modified.order_id),
+            Orderflow::DescendantFill(fill) => fill.order_id,
         }
     }
 }

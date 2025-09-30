@@ -106,7 +106,8 @@ pub struct BatchCancelOrdersResponse {
     pub cancel_rejects: Vec<CancelReject>,
 }
 
-/// The ModifyOrderRequest will cause the order to get a new OrderId
+/// The ModifyOrderRequest will cause the order to get a new OrderId.
+/// The new OrderId will come in the Modify Response.
 #[grpc(package = "json.architect")]
 #[grpc(service = "Oms", name = "modify_order", response = "Modify")]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]

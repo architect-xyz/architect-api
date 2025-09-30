@@ -79,7 +79,7 @@ pub struct QuoteOneSideParams {
     pub symbol: String,
     pub marketdata_venue: MarketdataVenue,
     pub execution_venue: ExecutionVenue,
-    pub account: AccountIdOrName,
+    pub account: Option<AccountIdOrName>,
     pub dir: Dir,
     pub quantity: Decimal,
     /// the most aggressive price the algo will quote at
@@ -94,8 +94,6 @@ pub struct QuoteOneSideParams {
     pub improve_or_join: ImproveOrJoin,
     /// Insert as 0, used for tracking fill quantity when modifying quote
     pub quantity_filled: Decimal,
-    /// when being called from another algo
-    pub parent_id: Option<OrderId>,
 }
 
 impl DisplaySymbols for QuoteOneSideParams {

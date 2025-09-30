@@ -8461,7 +8461,7 @@
           },
           {
             "title": "ModifyOrder|ModifyOrderRequest",
-            "description": "The ModifyOrderRequest will cause the order to get a new OrderId",
+            "description": "The ModifyOrderRequest will cause the order to get a new OrderId. The new OrderId will come in the Modify Response.",
             "type": "object",
             "required": [
               "id",
@@ -9930,6 +9930,159 @@
                 ]
               }
             }
+          },
+          {
+            "title": "DescendantFill|Fill",
+            "description": "For parent algos with child algos, the parent algo will also receive copies of fills from its descendants.  The fills will be modified such that their order_id is set to the immediate child algo's order ID.\n\nFor example, suppose algo order A spawns child algo order B, whose suborder O receives fill F.  F's order_id is O.  A should also hear about this fill as a DescendantFill F_desc where F_desc's order_id is B.",
+            "type": "object",
+            "required": [
+              "d",
+              "id",
+              "k",
+              "p",
+              "q",
+              "s",
+              "t",
+              "tn",
+              "ts",
+              "x"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              },
+              "agg": {
+                "title": "is_taker",
+                "default": null,
+                "type": "integer",
+                "format": "int"
+              },
+              "atn": {
+                "title": "recv_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "description": "When Architect received the fill, if realtime",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "f": {
+                "title": "fee",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "fu": {
+                "title": "fee_currency",
+                "description": "Fee currency, if different from the price currency",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "title": "fill_id",
+                "type": "string",
+                "format": "uuid"
+              },
+              "k": {
+                "title": "fill_kind",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/FillKind"
+                  }
+                ]
+              },
+              "oid": {
+                "title": "order_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "p": {
+                "title": "price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "q": {
+                "title": "quantity",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "df"
+                ]
+              },
+              "tn": {
+                "title": "trade_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "trade_time",
+                "description": "When the cpty claims the trade happened",
+                "type": "integer",
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
           }
         ],
         "definitions": {
@@ -11194,6 +11347,159 @@
                   "integer",
                   "null"
                 ],
+                "format": "int64"
+              },
+              "u": {
+                "title": "trader",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/UserId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "x": {
+                "title": "execution_venue",
+                "type": "string"
+              },
+              "xid": {
+                "title": "exchange_fill_id",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          {
+            "title": "DescendantFill|Fill",
+            "description": "For parent algos with child algos, the parent algo will also receive copies of fills from its descendants.  The fills will be modified such that their order_id is set to the immediate child algo's order ID.\n\nFor example, suppose algo order A spawns child algo order B, whose suborder O receives fill F.  F's order_id is O.  A should also hear about this fill as a DescendantFill F_desc where F_desc's order_id is B.",
+            "type": "object",
+            "required": [
+              "d",
+              "id",
+              "k",
+              "p",
+              "q",
+              "s",
+              "t",
+              "tn",
+              "ts",
+              "x"
+            ],
+            "properties": {
+              "a": {
+                "title": "account",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              },
+              "agg": {
+                "title": "is_taker",
+                "default": null,
+                "type": "integer",
+                "format": "int"
+              },
+              "atn": {
+                "title": "recv_time_ns",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ats": {
+                "title": "recv_time",
+                "description": "When Architect received the fill, if realtime",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "int64"
+              },
+              "d": {
+                "title": "dir",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Dir"
+                  }
+                ]
+              },
+              "f": {
+                "title": "fee",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "fu": {
+                "title": "fee_currency",
+                "description": "Fee currency, if different from the price currency",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "title": "fill_id",
+                "type": "string",
+                "format": "uuid"
+              },
+              "k": {
+                "title": "fill_kind",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/FillKind"
+                  }
+                ]
+              },
+              "oid": {
+                "title": "order_id",
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/OrderId"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "p": {
+                "title": "price",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "q": {
+                "title": "quantity",
+                "type": "string",
+                "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+              },
+              "s": {
+                "title": "symbol",
+                "type": "string"
+              },
+              "t": {
+                "type": "string",
+                "enum": [
+                  "df"
+                ]
+              },
+              "tn": {
+                "title": "trade_time_ns",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "ts": {
+                "title": "trade_time",
+                "description": "When the cpty claims the trade happened",
+                "type": "integer",
                 "format": "int64"
               },
               "u": {
@@ -14479,7 +14785,7 @@
       "request_type": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "ModifyOrderRequest",
-        "description": "The ModifyOrderRequest will cause the order to get a new OrderId",
+        "description": "The ModifyOrderRequest will cause the order to get a new OrderId. The new OrderId will come in the Modify Response.",
         "type": "object",
         "required": [
           "id"
@@ -20787,30 +21093,10 @@
               }
             ]
           },
-          "OrderId": {
-            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
-            "type": "object",
-            "required": [
-              "seqid",
-              "seqno"
-            ],
-            "properties": {
-              "seqid": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "seqno": {
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              }
-            }
-          },
           "QuoteOneSideParams": {
             "description": "Parameters for the QuoteOneSide algorithm",
             "type": "object",
             "required": [
-              "account",
               "dir",
               "execution_venue",
               "improve_or_join",
@@ -20822,7 +21108,14 @@
             ],
             "properties": {
               "account": {
-                "$ref": "#/definitions/AccountIdOrName"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "dir": {
                 "$ref": "#/definitions/Dir"
@@ -20853,17 +21146,6 @@
                   "null"
                 ],
                 "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
-              },
-              "parent_id": {
-                "description": "when being called from another algo",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/OrderId"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
               },
               "quantity": {
                 "type": "string",
@@ -21139,30 +21421,10 @@
               }
             ]
           },
-          "OrderId": {
-            "description": "System-unique, persistent order identifiers <!-- py: type=string -->",
-            "type": "object",
-            "required": [
-              "seqid",
-              "seqno"
-            ],
-            "properties": {
-              "seqid": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "seqno": {
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              }
-            }
-          },
           "QuoteOneSideParams": {
             "description": "Parameters for the QuoteOneSide algorithm",
             "type": "object",
             "required": [
-              "account",
               "dir",
               "execution_venue",
               "improve_or_join",
@@ -21174,7 +21436,14 @@
             ],
             "properties": {
               "account": {
-                "$ref": "#/definitions/AccountIdOrName"
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/AccountIdOrName"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "dir": {
                 "$ref": "#/definitions/Dir"
@@ -21205,17 +21474,6 @@
                   "null"
                 ],
                 "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
-              },
-              "parent_id": {
-                "description": "when being called from another algo",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/OrderId"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
               },
               "quantity": {
                 "type": "string",
