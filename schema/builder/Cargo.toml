@@ -3,7 +3,7 @@ description = "Auxiliary crate for building architect-api"
 edition = "2021"
 license = "AGPL-3.0-only"
 name = "architect-api-schema-builder"
-version = "0.5.1"
+version = "0.5.2"
 
 [dependencies]
 prettyplease = { workspace = true }
@@ -13,4 +13,4 @@ schemars = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 syn = { workspace = true }
-tonic-build = { package = "architect-tonic-build", version = "0.13.1", path = "../../../vendor/tonic-build" }
+tonic-build = { package = "architect-tonic-build", version = "0.13.2", path = "../../../vendor/tonic-build" }
