@@ -119,6 +119,7 @@ impl Builder {
     pub fn compile(self, services: &[&manual::Service]) {
         let out_dir = if std::env::var("DOCS_RS").is_ok() {
             // On docs.rs: always use OUT_DIR (writable)
+            println!("cargo:warning=Using OUT_DIR for codegen because we're building on docs.rs");
             PathBuf::from(std::env::var("OUT_DIR").unwrap())
         } else if let Some(out_dir) = self.out_dir.as_ref() {
             // Normal builds: use the specified directory
