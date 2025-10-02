@@ -18,6 +18,9 @@ pub struct Config {
     /// private key will be looked for at the same path but with .key
     /// extension.
     pub license_key: Option<PathBuf>,
+    /// JWT authority configuration
+    #[serde(default)]
+    pub jwt: JwtAuthorityConfig,
     /// If set, use a non-default secrets store path.
     #[serde(default)]
     pub secrets: Option<PathBuf>,
@@ -30,6 +33,14 @@ pub struct Config {
     /// Connect to the specified Architect core
     #[serde(default)]
     pub core: Option<Url>,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct JwtAuthorityConfig {
+    /// JWT audience to use when minting JWTs; if not set,
+    /// default to broad fallback `*.architect.co`.
+    #[serde(default)]
+    pub aud: Option<String>,
 }
 
 impl Config {
