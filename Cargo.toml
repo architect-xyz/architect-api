@@ -16,6 +16,7 @@ all = ["graphql", "grpc", "postgres"]
 graphql = ["juniper"]
 grpc = ["tonic", "tonic-build"]
 postgres = ["postgres-types", "tokio-postgres"]
+docs-rs = []
 
 [dependencies]
 anyhow = { workspace = true }
@@ -79,5 +80,5 @@ name = "order_id_benchmark"
 [package.metadata.cargo-machete]
 ignored = [
     "schema_builder", # build.rs
-    "tonic-build", # build.rs
+    "tonic-build",    # build.rs
 ]

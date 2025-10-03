@@ -13,15 +13,16 @@ pub type SubscriptionStream<T> = Pin<Box<dyn Stream<Item = Result<T, Status>> + 
 
 macro_rules! include_generated {
     ($file:literal) => {
-        #[cfg(docsrs)]
+        #[cfg(feature = "docs-rs")]
         include!(concat!(env!("OUT_DIR"), "/", $file));
 
-        #[cfg(not(docsrs))]
+        #[cfg(not(feature = "docs-rs"))]
         include!(concat!("generated/", $file));
     };
 }
 #[rustfmt::skip]
 pub mod service {
+
     include_generated!("json.architect.Health.rs");
     include_generated!("json.architect.Accounts.rs");
     include_generated!("json.architect.Auth.rs");

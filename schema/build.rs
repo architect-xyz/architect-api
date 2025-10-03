@@ -2,11 +2,11 @@ use schema_builder::code_gen_types::*;
 use std::{io::Write, path::PathBuf};
 
 mod defs {
-    #[cfg(docsrs)]
+    #[cfg(feature = "docs-rs")]
     include!(concat!(env!("OUT_DIR"), "/packages.sdk.rs"));
 
     // Used in local dev where files exist
-    #[cfg(all(not(docsrs), not(rust_analyzer)))]
+    #[cfg(all(not(feature = "docs-rs"), not(rust_analyzer)))]
     include!("../src/grpc/generated/packages.sdk.rs");
 }
 
